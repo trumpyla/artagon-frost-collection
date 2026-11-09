@@ -1,0 +1,11 @@
+id: rust-unsafe-block-scope
+language: Rust
+severity: error
+message: Keep production unsafe blocks inside src/adaptive/seq/buf.rs.
+note: New unsafe code requires a written invariant, ownership review, and Miri coverage. This syntax check does not prove safety or replace Cargo's unsafe_code lint.
+files:
+  - src/**/*.rs
+ignores:
+  - src/adaptive/seq/buf.rs
+rule:
+  kind: unsafe_block

@@ -1,0 +1,4 @@
+ruleDirs:
+  - verification/ast-grep/rules
+testConfigs:
+  - testDir: verification/ast-grep/tests

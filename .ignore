@@ -1,0 +1,7 @@
+# Exclude recorded runs and supplied source copies from default live-code searches.
+# These files remain versioned. Search a named evidence path with --no-ignore.
+/docs/reviews/supplied/
+/verification/history/
+/verification/results/
+/verification/int-set/
+/verification/integer-output/

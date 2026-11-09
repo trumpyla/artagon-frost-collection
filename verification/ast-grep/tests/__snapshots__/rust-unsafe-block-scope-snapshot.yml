@@ -1,0 +1,20 @@
+id: rust-unsafe-block-scope
+snapshots:
+  "fn dispose(pointer: *mut u8) { unsafe { core::ptr::drop_in_place(pointer) }; }":
+    labels:
+    - source: unsafe { core::ptr::drop_in_place(pointer) }
+      style: primary
+      start: 31
+      end: 75
+  "fn read(pointer: *const u8) -> u8 { let read = || unsafe { *pointer }; read() }":
+    labels:
+    - source: unsafe { *pointer }
+      style: primary
+      start: 50
+      end: 69
+  "fn read(pointer: *const u8) -> u8 { unsafe { *pointer } }":
+    labels:
+    - source: unsafe { *pointer }
+      style: primary
+      start: 36
+      end: 55

@@ -1,3 +1,6 @@
 **/target/
 *.profraw
 *.profdata
+
+# Local trigram index; rebuild with the commands in TOOLS.md.
+.tgrep/

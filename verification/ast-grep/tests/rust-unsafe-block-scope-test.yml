@@ -1,0 +1,12 @@
+id: rust-unsafe-block-scope
+valid:
+  - 'fn read(values: &[u8]) -> Option<&u8> { values.first() }'
+  - |
+    fn example() -> &'static str { "unsafe { *pointer }" }
+  - |
+    // An example in a comment: unsafe { *pointer }
+    fn safe() {}
+invalid:
+  - 'fn read(pointer: *const u8) -> u8 { unsafe { *pointer } }'
+  - 'fn dispose(pointer: *mut u8) { unsafe { core::ptr::drop_in_place(pointer) }; }'
+  - 'fn read(pointer: *const u8) -> u8 { let read = || unsafe { *pointer }; read() }'

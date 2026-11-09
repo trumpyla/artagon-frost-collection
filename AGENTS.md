@@ -21,6 +21,27 @@ module. `docs/maintainers/guide.md` is the maintainer entry point.
 - Optional verification packages are isolated from the library dependency
   graph. Do not add model-checking tools to normal builds or to core-only users.
 
+## Code search and navigation
+
+Read [TOOLS.md](TOOLS.md) before the first code-navigation task or a multi-file
+change. It defines this repository's search roots, index refresh commands,
+structural rules, and evidence limits.
+
+| Question | Tool | Project default |
+| --- | --- | --- |
+| Orientation, callers, or impact | `ripwire` | Start in `src`; add `tests`, `examples`, and `benches` when checking consumers. Confirm approximate edges in source. |
+| Repeated regex searches | `tgrep` | Search from the repository root after checking and refreshing its local index. Use live search for files edited since indexing. |
+| Rust code structure or rewrites | `ast-grep` | Use `--lang rust` for ad hoc patterns; use `sgconfig.yml` for repository rules. Preview rewrites before applying them. |
+| Text, errors, configuration, or documentation | `rtk rg` | Search focused live paths. Use `--hidden` for CI and other dotfiles. |
+
+Run `ripwire`, `tgrep`, and `ast-grep` directly; run ripgrep through `rtk rg`.
+Keep `.tgrep/` untracked. Refresh the index after checkout, pull, merge, rebase,
+or edits before relying on it. Missing optional tools are `UNAVAILABLE`; use
+live source search and Cargo checks as the fallback. A stale index, ambiguous
+graph edge, or unchecked macro/feature boundary gives `PARTIAL` evidence.
+Use `SUPPORTED` only when live source or build output confirms the result.
+An empty search or graph result alone never proves a symbol is unused.
+
 ## Contracts that must survive optimization
 
 - Features are additive. They must not change an existing type's representation,

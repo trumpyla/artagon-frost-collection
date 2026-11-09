@@ -5,6 +5,9 @@ explicit alternatives for adaptive or native storage. Read the
 [philosophy](../design/philosophy.md) and [architecture](../design/architecture.md)
 before adding a new profile or changing a feature boundary.
 
+[Code search tools](../../TOOLS.md) documents project search scopes, tgrep
+index refresh, and the optional ast-grep rule checks.
+
 ## Code and invariant map
 
 | Area | Files | Invariants to review |
