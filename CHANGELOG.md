@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — general set-algebra design
+
+- Review generic frozen algebra and coverage gaps across mutable families,
+  exact wrappers, persistent sets, bitmaps, and FST streams.
+- Propose typed borrowed views with operation-specific bounds, explicit
+  materialization, and separate value/lending/runtime execution profiles.
+- Specify stored-representative provenance independently of membership and
+  order, including XOR reassociation and nonlocal cancellation counterexamples.
+- Add an isolated finite semantics oracle and retain baseline verification
+  evidence. This is design work; no new production API or backend is implemented.
+
 ## Unreleased — views research and proposed ownership profiles
 
 - Preserve the supplied lazy-views research and add adversarial, primary-source,

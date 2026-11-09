@@ -18,6 +18,13 @@ calculation; a frozen set owns a fully valid result. A proposed
 `PersistentIntSet<K>` would own a fully valid, structurally shared result.
 Neither owned type is an expression history.
 
+The companion [general set-algebra proposal](set-algebra.md) extends query
+composition to ordinary stored objects and other set categories. This integer
+profile remains specialized: generic borrowed objects need representative
+provenance, and their XOR cannot inherit this profile's unrestricted parity
+flattening. The general proposal recommends typed views first for borrowed
+objects, while this runtime integer arena retains its separate scope.
+
 Use `IntSetExpr` rather than the broad `SetExpr`: its canonical codec, word
 width, by-value traversal, and wide cardinality are integer-profile contracts.
 Use `view()` as the short constructor, without adding a second public leaf

@@ -1,0 +1,496 @@
+{
+  "associative_enumeration_order": {
+    "intersection": {
+      "cases": 750,
+      "source_order_permutation_retained_on_both_sides": true,
+      "status": "passed"
+    },
+    "union": {
+      "cases": 750,
+      "source_order_permutation_retained_on_both_sides": true,
+      "status": "passed"
+    }
+  },
+  "assumptions": [
+    "Sets contain unique keys and fixed membership during evaluation.",
+    "Equality and hashing depend only on key; representative labels remain observable.",
+    "Union and intersection are left-biased; difference and XOR retain surviving representatives.",
+    "Element lookups are pure and agree with iteration.",
+    "Generic enumeration has source encounter order; sorted traversal is a separate kernel contract."
+  ],
+  "candidate_cover_counterexample": {
+    "candidate_output": {
+      "y": "B:y"
+    },
+    "chosen_cover": "B (1 candidate, versus A with 2)",
+    "explanation": "The cover supplies candidate keys, not authority to choose representatives. Resolve the representative against the original expression.",
+    "expression": "(A & B)",
+    "input": {
+      "A": {
+        "x": "A:x",
+        "y": "A:y"
+      },
+      "B": {
+        "y": "B:y"
+      },
+      "C": {}
+    },
+    "membership_correct": true,
+    "representative_correct": false,
+    "required_output": {
+      "y": "A:y"
+    }
+  },
+  "recursive_enumerator": {
+    "checked": [
+      "membership",
+      "representative provenance",
+      "no duplicate output",
+      "contains consistency"
+    ],
+    "expression_input_cases": 24000,
+    "expression_shapes_including_permutations": 192,
+    "input_orders_per_source": 5,
+    "keys": [
+      "x",
+      "y"
+    ],
+    "source_configurations": 125,
+    "status": "passed"
+  },
+  "rewrite_tests": [
+    {
+      "cases_checked": 8,
+      "counterexamples": [],
+      "enumeration_mismatches_including_membership_and_provenance": 0,
+      "left_expression": "((A | B) | C)",
+      "membership_equivalent": true,
+      "name": "union_associativity",
+      "order_only_counterexample": null,
+      "representative_equivalent": true,
+      "right_expression": "(A | (B | C))",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [],
+      "enumeration_mismatches_including_membership_and_provenance": 0,
+      "left_expression": "((A & B) & C)",
+      "membership_equivalent": true,
+      "name": "intersection_associativity",
+      "order_only_counterexample": null,
+      "representative_equivalent": true,
+      "right_expression": "(A & (B & C))",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "C:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "A:x"
+          }
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 46,
+      "left_expression": "((A ^ B) ^ C)",
+      "membership_equivalent": true,
+      "name": "xor_associativity",
+      "order_only_counterexample": null,
+      "representative_equivalent": false,
+      "right_expression": "(A ^ (B ^ C))",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": false
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        },
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 80,
+      "left_expression": "(A | B)",
+      "membership_equivalent": true,
+      "name": "union_commutativity",
+      "order_only_counterexample": {
+        "input": {
+          "A": {
+            "x": "A:x"
+          },
+          "B": {
+            "y": "B:y"
+          },
+          "C": {}
+        },
+        "left": [
+          [
+            "x",
+            "A:x"
+          ],
+          [
+            "y",
+            "B:y"
+          ]
+        ],
+        "right": [
+          [
+            "y",
+            "B:y"
+          ],
+          [
+            "x",
+            "A:x"
+          ]
+        ]
+      },
+      "representative_equivalent": false,
+      "right_expression": "(B | A)",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": false
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        },
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 70,
+      "left_expression": "(A & B)",
+      "membership_equivalent": true,
+      "name": "intersection_commutativity",
+      "order_only_counterexample": null,
+      "representative_equivalent": false,
+      "right_expression": "(B & A)",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {},
+          "membership_equal": false,
+          "presence": {
+            "A": false,
+            "B": true,
+            "C": false
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        },
+        {
+          "enumeration_equal": false,
+          "left": {},
+          "membership_equal": false,
+          "presence": {
+            "A": false,
+            "B": true,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        },
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": false,
+          "presence": {
+            "A": true,
+            "B": false,
+            "C": false
+          },
+          "representatives_equal": false,
+          "right": {}
+        },
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": false,
+          "presence": {
+            "A": true,
+            "B": false,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {}
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 90,
+      "left_expression": "(A - B)",
+      "membership_equivalent": false,
+      "name": "difference_commutativity",
+      "order_only_counterexample": null,
+      "representative_equivalent": false,
+      "right_expression": "(B - A)",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [],
+      "enumeration_mismatches_including_membership_and_provenance": 10,
+      "left_expression": "(A ^ B)",
+      "membership_equivalent": true,
+      "name": "xor_commutativity",
+      "order_only_counterexample": {
+        "input": {
+          "A": {
+            "x": "A:x"
+          },
+          "B": {
+            "y": "B:y"
+          },
+          "C": {}
+        },
+        "left": [
+          [
+            "x",
+            "A:x"
+          ],
+          [
+            "y",
+            "B:y"
+          ]
+        ],
+        "right": [
+          [
+            "y",
+            "B:y"
+          ],
+          [
+            "x",
+            "A:x"
+          ]
+        ]
+      },
+      "representative_equivalent": true,
+      "right_expression": "(B ^ A)",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": false
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        },
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "A:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": true,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "B:x"
+          }
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 70,
+      "left_expression": "((A ^ B) ^ A)",
+      "membership_equivalent": true,
+      "name": "nonlocal_xor_cancellation",
+      "order_only_counterexample": null,
+      "representative_equivalent": false,
+      "right_expression": "B",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [
+        {
+          "enumeration_equal": false,
+          "left": {
+            "x": "C:x"
+          },
+          "membership_equal": true,
+          "presence": {
+            "A": true,
+            "B": false,
+            "C": true
+          },
+          "representatives_equal": false,
+          "right": {
+            "x": "A:x"
+          }
+        }
+      ],
+      "enumeration_mismatches_including_membership_and_provenance": 32,
+      "left_expression": "((A & B) | C)",
+      "membership_equivalent": true,
+      "name": "right_union_distribution_over_intersection",
+      "order_only_counterexample": null,
+      "representative_equivalent": false,
+      "right_expression": "((A | C) & (B | C))",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [],
+      "enumeration_mismatches_including_membership_and_provenance": 6,
+      "left_expression": "(A & (B | C))",
+      "membership_equivalent": true,
+      "name": "left_intersection_distribution_over_union",
+      "order_only_counterexample": {
+        "input": {
+          "A": {
+            "x": "A:x",
+            "y": "A:y"
+          },
+          "B": {
+            "y": "B:y"
+          },
+          "C": {
+            "x": "C:x"
+          }
+        },
+        "left": [
+          [
+            "x",
+            "A:x"
+          ],
+          [
+            "y",
+            "A:y"
+          ]
+        ],
+        "right": [
+          [
+            "y",
+            "A:y"
+          ],
+          [
+            "x",
+            "A:x"
+          ]
+        ]
+      },
+      "representative_equivalent": true,
+      "right_expression": "((A & B) | (A & C))",
+      "two_key_order_cases_checked": 125
+    },
+    {
+      "cases_checked": 8,
+      "counterexamples": [],
+      "enumeration_mismatches_including_membership_and_provenance": 0,
+      "left_expression": "(A | (B & C))",
+      "membership_equivalent": true,
+      "name": "left_union_distribution_over_intersection",
+      "order_only_counterexample": null,
+      "representative_equivalent": true,
+      "right_expression": "((A | B) & (A | C))",
+      "two_key_order_cases_checked": 125
+    }
+  ],
+  "scope": "Finite independent design model; not production Frost validation or a Rust soundness proof.",
+  "sorted_order_counterexample": {
+    "explanation": "Left-then-right-only generic union preserves source encounter order, not sorted order across operands.",
+    "expression": "(A | B)",
+    "input_each_individually_sorted": true,
+    "output": [
+      [
+        "y",
+        "A:y"
+      ],
+      [
+        "x",
+        "B:x"
+      ]
+    ],
+    "output_sorted": false
+  },
+  "status": "passed"
+}

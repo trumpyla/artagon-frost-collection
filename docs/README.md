@@ -23,6 +23,9 @@ Start with the [crate README](../README.md) for API examples and features.
 | [Initial integer validation](integer-validation.md) | Historical evidence before output-policy corrections |
 | [Initial integer benchmarks](integer-benchmarks.md) | Historical representation tradeoffs and mixed-probe improvement |
 | [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes |
+| [General set algebra](design/set-algebra.md) | Proposed typed views for all set categories, representative semantics, execution, and ownership |
+| [Generic algebra review](reviews/generic-set-algebra-review.md) | Coverage gaps, research iteration, baseline checks, and finite semantic evidence |
+| [Generic algebra model](../verification/set-algebra/README.md) | Reproduced representative/order counterexamples; no production view implementation |
 | [Maintainer guide](maintainers/guide.md) | Code map, invariants, and change-specific checks |
 | [Benchmarks](maintainers/benchmarks.md) | Fair measurement and reproduction |
 | [Verification](verification.md) | Executable models, proof bounds, and limitations |

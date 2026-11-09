@@ -23,6 +23,11 @@ freeze/thaw pairings. [SET_OPERATIONS.md](../set-operations.md) records the lazy
 borrowed family operations, direct scalar kernels, frozen bitmap results, and
 left-representative rule.
 
+The [general set-algebra proposal](set-algebra.md) broadens future expression
+composition to mutable/frozen families and compatible native backends, with
+separate borrowed, encoded-value, and lending-stream boundaries. It is a design,
+not an implemented change to the current API or kernels.
+
 The subsequent [performance review](../reviews/performance-review.md) keeps these public
 boundaries. It adds shape-aware ordered kernels and simpler dense word loops,
 reuses adaptive lookup results and owned parallel buffers, and measures their

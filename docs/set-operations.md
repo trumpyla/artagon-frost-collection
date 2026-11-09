@@ -2,6 +2,10 @@
 
 Implemented in Frost **0.4.0**, on **Rust 1.99.1, edition 2024**.
 
+For the proposed extension to mutable inputs, mixed backends, and composable
+generic expressions, see [general set algebra](design/set-algebra.md). That
+proposal is not implemented; the contracts below describe current behavior.
+
 ## API and ownership
 
 The supported frozen sets expose four named algebra operations:
