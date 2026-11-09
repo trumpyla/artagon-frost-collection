@@ -37,7 +37,7 @@ panic/drop cases. For ownership changes run both Miri aliasing configurations.
 For concurrency, combine actual ArcSwap tests with the shared-helper scheduler;
 the latter is not a model of ArcSwap internals.
 
-Use `./scripts/verify.sh check` for normal review and `all` for a release
+Use `make check` for normal review and `make verify` for a release
 candidate. The matrix deliberately compiles the library for a bare-metal target
 so host dev-dependency feature unification cannot conceal a std dependency.
 Independent feature checks and all-features tests are complementary; neither
@@ -90,7 +90,7 @@ make one benchmark win. Default Cargo profiles remain the baseline.
 `verification/loom` and `verification/kani` are isolated tooling packages.
 Resolve and record their tool/dependency versions before claiming their results.
 The package archive excludes verification artifacts; the source distribution
-contains them. `scripts/verify.sh package` tests the extracted Cargo package to
+contains them. `make package` tests the extracted Cargo package to
 catch missing source files or accidentally coupled verification dependencies.
 
 ## Release ownership

@@ -101,9 +101,9 @@ and [rule testing guide](https://ast-grep.github.io/guide/test-rule.html).
 
 ```sh
 rtk rg -n 'publish_if_current' src tests
-rtk rg --hidden -n 'verify.sh' .github
+rtk rg --hidden -n 'make check' .github
 rtk rg -n 'int-set|no_std|cfg\(' Cargo.toml src
-rtk ./scripts/verify.sh check
+rtk make check
 ```
 
 Run ripgrep through `rtk rg`, and the other three CLIs directly. Read files

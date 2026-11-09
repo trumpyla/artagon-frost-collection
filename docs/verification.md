@@ -6,6 +6,15 @@ tools. A green unit-test run does not establish memory safety for every safe
 caller, and a model of the retry protocol does not establish the correctness of
 arc-swap's implementation.
 
+Use the root [Makefile](../Makefile) for current execution: `make check` is the
+normal gate, `make verify` runs the broader host matrix, and `make embedded`,
+`make miri`, `make bounded`, `make loom`, and `make kani` are explicit additional
+scopes. `make help` lists the smaller targets. The contributor guide describes
+[tool prerequisites and shell checks](../CONTRIBUTING.md).
+Older reports retain the exact historical `scripts/verify*.sh` commands; those
+dispatchers have been replaced by Make recipes. The current documentation-link
+check uses Bash and the metadata recipes use `jq`, with no Python dependency.
+
 The release report records which commands actually ran, their toolchain, and
 their results. The presence of a harness, workflow, or proof annotation is not a
 successful verification result. Do not describe an unavailable, unsupported,

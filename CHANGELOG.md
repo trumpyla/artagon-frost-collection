@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — Make-based development tasks
+
+- Replace verification dispatchers with GNU Make targets for builds, checks,
+  profiles, feature matrices, packaging, ownership diagnostics, and formal tools.
+- Replace the Python documentation-link checker with a Bash 3.2+ helper and
+  use `jq` for Cargo metadata. Add shell/Make failure-path tests.
+- Update CI and current contributor guidance; preserve historical evidence.
+
 ## Unreleased — general set-algebra design
 
 - Review generic frozen algebra and coverage gaps across mutable families,

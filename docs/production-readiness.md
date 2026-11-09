@@ -238,8 +238,8 @@ full drain or a tree policy for repeated endpoint/middle mutation.
 
 | Gate | Current state | Concrete next action |
 | --- | --- | --- |
-| Loom model execution | **Not run:** package absent from the offline registry/cache | Resolve the isolated pinned package, retain its lockfile, run `./scripts/verify-formal.sh loom`, then repeat with `--locked` |
-| Six Kani symbolic harnesses | **Not run:** cargo-kani unavailable | Install and validate a verifier compatible with the unchanged Rust requirement, then run `./scripts/verify-formal.sh kani` with unwind assertions enabled |
+| Loom model execution | **Not run:** package absent from the offline registry/cache | Resolve the isolated pinned package, retain its lockfile, and run `make loom` (which uses `--locked`) |
+| Six Kani symbolic harnesses | **Not run:** cargo-kani unavailable | Install and validate a verifier compatible with the unchanged Rust requirement, then run `make kani` with unwind assertions enabled |
 | Current dependency advisory audit | **Not run:** cargo-audit unavailable and no current database audit completed | Run the configured pinned audit job with a current RustSec database and review any findings |
 | Remote platform CI | Configured, not executed in this workspace | Run the actual repository's Linux/macOS/Windows and remaining CI jobs before claiming those platform results |
 | Release identity/support metadata | Canonical repository, reporting contact, and support policy not supplied | Owner supplies metadata and support decisions, chooses release version, and deliberately enables publishing when gates are accepted |

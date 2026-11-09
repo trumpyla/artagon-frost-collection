@@ -27,4 +27,4 @@ jobs:
         run: cargo install kani-verifier --locked --version "$FROST_KANI_VERSION"
       - run: cargo kani setup
       - name: Execute every harness with unwind assertions enabled
-        run: ./scripts/verify-formal.sh kani
+        run: make kani

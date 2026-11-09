@@ -73,11 +73,18 @@ An empty search or graph result alone never proves a symbol is unused.
 
 ## Verification and review
 
-Run `./scripts/verify.sh check` for changes before review. Use the smallest
-relevant target while developing; run `./scripts/verify.sh all` for release
+Run `make check` for changes before review. Use the smallest
+relevant target while developing; run `make verify` for release
 candidates. Feature or dependency changes also require the isolated feature
-matrix and embedded build. Ownership changes require `./scripts/verify.sh miri`.
+matrix and embedded build. Ownership changes require `make miri`.
 The exact commands and evidence limits are in `docs/verification.md`.
+
+Use the root Makefile for build and verification tasks; `make help` lists
+targets. Do not restore verification dispatcher scripts or add Python to the
+build tooling. Shell helpers target Bash 3.2+ on macOS/Linux and follow the
+Artagon shell-authoring guidance when available. Run `make shell-check` for
+shell or Makefile changes, including the minimum Bash version available on the
+host. Keep Cargo metadata parsing in recipes with `jq`, not Make expansion.
 
 Add regression tests for changed semantics or a demonstrated risk. Prefer
 standard-library differential tests, exhaustive small domains, comparison/drop

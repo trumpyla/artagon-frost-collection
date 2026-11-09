@@ -399,14 +399,14 @@ panics, progress, and old-version retention.
 The `examples/` programs contain assertions and tests that execute their actual
 scenarios. Cargo declares their feature requirements. This README is included
 in rustdoc, so its Rust blocks are doctested.
-The verification script requires Bash and Python 3; it uses only Python's
-standard library.
+The root Makefile requires GNU Make 3.81+ and Bash 3.2+. Targets that discover
+Cargo features, examples, or package paths also require `jq` 1.6+.
 
 ```sh
 rustup toolchain install 1.99.1 --profile minimal --component clippy,rustfmt
-cargo test --all-features --locked
-cargo test --examples --all-features --locked
-./scripts/verify.sh
+make
+make check
+make verify
 ```
 
 See [the documentation index](docs/README.md),

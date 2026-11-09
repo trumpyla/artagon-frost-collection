@@ -7,10 +7,10 @@ accepts the completed evidence. Keep this distinct from a compilation failure.
 ## Required evidence
 
 1. Choose a clean candidate commit and record Rust, nightly diagnostic version,
-   targets, lockfile hash, and platform. Run `./scripts/verify.sh all`.
-2. Run `./scripts/verify.sh embedded` and `./scripts/verify.sh miri`. Review
+   targets, lockfile hash, and platform. Run `make verify`.
+2. Run `make embedded` and `make miri`. Review
    warnings and filtered tests; never count a filtered case as a pass.
-3. Run `./scripts/verify-formal.sh bounded` and the Loom protocol model. For any
+3. Run `make bounded` and `make loom`. For any
    symbolic-proof claim, run the Kani harnesses with a compatible pinned tool
    and retain solver results and unwind assertions. An unavailable or
    incompatible tool is an unresolved gate for that claim, not a successful run.
@@ -18,7 +18,7 @@ accepts the completed evidence. Keep this distinct from a compilation failure.
    database revision, investigate advisories, and explicitly document any
    accepted exception. Do not substitute a stale offline database for a current
    audit without stating its age.
-5. Run `./scripts/verify.sh package`, inspect the packaged file list, and test
+5. Run `make package`, inspect the packaged file list, and test
    the extracted package. Confirm runtime dependencies exclude proof tooling.
 6. Compare performance with the agreed baseline on supported targets. Include
    balanced and skewed cases, tiny collections, allocations, long-lived snapshot

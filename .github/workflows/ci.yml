@@ -32,12 +32,29 @@ jobs:
           persist-credentials: false
       - name: Install pinned Rust
         run: rustup toolchain install 1.99.1 --profile minimal --component clippy,rustfmt
+      - name: Install Make and jq on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: choco install make jq --no-progress --yes
       - name: Quality, contracts, and examples
-        run: ./scripts/verify.sh check
+        run: make check
       - name: Core, alloc, and default profiles
-        run: ./scripts/verify.sh profiles
+        run: make profiles
       - name: Execute example programs
-        run: ./scripts/verify.sh examples
+        run: make examples
+
+  shell-tooling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install shell validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y bats jq shellcheck shfmt
+      - run: make shell-check
 
   feature-matrix:
     runs-on: ubuntu-latest
@@ -48,7 +65,7 @@ jobs:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal --component clippy,rustfmt
       - name: Check each optional integration independently
-        run: ./scripts/verify.sh features
+        run: make features
 
   embedded:
     runs-on: ubuntu-latest
@@ -58,7 +75,7 @@ jobs:
         with:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal --target thumbv7em-none-eabihf
-      - run: ./scripts/verify.sh embedded
+      - run: make embedded
 
   integer-profile:
     runs-on: ubuntu-latest
@@ -69,7 +86,7 @@ jobs:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal
       - name: Integer profile, optimized tests, and downstream codec extension
-        run: ./scripts/verify.sh integers
+        run: make integers
 
   ownership:
     runs-on: ubuntu-latest
@@ -81,7 +98,7 @@ jobs:
       - run: rustup toolchain install 1.99.1 --profile minimal
       - run: rustup toolchain install nightly-2026-11-08 --profile minimal --component miri,rust-src
       - name: Diagnostic codes and ownership under both aliasing models
-        run: ./scripts/verify.sh miri
+        run: make miri
 
   publication-model:
     runs-on: ubuntu-latest
@@ -92,9 +109,9 @@ jobs:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal
       - name: Exhaustive finite domains and production retry schedules
-        run: ./scripts/verify-formal.sh bounded
+        run: make bounded
       - name: Loom instrumented publication protocol
-        run: ./scripts/verify-formal.sh loom
+        run: make loom
 
   source-package:
     runs-on: ubuntu-latest
@@ -105,7 +122,7 @@ jobs:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal
       - name: Package and test extracted source
-        run: ./scripts/verify.sh package
+        run: make package
 
   dependency-audit:
     runs-on: ubuntu-latest
