@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": [
+    "python3",
+    "verification/integer-views/check_bounds.py"
+  ],
+  "working_directory": "project root",
+  "exit_code": 0,
+  "started_at_utc": "2026-11-09T03:56:22.173917+00:00",
+  "finished_at_utc": "2026-11-09T03:56:24.294447+00:00",
+  "python_version": "3.12.14",
+  "python_implementation": "CPython",
+  "script": "check_bounds.py",
+  "script_sha256": "17e0ff2dfc27254d78a2c806959e82947a0c7d1b26d36cc55c4b7985f8be995b",
+  "script_unchanged_during_run": true,
+  "output_log": "bounds-check.log",
+  "output_log_sha256": "61a5e4738686ac12209b0cf4a4eb31541e55476a983051d2debbe220adaaa8fd",
+  "coverage": {
+    "subset_pairs": 5461,
+    "subset_and_enclosing_interval_cases": 1003621,
+    "disjoint_support_pairs": 402,
+    "disjoint_interval_cases": 63404,
+    "wide_interval_cases": 1568
+  },
+  "finite_universe_sizes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "wide_universe_sizes": [
+    4294967296,
+    18446744073709551616
+  ],
+  "production_code_executed": false,
+  "symbolic_proof": false,
+  "part_of_main_release_gate": false,
+  "scope": "Independent finite subset/interval model, disjoint-support interval refinements, and selected wide arithmetic boundary cases."
+}

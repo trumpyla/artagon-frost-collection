@@ -1,0 +1,3 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `bench` profile [optimized] target(s) in 2.99s
+  Executable benches/performance_review.rs (target/release/deps/performance_review-f3eee5d53ff3ec09)

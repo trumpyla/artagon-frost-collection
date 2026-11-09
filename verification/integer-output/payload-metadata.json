@@ -1,0 +1,12 @@
+{
+  "toolchain": "1.99.1",
+  "source": "/workspace/scratch/1c521e88bfc1/promotion/frost",
+  "features": [
+    "std",
+    "int-set"
+  ],
+  "harness_sha256": "24c500fa6b4b92956c6436cec008199a4db74c7db83cf685a22b54e907cc952b",
+  "measurement": "Direct contiguous_payload_bytes(); actual Sorted/Dense buffer bytes, excluding wrapper and allocator overhead",
+  "roaring": "None means the API does not report discontiguous resident allocation; no resident-byte claim is made",
+  "timing": "None; complete logical outputs and expected representation/payload/limits are asserted"
+}

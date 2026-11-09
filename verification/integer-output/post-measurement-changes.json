@@ -1,0 +1,19 @@
+{
+  "scope": "Comparison with FINAL bench-metadata.json after-source digests. Measured metadata remains unmodified. All other measured inputs match.",
+  "changes": [
+    {
+      "path": "src/integer/mod.rs",
+      "measured_sha256": "c284e69f1d7793db75241a795a7c7f944e4f5d3076b3fa6ee6e63b845458c6b8",
+      "final_sha256": "4caf4ab7278ca74443bf06edd3a28698303948db22f88efe804ff7c0a311eb3e",
+      "reason": "Correct stale module rustdoc: int-set supports no_std + alloc; std enables supported runtime CPU dispatch.",
+      "only_module_rustdoc_changed": true,
+      "measured_copy": "measured-src/integer-mod.rs",
+      "diff": "--- measured/src/integer/mod.rs\n+++ final/src/integer/mod.rs\n@@ -1,8 +1,10 @@\n //! Frozen integer sets with domain types and private, distribution-aware storage.\n //!\n //! Enable `int-set` for the complete profile: sorted codes, bounded dense\n-//! windows, and the existing Rust Roaring backend. This feature requires `std`;\n-//! it does not alter the ordinary ordered family's freeze/thaw partner.\n+//! windows, and the existing Rust Roaring backend. This feature supports\n+//! `no_std + alloc`; enabling `std` also enables the dependency's supported\n+//! runtime CPU dispatch. It does not alter the ordinary ordered family's\n+//! freeze/thaw partner.\n //!\n //! ```\n //! use frost::integer::{FrozenIntSet, IntSetPolicy};"
+    }
+  ],
+  "new_unimplemented_designs": [
+    "IntSetExpr",
+    "PersistentIntSet"
+  ],
+  "runtime_logic_changed_after_measurement": false
+}

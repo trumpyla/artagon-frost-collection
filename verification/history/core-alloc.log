@@ -1,0 +1,28 @@
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.59s
+     Running tests/core_review.rs (target/debug/deps/core_review-687ba325403113dd)
+
+running 8 tests
+test explicit_native_extraction_preserves_owned_values ... ok
+test mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys ... ok
+test small_inline_collection_does_not_consult_heap_reservation_hints ... ok
+test ordered_duplicate_reduction_drops_each_value_once_on_panic ... ok
+test inline_collection_stops_at_the_first_none ... ok
+test ordered_freezing_does_not_require_new_key_bounds ... ok
+test inline_zero_sized_reservation_checks_length_overflow ... ok
+test thawing_zero_sized_values_keeps_the_standard_capacity_convention ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/families.rs (target/debug/deps/families-1b2f6b17a5986979)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/inline_safety.rs (target/debug/deps/inline_safety-0ea3ecb927eedf28)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

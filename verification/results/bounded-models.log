@@ -1,0 +1,41 @@
+    Blocking waiting for file lock on build directory
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.52s
+     Running tests/exhaustive_collections.rs (target/debug/deps/exhaustive_collections-2f8a9baccb2c815a)
+
+running 4 tests
+test inline_ownership_exhausts_three_operation_traces ... ok
+test ordered_algebra_exhausts_all_pairs_of_six_member_sets ... ok
+test inline_ownership_exhausts_five_operation_traces ... ok
+test dense::bitmap_algebra_exhausts_boundary_members_and_dirty_padding ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.60s
+
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running tests/publication_model.rs (target/debug/deps/publication_model-2c5d4c1a31dcb7cf)
+
+running 2 tests
+6 schedules; at most 5 atomic steps and 1 failed attempts
+test equal_contents_still_require_retry_after_identity_changes ... ok
+198 schedules; at most 9 atomic steps and 3 failed attempts
+test three_writers_exhaust_all_load_and_compare_exchange_orders ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+   Compiling frost-kani v0.0.0 (/workspace/scratch/1c521e88bfc1/production/frost/verification/kani)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running unittests src/lib.rs (verification/kani/target/debug/deps/frost_kani-e969348728f54119)
+
+running 1 test
+test tests::property_helpers_execute_against_production_code ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost_kani
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

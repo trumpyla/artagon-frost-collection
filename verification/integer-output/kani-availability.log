@@ -1,0 +1,13 @@
+UTC: 2026-11-09T02:59:27.824504+00:00
+cwd: /workspace/scratch/1c521e88bfc1/promotion/frost
+command: cargo kani --version
+CARGO_NET_OFFLINE=true
+
+error: no such command: `kani`
+
+help: a command with a similar name exists: `yank`
+
+help: view all installed commands with `cargo --list`
+help: find a package to install `kani` with `cargo search cargo-kani`
+
+EXIT_STATUS=101

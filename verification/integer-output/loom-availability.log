@@ -1,0 +1,13 @@
+UTC: 2026-11-09T02:59:27.849595+00:00
+Resolution-only probe using an unchanged copy of verification/loom/Cargo.toml and src.
+The original package has no Cargo.lock; this copy prevents creating or modifying repository files.
+command: cargo metadata --offline --manifest-path /workspace/scratch/1c521e88bfc1/frost-loom-resolution-w34eb2z7/Cargo.toml --format-version 1
+CARGO_NET_OFFLINE=true
+
+error: no matching package named `loom` found
+location searched: crates.io index
+required by package `frost-loom v0.0.0 (/workspace/scratch/1c521e88bfc1/frost-loom-resolution-w34eb2z7)`
+note: offline mode (via `--offline`) can sometimes cause surprising resolution failures
+help: if this error is too confusing you may wish to retry without `--offline`
+
+EXIT_STATUS=101

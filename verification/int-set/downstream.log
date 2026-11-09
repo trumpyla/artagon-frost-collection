@@ -1,0 +1,32 @@
+     Locking 28 packages to highest Rust 1.99.1 compatible versions
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling libm v0.2.16
+   Compiling byteorder v1.5.0
+   Compiling bytemuck v1.25.2
+   Compiling syn v3.0.9
+   Compiling fearless_simd v1.2.0
+   Compiling fearless_simd_macros v0.1.0
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+   Compiling frost-int-downstream v0.0.0 (/workspace/scratch/1c521e88bfc1/integer/frost/verification/int-key-downstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.11s
+     Running unittests src/lib.rs (verification/int-key-downstream/target/debug/deps/frost_int_downstream-7f0648ce69728dce)
+
+running 2 tests
+test tests::downstream_keys_and_private_width_mapping_are_usable_generically ... ok
+test tests::downstream_freeze_plan_and_forced_backends_agree ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost_int_downstream
+
+running 1 test
+test src/lib.rs - (line 6) - compile fail ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

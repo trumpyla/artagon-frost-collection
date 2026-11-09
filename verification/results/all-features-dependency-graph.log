@@ -1,0 +1,94 @@
+frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+├── arbitrary v1.5.0
+├── arc-swap v1.9.4
+│   └── rustversion v1.0.23 (proc-macro)
+├── arrayvec v0.7.8
+├── borsh v1.8.1
+├── crossbeam-skiplist v0.1.3
+│   ├── crossbeam-epoch v0.9.21
+│   │   └── crossbeam-utils v0.8.23
+│   └── crossbeam-utils v0.8.23
+├── dashmap v6.2.1
+│   ├── cfg-if v1.0.5
+│   ├── crossbeam-utils v0.8.23
+│   ├── hashbrown v0.14.5
+│   ├── lock_api v0.4.14
+│   │   └── scopeguard v1.2.0
+│   ├── once_cell v1.21.4
+│   └── parking_lot_core v0.9.12
+│       ├── cfg-if v1.0.5
+│       ├── libc v0.2.191
+│       └── smallvec v1.16.5
+├── fixedbitset v0.5.9
+├── fst v0.4.7
+├── hashbrown v0.17.1
+├── imbl v7.0.2
+│   ├── archery v1.2.3
+│   ├── equivalent v1.0.3
+│   ├── imbl-sized-chunks v0.2.0
+│   ├── rand_core v0.9.5
+│   ├── rand_xoshiro v0.7.0
+│   │   └── rand_core v0.9.5
+│   └── wide v0.7.33
+│       ├── bytemuck v1.25.2
+│       └── safe_arch v0.7.4
+│           └── bytemuck v1.25.2
+├── indexmap v2.14.2
+│   ├── equivalent v1.0.3
+│   └── hashbrown v0.17.1
+├── phf v0.14.0
+│   ├── phf_macros v0.14.0 (proc-macro)
+│   │   ├── phf_generator v0.14.0
+│   │   │   ├── fastrand v2.5.0
+│   │   │   └── phf_shared v0.14.0
+│   │   │       └── siphasher v1.0.4
+│   │   ├── phf_shared v0.14.0 (*)
+│   │   ├── proc-macro2 v1.0.107
+│   │   │   └── unicode-ident v1.0.27
+│   │   ├── quote v1.0.47
+│   │   │   └── proc-macro2 v1.0.107 (*)
+│   │   └── syn v2.0.119
+│   │       ├── proc-macro2 v1.0.107 (*)
+│   │       ├── quote v1.0.47 (*)
+│   │       └── unicode-ident v1.0.27
+│   └── phf_shared v0.14.0 (*)
+├── rayon v1.12.0
+│   ├── either v1.19.0
+│   └── rayon-core v1.13.0
+│       ├── crossbeam-deque v0.8.8
+│       │   ├── crossbeam-epoch v0.9.21 (*)
+│       │   └── crossbeam-utils v0.8.23
+│       └── crossbeam-utils v0.8.23
+├── roaring v0.12.0
+│   ├── bytemuck v1.25.2
+│   ├── byteorder v1.5.0
+│   ├── fearless_simd v1.2.0
+│   │   └── libm v0.2.16
+│   └── fearless_simd_macros v0.1.0 (proc-macro)
+│       ├── proc-macro2 v1.0.107 (*)
+│       ├── quote v1.0.47 (*)
+│       └── syn v3.0.9
+│           ├── proc-macro2 v1.0.107 (*)
+│           ├── quote v1.0.47 (*)
+│           └── unicode-ident v1.0.27
+├── scc v3.8.8
+│   ├── saa v5.6.2
+│   └── sdd v4.8.11
+│       └── saa v5.6.2
+├── schemars v1.2.3
+│   ├── dyn-clone v1.0.20
+│   ├── ref-cast v1.0.27
+│   │   └── ref-cast-impl v1.0.27 (proc-macro)
+│   │       ├── proc-macro2 v1.0.107 (*)
+│   │       ├── quote v1.0.47 (*)
+│   │       └── syn v3.0.9 (*)
+│   ├── serde v1.0.229
+│   │   └── serde_core v1.0.229
+│   └── serde_json v1.0.154
+│       ├── itoa v1.0.18
+│       ├── memchr v2.8.3
+│       ├── serde_core v1.0.229
+│       └── zmij v1.0.23
+├── serde v1.0.229 (*)
+├── slotmap v1.1.1
+└── smallvec v1.16.5

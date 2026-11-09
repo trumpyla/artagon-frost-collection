@@ -1,0 +1,76 @@
+
+$ cargo test --doc --all-features --locked --offline
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+   Doc-tests frost
+
+running 24 tests
+test src/../README.md - (line 36) ... ok
+test src/../README.md - (line 262) ... ok
+test src/../README.md - (line 171) ... ok
+test src/../README.md - (line 23) ... ok
+test src/../README.md - (line 141) ... ok
+test src/../README.md - (line 75) ... ok
+test src/adapters/serde.rs - adapters::serde (line 21) ... ok
+test src/concurrent.rs - concurrent::ConcurrentLookup (line 29) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+test src/adaptive/hash_map/frozen.rs - adaptive::hash_map::frozen::AdaptiveFrozenHashMap (line 65) ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotStore (line 421) ... ok
+test src/adaptive/hash_map/mutable.rs - adaptive::hash_map::mutable::AdaptiveHashMap (line 42) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 67) ... ok
+test src/adapters/rayon.rs - adapters::rayon (line 19) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/family/hash_map/mutable.rs - family::hash_map::mutable::MutableHashMap (line 26) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedSet<T>::union (line 526) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 23) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 35) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/read.rs - read (line 38) ... ok
+test src/read.rs - read (line 7) ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 21 tests
+test src/concurrent.rs - concurrent::ConcurrentLookup (line 40) - compile fail ... ok
+test src/../README.md - (line 59) - compile fail ... ok
+test src/../README.md - (line 65) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentSetLookup (line 119) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 348) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 340) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentUpdate (line 78) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 373) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentUpdate (line 88) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 360) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 366) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotStore (line 434) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 354) - compile fail ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 49) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 62) - compile fail ... ok
+test src/family/hash_map/frozen.rs - family::hash_map::frozen::FrozenHashMap (line 22) - compile fail ... ok
+test src/plan.rs - plan (line 17) - compile fail ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 48) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 56) - compile fail ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+all doctests ran in 0.98s; merged doctests compilation took 0.84s
+
+$ cargo doc --all-features --no-deps --locked --offline
+ Documenting frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.87s
+   Generated /workspace/scratch/1c521e88bfc1/review/frost/target/doc/frost/index.html
+
+$ cargo package --allow-dirty --locked --offline
+warning: manifest has no documentation, homepage or repository
+  |
+  = note: see https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info
+   Packaging frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Packaged 101 files, 819.2KiB (185.3KiB compressed)
+   Verifying frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost/target/package/frost-collections-0.4.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s

@@ -1,0 +1,39 @@
+Intentional regression reproduction against the unchanged attached 0.1.0-proto source.
+The test must fail before the correction: strict decoding silently collapses Eq-equivalent keys ordered distinctly by Ord. This is a defensive contract check for inconsistent user key traits.
+
+   Compiling frost-collections v0.1.0-proto (/tmp/frost-incoming-reproducer-wskrrhg2/frost)
+warning: missing documentation for the crate
+  --> tests/ecosystem_before.rs:1:1
+   |
+ 1 | / use frost::prelude::*;
+ 2 | | use std::cmp::Ordering;
+ 3 | | use std::hash::{Hash, Hasher};
+...  |
+22 | |     assert!(decoded.is_err(), "expected duplicate-key rejection, observed decoded length {:?}", decoded.map(|map| map.len()));
+23 | | }
+   | |_^
+   |
+   = note: requested on the command line with `-W missing-docs`
+
+warning: `frost-collections` (test "ecosystem_before") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running tests/ecosystem_before.rs (/workspace/scratch/90704931136d/re-review/frost/target/debug/deps/ecosystem_before-40c20b388dbca82d)
+
+running 1 test
+test strict_hash_decoding_rejects_equivalent_keys ... FAILED
+
+failures:
+
+---- strict_hash_decoding_rejects_equivalent_keys stdout ----
+
+thread 'strict_hash_decoding_rejects_equivalent_keys' (133) panicked at tests/ecosystem_before.rs:22:5:
+expected duplicate-key rejection, observed decoded length Ok(1)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    strict_hash_decoding_rejects_equivalent_keys
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test ecosystem_before`

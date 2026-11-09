@@ -1,0 +1,30 @@
+Verified 218 repository-local documentation links.
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/deps/rmetaUOhVAg"
+
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/examples/rmetazLIsCD"
+
+error: could not create incremental compilation session directory `/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/incremental/ordered_sets-0lrwfhwpabgt5/s-hnzizbzvjl-11q960a-working`: No space left on device (os error 28)
+
+error: could not create incremental compilation session directory `/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/incremental/bitmap_set_ops-0g81dv2slne86/s-hnzizbzzo0-0fg6px8-working`: No space left on device (os error 28)
+
+error: could not compile `frost-collections` (test "mutable_sets") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/deps/rmetaViS4vU"
+
+error: could not compile `frost-collections` (bench "ordered_sets") due to 1 previous error
+error: could not compile `frost-collections` (example "core" test) due to 1 previous error
+error: could not create incremental compilation session directory `/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/incremental/mutable-2yxr4sue5lc2v/s-hnzizc066v-1swp4rh-working`: No space left on device (os error 28)
+
+error: could not compile `frost-collections` (test "bitmap_set_ops") due to 1 previous error
+error: could not compile `frost-collections` (example "mutable") due to 1 previous error
+error: could not compile `frost-collections` (test "concurrent") due to 1 previous error
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/deps/rmetad0gBdf"
+
+error: could not create incremental compilation session directory `/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/incremental/set_operations-0veqqbphuuu4d/s-hnzizc0jxs-0ivd9mu-working`: No space left on device (os error 28)
+
+error: could not compile `frost-collections` (example "set_operations" test) due to 1 previous error
+error: could not compile `frost-collections` (test "root_regressions") due to 1 previous error
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/debug/deps/rmetaQBy3aO"
+
+error: could not compile `frost-collections` (test "adapters") due to 1 previous error

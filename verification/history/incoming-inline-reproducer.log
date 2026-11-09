@@ -1,0 +1,100 @@
+Before-fix regression on unmodified source from /workspace/scratch/90704931136d/upload/frost-collections(1).zip
+Isolated reproduction directory: /workspace/scratch/90704931136d/re-review/incoming-inline-8gf0chc_
+Only tests/reserve_zst.rs was added; src and manifest are taken verbatim from archive.
+Command: cargo +1.99.1 test --locked --no-default-features --features alloc --test reserve_zst
+Cargo network mode: offline
+Exit status: 101 (101 expected for reproduced test failure)
+
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling libc v0.2.191
+   Compiling rand_core v0.10.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling cfg-if v1.0.5
+   Compiling getrandom v0.4.3
+   Compiling serde_core v1.0.229
+   Compiling crossbeam-epoch v0.9.21
+   Compiling rustix v1.1.6
+   Compiling bitflags v2.13.2
+   Compiling zmij v1.0.23
+   Compiling crossbeam-deque v0.8.8
+   Compiling linux-raw-sys v0.12.1
+   Compiling autocfg v1.5.1
+   Compiling serde v1.0.229
+   Compiling rayon-core v1.13.0
+   Compiling cfg_aliases v0.2.2
+   Compiling once_cell v1.21.4
+   Compiling serde_json v1.0.154
+   Compiling ref-cast v1.0.27
+   Compiling num-traits v0.2.19
+   Compiling fastrand v2.5.0
+   Compiling borsh v1.8.1
+   Compiling syn v3.0.9
+   Compiling itoa v1.0.18
+   Compiling fnv v1.0.7
+   Compiling foldhash v0.2.0
+   Compiling equivalent v1.0.3
+   Compiling allocator-api2 v0.2.21
+   Compiling memchr v2.8.3
+   Compiling cpufeatures v0.3.1
+   Compiling bit-vec v0.10.1
+   Compiling quick-error v1.2.3
+   Compiling chacha20 v0.10.2
+   Compiling bit-set v0.11.1
+   Compiling wait-timeout v0.2.1
+   Compiling hashbrown v0.17.1
+   Compiling rand v0.10.3
+   Compiling rand_xorshift v0.5.0
+   Compiling unarray v0.1.4
+   Compiling dyn-clone v1.0.20
+   Compiling core_detect v1.0.0
+   Compiling either v1.19.0
+   Compiling regex-syntax v0.8.11
+   Compiling indexmap v2.14.2
+   Compiling rayon v1.12.0
+   Compiling tempfile v3.27.0
+   Compiling frost-collections v0.1.0-proto (/workspace/scratch/90704931136d/re-review/incoming-inline-8gf0chc_)
+   Compiling arbitrary v1.5.0
+   Compiling rusty-fork v0.3.1
+   Compiling serde_derive_internals v0.30.0
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling schemars_derive v1.2.3
+   Compiling proptest v1.12.0
+   Compiling schemars v1.2.3
+warning: missing documentation for the crate
+  --> tests/reserve_zst.rs:1:1
+   |
+ 1 | / #![cfg(feature = "alloc")]
+ 2 | | use frost::adaptive::InlineVec;
+ 3 | | use std::panic::{AssertUnwindSafe, catch_unwind};
+...  |
+10 | |     assert!(failure.is_err(), "len + additional must not overflow for ZSTs");
+11 | | }
+   | |_^
+   |
+   = note: requested on the command line with `-W missing-docs`
+
+warning: `frost-collections` (test "reserve_zst") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.74s
+     Running tests/reserve_zst.rs (target/debug/deps/reserve_zst-0bef3aadca873b5d)
+
+running 1 test
+test nonempty_zero_sized_reserve_rejects_length_overflow ... FAILED
+
+failures:
+
+---- nonempty_zero_sized_reserve_rejects_length_overflow stdout ----
+
+thread 'nonempty_zero_sized_reserve_rejects_length_overflow' (1026) panicked at tests/reserve_zst.rs:10:5:
+len + additional must not overflow for ZSTs
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    nonempty_zero_sized_reserve_rejects_length_overflow
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test reserve_zst`

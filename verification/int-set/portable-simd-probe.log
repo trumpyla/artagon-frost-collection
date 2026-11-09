@@ -1,0 +1,22 @@
+Command: /home/agent/.cargo/bin/rustup run 1.99.1 rustc --edition=2024 --emit=metadata /workspace/scratch/1c521e88bfc1/int-simd-probe.rs -o /workspace/scratch/1c521e88bfc1/int-simd-probe.rmeta
+error[E0658]: use of unstable library feature `portable_simd`
+ --> /workspace/scratch/1c521e88bfc1/int-simd-probe.rs:1:21
+  |
+1 | fn main() { let _ = std::simd::u32x4::from_array([1, 2, 3, 4]); }
+  |                     ^^^^^^^^^^^^^^^^
+  |
+  = note: see issue #86656 <https://github.com/rust-lang/rust/issues/86656> for more information
+
+error[E0658]: use of unstable library feature `portable_simd`
+ --> /workspace/scratch/1c521e88bfc1/int-simd-probe.rs:1:21
+  |
+1 | fn main() { let _ = std::simd::u32x4::from_array([1, 2, 3, 4]); }
+  |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: see issue #86656 <https://github.com/rust-lang/rust/issues/86656> for more information
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0658`.
+
+Exit status: 1

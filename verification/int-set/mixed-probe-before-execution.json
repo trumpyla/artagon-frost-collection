@@ -1,0 +1,38 @@
+{
+  "recorded_after_execution_utc": "2026-11-09T01:41:59.373011+00:00",
+  "run_commands": [
+    "taskset -c 0 target/release/deps/integer_sets-65df4a1a9fb4a10c > verification/int-set/bench-1.csv 2> verification/int-set/bench-1.log",
+    "taskset -c 0 target/release/deps/integer_sets-65df4a1a9fb4a10c > verification/int-set/bench-2.csv 2> verification/int-set/bench-2.log"
+  ],
+  "build_command": "cargo bench --locked --features int-set --bench integer_sets --no-run",
+  "runs_serial": true,
+  "both_exit_codes": [
+    0,
+    0
+  ],
+  "row_counts": [
+    195,
+    195
+  ],
+  "samples_per_case": 7,
+  "environment": "environment.json",
+  "hashes_sha256": {
+    "Cargo.toml": "330582d7042f48d9ca4c43a599564959f3a1f44288abce22f9d087b6b83d6cfe",
+    "Cargo.lock": "e15d5382abf7d70019a927d34305dfdfeaf1a9b6b824da63d7f0e74d146254eb",
+    "rust-toolchain.toml": "f715f440167e20fd8ea9afa0498c3d1ab80174cfcb8cbc895f106a34d907a1e1",
+    "benches/integer_sets.rs": "80180446a10008c46ee32d1b1328ca6d7635c8fc6fff6563c54ecbe76ba747d1",
+    "benches/support/mod.rs": "88cb20c6a8dc93b355688e1f75d939cac12c40fc1cce597e35a92ef48b6c1184",
+    "src/integer/key.rs": "85f0c45a54b2332aa365ccba68191827e198ddfc4ea99f71bdcba72cc3da2692",
+    "src/integer/policy.rs": "77ae47c3e4a9bf4f6c4db270e4a6499aac12c12dd0387d7fb106fc3b26f3eccb",
+    "src/integer/set.rs": "01154898e2c76ff483630e462d3279ffcbaef2b24cf35aa722cd8421538406e0",
+    "src/integer/storage.rs": "ece6c58d783a0cecd65b535934c9b20063b6fc0ed008207219f2cb0a6b410f59",
+    "src/family/ordered/set_ops.rs": "6dd751a2e5fcbc464da76361a4968fbdb206886183c1d1656d0bd2ee6900f570",
+    "target/release/deps/integer_sets-65df4a1a9fb4a10c": "8e128bac3403714c97252984c6733b55972dbf9f9b836d64e599b011c3103bb8"
+  },
+  "artifact_renames_after_execution": {
+    "bench-1.csv": "mixed-probe-before-1.csv",
+    "bench-1.log": "mixed-probe-before-1.log",
+    "bench-2.csv": "mixed-probe-before-2.csv",
+    "bench-2.log": "mixed-probe-before-2.log"
+  }
+}

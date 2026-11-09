@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "scripts/verify.sh",
+    "check"
+  ],
+  "started_utc": "2026-11-09T03:57:34.121058+00:00",
+  "finished_utc": "2026-11-09T03:57:43.235942+00:00",
+  "exit": 0,
+  "CARGO_NET_OFFLINE": "true",
+  "scope": "Final source after research documents, bounded-Miri-fixture update, and module rustdoc correction. No runtime changes after timed comparison."
+}

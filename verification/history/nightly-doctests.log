@@ -1,0 +1,150 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling libc v0.2.191
+   Compiling cfg-if v1.0.5
+   Compiling crossbeam-utils v0.8.23
+   Compiling crossbeam-epoch v0.9.21
+   Compiling rand_core v0.10.1
+   Compiling getrandom v0.4.3
+   Compiling serde_core v1.0.229
+   Compiling libm v0.2.16
+   Compiling once_cell v1.21.4
+   Compiling zmij v1.0.23
+   Compiling rustix v1.1.6
+   Compiling bytemuck v1.25.2
+   Compiling siphasher v1.0.4
+   Compiling crossbeam-deque v0.8.8
+   Compiling linux-raw-sys v0.12.1
+   Compiling phf_shared v0.14.0
+   Compiling serde_json v1.0.154
+   Compiling autocfg v1.5.1
+   Compiling fastrand v2.5.0
+   Compiling version_check v0.9.5
+   Compiling rayon-core v1.13.0
+   Compiling ref-cast v1.0.27
+   Compiling cfg_aliases v0.2.2
+   Compiling equivalent v1.0.3
+   Compiling parking_lot_core v0.9.12
+   Compiling serde v1.0.229
+   Compiling bitflags v2.13.2
+   Compiling rustversion v1.0.23
+   Compiling syn v3.0.9
+   Compiling slotmap v1.1.1
+   Compiling syn v2.0.119
+   Compiling borsh v1.8.1
+   Compiling num-traits v0.2.19
+   Compiling phf_generator v0.14.0
+   Compiling safe_arch v0.7.4
+   Compiling rand_core v0.9.5
+   Compiling itoa v1.0.18
+   Compiling foldhash v0.2.0
+   Compiling allocator-api2 v0.2.21
+   Compiling memchr v2.8.3
+   Compiling saa v5.6.2
+   Compiling scopeguard v1.2.0
+   Compiling smallvec v1.16.5
+   Compiling fst v0.4.7
+   Compiling sdd v4.8.11
+   Compiling hashbrown v0.17.1
+   Compiling fearless_simd v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling wide v0.7.33
+   Compiling wait-timeout v0.2.1
+   Compiling tempfile v3.27.0
+   Compiling rand_xoshiro v0.7.0
+   Compiling dyn-clone v1.0.20
+   Compiling archery v1.2.3
+   Compiling serde_derive_internals v0.30.0
+   Compiling either v1.19.0
+   Compiling cpufeatures v0.3.1
+   Compiling fnv v1.0.7
+   Compiling byteorder v1.5.0
+   Compiling bit-vec v0.10.1
+   Compiling quick-error v1.2.3
+   Compiling imbl-sized-chunks v0.2.0
+   Compiling hashbrown v0.14.5
+   Compiling rusty-fork v0.3.1
+   Compiling bit-set v0.11.1
+   Compiling arc-swap v1.9.4
+   Compiling chacha20 v0.10.2
+   Compiling rayon v1.12.0
+   Compiling imbl v7.0.2
+   Compiling dashmap v6.2.1
+   Compiling phf_macros v0.14.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling schemars_derive v1.2.3
+   Compiling fearless_simd_macros v0.1.0
+   Compiling indexmap v2.14.2
+   Compiling scc v3.8.8
+   Compiling phf v0.14.0
+   Compiling rand v0.10.3
+   Compiling crossbeam-skiplist v0.1.3
+   Compiling rand_xorshift v0.5.0
+   Compiling unarray v0.1.4
+   Compiling arbitrary v1.5.0
+   Compiling regex-syntax v0.8.11
+   Compiling arrayvec v0.7.8
+   Compiling core_detect v1.0.0
+   Compiling fixedbitset v0.5.9
+   Compiling schemars v1.2.3
+   Compiling proptest v1.12.0
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.08s
+   Doc-tests frost
+
+running 22 tests
+test src/../README.md - (line 136) ... ok
+test src/../README.md - (line 31) ... ok
+test src/../README.md - (line 219) ... ok
+test src/adaptive/hash_map/frozen.rs - adaptive::hash_map::frozen::AdaptiveFrozenHashMap (line 65) ... ok
+test src/../README.md - (line 18) ... ok
+test src/../README.md - (line 70) ... ok
+test src/adapters/serde.rs - adapters::serde (line 21) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 67) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotStore (line 421) ... ok
+test src/family/hash_map/mutable.rs - family::hash_map::mutable::MutableHashMap (line 26) ... ok
+test src/concurrent.rs - concurrent::ConcurrentLookup (line 29) ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 20) ... ok
+test src/adaptive/hash_map/mutable.rs - adaptive::hash_map::mutable::AdaptiveHashMap (line 42) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 23) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/read.rs - read (line 38) ... ok
+test src/read.rs - read (line 7) ... ok
+test src/adapters/rayon.rs - adapters::rayon (line 19) ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 21 tests
+test src/concurrent.rs - concurrent::ConcurrentUpdate (line 81) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotStore (line 434) - compile fail ... ok
+test src/../README.md - (line 54) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 348) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 340) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentLookup (line 43) - compile fail ... ok
+test src/../README.md - (line 60) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentUpdate (line 96) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 366) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 360) - compile fail ... ok
+test src/concurrent.rs - concurrent::ConcurrentSetLookup (line 122) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 354) - compile fail ... ok
+test src/concurrent.rs - concurrent::snapshot::SnapshotValue (line 376) - compile fail ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 33) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 52) - compile fail ... ok
+test src/family/hash_map/frozen.rs - family::hash_map::frozen::FrozenHashMap (line 22) - compile fail ... ok
+test src/plan.rs - plan (line 20) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 70) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 59) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+all doctests ran in 0.99s; merged doctests compilation took 0.85s

@@ -1,0 +1,11 @@
+Date (UTC): 2026-11-09T00:49:29.824754+00:00
+Command: cargo +1.99.1 audit --version
+error: no such command: `audit`
+
+help: a command with a similar name exists: `add`
+
+help: view all installed commands with `cargo --list`
+help: find a package to install `audit` with `cargo search cargo-audit`
+
+Exit status: 101
+No vulnerability database audit was executed.

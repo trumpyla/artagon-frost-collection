@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "scripts/verify.sh",
+    "package"
+  ],
+  "started_utc": "2026-11-09T03:58:30.043181+00:00",
+  "finished_utc": "2026-11-09T03:58:41.177043+00:00",
+  "exit": 0,
+  "CARGO_NET_OFFLINE": "true",
+  "scope": "Final Cargo package verification and all-feature extracted-package tests, including examples. Full ZIP additionally includes verification and supplied research excluded by Cargo."
+}

@@ -1,0 +1,196 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded rayon v1.12.0
+  Downloaded rayon-core v1.13.0
+  Downloaded arbitrary v1.5.0
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling libc v0.2.191
+   Compiling rand_core v0.10.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling serde_core v1.0.229
+   Compiling getrandom v0.4.3
+   Compiling crossbeam-epoch v0.9.21
+   Compiling cfg-if v1.0.5
+   Compiling rustix v1.1.6
+   Compiling crossbeam-deque v0.8.8
+   Compiling zmij v1.0.23
+   Compiling cfg_aliases v0.2.2
+   Compiling linux-raw-sys v0.12.1
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling autocfg v1.5.1
+   Compiling bitflags v2.13.2
+   Compiling rayon-core v1.13.0
+   Compiling ref-cast v1.0.27
+   Compiling borsh v1.8.1
+   Compiling num-traits v0.2.19
+   Compiling foldhash v0.2.0
+   Compiling equivalent v1.0.3
+   Compiling allocator-api2 v0.2.21
+   Compiling once_cell v1.21.4
+   Compiling syn v3.0.9
+   Compiling fastrand v2.5.0
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling hashbrown v0.17.1
+   Compiling either v1.19.0
+   Compiling cpufeatures v0.3.1
+   Compiling dyn-clone v1.0.20
+   Compiling quick-error v1.2.3
+   Compiling fnv v1.0.7
+   Compiling bit-vec v0.10.1
+   Compiling wait-timeout v0.2.1
+   Compiling bit-set v0.11.1
+   Compiling rand v0.10.3
+   Compiling indexmap v2.14.2
+   Compiling rayon v1.12.0
+   Compiling chacha20 v0.10.2
+   Compiling rand_xorshift v0.5.0
+   Compiling tempfile v3.27.0
+   Compiling regex-syntax v0.8.11
+   Compiling core_detect v1.0.0
+   Compiling unarray v0.1.4
+   Compiling arbitrary v1.5.0
+   Compiling rusty-fork v0.3.1
+   Compiling serde_derive_internals v0.30.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling schemars_derive v1.2.3
+   Compiling proptest v1.12.0
+   Compiling schemars v1.2.3
+   Compiling frost-collections v0.1.0-proto (/workspace/scratch/90704931136d/re-review/baseline/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.70s
+     Running unittests src/lib.rs (re-review/baseline/frost/target/debug/deps/frost-a326228bde38246d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adapters.rs (re-review/baseline/frost/target/debug/deps/adapters-9fa1a34116b6c9d7)
+
+running 11 tests
+test borsh_is_canonical_and_matches_std_bytes ... ok
+test schemas_match_the_std_type_with_the_same_encoding ... ok
+test serde_borrowed_keys_work_with_strict_helpers ... ok
+test serde_duplicate_policy_and_strict_helpers ... ok
+test serde_encoding_ignores_representation ... ok
+test serde_round_trips_every_family ... ok
+test arbitrary_reaches_grown_states ... ok
+test second_review_regressions ... ok
+test rayon_mutable_and_owned_iteration ... ok
+test arbitrary_reaches_every_representation_with_valid_invariants ... ok
+test rayon_collect_equals_sequential_collect ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/contracts.rs (re-review/baseline/frost/target/debug/deps/contracts-e5ab94b097125fbd)
+
+running 23 tests
+test deque_compact_is_contiguous_in_logical_order ... ok
+test adaptive_representations_are_logically_equal_and_keep_hasher ... ok
+test defaults_do_not_require_element_default ... ok
+test empty_ordered_range_never_panics_like_btree ... ok
+test erased_lookup_is_dyn_compatible ... ok
+test borrowed_string_queries ... ok
+test algorithms_accept_mutable_and_frozen_alike ... ok
+test every_std_family_has_a_retaining_freeze ... ok
+test family_builders_keep_first_key_last_value ... ok
+test hashbrown_adapter_uses_equivalent ... ok
+test heap_order_vs_sorted_order_is_explicit ... ok
+test mutation_traits_on_backends ... ok
+test ordered_families_dedup_by_ord_not_partial_eq ... ok
+test inline_vec_is_canonical_for_equality_and_hash ... ok
+test prelude_does_not_shadow_std_first_entry ... ok
+test indexmap_adapter_keeps_insertion_order_and_positions ... ok
+test recoverable_failure_returns_source_unchanged ... ok
+test layout_report ... ok
+test seal_is_o1_and_keeps_capacity_compact_drops_it ... ok
+test rejected_input_and_slice_equality ... ok
+test strict_builders_return_the_rejected_entry ... ok
+test sealing_preserves_already_stored_representatives ... ok
+test ordered_range_matches_btree_including_panics ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/differential.rs (re-review/baseline/frost/target/debug/deps/differential-86a1b158a8419a82)
+
+running 5 tests
+test inline_vec_roundtrip ... ok
+test frozen_vec_roundtrip ... ok
+test ordered_set_matches_btree ... ok
+test adaptive_hash_matches_hashmap ... ok
+test ordered_map_matches_btree ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/families.rs (re-review/baseline/frost/target/debug/deps/families-b4d8a1290c4f9a9e)
+
+running 13 tests
+test adaptive_hash_promotes_on_new_key_only ... ok
+test adaptive_ordered_promotes_and_keeps_order ... ok
+test adaptive_api_parity ... ok
+test entry_apis_hide_the_backend ... ok
+test append_keeps_self_keys_on_every_toolchain ... ok
+test freeze_thaw_pairs_are_fixed ... ok
+test inline_reserve_overflow_panics_like_vec ... ok
+test inline_retain_panic_keeps_unvisited_elements_like_vec ... ok
+test inline_vec_spills_once_and_demotes_only_explicitly ... ok
+test mutable_ordered_from_iter_keeps_first_key_unlike_btreemap ... ok
+test write_capabilities_work_across_every_mutable_map ... ok
+test inline_vec_matches_vec_under_random_ops ... ok
+test adaptive_maps_match_std_under_random_ops ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+     Running tests/inline_safety.rs (re-review/baseline/frost/target/debug/deps/inline_safety-a06a4f3644383859)
+
+running 7 tests
+test inline_vec_ops_drop_exactly_once ... ok
+test drop_counts_inline_and_heap ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test zero_sized_and_zero_capacity ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost
+
+running 15 tests
+test src/adaptive/hash_map/frozen.rs - adaptive::hash_map::frozen::AdaptiveFrozenHashMap (line 65) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 63) ... ok
+test src/adapters/serde.rs - adapters::serde (line 16) ... ok
+test src/adaptive/hash_map/mutable.rs - adaptive::hash_map::mutable::AdaptiveHashMap (line 36) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 22) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/lib.rs - (line 16) ... ok
+test src/read.rs - read (line 35) ... ok
+test src/read.rs - read (line 7) ... ok
+test src/family/hash_map/mutable.rs - family::hash_map::mutable::MutableHashMap (line 25) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/adapters/rayon.rs - adapters::rayon (line 12) ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 9 tests
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/lib.rs - (line 42) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 50) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+test src/family/hash_map/frozen.rs - family::hash_map::frozen::FrozenHashMap (line 22) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 57) - compile fail ... ok
+test src/plan.rs - plan (line 17) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 64) - compile fail ... ok
+test src/lib.rs - (line 36) - compile fail ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+all doctests ran in 0.71s; merged doctests compilation took 0.65s

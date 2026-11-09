@@ -1,0 +1,13 @@
+UTC: 2026-11-09T02:59:27.828396+00:00
+cwd: /workspace/scratch/1c521e88bfc1/promotion/frost
+command: cargo audit --version
+CARGO_NET_OFFLINE=true
+
+error: no such command: `audit`
+
+help: a command with a similar name exists: `add`
+
+help: view all installed commands with `cargo --list`
+help: find a package to install `audit` with `cargo search cargo-audit`
+
+EXIT_STATUS=101

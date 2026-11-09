@@ -1,0 +1,6 @@
+    Checking once_cell v1.21.4
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+    Checking tempfile v3.27.0
+    Checking rusty-fork v0.3.1
+    Checking proptest v1.12.0
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.62s

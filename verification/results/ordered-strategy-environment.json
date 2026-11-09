@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-09",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13), LLVM 23.1.1",
+  "target": "x86_64-unknown-linux-gnu",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "affinity": "CPU 0; all other project builds and tests held during timings",
+  "compile_flags": [
+    "--edition=2024",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin"
+  ],
+  "sampling": "Calibrated >=4ms batches, 7 raw samples, two execution orders per workload; same-storage scalar case one order.",
+  "semantics": "All case results checked against BTreeSet before timing. Inputs are warm and construction excluded.",
+  "limitations": [
+    "Shared virtualized host with visible timing outliers. No confidence interval or universal speedup claim.",
+    "Harness imports exact internal kernel sources; it is not an end-to-end Cargo release benchmark.",
+    "u32 keys only; cache misses and branch predictions were not measured."
+  ],
+  "sha256": {
+    "prior.rs": "3c390ed94a310396fef42c7bf1e5fbc7b0409b9f19a6237104d275d16a6764ef",
+    "incoming.rs": "9ded59f9d0f84ac91302adb240ca5fa598681141758cba442db80b1818a6df4e",
+    "main.rs": "643e24a9923d1e595ba6c25e6eac140e89437dd3264bc9531c5435aca64fc46b",
+    "support.rs": "234eb852ad5e0e415a90a583b6778b648b69d2044859782b86b27b7f0d338d94"
+  }
+}

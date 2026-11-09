@@ -1,0 +1,13 @@
+[package]
+name = "frost-loom"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Optional Loom exploration of Frost's snapshot retry protocol"
+
+[workspace]
+
+[dev-dependencies]
+loom = "=0.7.3"

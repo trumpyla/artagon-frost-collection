@@ -1,0 +1,94 @@
+{
+  "recorded_utc": "2026-11-09T01:35:34.631400+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "cpu": {
+    "vendor_id": "AuthenticAMD",
+    "cpu family": "25",
+    "model": "17",
+    "model name": "AMD EPYC 9V74 80-Core Processor",
+    "stepping": "1"
+  },
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "rustc": {
+    "argv": [
+      "/home/agent/.cargo/bin/rustup",
+      "run",
+      "1.99.1",
+      "rustc",
+      "-vV"
+    ],
+    "exit": 0,
+    "stdout": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "stderr": ""
+  },
+  "cargo": {
+    "argv": [
+      "/home/agent/.cargo/bin/rustup",
+      "run",
+      "1.99.1",
+      "cargo",
+      "-V"
+    ],
+    "exit": 0,
+    "stdout": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "stderr": ""
+  },
+  "nightly_rustc": {
+    "argv": [
+      "/home/agent/.cargo/bin/rustup",
+      "run",
+      "nightly",
+      "rustc",
+      "-vV"
+    ],
+    "exit": 0,
+    "stdout": "rustc 1.102.0-nightly (f5cedb83a 2026-11-07)\nbinary: rustc\ncommit-hash: f5cedb83a788ea9581097abc36a2a8503a7f541c\ncommit-date: 2026-11-07\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+    "stderr": ""
+  },
+  "miri": {
+    "argv": [
+      "/home/agent/.cargo/bin/rustup",
+      "run",
+      "nightly",
+      "cargo",
+      "miri",
+      "--version"
+    ],
+    "exit": 0,
+    "stdout": "miri 0.1.0 (f5cedb83a7 2026-11-07)",
+    "stderr": ""
+  },
+  "dependency_versions": {
+    "roaring": "0.12.0",
+    "fearless_simd": "1.2.0"
+  },
+  "flags": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "CARGO_BUILD_TARGET": null
+  },
+  "benchmark_protocol": {
+    "cpu_affinity": [
+      0
+    ],
+    "samples": 7,
+    "minimum_calibration_batch_ms": 4,
+    "profile": "Cargo bench (release defaults)",
+    "features": [
+      "std",
+      "int-set"
+    ],
+    "raw_sample_order": "chronological"
+  },
+  "lockfile_identical_to_prior_candidate": true
+}

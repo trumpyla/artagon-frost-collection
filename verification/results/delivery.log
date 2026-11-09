@@ -1,0 +1,34 @@
+Final delivery structure and evidence checks
+Working directory: repository root
+
+Command: /home/agent/.cargo/bin/rustup run 1.99.1 cargo fmt --all --check
+
+Exit status: 0
+Command: python3 scripts/check-doc-links.py
+Verified 181 repository-local documentation links.
+
+Exit status: 0
+Command: bash -n scripts/verify.sh scripts/verify-formal.sh
+
+Exit status: 0
+Parsed TOML: Cargo.toml
+Parsed TOML: rust-toolchain.toml
+Parsed TOML: verification/kani/Cargo.toml
+Parsed TOML: verification/loom/Cargo.toml
+Parsed YAML and immutable action pins: .github/workflows/ci.yml
+Parsed YAML and immutable action pins: .github/workflows/proofs.yml
+Source fingerprint unchanged: 97b9cea4edbfb233ff3b79bccb467089deb3c94060f2ccc56333b110bf256710 (110 files)
+Benchmark case count checked: ordered_sets = 105
+Benchmark case count checked: adaptive_maps = 8
+Benchmark case count checked: snapshots = 8
+Benchmark case count checked: set_operations = 12
+Benchmark case count checked: performance_review = 140
+Successful gate sentinel: current-check.log
+Successful gate sentinel: profiles.log
+Successful gate sentinel: isolated-features.log
+Successful gate sentinel: embedded.log
+Successful gate sentinel: examples.log
+Successful gate sentinel: source-package.log
+Successful gate sentinel: miri-current.log
+No current report placeholders; module split and executable scripts present.
+All final structural/evidence checks passed.

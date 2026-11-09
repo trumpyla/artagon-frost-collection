@@ -1,0 +1,9 @@
+warning: manifest has no documentation, homepage or repository
+  |
+  = note: see https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info
+   Packaging frost-collections v0.4.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Updating crates.io index
+    Packaged 95 files, 749.8KiB (167.7KiB compressed)
+   Verifying frost-collections v0.4.0 (/workspace/scratch/90704931136d/re-review/frost)
+   Compiling frost-collections v0.4.0 (/workspace/scratch/90704931136d/re-review/frost/target/package/frost-collections-0.4.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.17s

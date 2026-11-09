@@ -1,0 +1,22 @@
+    Checking frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+error[E0282]: type annotations needed
+   --> tests/concurrent.rs:222:9
+    |
+222 |         assert_eq!(empty.load().as_slice(), []);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot infer type
+
+error[E0283]: type annotations needed
+   --> tests/concurrent.rs:222:9
+    |
+222 |         assert_eq!(empty.load().as_slice(), []);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot infer type
+    |
+    = note: multiple `impl`s satisfying `usize: std::cmp::PartialEq<_>` found in the following crates: `core`, `serde_json`:
+            - impl std::cmp::PartialEq for usize;
+            - impl std::cmp::PartialEq<frost::backend::schemars::_private::serde_json::Value> for usize;
+    = note: required for `&[usize]` to implement `std::cmp::PartialEq<[_; 0]>`
+
+Some errors have detailed explanations: E0282, E0283.
+For more information about an error, try `rustc --explain E0282`.
+error: could not compile `frost-collections` (test "concurrent") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

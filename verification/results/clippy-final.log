@@ -1,0 +1,13 @@
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+error: adding items after statements is confusing, since items exist from the start of the scope
+  --> benches/set_operations.rs:37:5
+   |
+37 |     type Hasher = BuildHasherDefault<DefaultHasher>;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#items_after_statements
+   = note: `-D clippy::items-after-statements` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::items_after_statements)]`
+
+error: could not compile `frost-collections` (bench "set_operations") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

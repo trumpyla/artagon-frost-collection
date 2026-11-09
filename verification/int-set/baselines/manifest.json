@@ -1,0 +1,18 @@
+{
+  "executable": "target/release/deps/integer_sets-65df4a1a9fb4a10c",
+  "sha256": "8e128bac3403714c97252984c6733b55972dbf9f9b836d64e599b011c3103bb8",
+  "baseline_sources": [
+    "verification/int-set/baselines/storage-before-mixed-probe.rs",
+    "verification/int-set/baselines/integer-sets-before-mixed-probe.rs"
+  ],
+  "source_hashes_sha256": {
+    "storage-before-mixed-probe.rs": "ece6c58d783a0cecd65b535934c9b20063b6fc0ed008207219f2cb0a6b410f59",
+    "integer-sets-before-mixed-probe.rs": "80180446a10008c46ee32d1b1328ca6d7635c8fc6fff6563c54ecbe76ba747d1"
+  },
+  "baseline_source_sha256": {
+    "verification/int-set/baselines/storage-before-mixed-probe.rs": "ece6c58d783a0cecd65b535934c9b20063b6fc0ed008207219f2cb0a6b410f59",
+    "verification/int-set/baselines/integer-sets-before-mixed-probe.rs": "80180446a10008c46ee32d1b1328ca6d7635c8fc6fff6563c54ecbe76ba747d1"
+  },
+  "baseline_sources_match_recorded_execution": true,
+  "baseline_source_note": "The storage baseline was reconstructed by reversing the mixed-probe direction change and byte-verified against the recorded pre-change SHA256. Both complete baseline source files match the execution metadata."
+}

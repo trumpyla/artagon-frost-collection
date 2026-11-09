@@ -1,0 +1,25 @@
+{
+  "changed_existing_pins": {},
+  "removed": [
+    "borsh",
+    "bytemuck",
+    "byteorder",
+    "bytes",
+    "cfg_aliases",
+    "dyn-clone",
+    "equivalent",
+    "hashbrown",
+    "indexmap",
+    "itoa",
+    "memchr",
+    "ref-cast",
+    "ref-cast-impl",
+    "schemars",
+    "serde",
+    "serde_core",
+    "serde_derive",
+    "serde_json",
+    "zmij"
+  ],
+  "added": []
+}

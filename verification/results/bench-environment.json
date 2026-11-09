@@ -1,0 +1,163 @@
+{
+  "started_utc": "2026-11-09T00:51:34.064654+00:00",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\n",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+  "system": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "build_command": "/home/agent/.cargo/bin/rustup run 1.99.1 cargo bench --all-features --offline --locked --no-run --message-format=json --bench ordered_sets --bench adaptive_maps --bench snapshots --bench set_operations --bench performance_review",
+  "profile": "Default Cargo bench profile; no Cargo.toml profile overrides and no RUSTFLAGS or CARGO_PROFILE_BENCH_* overrides.",
+  "features": "all-features",
+  "environment": {
+    "CARGO_TARGET_DIR": null,
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "CARGO_PROFILE_BENCH_OPT_LEVEL": null,
+    "CARGO_PROFILE_BENCH_LTO": null,
+    "CARGO_PROFILE_BENCH_CODEGEN_UNITS": null
+  },
+  "runs": [
+    {
+      "name": "ordered_sets",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/scratch/1c521e88bfc1/production/frost/target/release/deps/ordered_sets-bba07a09e52069da"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 5.67,
+      "case_count": 105,
+      "csv": "bench-ordered_sets.csv",
+      "stderr": "bench-ordered_sets.log",
+      "cargo_profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": false,
+        "test": true
+      },
+      "executable_sha256": "aa23581d4c637df6c863bde0ce7b001f1a1f33ec60eee3cd8d3047dfae7d9368",
+      "csv_sha256": "034bfe6f4f9ab1110f37d2b517ae2a4301ddf763756a4c3be4b1aefdaa3284f8"
+    },
+    {
+      "name": "adaptive_maps",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/scratch/1c521e88bfc1/production/frost/target/release/deps/adaptive_maps-06dac100088c9911"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9,
+      "case_count": 8,
+      "csv": "bench-adaptive_maps.csv",
+      "stderr": "bench-adaptive_maps.log",
+      "cargo_profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": false,
+        "test": true
+      },
+      "executable_sha256": "6e03d0542a076ed51e37c07d7d667d7cee973f2243b53d64ba3fd3ad2277154c",
+      "csv_sha256": "9b3bf954195913409e7a449a6336ecb91d6654deedc6b656e0e73a163d0ca2cd"
+    },
+    {
+      "name": "snapshots",
+      "command": [
+        "taskset",
+        "-c",
+        "0-8",
+        "/workspace/scratch/1c521e88bfc1/production/frost/target/release/deps/snapshots-c48279b860803475"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.281,
+      "case_count": 8,
+      "csv": "bench-snapshots.csv",
+      "stderr": "bench-snapshots.log",
+      "cargo_profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": false,
+        "test": true
+      },
+      "executable_sha256": "9f5b6868d0748f007556d79801fe822a497bd7fe1c0687c097b1dbd1997384fd",
+      "csv_sha256": "4f7f7050cb716e1b05e51daf3f9c6f0399e72297b8ecf8938dc5fc02c1fdedb5"
+    },
+    {
+      "name": "set_operations",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/scratch/1c521e88bfc1/production/frost/target/release/deps/set_operations-c269a0a400f00021"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.615,
+      "case_count": 12,
+      "csv": "bench-set_operations.csv",
+      "stderr": "bench-set_operations.log",
+      "cargo_profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": false,
+        "test": true
+      },
+      "executable_sha256": "04c3b0d9e54bcc4438845df1298bc0493fe1247a18865de1046abedc8c3a080e",
+      "csv_sha256": "02cffe2b62deec455c316b4cbdd6fc6574ad53111e53ef989e2e39e35046647c"
+    },
+    {
+      "name": "performance_review",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/scratch/1c521e88bfc1/production/frost/target/release/deps/performance_review-f3eee5d53ff3ec09"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 7.289,
+      "case_count": 140,
+      "csv": "bench-performance_review.csv",
+      "stderr": "bench-performance_review.log",
+      "cargo_profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": false,
+        "test": true
+      },
+      "executable_sha256": "bcd806ade21507253702652441b6b039c738289586870af111cae5846deb2f36",
+      "csv_sha256": "d6ab72c72bf971d49b8d4d123ae9c908437dbb095eb0ce745796f5003847c01b"
+    }
+  ],
+  "limitations": [
+    "Shared virtualized host; no confidence intervals.",
+    "Warm inputs; u32/u64 workloads are not arbitrary application workloads.",
+    "Snapshots have no writer, include batch barrier/channel overhead, and report aggregate throughput reciprocal, not individual-read latency."
+  ],
+  "source_sha256": {
+    "Cargo.toml": "30c7d031bf1068405d6843fb336ebea054854abf86d99b2ec618184802d7e36b",
+    "Cargo.lock": "e15d5382abf7d70019a927d34305dfdfeaf1a9b6b824da63d7f0e74d146254eb",
+    "benches/support/mod.rs": "88cb20c6a8dc93b355688e1f75d939cac12c40fc1cce597e35a92ef48b6c1184",
+    "benches/ordered_sets.rs": "9dc0f33f49ee4bc3cb1b7abf3742d9b35460d95fdf3d1011d7fb05408aa071dc",
+    "benches/adaptive_maps.rs": "607343af5ded324ac00b533e3c5d46210e8b6b88673df668c1d7d1e637f694ef",
+    "benches/snapshots.rs": "390f5cc468446e33f31e385e6128b172eccaacc033875c2cda936c098f489c11",
+    "benches/set_operations.rs": "e806971719770c5988a4678a45b53b9cdd51db7d7f730026e66d784710f11b1c",
+    "benches/performance_review.rs": "e26b48386a78a35329684271fb79d3617c06c9d3eb8293cc42ca3ba1e296f3b4"
+  },
+  "completed_utc": "2026-11-09T00:51:48.851744+00:00",
+  "total_cases": 273
+}

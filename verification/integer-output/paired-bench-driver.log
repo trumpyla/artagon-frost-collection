@@ -1,0 +1,16 @@
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 rustc -Vv
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo update --offline --workspace
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo update --offline --workspace
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo build --offline --locked --release
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo build --offline --locked --release
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo build --offline --locked --release
+Running: /home/agent/.cargo/bin/rustup run 1.99.1 cargo build --offline --locked --release
+Running before-baseline-bench-1 serially
+Running after-baseline-bench-1 serially
+Running after-baseline-bench-2 serially
+Running before-baseline-bench-2 serially
+Running before-v3-bench-1 serially
+Running after-v3-bench-1 serially
+Running after-v3-bench-2 serially
+Running before-v3-bench-2 serially
+Completed bench; outputs: /workspace/scratch/1c521e88bfc1/promotion-bench

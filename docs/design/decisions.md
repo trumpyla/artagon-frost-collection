@@ -1,0 +1,217 @@
+# Selected design: Frost 0.3.0
+
+Decision date: 2026-11-08. Required compiler: **Rust 1.99.1**, edition **2024**.
+The project toolchain and required CI jobs are pinned to that compiler.
+
+## Decision
+
+Use the earlier reviewed design as the architectural baseline, then adopt the
+attached project's additions when they satisfy the same public contracts.
+The result is one implementation, not two competing APIs backed by duplicate
+collection implementations. Canonical family modules contain the types;
+`frost::mutable` and the prelude reexport those same types.
+
+The earlier revision supplied the complete five-family model, honest capabilities
+for advanced storage, guard-scoped live concurrency, frozen snapshot publication,
+and a reproducible verification workflow. The attachment supplied useful mutable
+adaptive profiles, richer crate-owned entry APIs, and five framework integrations.
+Neither source is accepted wholesale: reproduced defects and unsupported
+guarantees are corrected in the selected implementation.
+
+## Comparison and selection
+
+| Area | Earlier reviewed design | Attached project | Selected implementation |
+| --- | --- | --- | --- |
+| Ordinary families | Five mutable/frozen pairs, including sets | Three map/vector pairs; ordered set frozen only | Five fixed pairs; preserve richer family modules and expose convenience reexports |
+| Public mutation | Small entry handles and explicit operations | Occupied/vacant entry handles, more collection operations | Keep crate-owned entry handles and the richer operations; no mutable backend escape hatch |
+| Type identity | Private family representation | Same foundation, organized by subcategory | Keep private storage and stable family names; features never select a different representation |
+| Mutation capabilities | Map insert and set mutation traits | MapInsert and MapRemove share MapTypes | Adopt shared associated types; SetInsert shares ElementType |
+| Mutable adaptive storage | Frozen profiles and explicit policies | InlineVec, AdaptiveHashMap, AdaptiveOrderedMap | Keep separately named profiles with closed variants, explicit policies and documented promotion/demotion |
+| Exact frozen backends | Audited Frozen<B>, consuming extraction | Same model | Keep native construction and wire contracts distinct from family contracts |
+| Advanced collections | Fourteen optional backend features | hashbrown and indexmap | Retain all fourteen reviewed backend features |
+| Concurrent access | Scoped callbacks and SnapshotStore | Absent | Retain separate live access and frozen publication APIs |
+| Ecosystem integrations | Deferred for family wrappers | Serde, Rayon, Borsh, Arbitrary, Schemars | Adopt all five, extend to new sets, correct bounds and wire/ordering guarantees |
+| Iterator abstraction | Crate-owned family map iterators | Reusable wrappers and adaptive iterator enums | Keep reusable wrappers; dispatch at a bulk-operation boundary where implemented, not an unsupported universal promise |
+| Duplicate laws | Explicit first representative, last map value | Mostly explicit; some native bulk-constructor reliance | Explicit family insertion/dedup; strict constructors document rejected-input ownership |
+| Rust target | Stable tracking, minimum 1.99.1 | Minimum 1.88 | Exact toolchain 1.99.1, edition 2024, per the user's final instruction |
+| Verification | Isolated features, tested executable examples, Miri and embedded builds | Framework tests require all five features together; no executable examples directory | Independent feature tests, nine executable examples, compile-fail checks, pinned compiler, embedded and Miri gates |
+
+## 1. Families define semantics and mutation state
+
+The five ordinary pairs are MutableVec/FrozenVec, MutableHashMap/FrozenHashMap,
+MutableOrderedMap/FrozenOrderedMap, MutableHashSet/FrozenHashSet, and
+MutableOrderedSet/FrozenOrderedSet. Each mutable family's `freeze()` has one
+paired frozen target; explicitly named freeze plans may convert to a separate
+profile. Each ordinary frozen family's `thaw()` has one named mutable result.
+
+The wrapper is justified because it owns a contract. Map insertion preserves the
+first equivalent stored key and replaces its value. Set insertion preserves the
+first stored representative. Keys are never exposed mutably. Ordered families
+promise ascending traversal and borrowed ranges; hash families promise neither
+ordering nor an Ord bound. Native conversions are explicit interoperability
+contracts, not the generic application interface.
+
+The attached entry APIs are retained because their public occupied/vacant handles
+are crate-owned. Their native fields remain private. Public type aliases and
+reexports do not create another representation or another set of semantics.
+The additional methods still need maintenance and tests; that cost is accepted
+for a stable family API, not for an exact `Mutable<B>` facade.
+
+### Rejected: exact-backend mutable wrappers
+
+`Mutable<Vec<T>>` would still expose the backend in every signature containing it.
+Forwarding an entire native API would add maintenance without providing family
+independence. Native mutable backends instead implement the open capability traits
+directly. Applications choose a semantic family or explicitly use a native type.
+
+### Rejected: feature-selected storage for ordinary families
+
+Cargo unifies features across dependencies. If a feature changed the representation
+of MutableHashMap, another dependency could change its size, bounds, ordering, or
+hasher policy. Features therefore add integrations and separate types. This follows
+[Cargo's additive feature guidance](https://doc.rust-lang.org/cargo/reference/features.html).
+
+A backend marker parameter could be added for a separately specified requirement,
+but different marker instantiations are different Rust types. A default marker
+is convenient spelling, not backend-independent type identity. It is not added
+to the ordinary families in this revision.
+
+## 2. Adaptive storage remains explicit and local to one family
+
+The attachment's adaptive types are useful because their variants obey one
+semantic contract. They do not combine trees, insertion-order maps and hash maps
+under one universal enum.
+
+| Profile | Transition | Deliberate cost or limit |
+| --- | --- | --- |
+| InlineVec<T, N> | Inline buffer spills to Vec; shrink may move it inline again | Every value carries space for the largest variant; moving an inline value moves its elements |
+| AdaptiveHashMap | Linear entries promote to a hash table | Lookup uses one hash-family query relation; representation-changing mutation may need a cloneable hasher |
+| AdaptiveOrderedMap | Sorted vector promotes to a B-tree | Small insertion can shift entries; large insertion follows tree behavior |
+
+Removal does not automatically demote storage, which avoids repeated conversion
+near a threshold. Explicit `shrink_to_fit` allows demotion. Freeze selects the
+profile's documented frozen representation. Thresholds are user policies; the
+defaults are not benchmark-derived recommendations.
+
+The ordered adaptive profile freezes to the same compact FrozenOrderedMap as the
+ordinary ordered family. Its inverse is explicit: `AdaptiveOrderedMap::from_frozen`
+takes a policy. `FrozenOrderedMap::thaw` keeps its single ordinary-family result.
+The frozen adaptive hash map preserves its hasher but does not store its former
+growth threshold: `thaw` uses the default and `thaw_with` accepts a chosen policy.
+
+### Panic behavior is part of the contract
+
+Allocation and user Hash/Ord callbacks can fail during representation changes.
+The inline ownership code must not leak or double-drop an initialized element.
+Adaptive map promotion remains memory-safe and leaves a valid object after a user
+callback panics, but entries moved into an unfinished replacement may be dropped.
+It does not promise transactional rollback. Adding catch_unwind or cloning every
+key/value would not be an acceptable hidden cost for this API.
+
+## 3. Capabilities must fit the storage
+
+Retain the earlier distinction between borrowed entries, borrowed values, decoded
+values, borrowed elements and reconstructed members. Slot maps synthesize keys;
+compressed sets synthesize integers; FST streams lend from reusable buffers.
+None should be forced into a trait promising a stable stored-key reference.
+
+Likewise, member cardinality is not a bitset universe length. Roaring counts retain
+their natural u64 width. FixedBitSet traversal excludes padding beyond its logical
+universe even if native raw blocks contain nonzero padding. Retaining/extracting
+the native backend does not rewrite those raw blocks.
+
+The attachment's MapTypes supertrait for map mutation is adopted: it avoids
+independent Key/Value associated types that could disagree between read and write
+capabilities. SetInsert follows the same principle with ElementType.
+Insertion-ordered map/set removal remains explicit because shift and swap removal
+have different ordering and cost contracts.
+
+## 4. Live concurrency and snapshots have different guarantees
+
+Keep concurrent maps/sets native for insertion, removal, async operations and
+traversal. The shared capabilities execute synchronous callbacks while protection
+is held. Returned owned values must not borrow the released entry guard.
+Exclusive mutable-value access is present only where the native backend supports
+it; no adapter exposes mutable keys.
+
+Live concurrent collections are not eligible for Frozen<B>. SnapshotStore accepts
+only a sealed set of frozen payloads and atomically publishes whole owned versions.
+A reader retains an Arc or guard to one version. Unconditional publication does
+not make a multiwriter read/derive/publish sequence transactional. The subsequent
+integration adds identity-based conditional publication and retrying update;
+see [snapshot contracts](snapshots.md). Structural freezing does not remove
+element interior mutability.
+
+## 5. Adopt framework integrations with explicit semantics
+
+Serde, Borsh, Schemars, Rayon and Arbitrary are useful capabilities that family
+wrappers cannot inherit automatically. The attachment's integrations are retained,
+extended to the added set families, and tested separately.
+
+### Serialization and schemas
+
+Encode logical elements/entries, not private representation tags, capacity,
+hashers or growth thresholds. Decode through the family contract. Policies are
+reconstructed from defaults unless an explicit constructor is used afterward.
+
+Serde hash-map iteration order remains unspecified. Strict helpers reject duplicate
+or unsorted input according to the selected helper. Borsh family encoders sort
+map/set members; family decoders reject noncanonical ordering and duplicate
+collapse. Exact Frozen<B> retains native B's decoding rules. User-defined key
+serialization and trait-law consistency still matter: equal collections need not
+produce equal bytes when equality ignores serialized representative metadata.
+
+Strict validation is not an input-resource budget. Initial Serde reservation is
+cautious, but the adapters do not impose a maximum decoded collection size. Callers
+processing untrusted input must supply the appropriate format/request limits.
+
+### Parallel iteration and construction
+
+Keep crate-owned Rayon wrapper types and closed variant dispatch. Slice-backed
+families support direct indexed parallel traversal. Native hash/tree traversal
+may stage references or owned entries in a temporary vector, and family parallel
+construction stages input before applying duplicate rules. These costs are
+documented rather than hidden behind a claim of zero allocation.
+
+Duplicate winners follow encounter order only when the parallel source defines
+one. Unordered sources, including par_bridge-style work, do not acquire a stable
+first or last duplicate. Hasher Send/Sync bounds are required only when the
+hasher actually crosses a thread boundary, not merely because a method is parallel.
+
+## 6. Verification is an architectural requirement
+
+Pin Rust 1.99.1 and edition 2024. Exercise core-only, alloc-only, default, each
+individual optional feature, and all features together. Check real no_std builds
+on a bare-metal target so test dependency unification cannot conceal a std leak.
+Framework test modules must not depend on unrelated framework features.
+
+Every executable example has an explicit Cargo test target that runs its actual
+scenario. Rust documentation examples are doctested. Negative examples check
+frozen mutation, guard lifetime escape, inappropriate snapshot payloads and
+unsupported capabilities. Nightly verifies annotated error codes and runs Miri;
+the ordinary crate and required CI remain on Rust 1.99.1.
+
+`docs/reviews/historical-review.md` records findings and reproductions. `docs/reviews/historical-verification.md` records the
+actual checks and their limits. Performance claims require workload-specific
+benchmarks and are not inferred from passing tests or from a representation name.
+
+## Performance review of the 0.4.0 design
+
+The subsequent optimization pass retains the architecture selected here. Its
+measurements identify repeated comparison work, inappropriate scan strategies,
+and unnecessary buffer staging as actionable costs. It preserves the ordinary
+family types, exact wrappers, adaptive profiles, and additive features.
+
+Ordered algebra now uses a merge or monotonic seeking kernel according to an
+internal cardinality heuristic; that changes execution strategy without changing
+storage semantics. Dense algebra separates full words from padding boundaries.
+Adaptive entry access reuses its first search result. Existing contiguous buffers
+move into owning Rayon traversal directly.
+
+These choices have explicit limits: intersection/difference cursor state costs
+an additional eight bytes on the measured x86-64 build, small-case dispatch is
+not free, and some native or simpler probing algorithms remain faster for some
+inputs. Hash compaction policy, direct small frozen-map construction, owned
+ordered results, and alternative wide-value layouts remain proposals requiring
+workload measurements. See [PERFORMANCE_REVIEW.md](../reviews/performance-review.md) for the
+full findings, current evidence, and ranked follow-up decisions.

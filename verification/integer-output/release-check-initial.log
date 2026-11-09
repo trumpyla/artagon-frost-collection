@@ -1,0 +1,56 @@
+Started UTC: 2026-11-09T03:08:54.539620+00:00
+$ FROST_NO_STD=1 CARGO_NET_OFFLINE=true bash scripts/verify.sh all
+Verified 259 repository-local documentation links.
+   Compiling siphasher v1.0.4
+    Checking once_cell v1.21.4
+   Compiling fastrand v2.5.0
+   Compiling parking_lot_core v0.9.12
+   Compiling version_check v0.9.5
+    Checking safe_arch v0.7.4
+   Compiling syn v2.0.119
+    Checking saa v5.6.2
+    Checking smallvec v1.16.5
+   Compiling fst v0.4.7
+    Checking scopeguard v1.2.0
+    Checking rand_core v0.9.5
+   Compiling phf_shared v0.14.0
+    Checking rand_xoshiro v0.7.0
+   Compiling slotmap v1.1.1
+    Checking lock_api v0.4.14
+    Checking sdd v4.8.11
+   Compiling phf_generator v0.14.0
+    Checking tempfile v3.27.0
+    Checking hashbrown v0.14.5
+    Checking archery v1.2.3
+    Checking wide v0.7.33
+    Checking imbl-sized-chunks v0.2.0
+    Checking crossbeam-skiplist v0.1.3
+    Checking scc v3.8.8
+    Checking rusty-fork v0.3.1
+    Checking fixedbitset v0.5.9
+    Checking arrayvec v0.7.8
+    Checking proptest v1.12.0
+    Checking dashmap v6.2.1
+    Checking imbl v7.0.2
+   Compiling phf_macros v0.14.0
+    Checking phf v0.14.0
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/promotion/frost)
+error: used `assert!` to check that a value is empty
+   --> src/integer/storage/word.rs:311:9
+    |
+311 |         assert!(dense_bitmaps::<2>(base, &[0; 5]).is_empty());
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#assert_is_empty
+    = note: `-D clippy::assert-is-empty` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::assert_is_empty)]`
+help: use `assert_eq!` to show the value on failure
+    |
+311 -         assert!(dense_bitmaps::<2>(base, &[0; 5]).is_empty());
+311 +         assert_eq!(dense_bitmaps::<2>(base, &[0; 5]), [] as [(u32, roaring::RoaringBitmap); 0]);
+    |
+
+error: could not compile `frost-collections` (lib test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+
+exit=101

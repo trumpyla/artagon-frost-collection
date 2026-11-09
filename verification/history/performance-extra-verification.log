@@ -1,0 +1,263 @@
+
+$ cargo fmt --check
+
+$ cargo test --no-default-features --features alloc,fixedbitset-0_5 --locked --offline
+   Compiling syn v3.0.9
+   Compiling once_cell v1.21.4
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+   Compiling tempfile v3.27.0
+   Compiling rusty-fork v0.3.1
+   Compiling proptest v1.12.0
+   Compiling serde_derive_internals v0.30.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast v1.0.27
+   Compiling schemars_derive v1.2.3
+   Compiling serde v1.0.229
+   Compiling schemars v1.2.3
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.14s
+     Running unittests src/lib.rs (target/debug/deps/frost-31d8e5b3ea4ae0f9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adapters.rs (target/debug/deps/adapters-1cdf81926c413937)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adaptive_performance.rs (target/debug/deps/adaptive_performance-b03ad85bd9cd8ebe)
+
+running 3 tests
+test ordered_entry_panicking_before_promotion_keeps_the_map ... ok
+test ordered_entry_preserves_promotion_and_closure_panic_behavior ... ok
+test ordered_entry_searches_the_sorted_representation_once ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/advanced.rs (target/debug/deps/advanced-a3b6eb8e0f840f96)
+
+running 2 tests
+test dense_sets::padding_bits_are_not_members_and_retention_preserves_storage ... ok
+test dense_sets::universe_size_and_membership_cardinality_are_distinct ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/backend_review.rs (target/debug/deps/backend_review-113a7377f55ca05c)
+
+running 1 test
+test value_and_cardinality_read_traits_remain_dyn_compatible ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/bitmap_performance.rs (target/debug/deps/bitmap_performance-eb91e6f75fb316eb)
+
+running 3 tests
+test long_shared_word_spans_and_partial_tails ... ok
+test long_zero_extended_suffixes_in_both_directions ... ok
+test both_boundaries_mask_dirty_padding_without_losing_real_members ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/bitmap_set_ops.rs (target/debug/deps/bitmap_set_ops-daa51684e396b709)
+
+running 3 tests
+test fixed::padding_cannot_become_a_member_in_a_larger_universe ... ok
+test fixed::algebra_matches_logical_membership_with_arbitrary_blocks ... ok
+test fixed::empty_partial_and_unequal_universes_ignore_dirty_padding ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/concurrent.rs (target/debug/deps/concurrent-ca93c7d0565b471e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/contracts.rs (target/debug/deps/contracts-6b9fc8cf40bc1eb2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/core_review.rs (target/debug/deps/core_review-b8b3243849de714c)
+
+running 8 tests
+test ordered_freezing_does_not_require_new_key_bounds ... ok
+test explicit_native_extraction_preserves_owned_values ... ok
+test small_inline_collection_does_not_consult_heap_reservation_hints ... ok
+test inline_collection_stops_at_the_first_none ... ok
+test inline_zero_sized_reservation_checks_length_overflow ... ok
+test thawing_zero_sized_values_keeps_the_standard_capacity_convention ... ok
+test mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys ... ok
+test ordered_duplicate_reduction_drops_each_value_once_on_panic ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/differential.rs (target/debug/deps/differential-af8eff0cceb3d71a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-13bb4d33a4b016ba)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/families.rs (target/debug/deps/families-c9142b25d1cbe9ee)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/hash_set_ops.rs (target/debug/deps/hash_set_ops-a8a75301f77cd76c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/inline_safety.rs (target/debug/deps/inline_safety-f4efa657ded56a92)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mutable_sets.rs (target/debug/deps/mutable_sets-7f359336ce92daab)
+
+running 3 tests
+test ordered_set_keeps_first_rep_and_its_frozen_pair ... ok
+test defaults_and_iterator_clones_do_not_require_element_traits ... ok
+test ordered_set_iterators_match_sorted_reference ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ordered_performance.rs (target/debug/deps/ordered_performance-0c1758315337381b)
+
+running 4 tests
+test same_storage_queries_and_lazy_operations_need_no_key_comparisons ... ok
+test lazy_construction_does_no_comparisons_and_separated_ranges_stop_immediately ... ok
+test skewed_searches_match_standard_sets_and_survive_partial_consumption ... ok
+test skewed_operations_skip_large_gaps_and_preserve_left_representatives ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ordered_set_ops.rs (target/debug/deps/ordered_set_ops-5cf9533d8075de4c)
+
+running 6 tests
+test keys_may_borrow_nonstatic_data ... ok
+test overlap_keeps_the_left_representative_without_cloning_elements ... ok
+test hints_clones_counts_and_fused_exhaustion_track_partial_consumption ... ok
+test scalar_predicates_short_circuit_and_scan_linearly ... ok
+test empty_singleton_identical_disjoint_and_overlapping_sets ... ok
+test algebra_matches_btree_sets_for_random_inputs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/rayon_performance.rs (target/debug/deps/rayon_performance-dc2bb786741b40ea)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/root_regressions.rs (target/debug/deps/root_regressions-d7c409f2f48e05aa)
+
+running 1 test
+test already_valid_ordered_set_can_freeze_without_new_ordering_bounds ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sets_review.rs (target/debug/deps/sets_review-63719eae594451a0)
+
+running 1 test
+test ordered_set_strict_construction_and_mutation_match_native_semantics ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/specialized.rs (target/debug/deps/specialized-17821be0afed46fd)
+
+running 1 test
+test core_arrays_need_neither_alloc_nor_std ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/core.rs (target/debug/examples/core-e9596c99a054e4ef)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/mutable.rs (target/debug/examples/mutable-05700ae94a6fc7de)
+
+running 1 test
+test complete_example_is_tested ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/set_operations.rs (target/debug/examples/set_operations-f8e4b6eff9811b78)
+
+running 1 test
+test tests::executes_set_operations_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost
+
+running 16 tests
+test src/../README.md - (line 166) ... ok
+test src/../README.md - (line 136) ... ok
+test src/../README.md - (line 31) ... ok
+test src/../README.md - (line 18) ... ok
+test src/../README.md - (line 257) ... ok
+test src/../README.md - (line 70) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 67) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/read.rs - read (line 38) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 23) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedSet<T>::union (line 526) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/read.rs - read (line 7) ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test src/../README.md - (line 60) - compile fail ... ok
+test src/../README.md - (line 54) - compile fail ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/plan.rs - plan (line 17) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 49) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+all doctests ran in 0.40s; merged doctests compilation took 0.35s
+
+$ cargo check --lib --no-default-features --locked --offline
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+
+$ cargo build --lib --no-default-features --features alloc,fixedbitset-0_5 --target thumbv7em-none-eabihf --locked --offline
+   Compiling fixedbitset v0.5.9
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s
+
+$ cargo doc --all-features --no-deps --locked --offline
+   Compiling serde_core v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling borsh v1.8.1
+    Checking memchr v2.8.3
+    Checking hashbrown v0.17.1
+    Checking indexmap v2.14.2
+    Checking schemars v1.2.3
+ Documenting frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.87s
+   Generated /workspace/scratch/1c521e88bfc1/review/frost/target/doc/frost/index.html

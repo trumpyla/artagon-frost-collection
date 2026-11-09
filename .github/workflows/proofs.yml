@@ -1,0 +1,30 @@
+name: Bounded symbolic proofs
+# Kani needs its own compatible compiler. This is an explicit release-review
+# gate until a verifier version has been validated with the pinned crate MSRV.
+on:
+  workflow_dispatch:
+    inputs:
+      kani-version:
+        description: Exact compatible kani-verifier version to validate
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  kani:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.99.1 --profile minimal
+      - name: Install selected verifier
+        env:
+          FROST_KANI_VERSION: ${{ inputs.kani-version }}
+        run: cargo install kani-verifier --locked --version "$FROST_KANI_VERSION"
+      - run: cargo kani setup
+      - name: Execute every harness with unwind assertions enabled
+        run: ./scripts/verify-formal.sh kani

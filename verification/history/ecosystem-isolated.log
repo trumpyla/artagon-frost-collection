@@ -1,0 +1,164 @@
+
+Framework: serde-1
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+warning: unused import: `IndexMut`
+ --> src/family/ordered/mutable.rs:4:24
+  |
+4 | use core::ops::{Index, IndexMut, RangeBounds};
+  |                        ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `frost-collections` (lib) generated 1 warning (run `cargo fix --lib -p frost-collections` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running tests/adapters.rs (target/debug/deps/adapters-4b06d0f17f19e397)
+
+running 3 tests
+test serde_tests::serde_borrowed_keys_work_with_strict_helpers ... ok
+test serde_tests::serde_round_trips_every_family ... ok
+test serde_tests::sorted_unique_decoding_covers_all_ordered_maps ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-d0141e66f3419e5c)
+
+running 2 tests
+test serde_contracts::map_allocation_ignores_excessive_deserializer_size_hint ... ok
+test serde_contracts::ordered_sets_roundtrip_and_strict_decoding_rejects_duplicates ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html
+
+Framework: borsh-1
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+warning: unused import: `IndexMut`
+ --> src/family/ordered/mutable.rs:4:24
+  |
+4 | use core::ops::{Index, IndexMut, RangeBounds};
+  |                        ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `frost-collections` (lib) generated 1 warning (run `cargo fix --lib -p frost-collections` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests/adapters.rs (target/debug/deps/adapters-2a49d50e9a4e55d7)
+
+running 1 test
+test borsh_tests::ordered_borsh_roundtrip_is_strict_without_std_feature ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-a8a6716703059775)
+
+running 2 tests
+test borsh_contracts::ordered_set_encodings_are_canonical_and_strict ... ok
+test borsh_contracts::exact_wrapper_preserves_native_decoding_rules ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling borsh v1.8.1
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html
+
+Framework: schemars-1
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+warning: unused import: `IndexMut`
+ --> src/family/ordered/mutable.rs:4:24
+  |
+4 | use core::ops::{Index, IndexMut, RangeBounds};
+  |                        ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `frost-collections` (lib) generated 1 warning (run `cargo fix --lib -p frost-collections` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests/adapters.rs (target/debug/deps/adapters-841ce24aad1f916a)
+
+running 1 test
+test schemars_tests::schemas_match_the_std_type_with_the_same_encoding ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-25623fc534d0a983)
+
+running 1 test
+test set_schemas_follow_the_same_logical_encoding ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Checking schemars v1.2.3
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.68s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html
+
+Framework: arbitrary-1
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+warning: unused import: `IndexMut`
+ --> src/family/ordered/mutable.rs:4:24
+  |
+4 | use core::ops::{Index, IndexMut, RangeBounds};
+  |                        ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `frost-collections` (lib) generated 1 warning (run `cargo fix --lib -p frost-collections` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+     Running tests/adapters.rs (target/debug/deps/adapters-5d4fe397c3d4ade4)
+
+running 2 tests
+test arbitrary_tests::arbitrary_reaches_grown_states ... ok
+test arbitrary_tests::arbitrary_reaches_every_representation_with_valid_invariants ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-17d8a559e417f7b8)
+
+running 1 test
+test set_generation_matches_the_family_builder ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.51s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html
+
+Framework: rayon-1
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+warning: unused import: `IndexMut`
+ --> src/family/ordered/mutable.rs:4:24
+  |
+4 | use core::ops::{Index, IndexMut, RangeBounds};
+  |                        ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `frost-collections` (lib) generated 1 warning (run `cargo fix --lib -p frost-collections` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.95s
+     Running tests/adapters.rs (target/debug/deps/adapters-3f71f1d739687e77)
+
+running 3 tests
+test rayon_tests::rayon_mutates_adaptive_ordered_values ... ok
+test rayon_tests::rayon_mutable_and_owned_iteration ... ok
+test rayon_tests::rayon_collect_equals_sequential_collect ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/ecosystem_review.rs (target/debug/deps/ecosystem_review-fdc75cac1e3ec999)
+
+running 3 tests
+test rayon_contracts::pure_traversal_needs_neither_hashing_nor_a_hasher ... ok
+test rayon_contracts::collection_and_extension_do_not_send_the_hasher_to_workers ... ok
+test rayon_contracts::ordered_parallel_input_retains_first_representative_and_last_value ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html
+ Documenting frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+   Generated /workspace/scratch/90704931136d/re-review/frost/target/doc/frost/index.html

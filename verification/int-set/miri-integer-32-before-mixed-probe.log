@@ -1,0 +1,77 @@
+Preparing a sysroot for Miri (target: i686-unknown-linux-gnu)... done
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling libc v0.2.191
+   Compiling rand_core v0.10.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling getrandom v0.4.3
+   Compiling cfg-if v1.0.5
+   Compiling libm v0.2.16
+   Compiling serde_core v1.0.229
+   Compiling crossbeam-epoch v0.9.21
+   Compiling rustix v1.1.6
+   Compiling autocfg v1.5.1
+   Compiling bitflags v2.13.2
+   Compiling zmij v1.0.23
+   Compiling linux-raw-sys v0.12.1
+   Compiling crossbeam-deque v0.8.8
+   Compiling fastrand v2.5.0
+   Compiling ref-cast v1.0.27
+   Compiling cfg_aliases v0.2.2
+   Compiling rayon-core v1.13.0
+   Compiling once_cell v1.21.4
+   Compiling num-traits v0.2.19
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling syn v3.0.9
+   Compiling borsh v1.8.1
+   Compiling fnv v1.0.7
+   Compiling bit-vec v0.10.1
+   Compiling equivalent v1.0.3
+   Compiling cpufeatures v0.3.1
+   Compiling byteorder v1.5.0
+   Compiling quick-error v1.2.3
+   Compiling memchr v2.8.3
+   Compiling foldhash v0.2.0
+   Compiling allocator-api2 v0.2.21
+   Compiling itoa v1.0.18
+   Compiling bytemuck v1.25.2
+   Compiling bit-set v0.11.1
+   Compiling chacha20 v0.10.2
+   Compiling errno v0.3.14
+   Compiling wait-timeout v0.2.1
+   Compiling fearless_simd v1.2.0
+   Compiling rand v0.10.3
+   Compiling hashbrown v0.17.1
+   Compiling rand_xorshift v0.5.0
+   Compiling regex-syntax v0.8.11
+   Compiling unarray v0.1.4
+   Compiling core_detect v1.0.0
+   Compiling either v1.19.0
+   Compiling dyn-clone v1.0.20
+   Compiling indexmap v2.14.2
+   Compiling arbitrary v1.5.0
+   Compiling rayon v1.12.0
+   Compiling tempfile v3.27.0
+   Compiling rusty-fork v0.3.1
+   Compiling serde_derive_internals v0.30.0
+   Compiling proptest v1.12.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling fearless_simd_macros v0.1.0
+   Compiling serde_derive v1.0.229
+   Compiling schemars_derive v1.2.3
+   Compiling schemars v1.2.3
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.79s
+     Running tests/integer_sets.rs (target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/069788f949ed8ecc/out/integer_sets-069788f949ed8ecc)
+
+running 4 tests
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 14.68s
+

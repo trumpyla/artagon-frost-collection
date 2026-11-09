@@ -1,0 +1,12 @@
+{
+  "started_utc": "2026-11-09T03:14:55.717850+00:00",
+  "finished_utc": "2026-11-09T03:16:54.500941+00:00",
+  "command": [
+    "bash",
+    "scripts/verify.sh",
+    "all"
+  ],
+  "FROST_NO_STD": "1",
+  "CARGO_NET_OFFLINE": "true",
+  "exit": 0
+}

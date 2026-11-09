@@ -1,0 +1,16 @@
+mixed.input: repr=Dense; cardinality=1000000; minimum_dense_payload_bytes=250000
+mixed.union: repr=Dense; cardinality=1000001; minimum_dense_payload_bytes=250000
+mixed.difference: repr=Dense; cardinality=999999; minimum_dense_payload_bytes=250000
+mixed.after_32_updates: repr=Dense; cardinality=1000032; minimum_dense_payload_bytes=250000
+eight_byte_budget.union: repr=Sorted; cardinality=2; sorted_payload_bytes=16
+distant.input_left: repr=Dense; cardinality=4194304; minimum_dense_payload_bytes=524288
+distant.input_right: repr=Dense; cardinality=4194304; minimum_dense_payload_bytes=524288
+distant.union: repr=Roaring; cardinality=8388608; resident_bytes=unmeasured
+distant.native_union: serialized_bytes=1824; resident_bytes=unmeasured
+balanced_sorted_roaring.union: repr=Roaring; cardinality=1500000; resident_bytes=unmeasured
+balanced_sorted_roaring.difference: repr=Dense; cardinality=500000; minimum_dense_payload_bytes=250000
+sparse_prefixes_2048.dense: skipped because the full window exceeds the dense budget
+small_run32.auto: repr=Dense; cardinality=1000
+small_run32.sorted: repr=Sorted; cardinality=1000
+small_run32.dense: repr=Dense; cardinality=1000
+small_run32.roaring: repr=Roaring; cardinality=1000

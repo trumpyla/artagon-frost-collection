@@ -1,0 +1,57 @@
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running tests/core_review.rs (target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/bd583b80c4c86632/out/core_review-bd583b80c4c86632)
+
+running 14 tests
+test explicit_native_extraction_preserves_owned_values ... ok
+test hashed::every_hash_builder_preserves_first_key_and_last_value ... ok
+test hashed::explicit_hash_builders_need_neither_clone_nor_default_hashers ... ok
+test hashed::frozen_adaptive_thaw_and_extraction_do_not_clone_the_hasher ... ok
+test hashed::hash_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test hashed::ordered_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test hashed::strict_hash_builders_return_the_rejected_input_entry ... ok
+test inline_collection_stops_at_the_first_none ... ok
+test inline_zero_sized_reservation_checks_length_overflow ... ok
+test mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys ... ok
+test ordered_duplicate_reduction_drops_each_value_once_on_panic ... ok
+test ordered_freezing_does_not_require_new_key_bounds ... ok
+test small_inline_collection_does_not_consult_heap_reservation_hints ... ok
+test thawing_zero_sized_values_keeps_the_standard_capacity_convention ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.94s
+
+     Running tests/families.rs (target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/7ec58ed5db347873/out/families-7ec58ed5db347873)
+
+running 11 tests
+test adaptive_api_parity ... ok
+test adaptive_hash_promotes_on_new_key_only ... ok
+test adaptive_ordered_promotes_and_keeps_order ... ok
+test append_keeps_self_keys_on_every_toolchain ... ok
+test entry_apis_hide_the_backend ... ok
+test freeze_thaw_pairs_are_fixed ... ok
+test inline_reserve_overflow_panics_like_vec ... ok
+test inline_retain_panic_keeps_unvisited_elements_like_vec ... ok
+test inline_vec_spills_once_and_demotes_only_explicitly ... ok
+test mutable_ordered_from_iter_keeps_first_key_representative ... ok
+test write_capabilities_work_across_every_mutable_map ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 5.48s
+
+     Running tests/inline_safety.rs (target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/9c6b74a59c73e09c/out/inline_safety-9c6b74a59c73e09c)
+
+running 12 tests
+test drop_counts_inline_and_heap ... ok
+test inline_vec_ops_drop_exactly_once ... ok
+test over_aligned_elements_survive_mutation_spill_and_thaw ... ok
+test owning_iterator_drop_panic_still_drops_its_remaining_range ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test panicking_hint_after_spilling_drops_every_produced_value ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test rejected_element_drop_panic_restores_the_unvisited_suffix ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test zero_sized_and_zero_capacity ... ok
+test zero_sized_destructors_run_once_through_inline_ownership ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.77s
+

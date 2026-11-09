@@ -1,0 +1,21 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.55s
+     Running tests/integer_sets.rs (target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/069788f949ed8ecc/out/integer_sets-069788f949ed8ecc)
+
+running 4 tests
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 14.58s
+
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/workspace/scratch/1c521e88bfc1/integer/frost/target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/069788f949ed8ecc/out/rmeta4ZP1Lv"
+
+error: aborting due to 1 previous error
+
+error: test failed, to rerun pass `--test integer_sets`
+
+Caused by:
+  process didn't exit successfully: `/home/agent/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo-miri runner /workspace/scratch/1c521e88bfc1/integer/frost/target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/069788f949ed8ecc/out/integer_sets-069788f949ed8ecc dense_ --test-threads=1` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.

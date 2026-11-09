@@ -1,0 +1,36 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running `target/debug/examples/adaptive`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running `target/debug/examples/advanced`
+Persistent snapshot: Frozen({"queued": 3}); sparse members: 2; dense universe: 256; current object: Some("ready")
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running `target/debug/examples/concurrent`
+Requests handled: 4000
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/examples/core`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.55s
+     Running `target/debug/examples/frameworks`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/examples/mutable`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/examples/sequences`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target/debug/examples/set_operations`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running `target/debug/examples/snapshots`
+Original colors: ["red", "green"]
+Current colors: ["blue", "gold"]
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running `target/debug/examples/static_maps`
+
+Verification scope examples passed.

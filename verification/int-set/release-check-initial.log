@@ -1,0 +1,29 @@
+Verified 204 repository-local documentation links.
+    Checking frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+error[E0425]: cannot find value `label` in this scope
+   --> benches/integer_sets.rs:119:27
+    |
+119 |         &format!("{name}.{label}.difference_materialize"),
+    |                           ^^^^^ not found in this scope
+
+error[E0425]: cannot find value `label` in this scope
+   --> benches/integer_sets.rs:124:27
+    |
+124 |         &format!("{name}.{label}.symmetric_difference_materialize"),
+    |                           ^^^^^ not found in this scope
+
+error[E0599]: no method named `difference` found for reference `&[K]` in the current scope
+   --> benches/integer_sets.rs:121:38
+    |
+121 |         || black_box(black_box(left).difference(black_box(right))).cardinality(),
+    |                                      ^^^^^^^^^^ method not found in `&[K]`
+
+error[E0599]: no method named `symmetric_difference` found for reference `&[K]` in the current scope
+   --> benches/integer_sets.rs:126:38
+    |
+126 |         || black_box(black_box(left).symmetric_difference(black_box(right))).cardinality(),
+    |                                      ^^^^^^^^^^^^^^^^^^^^ method not found in `&[K]`
+
+Some errors have detailed explanations: E0425, E0599.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `frost-collections` (bench "integer_sets") due to 4 previous errors

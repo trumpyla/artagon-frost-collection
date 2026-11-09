@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running tests/inline_safety.rs (target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/1e150c530c4b987f/out/inline_safety-1e150c530c4b987f)
+
+running 12 tests
+test drop_counts_inline_and_heap ... ok
+test inline_vec_ops_drop_exactly_once ... ok
+test over_aligned_elements_survive_mutation_spill_and_thaw ... ok
+test owning_iterator_drop_panic_still_drops_its_remaining_range ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test panicking_hint_after_spilling_drops_every_produced_value ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test rejected_element_drop_panic_restores_the_unvisited_suffix ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test zero_sized_and_zero_capacity ... ok
+test zero_sized_destructors_run_once_through_inline_ownership ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.84s
+

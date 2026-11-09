@@ -1,0 +1,24 @@
+{
+  "timestamp_utc": "2026-11-09T00:44:29.034573+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\n",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)\n",
+  "nightly": "rustc 1.102.0-nightly (f5cedb83a 2026-11-07)\nbinary: rustc\ncommit-hash: f5cedb83a788ea9581097abc36a2a8503a7f541c\ncommit-date: 2026-11-07\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5\n",
+  "cargo_lock_sha256": "e15d5382abf7d70019a927d34305dfdfeaf1a9b6b824da63d7f0e74d146254eb",
+  "rustflags": "",
+  "cargo_profile": "unmodified Cargo default dev/test/bench profiles",
+  "tooling_limits": "Loom not cached; cargo kani and cargo audit not installed; current external database audit not run.",
+  "cpu": "AMD EPYC 9V74 80-Core Processor"
+}

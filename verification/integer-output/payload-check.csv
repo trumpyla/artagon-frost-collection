@@ -1,0 +1,8 @@
+case,representation,cardinality,contiguous_payload_bytes_option,dense_budget_bytes,roaring_partition_limit
+million_even_input,Dense,1000000,Some(250000),8388608,4096
+million_even_union_singleton,Dense,1000001,Some(250000),8388608,4096
+million_even_after_32_updates,Dense,1000032,Some(250000),8388608,4096
+eight_byte_dense_budget_union,Sorted,2,Some(16),8,4096
+distant_dense_left,Dense,4194304,Some(524288),8388608,4096
+distant_dense_right,Dense,4194304,Some(524288),8388608,4096
+distant_dense_union,Roaring,8388608,None,8388608,4096

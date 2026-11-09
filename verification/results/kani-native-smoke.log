@@ -1,0 +1,24 @@
+Date: 2026-11-09
+Working directory: repository root
+Toolchain: rustc 1.99.1 (58cf8f9c3 2026-10-13), x86_64-unknown-linux-gnu
+Command: cargo +1.99.1 test --offline --manifest-path verification/kani/Cargo.toml
+
+    Blocking waiting for file lock on package cache
+     Locking 2 packages to highest Rust 1.99.1 compatible versions
+   Compiling fixedbitset v0.5.9
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/production/frost)
+   Compiling frost-kani v0.0.0 (/workspace/scratch/1c521e88bfc1/production/frost/verification/kani)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running unittests src/lib.rs (verification/kani/target/debug/deps/frost_kani-e969348728f54119)
+
+running 1 test
+test tests::property_helpers_execute_against_production_code ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost_kani
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

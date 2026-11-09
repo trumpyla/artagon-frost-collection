@@ -1,0 +1,21 @@
+$ cargo update --offline --workspace --manifest-path verification/int-key-downstream/Cargo.toml
+     Locking 0 packages to highest Rust 1.99.1 compatible versions
+    Removing borsh v1.8.1
+    Removing bytemuck v1.25.2
+    Removing byteorder v1.5.0
+    Removing bytes v1.12.1
+    Removing cfg_aliases v0.2.2
+    Removing dyn-clone v1.0.20
+    Removing equivalent v1.0.3
+    Removing hashbrown v0.17.1
+    Removing indexmap v2.14.2
+    Removing itoa v1.0.18
+    Removing memchr v2.8.3
+    Removing ref-cast v1.0.27
+    Removing ref-cast-impl v1.0.27
+    Removing schemars v1.2.3
+    Removing serde v1.0.229
+    Removing serde_core v1.0.229
+    Removing serde_derive v1.0.229
+    Removing serde_json v1.0.154
+    Removing zmij v1.0.23

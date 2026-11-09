@@ -1,0 +1,18 @@
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
+binary: rustc
+commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+commit-date: 2026-10-13
+host: x86_64-unknown-linux-gnu
+release: 1.99.1
+LLVM version: 23.1.1
+Linux-6.18.57-x86_64-with-glibc2.41
+model name	: AMD EPYC 9V74 80-Core Processor
+CPU affinity: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+Cargo bench default optimized profile; no RUSTFLAGS or target-cpu override.
+Seven samples per case; calibrated batches >=4ms; same harness copied to baseline.
+Input construction excluded; hash baselines use BuildHasherDefault<DefaultHasher>.
+Execution order: baseline 1, optimized 1, optimized 2, baseline 2; sequential, pinned to CPU 0.
+Input construction excluded; materialization includes output allocation and destruction.
+Iterator sizes, bytes, x86-64: baseline intersection=32,difference=32,union=32; revised intersection=40,difference=40,union=32.
+Input archive SHA256: 1c299195389599717b74cc92a4cd7ea5cdca708d294d1206a5da7d40354b9ca3
+Harness SHA256: 04bfcf5da945323ae43858197aaaabd020b451fa1b2822d821ab638abaab2e7d

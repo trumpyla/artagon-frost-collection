@@ -1,0 +1,53 @@
+   Compiling syn v3.0.9
+   Compiling once_cell v1.21.4
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+   Compiling tempfile v3.27.0
+   Compiling rusty-fork v0.3.1
+   Compiling proptest v1.12.0
+   Compiling serde_derive_internals v0.30.0
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling ref-cast v1.0.27
+   Compiling schemars_derive v1.2.3
+   Compiling serde v1.0.229
+   Compiling schemars v1.2.3
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.21s
+     Running tests/exhaustive_collections.rs (target/debug/deps/exhaustive_collections-2f8a9baccb2c815a)
+
+running 4 tests
+test inline_ownership_exhausts_three_operation_traces ... ok
+test ordered_algebra_exhausts_all_pairs_of_six_member_sets ... ok
+test inline_ownership_exhausts_five_operation_traces ... ok
+test dense::bitmap_algebra_exhausts_boundary_members_and_dirty_padding ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.56s
+
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.49s
+     Running tests/publication_model.rs (target/debug/deps/publication_model-2c5d4c1a31dcb7cf)
+
+running 2 tests
+6 schedules; at most 5 atomic steps and 1 failed attempts
+test equal_contents_still_require_retry_after_identity_changes ... ok
+198 schedules; at most 9 atomic steps and 3 failed attempts
+test three_writers_exhaust_all_load_and_compare_exchange_orders ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+   Compiling fixedbitset v0.5.9
+   Compiling frost-collections v0.4.0 (/workspace/scratch/1c521e88bfc1/integer/frost)
+   Compiling frost-kani v0.0.0 (/workspace/scratch/1c521e88bfc1/integer/frost/verification/kani)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.10s
+     Running unittests src/lib.rs (verification/kani/target/debug/deps/frost_kani-12d1997c2f5b519d)
+
+running 1 test
+test tests::property_helpers_execute_against_production_code ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests frost_kani
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

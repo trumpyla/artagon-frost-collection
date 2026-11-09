@@ -1,0 +1,1 @@
+available_parallelism=9; readers=[1, 4]; writer=none

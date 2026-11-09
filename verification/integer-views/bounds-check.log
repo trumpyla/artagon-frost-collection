@@ -1,0 +1,8 @@
+U=0: sound and individually tight for every enclosing interval pair
+U=1: sound and individually tight for every enclosing interval pair
+U=2: sound and individually tight for every enclosing interval pair
+U=3: sound and individually tight for every enclosing interval pair
+U=4: sound and individually tight for every enclosing interval pair
+U=5: sound and individually tight for every enclosing interval pair
+U=6: sound and individually tight for every enclosing interval pair
+{'subset_pairs': 5461, 'subset_and_enclosing_interval_cases': 1003621, 'disjoint_support_pairs': 402, 'disjoint_interval_cases': 63404, 'wide_interval_cases': 1568}

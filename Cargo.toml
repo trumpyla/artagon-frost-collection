@@ -1,0 +1,195 @@
+[package]
+name = "frost-collections"
+version = "0.4.0"
+edition = "2024"
+rust-version = "1.99.1"
+description = "Mutable and frozen collection families, adaptive storage, framework integrations, and concurrent access"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+categories = ["data-structures", "no-std"]
+keywords = ["collections", "immutable", "frozen", "no_std"]
+publish = false
+exclude = ["verification/**", "docs/reviews/supplied/**"]
+
+[lib]
+name = "frost"
+
+[features]
+default = ["std"]
+# `alloc` enables Vec/Box/VecDeque/LinkedList/BinaryHeap/BTree* backends and
+# the allocating families. `std` adds std::collections::{HashMap, HashSet} and
+# the hash families. Every feature is additive: enabling one never changes the
+# representation or bounds of an existing public type.
+alloc = []
+std = ["alloc", "indexmap?/std", "borsh?/std", "schemars?/std", "roaring?/std"]
+# Public dependency features name compatibility lines. Supporting a future
+# incompatible line additively needs a separately named dependency and adapter.
+hashbrown-0_17 = ["alloc", "dep:hashbrown"]
+indexmap-2 = ["alloc", "dep:indexmap"]
+
+# Framework adapters also name compatibility lines. Future incompatible
+# integrations need separately named dependencies to coexist additively.
+serde-1 = ["alloc", "dep:serde", "serde/alloc"]
+rayon-1 = ["std", "dep:rayon"]
+arbitrary-1 = ["std", "dep:arbitrary"]
+borsh-1 = ["alloc", "dep:borsh"]
+schemars-1 = ["alloc", "dep:schemars"]
+
+smallvec-1 = ["alloc", "dep:smallvec"]
+arrayvec-0_7 = ["dep:arrayvec"]
+imbl-7 = ["std", "dep:imbl"]
+roaring-0_12 = ["std", "dep:roaring"]
+# The complete integer profile has fixed sorted, dense, and Roaring candidates.
+# Other integration features never change its representation alternatives.
+int-set = ["alloc", "dep:roaring"]
+fixedbitset-0_5 = ["alloc", "dep:fixedbitset"]
+slotmap-1 = ["alloc", "dep:slotmap"]
+phf-0_14 = ["dep:phf"]
+fst-0_4 = ["std", "dep:fst"]
+dashmap-6 = ["std", "dep:dashmap"]
+scc-3 = ["std", "dep:scc"]
+crossbeam-skiplist-0_1 = ["std", "dep:crossbeam-skiplist"]
+arc-swap-1 = ["std", "dep:arc-swap"]
+concurrent = ["dashmap-6", "scc-3", "crossbeam-skiplist-0_1", "arc-swap-1"]
+advanced = ["smallvec-1", "arrayvec-0_7", "imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1", "phf-0_14", "fst-0_4"]
+frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
+
+[dependencies]
+hashbrown = { version = "0.17", optional = true, default-features = false }
+indexmap = { version = "2.14", optional = true, default-features = false }
+serde = { version = "1.0.219", optional = true, default-features = false }
+rayon = { version = "1.11", optional = true }
+arbitrary = { version = "1.4", optional = true }
+borsh = { version = "1.5", optional = true, default-features = false }
+schemars = { version = "1.0", optional = true, default-features = false }
+
+smallvec = { version = "1.16", optional = true, default-features = false, features = ["const_generics"] }
+arrayvec = { version = "0.7.6", optional = true, default-features = false }
+imbl = { version = "7.0", optional = true, default-features = false }
+roaring = { version = "0.12.0", optional = true, default-features = false }
+fixedbitset = { version = "0.5", optional = true, default-features = false }
+slotmap = { version = "1.0", optional = true, default-features = false }
+phf = { version = "0.14", optional = true, default-features = false, features = ["macros"] }
+fst = { version = "0.4.7", optional = true }
+dashmap = { version = "6.2", optional = true }
+scc = { version = "3.8", optional = true }
+crossbeam-skiplist = { version = "0.1", optional = true }
+arc-swap = { version = "1.7", optional = true }
+
+[dev-dependencies]
+proptest = "1.12"
+hashbrown = { version = "0.17", default-features = true }
+indexmap = { version = "2.14", default-features = true }
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+borsh = "1.5"
+arbitrary = "1.4"
+rayon = "1.11"
+schemars = "1"
+
+[lints.rust]
+unsafe_code = "deny"            # allowed only in `adaptive::seq::buf`, with SAFETY comments
+unsafe_op_in_unsafe_fn = "deny"
+missing_docs = "warn"
+missing_debug_implementations = "warn"
+unreachable_pub = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+undocumented_unsafe_blocks = "deny"
+multiple_unsafe_ops_per_block = "deny"
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+
+[package.metadata.docs.rs]
+all-features = true
+
+[[example]]
+name = "core"
+test = true
+
+[[example]]
+name = "mutable"
+required-features = ["alloc"]
+test = true
+
+[[example]]
+name = "adaptive"
+required-features = ["std"]
+test = true
+
+[[example]]
+name = "sequences"
+required-features = ["smallvec-1", "arrayvec-0_7"]
+test = true
+
+[[example]]
+name = "static_maps"
+required-features = ["phf-0_14", "fst-0_4"]
+test = true
+
+[[example]]
+name = "advanced"
+required-features = ["imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1"]
+test = true
+
+[[example]]
+name = "concurrent"
+required-features = ["dashmap-6"]
+test = true
+
+[[example]]
+name = "snapshots"
+required-features = ["arc-swap-1"]
+test = true
+
+[[example]]
+name = "frameworks"
+required-features = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
+test = true
+
+[[example]]
+name = "set_operations"
+required-features = ["alloc"]
+test = true
+
+[[bench]]
+name = "set_operations"
+required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
+harness = false
+
+[[bench]]
+name = "performance_review"
+required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
+harness = false
+
+[[bench]]
+name = "ordered_sets"
+required-features = ["std"]
+harness = false
+
+[[bench]]
+name = "adaptive_maps"
+required-features = ["std"]
+harness = false
+
+[[bench]]
+name = "snapshots"
+required-features = ["arc-swap-1"]
+harness = false
+
+[[bench]]
+name = "integer_sets"
+required-features = ["int-set"]
+harness = false
+
+[[example]]
+name = "integer_sets"
+required-features = ["int-set"]
+test = true
+
+[[bench]]
+name = "integer_output"
+required-features = ["int-set", "std"]
+harness = false

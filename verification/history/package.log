@@ -1,0 +1,17 @@
+warning: manifest has no documentation, homepage or repository
+  |
+  = note: see https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info
+   Packaging frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Updating crates.io index
+    Packaged 87 files, 660.7KiB (148.8KiB compressed)
+   Verifying frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+   Compiling serde_core v1.0.229
+   Compiling memchr v2.8.3
+   Compiling hashbrown v0.17.1
+   Compiling borsh v1.8.1
+   Compiling indexmap v2.14.2
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling schemars v1.2.3
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost/target/package/frost-collections-0.3.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13.71s

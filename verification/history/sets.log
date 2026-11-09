@@ -1,0 +1,29 @@
+   Compiling frost-collections v0.3.0 (/workspace/scratch/90704931136d/re-review/frost)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running tests/mutable_sets.rs (target/debug/deps/mutable_sets-a68cfe6348d41446)
+
+running 5 tests
+test hash_set_keeps_first_rep_and_the_exact_hasher ... ok
+test ordered_set_iterators_match_sorted_reference ... ok
+test ordered_set_keeps_first_rep_and_its_frozen_pair ... ok
+test hash_set_equality_and_consuming_iteration_are_logical ... ok
+test defaults_and_iterator_clones_do_not_require_element_traits ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/root_regressions.rs (target/debug/deps/root_regressions-985ad2f840dbf406)
+
+running 2 tests
+test already_valid_ordered_set_can_freeze_without_new_ordering_bounds ... ok
+test mutable_hash_set_debug_does_not_require_a_debug_hasher ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sets_review.rs (target/debug/deps/sets_review-6395eb071d38c249)
+
+running 2 tests
+test hash_set_rejection_and_reservation_preserve_members_and_hasher ... ok
+test ordered_set_strict_construction_and_mutation_match_native_semantics ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
