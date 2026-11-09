@@ -1,44 +1,120 @@
 # Frost documentation
 
-Start with the [crate README](../README.md) for API examples and features.
+Start with the [crate README](../README.md) for the rationale, semantic laws,
+API examples, and features. This index lists every maintained document by
+category. Status labels: **current** describes implemented behavior;
+**proposal** describes design with no production API; **research** is curated
+input to design, not accepted design; **historical** is dated evidence that
+does not validate later changes.
 
-| Document | Purpose |
-| --- | --- |
-| [Design philosophy](design/philosophy.md) | Durable principles and review criteria |
-| [Architecture](design/architecture.md) | Families, capabilities, profiles, and backend boundaries |
-| [Design decisions](design/decisions.md) | Why the original architecture was selected |
-| [Snapshot publication](design/snapshots.md) | Ownership, identity, retries, and linearization |
-| [Typed integer profile](design/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra |
-| [Integer adversarial review](reviews/integer-design-audit.md) | Design risks, corrections, and scope decisions |
-| [Integer output review](reviews/integer-output-review.md) | Disposition of the supplied follow-up findings and operation contracts |
-| [Revision 2 integration review](reviews/revision2-integration-review.md) | Selective merge, corrected regressions, sharing contracts, and retained main APIs |
-| [Integration validation](revision2-integration-validation.md) | Commands and results for the merged source before GitHub import, with remaining evidence limits |
-| [GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md) | Later PR checkout and build-tool adaptation, recorded separately from original integration evidence |
-| [Prior output validation](integer-output-validation.md) | Historical output-policy, feature, concurrency, and verification gates |
-| [Prior integer benchmarks](integer-output-benchmarks.md) | Historical same-harness comparisons and CPU target controls; not merged-source measurements |
-| [Integer roadmap](design/integer-roadmap.md) | Proposed future families and their acceptance criteria |
-| [Lazy views research review](reviews/lazy-views-adversarial-review.md) | Adversarial findings, corrected source claims, and design decisions |
-| [Borrowed integer expressions](design/integer-views.md) | Proposed IntSetExpr API, bounds, cursors, evaluation, and admission tests |
-| [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family |
-| [Search-source audit](reviews/lazy-views-source-audit.md) | Versioned Rust/FST/Lucene/Tantivy contracts and checked issue/PR statuses |
-| [Views performance audit](reviews/lazy-views-performance-audit.md) | Paper evidence, experiment limits, and future benchmark design |
-| [Expression bounds model](../verification/integer-views/README.md) | Executed finite mathematics checks; no production views implementation |
-| [Initial integer validation](integer-validation.md) | Historical evidence before output-policy corrections |
-| [Initial integer benchmarks](integer-benchmarks.md) | Historical representation tradeoffs and mixed-probe improvement |
-| [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes |
-| [General set algebra](design/set-algebra.md) | Proposed typed views for all set categories, representative semantics, execution, and ownership |
-| [Collection algebra research](design/collection-algebra.md) | Frost1/Frost2 synthesis for maps, sequences, bags, multimaps, bimaps, and prefix indexes; proposed contracts within the single library |
-| [Attachment integration](../verification/attachment-integration-2026-11-09/README.md) | Input digests, conflict resolutions, and checks run on this checkout |
-| [Generic algebra review](reviews/generic-set-algebra-review.md) | Coverage gaps, research iteration, baseline checks, and finite semantic evidence |
-| [Generic algebra model](../verification/set-algebra/README.md) | Reproduced representative/order counterexamples; no production view implementation |
-| [Maintainer guide](maintainers/guide.md) | Code map, invariants, and change-specific checks |
-| [Benchmarks](maintainers/benchmarks.md) | Fair measurement and reproduction |
-| [Verification](verification.md) | Executable models, proof bounds, and limitations |
-| [Release procedure](maintainers/releasing.md) | Concrete gates before publishing |
-| [Integration review](reviews/incoming-assessment.md) | Disposition of the attached patch and review claims |
-| [Prior integration validation](production-readiness.md) | Historical checks before the integer profile was added |
-| [Previous performance review](reviews/performance-review.md) | Earlier kernel improvements and raw evidence |
+## Current design and contracts
 
-Historical review and verification documents under `reviews/` preserve earlier
-findings. The original attached review and patch under `reviews/supplied/` are
-unmodified evidence; their claims are not automatically current project policy.
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [Design philosophy](design/philosophy.md) | Durable principles and review criteria | Current |
+| [Architecture](design/architecture.md) | Families, capabilities, profiles, and backend boundaries | Current |
+| [Frozen API guide](design/frozen-api.md) | Frozen value kinds, plans, recovery, access models, costs, snapshot admission | Current; proposals marked |
+| [Design decisions](design/decisions.md) | Why the architecture was selected, and later integration decisions | Current |
+| [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes | Current |
+| [Snapshot publication](design/snapshots.md) | Ownership, identity, retries, and linearization | Current |
+| [Typed integer profile](design/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra | Current |
+
+## Proposals
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [General set algebra](design/set-algebra.md) | Typed views for all set categories, representative semantics, execution, and ownership | Proposal |
+| [Collection algebra](design/collection-algebra.md) | Maps, sequences, bags, multimaps, bimaps, and prefix indexes within the single library; corrections to the supplied sketches | Proposal |
+| [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
+| [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
+| [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
+
+## Research corpus
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [Research index](research/README.md) | Corpus layout, reading paths, and artifact status | Research |
+| [Research manifest](research/manifest.json) | Machine-readable inventory, hashes, and relationships | Research |
+| [Source catalog](research/SOURCES.md) | Primary sources, what each was checked for, and limits | Research evidence |
+| [Citation map](research/citation-map.json) | Original citation markers per input and their recovery status | Research evidence |
+| [Integration audit](research/integration-audit.md) | Claim and decision matrix, corrections, missing artifacts, checks | Review |
+| [Collection algebra survey](research/reports/collection-algebra-survey.md) | Curated survey derived from Frost1 | Research |
+| [Collection algebra implementation notes](research/reports/collection-algebra-implementation-notes.md) | Curated implementation notes derived from Frost2, with corrections | Research |
+| [Computed sets summary](research/reports/computed-sets-summary.md) | Curated summary of the computed-sets delivery note; the full report is missing | Research |
+| [Foundations and engine roadmap](research/synthesis/foundations-and-engine-roadmap.md) | Decision map, capability matrix, and prioritized questions | Research synthesis |
+
+Templates for new research:
+[research prompt](research/templates/research-prompt.md),
+[landscape report](research/templates/landscape-report.md),
+[deep-dive report](research/templates/deep-dive-report.md),
+[subtopic handoff](research/templates/subtopic-handoff.md), and
+[review checklist](research/templates/review-checklist.md).
+
+Focused prompts:
+[algebraic foundations](research/prompts/algebraic-foundations.md),
+[computed sets and durable execution](research/prompts/computed-sets-and-durable-execution.md),
+[Frozen API contracts](research/prompts/frozen-api-contracts.md), and
+[authorization engine integration](research/prompts/authorization-engine-integration.md).
+
+## Reviews and audits
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [Integer adversarial review](reviews/integer-design-audit.md) | Design risks, corrections, and scope decisions | Review |
+| [Integer output review](reviews/integer-output-review.md) | Disposition of the supplied follow-up findings and operation contracts | Historical |
+| [Revision 2 integration review](reviews/revision2-integration-review.md) | Selective merge, corrected regressions, sharing contracts, and retained main APIs | Review of current merge |
+| [Lazy views research review](reviews/lazy-views-adversarial-review.md) | Adversarial findings, corrected source claims, and design decisions | Review |
+| [Search-source audit](reviews/lazy-views-source-audit.md) | Versioned Rust/FST/Lucene/Tantivy contracts and checked issue/PR statuses | Review |
+| [Views performance audit](reviews/lazy-views-performance-audit.md) | Paper evidence, experiment limits, and future benchmark design | Review |
+| [Generic algebra review](reviews/generic-set-algebra-review.md) | Coverage gaps, research iteration, baseline checks, and finite semantic evidence | Review |
+| [Integration review](reviews/incoming-assessment.md) | Disposition of the attached patch and review claims | Review |
+| [Previous performance review](reviews/performance-review.md) | Earlier kernel improvements and raw evidence | Historical |
+| [Supplied inputs](reviews/supplied/README.md) | Unmodified supplied reviews, patches, research reports, summary, and handoff archive | Supplied evidence |
+
+## Validation records
+
+Each record describes checks run on a stated revision. None validates a later
+change.
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [Integration validation](revision2-integration-validation.md) | Commands and results for the merged source before GitHub import, with remaining evidence limits | Dated record |
+| [GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md) | Later PR checkout and build-tool adaptation, recorded separately from original integration evidence | Dated record |
+| [Attachment integration](../verification/attachment-integration-2026-11-09/README.md) | Input digests, conflict resolutions, and checks run on that checkout | Dated record |
+| [Expression bounds model](../verification/integer-views/README.md) | Executed finite mathematics checks; no production views implementation | Dated record |
+| [Generic algebra model](../verification/set-algebra/README.md) | Reproduced representative/order counterexamples; no production view implementation | Dated record |
+| [Prior output validation](integer-output-validation.md) | Output-policy, feature, concurrency, and verification gates | Historical |
+| [Prior integer benchmarks](integer-output-benchmarks.md) | Same-harness comparisons and CPU target controls; not merged-source measurements | Historical |
+| [Initial integer validation](integer-validation.md) | Evidence before output-policy corrections | Historical |
+| [Initial integer benchmarks](integer-benchmarks.md) | Representation tradeoffs and mixed-probe improvement | Historical |
+| [Prior integration validation](production-readiness.md) | Checks before the integer profile was added | Historical |
+
+## Maintenance
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| [Maintainer guide](maintainers/guide.md) | Code map, invariants, and change-specific checks | Current |
+| [Benchmarks](maintainers/benchmarks.md) | Fair measurement and reproduction | Current |
+| [Verification](verification.md) | Executable models, proof bounds, and limitations | Current |
+| [Release procedure](maintainers/releasing.md) | Concrete gates before publishing | Current |
+| [Contributor guide](../CONTRIBUTING.md) | How to make and verify changes | Current |
+
+No task tracker is initialized in this repository; open questions are tracked
+in the research synthesis and integration audit.
+
+## Reading paths
+
+- **New contributor:** crate README, Frozen API guide, `examples/`, design
+  philosophy, contributor guide.
+- **Frozen API implementer:** architecture, Frozen API guide, the linked source
+  and tests, snapshot publication, verification.
+- **Algebra or planner implementer:** set operations, collection algebra,
+  general set algebra, generic algebra review and model, research synthesis.
+- **Authorization-engine integrator:** the README's engine sections, snapshot
+  publication, computed sets summary, research synthesis, authorization prompt.
+- **Researcher starting a subtopic:** research index, synthesis, source catalog,
+  research prompt template, subtopic handoff template, integration audit.
+
+Historical review and verification documents preserve earlier findings. The
+inputs under `reviews/supplied/` are unmodified evidence; their claims are not
+automatically current project policy.

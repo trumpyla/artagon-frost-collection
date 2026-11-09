@@ -250,3 +250,27 @@ implemented. The current Chunked candidate already provides immutable payload
 sharing within `FrozenIntSet`; the
 [persistent design](persistent-integer-storage.md) records that boundary. Generic
 borrowed set expressions and lazy integer evaluation remain proposals.
+
+## Research corpus and rationale, 2026-11-09
+
+A supplied research handoff asked for a curated research corpus, a root README
+rationale, and a Frozen API guide. It contained two overlapping collection
+algebra reports already preserved in this repository, a computed-sets summary,
+templates, and draft README text. This record states what the integration
+adopted. It changes documentation only; source, features, CI, and the Rust
+1.99.1 / edition 2024 toolchain are unchanged.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Package layout | Keep one library package, `frost-collections`, imported as `frost`. Record a `frost-api` facade over flat `crates/frost-*` packages as an **unadopted proposal**. | The handoff describes that layout as a user decision, but the maintainer policy and the current task keep one package. Adopting a split needs its own decision, an updated maintainer policy, a migration plan, and feature and CI changes. Installation instructions stay as they are. |
+| Package names | Adopt no naming rule. Preserve Frost1's plural names and Frost2's singular names as alternatives. | No package is created, so a rule would be premature. A future proposal applies one rule to every domain. |
+| Raw inputs | Keep the original reports byte for byte under `docs/reviews/supplied/`. Do not copy them again. Put curated, cited derivatives under `docs/research/`. | Raw files are evidence, not instructions or policy. Only curated files get corrected examples, portable citations, and per-claim status. |
+| Frozen API | Make [the Frozen API guide](frozen-api.md) the canonical guide to current frozen contracts, with proposals in a separate section. | Contracts were scattered across the README, architecture, and rustdoc. The guide links each claim to source and tests. |
+| Engine motivations | Describe symbolic execution, authorization, and computed sets in the README as motivating workloads with explicit outside-scope boundaries. | Frost implements no engine, policy language, solver, identity protocol, durable store, or consistency protocol. |
+| Complexity claims | Do not transfer an upstream bound to Frost algorithms. Derived bounds name every variable. | `fst` documents n-ary operations as `O(n1 + n2 + ...)`; its implementation uses a binary heap and byte-key comparisons. See [collection algebra](collection-algebra.md#n-ary-sorted-merge-cost). |
+| Missing artifacts | Import the computed-sets summary under a summary name. Do not reconstruct the full computed-sets report, the original research template, its ZIP, or a standalone algebraic-foundations report. | None of these were supplied or recovered. A summary's statement that a file exists is not evidence that it exists. |
+| Research status | Imported research is not accepted design. | Lineage runs from question to source, claim, synthesis, focused research, design proposal, implementation task, and verification evidence. Each step needs its own review. |
+
+The [research index](../research/README.md) and
+[integration audit](../research/integration-audit.md) record the corpus, the
+claim matrix, unresolved citations, and missing artifacts.

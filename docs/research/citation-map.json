@@ -1,0 +1,1690 @@
+{
+  "schema": "frost-research-citation-map/v1",
+  "generated_at": "2026-11-09",
+  "repo_baseline": "82becb998af5627cc1e58118ae01515d8a3559ca",
+  "marker_format": "U+E200, the word cite, U+E202, one or more turn<digits>(search|view|news)<digits> tokens, U+E201. Tokens are scoped to their input file; equal-looking tokens in different inputs are not assumed to identify the same source.",
+  "status_legend": {
+    "unresolved-unsupported": "Original mapping unavailable; no editorial source registered for the claim at this location. The curated derivative labels the claim unverified or omits it.",
+    "unresolved-partially-supported": "Original mapping unavailable; a registered source independently supports part of the claim at this location (scope stated per entry).",
+    "unresolved-supported": "Original mapping unavailable; registered sources independently support the claim at this location. This is editorial support, not a recovered citation."
+  },
+  "inputs": {
+    "frost1": {
+      "file": "docs/reviews/supplied/frost-collection-algebra-research-1.md",
+      "sha256": "543d67b2f7c3724f9c96849ea77c8dd24c3a36792395c46e6050d1383ebd8f6d",
+      "original_mapping": "unavailable",
+      "group_count": 50,
+      "token_occurrences": 135,
+      "distinct_tokens": 58,
+      "distinct_prefixes": 11,
+      "groups": [
+        {
+          "group": 1,
+          "line": 5,
+          "tokens": [
+            "turn470474search38",
+            "turn602131search25",
+            "turn969676search10",
+            "turn969676search9",
+            "turn969676search26",
+            "turn437300search1"
+          ],
+          "claim_context": "…xpose conflict-combining operations such as Haskell `unionWith`, OCaml `Map.merge`/`Map.union`, and Clojure `merge-with`; FST treats map algebra as set algebra over keys plus an explicit collection of conflicting values.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "FST key-set operations expose per-stream values; other library claims unverified"
+            }
+          ]
+        },
+        {
+          "group": 2,
+          "line": 7,
+          "tokens": [
+            "turn437300search1",
+            "turn437300search4",
+            "turn763525view0",
+            "turn763525view1"
+          ],
+          "claim_context": "…nstrates that n-ary sorted map operations can run in total linear stream complexity with workspace proportional to the number of streams; Roaring exposes direct cardinality kernels that avoid constructing result bitmaps.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "count kernels exist in locked 0.12.0 source"
+            }
+          ]
+        },
+        {
+          "group": 3,
+          "line": 9,
+          "tokens": [
+            "turn323218search2",
+            "turn323218search24"
+          ],
+          "claim_context": "…ke those rules explicit: on overlapping keys, use the left stored key representative by default; never silently choose a value when both maps contain the key; require a resolver, return both values, or report a conflict.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHMAP-GET-KEY-VALUE",
+              "scope": "HashMap::get_key_value returns the stored key; BTreeMap claim unverified"
+            }
+          ]
+        },
+        {
+          "group": 4,
+          "line": 11,
+          "tokens": [
+            "turn602131search21",
+            "turn637357search1",
+            "turn557750search8"
+          ],
+          "claim_context": "… database `UNION ALL` preserves/adds duplicates rather than eliminating them. Formal bag-algebra literature explicitly warns that bag operations require their own algebraic laws rather than mechanically copying set laws.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 5,
+          "line": 13,
+          "tokens": [
+            "turn799807search3",
+            "turn389002search3",
+            "turn389002search0"
+          ],
+          "claim_context": "…ee-monoid view—not by idempotent union. Rust `Vec` and `VecDeque` expose append/splice/split semantics that preserve sequence position and duplicates; converting a list into a set or bag should be an explicit projection.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 6,
+          "line": 15,
+          "tokens": [
+            "turn437300search3",
+            "turn602131search24",
+            "turn602131search34"
+          ],
+          "claim_context": "…is specifically a `HashMap<K, Vec<V>>` style abstraction: values retain insertion order, duplicate key-value pairs are allowed, and keys are unordered. Guava similarly distinguishes general `Multimap` from `SetMultimap`.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 7,
+          "line": 17,
+          "tokens": [
+            "turn437300search0",
+            "turn323218search0",
+            "turn323218search1"
+          ],
+          "claim_context": "…rtion can even reduce cardinality. Frost should therefore make `try_union`, `try_insert`, conflict-resolving merge, and relation-valued union distinct operations rather than pretending bimap union behaves like set union.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 8,
+          "line": 37,
+          "tokens": [
+            "turn799807search3",
+            "turn799807search49",
+            "turn557750search8"
+          ],
+          "claim_context": "…sociative operation with the empty list as identity. This list/free-monoid correspondence is standard algebraically, while bag theory can be viewed as a commutative multiplicity structure rather than an ordered sequence.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 9,
+          "line": 39,
+          "tokens": [
+            "turn557750search9",
+            "turn557750search2"
+          ],
+          "claim_context": "…pJoin`/`MultiMapJoin` and a hash/tree/FST/radix backend. Codd also emphasizes that projection removes duplicate tuples in classical relational algebra, whereas later database practice introduced bag semantics explicitly.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 10,
+          "line": 41,
+          "tokens": [
+            "turn557750search8",
+            "turn637357search1",
+            "turn637357search19"
+          ],
+          "claim_context": "…timizer Frost eventually adds. SQL likewise makes duplicate behavior syntactically visible: PostgreSQL `UNION`, `INTERSECT`, and `EXCEPT` eliminate duplicates by default, while the `ALL` variants preserve multiplicities.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 11,
+          "line": 55,
+          "tokens": [
+            "turn602131search21",
+            "turn637357search1"
+          ],
+          "claim_context": "…`set_union` uses the `max` multiplicity behavior, whereas concatenating two bag streams or SQL-style `UNION ALL` gives additive multiplicity. Frost should name the distinction rather than rely on documentation footnotes.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 12,
+          "line": 65,
+          "tokens": [
+            "turn969676search10",
+            "turn969676search9",
+            "turn969676search26",
+            "turn602131search0"
+          ],
+          "claim_context": "…ffers `merge-with`; Java `Map.merge` supplies a remapping function for an existing value and incoming value. These designs all make the overlap policy explicit instead of pretending there is a uniquely correct map union.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 13,
+          "line": 73,
+          "tokens": [
+            "turn557750search2"
+          ],
+          "claim_context": "whereas `merge_with` intentionally produces one output value. This separation mirrors relational algebra: joining preserves columns from both inputs; projection or an explicit resolver performs reduction.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 14,
+          "line": 86,
+          "tokens": [
+            "turn323218search2",
+            "turn323218search24"
+          ],
+          "claim_context": "…key metadata. Rust’s standard maps explicitly provide `get_key_value` to recover the stored `&K`, including cases where a lookup key is equal but not identical to the stored object. B-tree maps make the same distinction.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHMAP-GET-KEY-VALUE",
+              "scope": "HashMap half verified; BTreeMap half unverified"
+            }
+          ]
+        },
+        {
+          "group": 15,
+          "line": 125,
+          "tokens": [
+            "turn323218search1",
+            "turn323218search3"
+          ],
+          "claim_context": "The behavior of Rust’s `bimap` insertion API—where left conflicts, right conflicts, and simultaneous two-sided conflicts are distinct—is strong practical evidence that this invariant deserves an explicit error model.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 16,
+          "line": 129,
+          "tokens": [
+            "turn470474search38",
+            "turn470474search12",
+            "turn323218search24",
+            "turn389002search3",
+            "turn389002search0"
+          ],
+          "claim_context": "…eeMap` provides ordered traversal; `Vec` exposes splice/dedup/retention; `VecDeque` exposes queue-oriented front-to-back order. This favors Frost’s capability-trait approach over attempting a Java-style inheritance tree.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 17,
+          "line": 147,
+          "tokens": [
+            "turn323218search2",
+            "turn323218search24",
+            "turn470474search1",
+            "turn470474search0",
+            "turn470474search3",
+            "turn470474search2",
+            "turn437300search1",
+            "turn763525view0",
+            "turn437300search3",
+            "turn437300search0",
+            "turn437300search5"
+          ],
+          "claim_context": "Sources: Rust std, hashbrown, indexmap, imbl, FST, Roaring, multimap, bimap, and multi_bimap documentation.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHMAP-GET-KEY-VALUE",
+              "scope": "std row"
+            },
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "fst row"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "roaring row, count kernels and rank/select only"
+            },
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "indexmap and imbl rows via S4, S5, S8 (secondary)"
+            }
+          ]
+        },
+        {
+          "group": 18,
+          "line": 149,
+          "tokens": [
+            "turn470474search1"
+          ],
+          "claim_context": "…gebra should therefore use safe capabilities by default and expose backend-specific optimized kernels behind trusted implementation boundaries rather than making raw hash manipulation part of the public algebra contract.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 19,
+          "line": 151,
+          "tokens": [
+            "turn470474search0",
+            "turn323218search8"
+          ],
+          "claim_context": "…t-operation iterators preserve defined concatenated/index order, but this is not sorted order. A merge algorithm requiring ascending keys therefore needs a `SortedEntries`-style capability, not merely “stable iteration.”",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "IndexSet order semantics checked at 2.14.0 (S8, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 20,
+          "line": 153,
+          "tokens": [
+            "turn470474search3",
+            "turn470474search4",
+            "turn557750search11"
+          ],
+          "claim_context": "…e library explicitly presents these as immutable persistent data structures. HAMTs originate in Bagwell’s hash-array-mapped trie work, which indexes progressively through hash bits rather than resizing a flat hash table.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "imbl persistent structures checked at 7.0.2 (S4, S5, secondary); HAMT origin unverified"
+            }
+          ]
+        },
+        {
+          "group": 21,
+          "line": 155,
+          "tokens": [
+            "turn437300search1",
+            "turn437300search6",
+            "turn437300search7"
+          ],
+          "claim_context": "…e` entries identifying the originating map and associated `u64` value, leaving value conflict resolution to the caller. The operations are documented as `O(n1 + n2 + …)` with memory proportional to the number of streams.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            }
+          ]
+        },
+        {
+          "group": 22,
+          "line": 157,
+          "tokens": [
+            "turn763525view0"
+          ],
+          "claim_context": "…lity without building a result bitmap; it also exposes rank/select and guarantees ascending iteration. A Frost query planner should preserve that distinction: `count()` and `iter()` need not share the same physical plan.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "intersection_len, union_len, difference_len, symmetric_difference_len, rank, select present; ascending iteration not checked"
+            }
+          ]
+        },
+        {
+          "group": 23,
+          "line": 172,
+          "tokens": [
+            "turn602131search13",
+            "turn602131search14",
+            "turn602131search21",
+            "turn602131search0",
+            "turn602131search25",
+            "turn969676search10",
+            "turn969676search9",
+            "turn969676search26",
+            "turn969676search24"
+          ],
+          "claim_context": "Sources: C++ reference, Oracle Java APIs, Guava, Haskell containers, OCaml stdlib, Clojure, and Scala documentation.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 24,
+          "line": 174,
+          "tokens": [
+            "turn602131search13",
+            "turn602131search18"
+          ],
+          "claim_context": "…Rust cannot expose identical node semantics uniformly across unrelated backends, but Frost should leave room for `into_merge` / `append_from` operations that exploit ownership when the concrete representation permits it.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 25,
+          "line": 176,
+          "tokens": [
+            "turn602131search6"
+          ],
+          "claim_context": "…ividual key, but that does not imply that a traversal or multi-key join represents one globally consistent snapshot. Frost concurrency APIs should therefore separate **atomic per-key mutation** from **snapshot algebra**.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 26,
+          "line": 192,
+          "tokens": [
+            "turn323218search2",
+            "turn323218search24"
+          ],
+          "claim_context": "This matches Rust’s own distinction between lookup key and stored key.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHMAP-GET-KEY-VALUE",
+              "scope": "lookup key versus stored key"
+            }
+          ]
+        },
+        {
+          "group": 27,
+          "line": 236,
+          "tokens": [
+            "turn969676search9",
+            "turn969676search28"
+          ],
+          "claim_context": "…one-sided and two-sided states only where necessary. OCaml’s option-based `Map.merge` is maximally expressive, but a dedicated `merge_with` that invokes the resolver only for collisions can be cheaper and easier to type.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 28,
+          "line": 262,
+          "tokens": [
+            "turn389002search0",
+            "turn389002search2",
+            "turn389002search3"
+          ],
+          "claim_context": "…rving iteration. `VecDeque::append`, for example, moves all elements from one deque to the back of another and documents overflow if the resulting length cannot fit `usize`; `Vec::splice` performs positional replacement.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 29,
+          "line": 319,
+          "tokens": [
+            "turn602131search21",
+            "turn557750search8",
+            "turn637357search1"
+          ],
+          "claim_context": "That naming aligns the mathematical distinction with C++ duplicate-aware set algorithms and database bag semantics instead of overloading one term.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 30,
+          "line": 321,
+          "tokens": [
+            "turn437300search3",
+            "turn602131search24"
+          ],
+          "claim_context": "…cy in the type or type name. The Rust `multimap` crate’s semantics—multiple identical key-value pairs, `Vec`-like value insertion order—are different from Guava’s `SetMultimap`, which disallows duplicate key-value pairs.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 31,
+          "line": 351,
+          "tokens": [
+            "turn602131search34"
+          ],
+          "claim_context": "Guava’s `Multimap::keys()` returning a multiset-like view is a useful precedent: a key’s multiplicity reflects how many key-value pairs it participates in.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 32,
+          "line": 353,
+          "tokens": [
+            "turn437300search0",
+            "turn323218search1"
+          ],
+          "claim_context": "…on rather than “a map with a reverse lookup.” The canonical Rust `bimap` crate literally stores two backing maps and has insertion outcomes for left conflicts, right conflicts, pair replacement, and both-sided conflicts.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 33,
+          "line": 432,
+          "tokens": [
+            "turn470474search41",
+            "turn437300search7",
+            "turn763525view0"
+          ],
+          "claim_context": "… + Ord + Clone`. Rust’s canonical collections require different equality/order capabilities, and specialized structures such as FSTs and Roaring do not even expose stored `&T` objects in the same manner as ordinary maps.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "FST yields lending keys, not stored references"
+            },
+            {
+              "source": "SRC-FROST-SRC-BITMAP-ADAPTER",
+              "scope": "Roaring wrappers yield values by value in Frost"
+            }
+          ]
+        },
+        {
+          "group": 34,
+          "line": 468,
+          "tokens": [
+            "turn437300search7",
+            "turn437300search1"
+          ],
+          "claim_context": "…e reconstruct values, and some have lending-stream semantics. FST streams, for example, yield lexicographically ordered byte keys tied to streaming operation rather than exposing a normal `Iterator<Item=&K>` abstraction.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "streams produce lexicographic byte keys tied to iteration"
+            }
+          ]
+        },
+        {
+          "group": 35,
+          "line": 674,
+          "tokens": [
+            "turn323218search1"
+          ],
+          "claim_context": "This is conceptually similar to the existing Rust `bimap` crate’s `Overwritten` classification, but for a non-destructive checked operation.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 36,
+          "line": 680,
+          "tokens": [
+            "turn470474search41",
+            "turn470474search12"
+          ],
+          "claim_context": "…attractive, but the cost model must include capacity and hashing cost rather than only logical length: Rust’s hash collections make no iteration-order guarantee, and hash-table iteration costs reflect the physical table.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "HashSet traversal visits capacity (S1, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 37,
+          "line": 682,
+          "tokens": [
+            "turn323218search24"
+          ],
+          "claim_context": "For ordered maps, `BTreeMap` iterators yield key order and provide logarithmic lookup with amortized constant traversal cost per emitted item, making ordered merge strategies natural.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 38,
+          "line": 684,
+          "tokens": [
+            "turn470474search0",
+            "turn323218search8"
+          ],
+          "claim_context": "…algebra view promising stable left-first order must choose a different physical plan from an unordered count query. Indexmap explicitly promises collection order based on insertion/removal history rather than hash order.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "IndexSet order semantics (S8, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 39,
+          "line": 686,
+          "tokens": [
+            "turn437300search1",
+            "turn437300search6"
+          ],
+          "claim_context": "… total input complexity and returns every participating value for an overlapping key. Frost can wrap or integrate this directly for byte-string/`u64` maps while mapping its generic semantic operations onto those streams.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            }
+          ]
+        },
+        {
+          "group": 40,
+          "line": 688,
+          "tokens": [
+            "turn557750search10",
+            "turn557750search3"
+          ],
+          "claim_context": "…ng, adaptively changes node representation to improve cache and space behavior, retains sorted ordering, and supports operations such as range scans and prefix lookup that ordinary hash tables cannot provide efficiently.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 41,
+          "line": 718,
+          "tokens": [
+            "turn763525view0"
+          ],
+          "claim_context": "…ring bitmap for present keys plus values in key order; key `k` maps to value index `rank(k)-1` when present. This is an inference from Roaring’s published capabilities, not a claim about the current Frost implementation.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "rank and select exist; layout is an inference"
+            }
+          ]
+        },
+        {
+          "group": 42,
+          "line": 728,
+          "tokens": [
+            "turn763525view0",
+            "turn437300search19"
+          ],
+          "claim_context": "…unts use bitmap cardinality, and multi-term AND queries can start with smaller posting lists. Roaring’s own API exposes cardinality-only operations precisely because building materialized results is not always necessary.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "count-only kernels exist"
+            }
+          ]
+        },
+        {
+          "group": 43,
+          "line": 730,
+          "tokens": [
+            "turn470474search3",
+            "turn470474search2",
+            "turn557750search11"
+          ],
+          "claim_context": "…d stay orthogonal to the algebra. `imbl` demonstrates HAMT-based persistent hash maps and B+tree ordered maps; persistent views can structurally share unchanged storage while algebra remains defined over logical entries.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "imbl structures (S4, S5, secondary); HAMT origin unverified"
+            }
+          ]
+        },
+        {
+          "group": 44,
+          "line": 742,
+          "tokens": [
+            "turn602131search2",
+            "turn602131search6"
+          ],
+          "claim_context": "Concurrency requires a similar separation. Java’s concurrent-map API can make a single `compute`/`merge` invocation atomic for a key, but global operations still need a defined consistency boundary.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 45,
+          "line": 769,
+          "tokens": [
+            "turn437300search1",
+            "turn763525view0"
+          ],
+          "claim_context": "FST’s documented linear n-ary stream behavior and Roaring’s count-only kernels provide concrete specialized baselines worth including.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "count kernels"
+            }
+          ]
+        },
+        {
+          "group": 46,
+          "line": 852,
+          "tokens": [
+            "turn323218search2",
+            "turn323218search24"
+          ],
+          "claim_context": "The standard library’s `get_key_value` APIs justify testing this distinction directly.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHMAP-GET-KEY-VALUE",
+              "scope": "get_key_value justifies testing stored representatives"
+            }
+          ]
+        },
+        {
+          "group": 47,
+          "line": 854,
+          "tokens": [
+            "turn389248search1",
+            "turn389248search0"
+          ],
+          "claim_context": "…c laws **per abstraction**, not one shared law suite. `proptest` provides generated property testing with shrinking and regression persistence; QuickCheck remains another established Rust property-testing implementation.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 48,
+          "line": 873,
+          "tokens": [
+            "turn389248search10",
+            "turn389248search28"
+          ],
+          "claim_context": "…s and invariant transitions. Kani is a Rust model checker suited to bounded proof harnesses; it can be used for sorted merge kernels, multiplicity overflow paths, rank/index correspondence, and bimap mutation invariants.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 49,
+          "line": 875,
+          "tokens": [
+            "turn389248search13",
+            "turn389248search18"
+          ],
+          "claim_context": "…lores alternate thread interleavings under modeled synchronization primitives. It should verify the production snapshot/publication helper, not a simplified algorithm that accidentally omits the relevant synchronization.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 50,
+          "line": 920,
+          "tokens": [
+            "turn470474search38",
+            "turn969676search10",
+            "turn557750search8",
+            "turn557750search2",
+            "turn437300search1",
+            "turn763525view0"
+          ],
+          "claim_context": "…ives Frost room to support arbitrary user-defined keys, strings, bags, map joins, prefix indexes, integer compression, persistence, and snapshots without forcing all of them through one artificial “collection” interface.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "fst part"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "roaring part"
+            }
+          ]
+        }
+      ]
+    },
+    "frost2": {
+      "file": "docs/reviews/supplied/frost-collection-algebra-research-2.md",
+      "sha256": "046cdaf91f7f2912ce966835951d00dd42ae230f5a76914b5eeb5b77f8862ad3",
+      "original_mapping": "unavailable",
+      "group_count": 47,
+      "token_occurrences": 72,
+      "distinct_tokens": 36,
+      "distinct_prefixes": 9,
+      "groups": [
+        {
+          "group": 1,
+          "line": 7,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "…bimap` crate explicitly documents this issue for equal endpoints carrying different data and exposes overwrite-versus-reject insertion semantics because maintaining a bijection requires resolving conflicts on both sides.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 2,
+          "line": 9,
+          "tokens": [
+            "turn338730view2"
+          ],
+          "claim_context": "…ch key together with the values contributed by participating streams, leaving conflict resolution visible to the caller; its operations run in total input-linear time with workspace proportional to the number of streams.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "the unconditional total-input-linear runtime asserted here is not established: registered evidence supports the documented statement plus a qualified heap-based derivation only"
+            }
+          ]
+        },
+        {
+          "group": 3,
+          "line": 11,
+          "tokens": [
+            "turn818566search0",
+            "turn818566search3"
+          ],
+          "claim_context": "…ces change which rewrite rules are valid. Joseph Albert’s VLDB work formalized algebraic properties of bag operations, while later database-theory work explicitly distinguishes sum-based from maximum-based bag semantics.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 4,
+          "line": 13,
+          "tokens": [
+            "turn338730view1"
+          ],
+          "claim_context": "…tablished `multimap` crate is list-valued per key: it is built around `HashMap<K, Vec<V>>`, preserves value insertion order, permits identical key-value pairs to repeat, and even permits a key with an empty value vector.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 5,
+          "line": 15,
+          "tokens": [
+            "turn260828search3",
+            "turn260828search0"
+          ],
+          "claim_context": "…and amortized O(1) append; sequence algebra is better expressed in terms of concatenation, stable merge, zip, interleave, prefix/suffix, partition, windows, and diff/patch rather than ambiguous “union” or “intersection.”",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 6,
+          "line": 17,
+          "tokens": [
+            "turn338730view3"
+          ],
+          "claim_context": "…d therefore require lending-stream semantics rather than ordinary `Iterator`. The `fst` crate documents this distinction explicitly and explains that its `Streamer` reuses a single key buffer to avoid per-key allocation.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "streaming iterator avoids per-element allocation"
+            }
+          ]
+        },
+        {
+          "group": 7,
+          "line": 96,
+          "tokens": [
+            "turn818566search0",
+            "turn818566search2",
+            "turn818566search3"
+          ],
+          "claim_context": "These are not interchangeable. Bag-semantics literature was developed in part because ordinary set rewrite identities do not automatically carry over when multiplicity is observable.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 8,
+          "line": 129,
+          "tokens": [
+            "turn338730view2"
+          ],
+          "claim_context": "… evidence that exposing the participating values is practical rather than purely theoretical: its map union and intersection streams emit a key plus an indexed list of the values contributed by each participating stream.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "union and intersection emit (&[u8], &[IndexedValue])"
+            }
+          ]
+        },
+        {
+          "group": 9,
+          "line": 131,
+          "tokens": [
+            "turn338730view1"
+          ],
+          "claim_context": "…cities. A `ListMultiMap<K,V>` gives each key an ordered sequence of values. The existing `multimap` crate chooses the third model: values are held in vectors, insertion order is preserved, and identical pairs may repeat.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 10,
+          "line": 145,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "…is with two backing maps and therefore inherits their asymptotic operation class; its API offers both overwrite and no-overwrite insertion because the invariant forces conflict handling to be part of the public contract.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 11,
+          "line": 156,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "…. Frost should specify representative semantics independently of logical equality. The bimap documentation contains essentially this same equal-but-different-object case and treats the replacement as observable behavior.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 12,
+          "line": 166,
+          "tokens": [
+            "turn116162search1"
+          ],
+          "claim_context": "| `std::collections` | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 13,
+          "line": 166,
+          "tokens": [
+            "turn260828search0",
+            "turn260828search1"
+          ],
+          "claim_context": "…ache-2.0  | maintained with Rust | ordinary borrowed iterators | maps/sets unique, sequences repeat | std HashMap is SwissTable-derived; BTree structures ordered | HashMap expected O(1), BTreeMap O(log n), Vec index O(1)",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 14,
+          "line": 167,
+          "tokens": [
+            "turn846237search4"
+          ],
+          "claim_context": "| `hashbrown` 0.17.1 | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 15,
+          "line": 167,
+          "tokens": [
+            "turn260828search4"
+          ],
+          "claim_context": "| `hashbrown` 0.17.1 | MIT OR Apache-2.0  | active 2026 line | std-like | unique keys | SwissTable, SIMD lookup, `no_std + alloc` support | expected O(1) hash access",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 16,
+          "line": 168,
+          "tokens": [
+            "turn846237search1"
+          ],
+          "claim_context": "| `indexmap` 2.14.2 | Apache-2.0 OR MIT",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "IndexSet order and dense storage (S8, secondary); version and license unverified"
+            }
+          ]
+        },
+        {
+          "group": 17,
+          "line": 168,
+          "tokens": [
+            "turn260828search5",
+            "turn260828search6"
+          ],
+          "claim_context": "| `indexmap` 2.14.2 | Apache-2.0 OR MIT  | released Sept. 2026 | borrowed refs plus stable dense indices | unique keys | hash index + dense entry vector | expected hash lookup; dense fast iteration",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "IndexSet order and dense storage (S8, secondary); version and license unverified"
+            }
+          ]
+        },
+        {
+          "group": 18,
+          "line": 169,
+          "tokens": [
+            "turn846237search2"
+          ],
+          "claim_context": "| `imbl` 7.0.2 | MPL-2.0+",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "imbl hash and ordered sets (S4, S5, secondary); license unverified"
+            }
+          ]
+        },
+        {
+          "group": 19,
+          "line": 169,
+          "tokens": [
+            "turn260828search7",
+            "turn260828search8"
+          ],
+          "claim_context": "| `imbl` 7.0.2 | MPL-2.0+  | released Sept. 2026 | immutable/persistent borrows | unique map/set keys | persistent HAMT/B+ tree/RRB-style structures | ordered map operations mostly O(log n)",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "imbl hash and ordered sets (S4, S5, secondary); license unverified"
+            }
+          ]
+        },
+        {
+          "group": 20,
+          "line": 170,
+          "tokens": [
+            "turn321353search3"
+          ],
+          "claim_context": "| `fst` 0.4.7 | MIT OR Unlicense",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            }
+          ]
+        },
+        {
+          "group": 21,
+          "line": 170,
+          "tokens": [
+            "turn338730view2",
+            "turn338730view3"
+          ],
+          "claim_context": "| `fst` 0.4.7 | MIT OR Unlicense  | mature; latest published 2021 | lending `Streamer` | unique built keys | minimal FST, mmap-friendly, n-ary merge streams | n-ary algebra O(sum inputs), memory O(stream count)",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            }
+          ]
+        },
+        {
+          "group": 22,
+          "line": 171,
+          "tokens": [
+            "turn321353search4"
+          ],
+          "claim_context": "| `roaring` 0.11.5 | MIT OR Apache-2.0",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "kernels present in locked 0.12.0; the row names 0.11.5"
+            }
+          ]
+        },
+        {
+          "group": 23,
+          "line": 171,
+          "tokens": [
+            "turn771789search2",
+            "turn818566search9"
+          ],
+          "claim_context": "| `roaring` 0.11.5 | MIT OR Apache-2.0  | released Aug. 2026 | decoded integer values | set semantics | compressed bitmap containers | specialized bitset/container kernels",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "kernels present in locked 0.12.0; the row names 0.11.5"
+            }
+          ]
+        },
+        {
+          "group": 24,
+          "line": 172,
+          "tokens": [
+            "turn321353search0"
+          ],
+          "claim_context": "| `bimap` 0.6.3 | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 25,
+          "line": 172,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "| `bimap` 0.6.3 | MIT OR Apache-2.0  | no recent release | borrowed lookup both directions | endpoint uniqueness | two backing maps | same class as backing maps",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 26,
+          "line": 173,
+          "tokens": [
+            "turn321353search1"
+          ],
+          "claim_context": "| `bidimap` 0.7.0 | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 27,
+          "line": 173,
+          "tokens": [
+            "turn771789search3"
+          ],
+          "claim_context": "| `bidimap` 0.7.0 | MIT OR Apache-2.0  | released Mar. 2026 | two-way borrowed lookup | endpoint uniqueness | hash/tree bimap variants | backing-map complexity",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 28,
+          "line": 174,
+          "tokens": [
+            "turn116162search2"
+          ],
+          "claim_context": "| `multimap` 0.10.1 | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 29,
+          "line": 174,
+          "tokens": [
+            "turn771789search0",
+            "turn338730view1"
+          ],
+          "claim_context": "| `multimap` 0.10.1 | MIT OR Apache-2.0  | released May 2025 | refs into per-key vectors | identical pairs allowed | `HashMap<K, Vec<V>>` | expected hash-key access plus vector work",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 30,
+          "line": 175,
+          "tokens": [
+            "turn321353search8"
+          ],
+          "claim_context": "| `multi_bimap` 0.8.0 | MIT OR Apache-2.0",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 31,
+          "line": 175,
+          "tokens": [
+            "turn846237search6"
+          ],
+          "claim_context": "… `multi_bimap` 0.8.0 | MIT OR Apache-2.0  | released Oct. 2026 | container-dependent; cloning/shared-pointer costs explicit | configurable cardinalities | synchronized antiparallel mappings | depends on chosen containers",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 32,
+          "line": 179,
+          "tokens": [
+            "turn260828search5"
+          ],
+          "claim_context": "…endent of key hashes or values; FST streams are lexicographic byte order. `IndexMap` explicitly documents that its iteration order is independent from hash or key value and can change under particular removal operations.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "IndexSet order semantics (S8, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 33,
+          "line": 181,
+          "tokens": [
+            "turn338730view3"
+          ],
+          "claim_context": "…n return references to stored objects. FST cannot efficiently implement ordinary `Iterator` for reconstructed search keys because those keys borrow from cursor-owned scratch storage; it instead uses a lending `Streamer`.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lending Streamer"
+            },
+            {
+              "source": "SRC-FROST-SRC-BITMAP-ADAPTER",
+              "scope": "decoded integer values in Frost wrappers"
+            }
+          ]
+        },
+        {
+          "group": 34,
+          "line": 181,
+          "tokens": [
+            "turn968624search16",
+            "turn771789search2"
+          ],
+          "claim_context": "…earch keys because those keys borrow from cursor-owned scratch storage; it instead uses a lending `Streamer`.  Roaring is different again: the natural result is a decoded integer value, not a reference to a stored `u32`.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lending Streamer"
+            },
+            {
+              "source": "SRC-FROST-SRC-BITMAP-ADAPTER",
+              "scope": "decoded integer values in Frost wrappers"
+            }
+          ]
+        },
+        {
+          "group": 35,
+          "line": 183,
+          "tokens": [
+            "turn260828search7",
+            "turn846237search2"
+          ],
+          "claim_context": "**Persistence is a storage strategy, not a wrapper.** `imbl` exposes immutable collections whose implementation is designed around persistent structures such as HAMTs, B+ trees, and RRB-style vectors.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "imbl persistence (S4, S5, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 36,
+          "line": 338,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "A separate `insert_overwrite` should return every displaced endpoint rather than discard them. That follows the same explicit philosophy as `bimap`’s overwrite result.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 37,
+          "line": 369,
+          "tokens": [
+            "turn338730view2"
+          ],
+          "claim_context": "…graphically sorted streams: its map `OpBuilder` performs union, intersection, difference, and symmetric difference across arbitrary stream counts in O(n₁+n₂+…) total work and memory proportional to the number of streams.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "the unconditional O(n1+n2+...) total-work assertion is not established: registered evidence supports the documented statement plus a qualified heap-based derivation only"
+            }
+          ]
+        },
+        {
+          "group": 38,
+          "line": 388,
+          "tokens": [
+            "turn260828search1",
+            "turn260828search0"
+          ],
+          "claim_context": "… left source can recover its stored representative with `get`. HashMap costs are expected rather than strict worst-case guarantees, and the standard documentation notes that hashing behavior and table state affect costs.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FROST-DOC-SET-ALGEBRA",
+              "scope": "HashSet costs and capacity (S1, secondary)"
+            }
+          ]
+        },
+        {
+          "group": 39,
+          "line": 403,
+          "tokens": [
+            "turn771789search2",
+            "turn818566search9"
+          ],
+          "claim_context": "…oaring` crate is a current pure-Rust compressed bitmap implementation, while the Roaring literature describes container-aware and SIMD-accelerated algorithms for union, intersection, difference, and symmetric difference.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "crate exists with set kernels; SIMD and container-algorithm claims unverified"
+            }
+          ]
+        },
+        {
+          "group": 40,
+          "line": 413,
+          "tokens": [
+            "turn809745search0",
+            "turn809745search1"
+          ],
+          "claim_context": "Rank/select research shows that compact indexable dictionaries can support rank and select with very small redundancy and constant-time RAM-model operations, making this an attractive design for static key universes.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 41,
+          "line": 417,
+          "tokens": [
+            "turn338730view3"
+          ],
+          "claim_context": "…aries because it can search compressed structures, can be backed by memory-mapped bytes, and exposes lexicographic streaming operations. Its current map values are restricted to `u64`, however, and keys are byte strings.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lexicographic streaming"
+            },
+            {
+              "source": "SRC-FROST-SRC-FST-ADAPTER",
+              "scope": "map values are u64; keys are bytes; the memory-mapped-backing claim in this sentence is not established by any registered scope"
+            }
+          ]
+        },
+        {
+          "group": 42,
+          "line": 419,
+          "tokens": [
+            "turn818566search5",
+            "turn818566search8"
+          ],
+          "claim_context": "…ndexes, ART is a strong candidate. The original Adaptive Radix Tree paper describes adaptive internal node layouts intended to improve cache efficiency while preserving ordered operations, range scans, and prefix lookup.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 43,
+          "line": 432,
+          "tokens": [
+            "turn338730view3"
+          ],
+          "claim_context": "…es the right way to think about zero-copy output. It can memory-map its backing bytes and search without eagerly loading the entire structure, but individual keys may still be reconstructed into a reusable cursor buffer.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "keys reconstructed into a reusable buffer; mmap claim unverified"
+            }
+          ]
+        },
+        {
+          "group": 44,
+          "line": 456,
+          "tokens": [
+            "turn818566search0",
+            "turn818566search3"
+          ],
+          "claim_context": "…on is associative. Likewise, bag rewrite laws depend on whether combination is additive or max-based; the academic bag-algebra literature explicitly exists to establish which identities remain valid under each semantics.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 45,
+          "line": 465,
+          "tokens": [
+            "turn338730view0"
+          ],
+          "claim_context": "…on testing should ensure no partially updated pair of indexes can escape. This is especially important if the implementation uses two separately mutated hash structures, as existing bimap implementations conceptually do.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 46,
+          "line": 545,
+          "tokens": [
+            "turn260828search4",
+            "turn260828search5",
+            "turn338730view2",
+            "turn771789search2"
+          ],
+          "claim_context": "…-order control; FST is an immutable lexicographic-stream control; Roaring is an integer-domain control. Their implementations and semantics differ enough that a single “faster than HashMap” benchmark would be misleading.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "fst control"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "roaring control"
+            }
+          ]
+        },
+        {
+          "group": 47,
+          "line": 593,
+          "tokens": [
+            "turn818566search0",
+            "turn818566search3",
+            "turn818566search5",
+            "turn818566search9",
+            "turn809745search0",
+            "turn818566search7"
+          ],
+          "claim_context": "…ring demonstrates specialized compressed integer-set kernels; rank/select work motivates dense frozen integer-map layouts; and Daciuk et al. provide the automata foundation relevant to static dictionary/FST construction.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        }
+      ]
+    },
+    "frost3": {
+      "file": "docs/reviews/supplied/frost-computed-sets-summary.md",
+      "sha256": "6f39fdbcf2d7816a3ea33eb40e371be7115b1b452cf040a7f8fe84a60de8177c",
+      "original_mapping": "unavailable",
+      "group_count": 15,
+      "token_occurrences": 38,
+      "distinct_tokens": 17,
+      "distinct_prefixes": 6,
+      "groups": [
+        {
+          "group": 1,
+          "line": 5,
+          "tokens": [
+            "turn376988view1",
+            "turn441542view0",
+            "turn441542view1"
+          ],
+          "claim_context": "…ersection, and exclusion; authorization checks are evaluated at consistent snapshots; and Leopard exists specifically to accelerate large/deep set computations using ordered integer sets plus an incremental update layer.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "sections 2.2, 2.3.1, 2.4.4, 3.2.4, pp. 2-8 (Opus-checked)"
+            }
+          ]
+        },
+        {
+          "group": 2,
+          "line": 7,
+          "tokens": [
+            "turn852766search4",
+            "turn852766search5",
+            "turn346310search3"
+          ],
+          "claim_context": "… an important representative-identity issue: equal elements in an intersection can come from either input, so a Frost API that promises deterministic representative provenance must constrain planner rewrites accordingly.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-BTREESET-OPS",
+              "scope": "lazy ordered operation iterators (secondary via repository audit)"
+            },
+            {
+              "source": "SRC-RUST-HASHSET-INTERSECTION",
+              "scope": "representative from one or the other"
+            }
+          ]
+        },
+        {
+          "group": 3,
+          "line": 9,
+          "tokens": [
+            "turn105473search2",
+            "turn346310search1",
+            "turn105473search1",
+            "turn105473search4"
+          ],
+          "claim_context": "…entations and portable serialized formats; FST supports very large compressed byte-string sets/maps and uses lending `Streamer` semantics because efficient traversal may reuse a key buffer instead of allocating each key.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lending Streamer reuses a key buffer"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "compressed integer set kernels; serialized-format claim unverified"
+            }
+          ]
+        },
+        {
+          "group": 4,
+          "line": 11,
+          "tokens": [
+            "turn852766search3",
+            "turn346310search0"
+          ],
+          "claim_context": "…her than recomputing whole collections, with removals represented as negative differences. The report recommends this as an optional later execution engine rather than a prerequisite for Frost’s initial computed-set API.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 5,
+          "line": 33,
+          "tokens": [
+            "turn376988view1",
+            "turn690562search0"
+          ],
+          "claim_context": "…f work concurrently and can cancel subtrees once the overall answer has been determined, which supports Frost’s terminal-specific execution approach for operations such as `contains`, `is_empty`, and bounded enumeration.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "sections 2.3.1 and 3.2.3 (Opus-checked)"
+            }
+          ]
+        },
+        {
+          "group": 6,
+          "line": 35,
+          "tokens": [
+            "turn441542view0",
+            "turn441542view1"
+          ],
+          "claim_context": "…ces certain group-membership checks to non-empty set intersection. The paper describes a periodic offline index plus an online incremental layer whose timestamped updates are merged with the base snapshot during queries.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "section 3.2.4, p. 7: ordered integer lists such as a skip list, non-empty-intersection reduction, offline index plus online layer (Opus-checked)"
+            }
+          ]
+        },
+        {
+          "group": 7,
+          "line": 52,
+          "tokens": [
+            "turn376988view2",
+            "turn441542view0"
+          ],
+          "claim_context": "…ve compatible sorted order. For intersections with strong cardinality skew, it can scan the small side and seek or probe the large side. Leopard’s ordered-list design is a concrete production precedent for this strategy.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "section 3.2.4 ordered-list design (Opus-checked); the planner strategy itself is the summary's proposal"
+            }
+          ]
+        },
+        {
+          "group": 8,
+          "line": 54,
+          "tokens": [
+            "turn105473search1",
+            "turn105473search4"
+          ],
+          "claim_context": "…y uses a lending `Streamer`: emitted byte keys can borrow from a reusable buffer, avoiding per-item allocation. The crate also supports combining multiple result streams with memory proportional to the number of streams.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lending semantics"
+            },
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "documented O(n1+n2+...) over per-stream element counts and memory proportional to stream count"
+            },
+            {
+              "source": "SRC-FST-0_4_7-RAW-OPS",
+              "scope": "qualified: heap-based implementation; conservative derived bound in integration audit section 6"
+            }
+          ]
+        },
+        {
+          "group": 9,
+          "line": 56,
+          "tokens": [
+            "turn441542view1"
+          ],
+          "claim_context": "…, the report distinguishes an immutable base snapshot from an ordered delta overlay. That mirrors Leopard’s architecture and gives Frost a practical incremental route before adopting a full differential-dataflow runtime.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "section 3.2.4, p. 8: updates timestamped no later than the query timestamp merged over the offline index (Opus-checked)"
+            }
+          ]
+        },
+        {
+          "group": 10,
+          "line": 58,
+          "tokens": [
+            "turn852766search0",
+            "turn852766search2"
+          ],
+          "claim_context": "…ma contains direct, computed, tuple-to-userset, union, intersection, and difference nodes, while SpiceDB describes permissions as computed subject sets supporting union, intersection, exclusion, and traversal operations.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-SPICEDB-SCHEMA",
+              "scope": "union, intersection, exclusion operators; OpenFGA half unverified"
+            }
+          ]
+        },
+        {
+          "group": 11,
+          "line": 84,
+          "tokens": [
+            "turn105473search4",
+            "turn105473search2"
+          ],
+          "claim_context": "…abilities. This is important because different representations have different lawful execution capabilities; for example, FST iteration has lending semantics while bitmap execution naturally works in integer-value space.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-STREAMER",
+              "scope": "lending semantics"
+            },
+            {
+              "source": "SRC-FROST-SRC-BITMAP-ADAPTER",
+              "scope": "bitmap wrappers work in value space"
+            }
+          ]
+        },
+        {
+          "group": 12,
+          "line": 103,
+          "tokens": [
+            "turn346310search3"
+          ],
+          "claim_context": "…ship equivalence** from **observable representative equivalence**. Rust’s `HashSet` documentation notes that, when equivalent values are stored in both inputs, intersection can yield the representative from either input.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-RUST-HASHSET-INTERSECTION",
+              "scope": "may yield references to one or the other"
+            }
+          ]
+        },
+        {
+          "group": 13,
+          "line": 107,
+          "tokens": [
+            "turn376988view1",
+            "turn441542view1"
+          ],
+          "claim_context": "…ibar guarantees that authorization checks can be evaluated at a snapshot no earlier than a client-provided consistency token, and Leopard evaluates timestamped incremental updates relative to the selected query snapshot.",
+          "status": "unresolved-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "sections 2.2, 2.4.4, and 3.2.4 (Opus-checked)"
+            }
+          ]
+        },
+        {
+          "group": 14,
+          "line": 109,
+          "tokens": [
+            "turn852766search3",
+            "turn346310search0"
+          ],
+          "claim_context": "…and concurrency, and Kani for bounded cursor/planner invariants. Differential Dataflow’s change-oriented execution model provides useful background for later validating incremental maintenance against full recomputation.",
+          "status": "unresolved-unsupported",
+          "editorial_support": []
+        },
+        {
+          "group": 15,
+          "line": 115,
+          "tokens": [
+            "turn105473search0",
+            "turn852766search0",
+            "turn852766search2",
+            "turn852766search3",
+            "turn852766search5",
+            "turn105473search1",
+            "turn105473search2",
+            "turn346310search1"
+          ],
+          "claim_context": "…r paper, official OpenFGA and SpiceDB materials, Microsoft’s Differential Dataflow publication, Rust standard-library documentation, official `fst` and `roaring` crate documentation, and the Roaring format specification.",
+          "status": "unresolved-partially-supported",
+          "editorial_support": [
+            {
+              "source": "SRC-FST-0_4_7-OPBUILDER-DOCS",
+              "scope": "fst documentation"
+            },
+            {
+              "source": "SRC-ROARING-0_12_0-SRC",
+              "scope": "roaring source"
+            },
+            {
+              "source": "SRC-SPICEDB-SCHEMA",
+              "scope": "SpiceDB material"
+            },
+            {
+              "source": "SRC-ZANZIBAR-2019",
+              "scope": "Zanzibar paper"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

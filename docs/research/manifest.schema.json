@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "frost-research-manifest.schema.json",
+  "title": "Frost research corpus manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generated_at", "repo_baseline", "branch", "raw_inputs", "archive", "artifacts", "questions", "missing_artifacts", "cross_lane_destinations"],
+  "properties": {
+    "schema": { "const": "frost-research-manifest/v1" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "repo_baseline": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "branch": { "type": "string", "minLength": 1 },
+    "raw_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "original_filename", "path", "sha256", "bytes", "lines", "title", "origin_created_at", "imported_at", "input_role", "opaque_citation_groups", "session_local_links"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "original_filename": { "type": "string" },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "lines": { "type": "integer", "minimum": 0 },
+          "title": { "type": "string" },
+          "origin_created_at": { "type": "string" },
+          "imported_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "input_role": { "type": "string" },
+          "opaque_citation_groups": { "type": "integer", "minimum": 0 },
+          "session_local_links": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "member_count", "members"],
+      "properties": {
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "member_count": { "type": "integer", "minimum": 0 },
+        "members": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "title", "kind", "level", "research_status", "implementation_status", "source_validation", "input_files", "input_sha256", "origin_created_at", "imported_at", "repo_baseline", "parent_ids", "related_ids", "supersedes", "open_questions"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^frost-research-[a-z0-9-]+$" },
+          "path": { "type": "string" },
+          "title": { "type": "string" },
+          "kind": { "enum": ["report", "summary", "synthesis", "template", "prompt", "index", "catalog", "audit", "citation-map", "manifest", "schema"] },
+          "level": { "enum": ["landscape", "deep-dive", "validation", "not-applicable"] },
+          "research_status": { "enum": ["imported", "curated", "reviewed", "superseded", "draft"] },
+          "implementation_status": { "enum": ["proposed", "implemented", "mixed", "not-applicable"] },
+          "source_validation": { "enum": ["pending", "partial", "verified", "not-applicable"] },
+          "input_files": { "type": "array", "items": { "type": "string" }, "description": "Repository-relative paths whose bytes the paired input_sha256 digests identify. For an archive, the retained archive path; the member is named in input_members." },
+          "input_members": { "type": "array", "items": { "type": "string" }, "description": "Member paths inside an archive named in input_files; empty when inputs are plain files." },
+          "input_sha256": { "type": "array", "items": { "type": "string", "pattern": "^[0-9a-f]{64}$" } },
+          "origin_created_at": { "type": "string" },
+          "imported_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "repo_baseline": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "parent_ids": { "type": "array", "items": { "type": "string" } },
+          "related_ids": { "type": "array", "items": { "type": "string" } },
+          "supersedes": { "type": "array", "items": { "type": "string" } },
+          "open_questions": { "type": "array", "items": { "type": "string", "pattern": "^Q-[A-Z]+-[0-9]+$" } }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "status", "brief", "depends_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^Q-[A-Z]+-[0-9]+$" },
+          "title": { "type": "string" },
+          "status": { "enum": ["open", "in-progress", "answered", "superseded"] },
+          "brief": { "type": ["string", "null"] },
+          "depends_on": { "type": "array", "items": { "type": "string", "pattern": "^Q-[A-Z]+-[0-9]+$" } }
+        }
+      }
+    },
+    "missing_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "referenced_by", "status", "recovery_attempted_in"],
+        "properties": {
+          "name": { "type": "string" },
+          "referenced_by": { "type": "array", "items": { "type": "string" } },
+          "status": { "enum": ["missing", "recovered", "superseded"] },
+          "recovery_attempted_in": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "cross_lane_destinations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "owner", "linked_from"],
+        "properties": {
+          "path": { "type": "string" },
+          "owner": { "type": "string" },
+          "linked_from": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

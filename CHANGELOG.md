@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased — research corpus and rationale
+
+Documentation only. Source, features, dependencies, CI, and the Rust 1.99.1 /
+edition 2024 toolchain are unchanged.
+
+- Open the README with Frost's rationale: semantic laws, the frozen lifecycle,
+  the engines it is meant to serve, and a current/proposed/outside-scope table.
+  Add a documentation map and reading paths. Keep every existing example.
+- Add a doctested README example of representative rules with hand-written
+  `PartialEq`, `Eq`, and `Hash`, correcting the supplied report's derived-trait
+  sketch.
+- Add the [Frozen API guide](docs/design/frozen-api.md): frozen value kinds,
+  plans, error recovery, representative laws, access models, costs, the integer
+  profile, snapshot admission, and a separate proposal section.
+- Add the curated research corpus under `docs/research/`: index, manifest,
+  source catalog, per-input citation map, integration audit, curated reports,
+  synthesis, five templates, and focused prompts.
+- Preserve the computed-sets summary and the supplied handoff archive unchanged
+  under `docs/reviews/supplied/`. The full computed-sets report, its template,
+  and a standalone algebraic-foundations report were not recovered.
+- Correct the collection-algebra guide: map report capability names to existing
+  traits, record unresolved package naming, state the `fst` n-ary merge cost
+  with its stream-count and key-length factors, and list sketch corrections.
+- Record the decision to keep one library package; a `frost-api` facade over a
+  `crates/frost-*` workspace stays an unadopted proposal.
+
 ## Unreleased — collection algebra research integration
 
 - Preserve both supplied Frost research reports and add a linked synthesis for

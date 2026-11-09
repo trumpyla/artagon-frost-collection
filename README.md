@@ -11,6 +11,195 @@ release. Version **0.4.0** adds fast frozen set algebra to the reviewed family,
 adaptive-storage, framework and concurrency design. The library is
 `no_std`; `alloc` and `std` add capabilities. The default enables only `std`.
 
+The first sections below explain why Frost exists and which contracts it keeps.
+Code examples start at [Core API](#core-api).
+
+## Why Frost
+
+Authorization engines, symbolic executors, static analyzers, and query engines
+repeatedly combine facts, relationships, permissions, and candidate states.
+They intersect candidates, join indexed facts, keep older versions, and often
+only need to know whether any result exists. Frost aims to be a collection
+substrate for that work that is precise about meaning and honest about cost:
+
+- **Precise semantics.** Each family states its duplicate, representative,
+  order, and ownership rules, and keeps them when a private kernel changes.
+- **Explicit ownership.** Construction, freezing, publication, and recovery are
+  named transitions with documented costs.
+- **Representation-aware execution.** Sorted, hashed, bitmap, and encoded
+  integer storage each expose only the operations they can honestly support.
+- **Observable costs.** Allocation, sharing, copying, and retries are
+  documented rather than hidden behind a "zero-cost" label.
+
+Frost does not replace `Vec`, `HashMap`, or every specialized index. It claims
+no speedup without a measurement for the relevant workload.
+
+## Semantic laws
+
+Related collections do not share one algebra. Each abstraction has its own
+logical model, and its operations need their own laws:
+
+| Abstraction | Logical model | Law that differs | In Frost today |
+| --- | --- | --- | --- |
+| Set | Membership in a domain | Union, intersection, difference; a complement needs an explicit universe | Implemented: ordered and hash families, bitmap wrappers, typed integer profile |
+| Map | Finite partial function from keys to values | Overlapping keys need an explicit value policy | Implemented families; map merge and join are proposals |
+| Bag (multiset) | Finite-support count of each element | Additive sum differs from max-union; sums can overflow | Proposal |
+| Sequence | Ordered finite word | Concatenation keeps order and repeated occurrences | Implemented sequence families; sequence algebra is a proposal |
+| Multimap | Key to a set, bag, or sequence of values | The per-key collection decides duplicates and order | Proposal |
+| Bimap | Partial bijection | Union can break uniqueness on either side | Proposal |
+
+Membership is not the whole contract. Two Rust values can be equal and still be
+different stored objects. Each Frost operation therefore states:
+
+- **Equivalence:** which relation decides "same element": `Eq` with `Hash`,
+  `Ord`, or a lossless integer codec.
+- **Representative:** which stored object survives. Frost families keep the
+  first equivalent key or element and the last map value; union and
+  intersection keep the left operand's representative. Exact `Frozen<B>`
+  wrappers keep their native backend's rules.
+- **Order:** ascending, insertion order, byte-lexicographic, or unspecified.
+  A stable traversal order is not a sorted order.
+- **Multiplicity:** sets and maps collapse duplicates; sequences keep each
+  occurrence; a bag counts them.
+- **Failure and overflow:** whether a failure returns an error, uses checked
+  arithmetic, or panics, and which input the caller gets back.
+- **Callback effects:** how often user hashing, comparison, resolver, or update
+  callbacks run. An `Fn` bound does not prove that a callback is pure.
+
+An optimizer rewrite is valid only when it keeps every observation the API
+promises. Two expressions with the same members can still return different
+representatives, orders, or errors. The
+[collection algebra guide](docs/design/collection-algebra.md) covers the
+proposed map, bag, sequence, multimap, and bimap laws.
+
+## Frozen lifecycle
+
+```text
+construct or update      mutable family, native backend, or builder
+  -> validate/normalize  duplicates, order, codec and length checks
+  -> freeze              seal, compact, freeze, or an explicit freeze plan
+  -> retain or publish   own the value, share it, or publish a snapshot
+  -> evaluate            lookups, traversal, algebra, counts
+  -> materialize         build an owned result; the frozen inputs stay frozen
+  -> leave (optional)    extract the backend, thaw, or use owning iteration;
+                         each consumes the frozen value
+```
+
+Freezing is a structural ownership transition. A frozen value has no insertion,
+removal, reordering, or mutable element access. Materializing a result reads
+the frozen inputs and leaves them unchanged. Leaving the frozen state is a
+separate step that consumes the value.
+Frozen does **not** mean deeply immutable (elements can have interior
+mutability), pinned, cheap to clone, serialization-compatible, or fresh with
+respect to any outside source.
+
+Five related concepts stay separate:
+
+| Concept | Meaning | In Frost today |
+| --- | --- | --- |
+| Frozen collection | An owned value with no structural mutation API | Implemented: `Frozen<B>`, frozen families, adaptive frozen profiles, `FrozenIntSet` |
+| Computed set or query | A description of how to answer from sources | Proposal; today's borrowed set iterators are lazy but are not reusable plans |
+| Persistent version | A version that shares unchanged structure | Partial: `imbl-7` exact wrappers keep native persistent sharing; Chunked integer sets share containers but copy a flat directory; a persistent integer family is a proposal |
+| Snapshot | A version tied to a publication or revision boundary | Implemented in memory with `arc-swap-1`; no durable snapshots |
+| Materialized answer | A result owned independently of its inputs | Implemented: collected results, integer and bitmap algebra results |
+
+A query description does not freeze the data that it reads. A stable snapshot
+can still be too old for a revocation requirement. The
+[Frozen API guide](docs/design/frozen-api.md) maps each of these contracts to
+source and tests.
+
+## Engines Frost is meant to serve
+
+These workloads motivate the design. Frost implements none of these engines; it
+supplies collection operations whose contracts an engine can rely on.
+
+### Symbolic execution and analysis
+
+Symbolic executors and static analyzers keep candidate-state sets, symbolic
+environments, dependency indexes, worklists, and retained versions. Frost
+collections can hold those structures. The engine still owns language
+semantics, path conditions and solver calls, abstract domains, widening, and
+sound state merging. A union of collection members is not a sound merge of
+program states, and partial evaluation must keep "unknown" separate from
+"false" or "absent".
+
+### Authorization and access control
+
+```text
+identity and transport authentication
+  -> credential and delegation verification
+  -> typed facts + policy revision + request context
+  -> collection algebra and query execution        <- Frost's layer
+  -> decision + explanation + obligations
+  -> enforcement at the resource, actor, or tool boundary
+```
+
+The engine around Frost must authenticate callers, verify credentials and
+delegation chains, bind identities and audiences, enforce caveats and expiry,
+handle revocation and replay, and bind each decision to the actual invocation.
+Authentication is not authorization, and an identifier is not proof of
+delegated authority.
+
+The following deny-overrides formula is an illustration only. It holds only
+when every set is fully evaluated over one universe of complete request tuples
+`(principal, action, resource, context)`:
+
+```text
+Effective = (Granted ∩ ScopeAllowed ∩ ContextAllowed) \ Denied
+```
+
+It is not a general policy semantics. Splitting correlated grants into separate
+principal, action, and resource sets can invent permissions. Unknown values,
+evaluation errors, conditional grants, and obligations need explicit engine
+rules. A missing, stale, or incomplete index is not proof of absence.
+
+The design is informed by research on relationship-based authorization,
+Vanadium-style blessings and caveats, Macaroons, OAuth and GNAP grants, DID and
+libp2p `PeerId` identity bindings, UCAN and ZCAP capabilities, verifiable
+credentials, and Kameo/libp2p actor systems. These are influences and possible
+consumers, not dependencies or supported protocols. Frost verifies no proof
+chain and implements none of these protocols. A DID and a `PeerId` are different
+identifiers; binding one to the other is a separate cryptographic concern. The
+[source catalog](docs/research/SOURCES.md) records which specific claims were
+checked against primary sources; most protocol details are not yet audited.
+
+### Computed sets, indexes, and durable data
+
+A computed set is an expression evaluated against sources at a defined revision,
+not necessarily a resident container. Membership, existence, bounded
+enumeration, exact or estimated count, and materialization are different
+terminal operations and can use different plans. Lazy execution can avoid
+building result containers, but it can still scan, buffer, deduplicate, follow
+recursive relations, or spill. It does not make every expression constant-memory
+or every exact count cheap, and it cannot enumerate an unbounded universe.
+
+Google's Zanzibar paper describes userset rewrite rules combined by union,
+intersection, and exclusion (section 2.3.1); checks evaluated at a consistent
+snapshot no earlier than a client-supplied token (sections 2.2 and 2.4.4);
+cancellation of subtrees once a result is known (section 3.2.3); and a Leopard
+index with a periodic offline build plus an online update layer (section 3.2.4)
+([Zanzibar, USENIX ATC 2019](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/),
+read 2026-11-09). Frost implements none of this. Overlays,
+durable cursors, and revisioned indexes are research topics. Index revision,
+durable snapshot, request context, and cache semantics must agree; a frozen
+in-memory index alone does not prove that an authorization answer is fresh.
+
+## Current, proposed, and outside scope
+
+| Area | Status | Reference |
+| --- | --- | --- |
+| One library package, `frost-collections`, imported as `frost` | Implemented | [Cargo.toml](Cargo.toml) |
+| Five mutable/frozen family pairs, exact `Frozen<B>` wrappers, adaptive profiles | Implemented | [Frozen API guide](docs/design/frozen-api.md) |
+| Lazy borrowed set algebra and scalar counts for ordered and hash sets; bitmap algebra | Implemented | [Set operations](docs/set-operations.md) |
+| Typed integer profile with shared storage and an explicit Chunked policy | Implemented (`int-set`); its algebra is eager | [Integer design](docs/design/integer-sets.md) |
+| Whole-value snapshot publication | Implemented (`arc-swap-1`) | [Snapshot contract](docs/design/snapshots.md) |
+| Generic borrowed set expressions; borrowed integer expressions | Proposal | [Set algebra](docs/design/set-algebra.md), [integer views](docs/design/integer-views.md) |
+| Map merge and join, bags, multimaps, bimaps, sequence algebra, prefix indexes | Proposal | [Collection algebra](docs/design/collection-algebra.md) |
+| Persistent tree directories; a separate persistent integer family | Proposal | [Persistent storage](docs/design/persistent-integer-storage.md) |
+| Computed sets over durable or indexed relations | Research | [Research synthesis](docs/research/synthesis/foundations-and-engine-roadmap.md) |
+| A `frost-api` facade over a `crates/frost-*` workspace | Unadopted proposal; current policy keeps one package | [Design decisions](docs/design/decisions.md) |
+| Authorization or policy engine, solver, identity server, durable store, distributed consistency protocol | Outside scope | — |
+
 This unreleased revision integrates shared integer storage and explicit Chunked
 sets while retaining the main project's checked output policies and generic
 set-algebra design. Guarded snapshots, conditional publication, deterministic
@@ -21,6 +210,36 @@ executed gates from remaining release requirements;
 record the subsequent Make and CI adaptation. The
 [integration review](docs/reviews/revision2-integration-review.md) explains the
 selective merge; earlier reviews and benchmarks remain historical evidence.
+
+## Documentation map
+
+| Category | Artifact | Purpose | Status |
+| --- | --- | --- | --- |
+| Index | [Documentation index](docs/README.md) | Complete inventory of design, research, review, and maintenance documents | Navigation |
+| Frozen API | [Frozen API guide](docs/design/frozen-api.md) | Families, exact wrappers, plans, recovery, access models, costs, snapshots | Current contracts; proposals marked |
+| Principles | [Philosophy](docs/design/philosophy.md), [architecture](docs/design/architecture.md), [decisions](docs/design/decisions.md) | Durable principles, current architecture, and recorded choices | Current design |
+| Algebra | [Set operations](docs/set-operations.md), [collection algebra](docs/design/collection-algebra.md), [general set algebra](docs/design/set-algebra.md) | Implemented set contracts; proposed algebra for other collections | Implemented and proposal |
+| Integers | [Integer design](docs/design/integer-sets.md), [integer views](docs/design/integer-views.md), [roadmap](docs/design/integer-roadmap.md) | Codecs, storage, policies; deferred expressions | Implemented and proposal |
+| Versions | [Snapshots](docs/design/snapshots.md), [persistent storage](docs/design/persistent-integer-storage.md) | Publication, retries, sharing, and retention | Implemented and proposal |
+| Research | [Research index](docs/research/README.md), [synthesis](docs/research/synthesis/foundations-and-engine-roadmap.md), [sources](docs/research/SOURCES.md), [integration audit](docs/research/integration-audit.md) | Curated reports, decision map, source evidence, corrections and gaps | Research; not accepted design |
+| Templates | [Research prompt](docs/research/templates/research-prompt.md) | Start a landscape, deep-dive, or validation study | Template |
+| Examples | [examples/](examples/) | Executable scenarios run as tests | Implemented; see feature requirements |
+| Verification | [Verification scope](docs/verification.md), [benchmark method](docs/maintainers/benchmarks.md) | Model assumptions, bounds, and measurement rules | Current guidance |
+| Evidence | [Supplied inputs](docs/reviews/supplied/README.md), [integration validation](docs/revision2-integration-validation.md) | Unmodified inputs and dated results | Historical evidence |
+| Contributing | [Contributor guide](CONTRIBUTING.md), [maintainer guide](docs/maintainers/guide.md), [release procedure](docs/maintainers/releasing.md) | How to change, verify, and release | Current process |
+
+Reading paths:
+
+- **New contributor:** this README, the Frozen API guide, `examples/`, the
+  philosophy, then the contributor guide.
+- **Frozen API implementer:** architecture, the Frozen API guide, the linked
+  source modules and tests, then verification scope.
+- **Algebra or planner implementer:** set operations, collection algebra,
+  general set algebra and its review, then the research synthesis.
+- **Authorization-engine integrator:** the authorization section above, the
+  snapshot contract, then the research synthesis and its authorization prompt.
+- **Researcher starting a subtopic:** the research index, the synthesis, the
+  research prompt template, then the integration audit's open gaps.
 
 ## Core API
 
@@ -405,6 +624,51 @@ assert_eq!(map.thaw().get("b"), Some(&2));
   Live traversal/length observations do not constitute a consistent snapshot.
 - Publish a complete frozen value when readers need a stable whole-collection
   view. Element interior mutability remains the caller's responsibility.
+
+Representative rules matter when equality ignores some data. Write `PartialEq`,
+`Eq`, and `Hash` by hand so that they use the same fields; deriving them would
+compare and hash every field.
+
+```rust
+# #[cfg(feature = "std")]
+# {
+use frost::prelude::*;
+use std::hash::{Hash, Hasher};
+
+// Equality and hashing use only `id`; `origin` is metadata.
+struct Key {
+    id: u32,
+    origin: &'static str,
+}
+impl PartialEq for Key {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Key {}
+impl Hash for Key {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
+}
+
+// Construction keeps the first equivalent key and the last value.
+let map: FrozenHashMap<Key, &str> = [
+    (Key { id: 7, origin: "first" }, "a"),
+    (Key { id: 7, origin: "second" }, "b"),
+]
+.into_iter()
+.collect();
+let (stored, value) = map.get_key_value(&Key { id: 7, origin: "query" }).unwrap();
+assert_eq!((stored.origin, *value), ("first", "b"));
+
+// Intersection borrows the left operand's representative.
+let left: FrozenHashSet<Key> = [Key { id: 1, origin: "left" }].into_iter().collect();
+let right: FrozenHashSet<Key> = [Key { id: 1, origin: "right" }].into_iter().collect();
+assert_eq!(left.intersection(&right).next().map(|k| k.origin), Some("left"));
+assert_eq!(right.intersection(&left).next().map(|k| k.origin), Some("right"));
+# }
+```
 
 ## Snapshot reads and optimistic updates
 

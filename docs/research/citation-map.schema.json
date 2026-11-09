@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "frost-research-citation-map.schema.json",
+  "title": "Frost research citation map",
+  "description": "Per-input scoped inventory of opaque export citation markers in the raw research inputs. Original mappings are unavailable; editorial support never counts as recovery.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generated_at", "repo_baseline", "marker_format", "status_legend", "inputs"],
+  "properties": {
+    "schema": { "const": "frost-research-citation-map/v1" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "repo_baseline": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "marker_format": { "type": "string" },
+    "status_legend": { "type": "object", "additionalProperties": { "type": "string" } },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frost1", "frost2", "frost3"],
+      "properties": {
+        "frost1": { "$ref": "#/$defs/input" },
+        "frost2": { "$ref": "#/$defs/input" },
+        "frost3": { "$ref": "#/$defs/input" }
+      }
+    }
+  },
+  "$defs": {
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "sha256", "original_mapping", "group_count", "token_occurrences", "distinct_tokens", "distinct_prefixes", "groups"],
+      "properties": {
+        "file": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "original_mapping": { "const": "unavailable" },
+        "group_count": { "type": "integer", "minimum": 0 },
+        "token_occurrences": { "type": "integer", "minimum": 0 },
+        "distinct_tokens": { "type": "integer", "minimum": 0 },
+        "distinct_prefixes": { "type": "integer", "minimum": 0 },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["group", "line", "tokens", "claim_context", "status", "editorial_support"],
+            "properties": {
+              "group": { "type": "integer", "minimum": 1 },
+              "line": { "type": "integer", "minimum": 1 },
+              "tokens": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^turn\\d+(search|view|news)\\d+$" } },
+              "claim_context": { "type": "string" },
+              "status": { "enum": ["unresolved-unsupported", "unresolved-partially-supported", "unresolved-supported"] },
+              "editorial_support": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["source", "scope"],
+                  "properties": {
+                    "source": { "type": "string", "pattern": "^SRC-[A-Z0-9_-]+$" },
+                    "scope": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

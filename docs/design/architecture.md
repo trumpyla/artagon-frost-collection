@@ -13,13 +13,15 @@ Optional integrations that require the standard library enable `std` explicitly;
 enabling `std` alone does not activate them. Nightly checks are additional
 diagnostics, not a library requirement.
 
-[DESIGN_DECISIONS.md](decisions.md) explains the comparison that produced
+[Design decisions](decisions.md) explains the comparison that produced
 this combined design. This document describes the resulting architecture and
-its boundaries. [README.md](../../README.md) contains the user-facing feature catalog
-and tested introductory examples.
+its boundaries. [README.md](../../README.md) contains the rationale, the
+user-facing feature catalog, and tested introductory examples. The
+[Frozen API guide](frozen-api.md) gathers the frozen-value contracts from
+sections 1, 3, 5, and 6 below into one reference with source and test links.
 
 Version 0.4.0 adds frozen set algebra without changing the family identities or
-freeze/thaw pairings. [SET_OPERATIONS.md](../set-operations.md) records the lazy
+freeze/thaw pairings. [Set operations](../set-operations.md) records the lazy
 borrowed family operations, direct scalar kernels, frozen bitmap results, and
 left-representative rule.
 
@@ -32,6 +34,9 @@ The [collection algebra research synthesis](collection-algebra.md) extends the
 proposed semantic scope to maps, sequences, bags, multimaps, bimaps, and prefix
 indexes. These are future contracts within the current single-library boundary;
 the supplied reports' workspace split and API sketches are not implemented.
+The [research corpus](../research/README.md) holds the curated reports, source
+catalog, and synthesis that motivate these proposals; research there is not
+accepted architecture.
 
 The subsequent [performance review](../reviews/performance-review.md) keeps these public
 boundaries. It adds shape-aware ordered kernels and simpler dense word loops,
@@ -489,8 +494,8 @@ doctested, including compile-fail checks for forbidden mutation and invalid
 capability use. Ownership-sensitive inline paths receive Miri checks alongside
 functional and panic regressions.
 
-[REVIEW.md](../reviews/historical-review.md) records specific findings and before-fix reproductions.
-[VERIFICATION.md](../reviews/historical-verification.md) records checks actually completed and their
+The [historical review](../reviews/historical-review.md) records specific findings and before-fix reproductions.
+[Historical verification](../reviews/historical-verification.md) records checks actually completed and their
 limits. Passing tests does not prove the absence of all unsafe-code defects or
 establish a performance advantage. Choosing thresholds, hashers, and specialized
 backends remains a workload decision that should be supported by measurements.
