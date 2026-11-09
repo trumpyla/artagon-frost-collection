@@ -1,0 +1,748 @@
+warning: manifest has no documentation, homepage or repository
+  |
+  = note: see https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info
+   Packaging frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Updating crates.io index
+    Packaged 170 files, 1.8MiB (461.7KiB compressed)
+   Verifying frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections/target/package/frost-collections-0.4.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.63s
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling libc v0.2.191
+   Compiling crossbeam-utils v0.8.23
+   Compiling cfg-if v1.0.5
+   Compiling rand_core v0.10.1
+   Compiling crossbeam-epoch v0.9.21
+   Compiling getrandom v0.4.3
+   Compiling serde_core v1.0.229
+   Compiling libm v0.2.16
+   Compiling rustix v1.1.6
+   Compiling zmij v1.0.23
+   Compiling once_cell v1.21.4
+   Compiling siphasher v1.0.4
+   Compiling crossbeam-deque v0.8.8
+   Compiling bytemuck v1.25.2
+   Compiling phf_shared v0.14.0
+   Compiling bitflags v2.13.2
+   Compiling fastrand v2.5.0
+   Compiling version_check v0.9.5
+   Compiling cfg_aliases v0.2.2
+   Compiling equivalent v1.0.3
+   Compiling serde v1.0.229
+   Compiling linux-raw-sys v0.12.1
+   Compiling syn v3.0.9
+   Compiling parking_lot_core v0.9.12
+   Compiling rustversion v1.0.23
+   Compiling autocfg v1.5.1
+   Compiling serde_json v1.0.154
+   Compiling ref-cast v1.0.27
+   Compiling rayon-core v1.13.0
+   Compiling phf_generator v0.14.0
+   Compiling slotmap v1.1.1
+   Compiling syn v2.0.119
+   Compiling borsh v1.8.1
+   Compiling num-traits v0.2.19
+   Compiling safe_arch v0.7.4
+   Compiling memchr v2.8.3
+   Compiling rand_core v0.9.5
+   Compiling smallvec v1.16.5
+   Compiling saa v5.6.2
+   Compiling scopeguard v1.2.0
+   Compiling fst v0.4.7
+   Compiling foldhash v0.2.0
+   Compiling allocator-api2 v0.2.21
+   Compiling itoa v1.0.18
+   Compiling lock_api v0.4.14
+   Compiling hashbrown v0.17.1
+   Compiling fearless_simd v1.2.0
+   Compiling rand_xoshiro v0.7.0
+   Compiling sdd v4.8.11
+   Compiling wide v0.7.33
+   Compiling serde_derive_internals v0.30.0
+   Compiling tempfile v3.27.0
+   Compiling wait-timeout v0.2.1
+   Compiling dyn-clone v1.0.20
+   Compiling hashbrown v0.14.5
+   Compiling byteorder v1.5.0
+   Compiling imbl-sized-chunks v0.2.0
+   Compiling cpufeatures v0.3.1
+   Compiling bit-vec v0.10.1
+   Compiling either v1.19.0
+   Compiling quick-error v1.2.3
+   Compiling fnv v1.0.7
+   Compiling archery v1.2.3
+   Compiling bit-set v0.11.1
+   Compiling rayon v1.12.0
+   Compiling chacha20 v0.10.2
+   Compiling imbl v7.0.2
+   Compiling arc-swap v1.9.4
+   Compiling dashmap v6.2.1
+   Compiling scc v3.8.8
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling schemars_derive v1.2.3
+   Compiling fearless_simd_macros v0.1.0
+   Compiling phf_macros v0.14.0
+   Compiling rusty-fork v0.3.1
+   Compiling indexmap v2.14.2
+   Compiling rand v0.10.3
+   Compiling crossbeam-skiplist v0.1.3
+   Compiling rand_xorshift v0.5.0
+   Compiling phf v0.14.0
+   Compiling fixedbitset v0.5.9
+   Compiling unarray v0.1.4
+   Compiling regex-syntax v0.8.11
+   Compiling core_detect v1.0.0
+   Compiling arrayvec v0.7.8
+   Compiling arbitrary v1.5.0
+   Compiling proptest v1.12.0
+   Compiling schemars v1.2.3
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections/target/package/frost-collections-0.4.0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 51.13s
+     Running unittests src/lib.rs (target/package/frost-collections-0.4.0/target/debug/deps/frost-07cae6529972c7ca)
+
+running 17 tests
+test backends::bitmap::cardinality_tests::overlap_prevents_spurious_intermediate_overflow ... ok
+test integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded ... ok
+test integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries ... ok
+test backends::bitmap::cardinality_tests::symmetric_difference_rejects_actual_cardinality_overflow - should panic ... ok
+test backends::bitmap::cardinality_tests::union_rejects_actual_cardinality_overflow - should panic ... ok
+test integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk ... ok
+test integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations ... ok
+test integer::dense::tests::deleting_from_an_empty_window_is_a_no_op ... ok
+test integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code ... ok
+test integer::storage::word::tests::dense_byte_promotion_preserves_lsb_positions_and_width_ends ... ok
+test integer::storage::tests::hash_scout_selects_content_format_at_both_thresholds ... ok
+test integer::storage::tests::skewed_intersection_does_not_scan_the_large_operand ... ok
+test integer::storage::tests::run_scout_break_propagates_before_the_seventeenth_run_tail ... ok
+test integer::storage::word::tests::dense_promotion_chunks_without_losing_partition_boundaries ... ok
+test integer::chunked::tests::containers_normalize_at_both_thresholds ... ok
+test integer::chunked::tests::run_visitors_preserve_extreme_codes_and_stop_at_break ... ok
+test integer::chunked::tests::partial_fold_preserves_members_across_every_container_kind ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/adapters.rs (target/package/frost-collections-0.4.0/target/debug/deps/adapters-609e8bfa9e79428e)
+
+running 14 tests
+test borsh_tests::borsh_rejects_non_total_hash_key_ordering ... ok
+test borsh_tests::ordered_borsh_roundtrip_is_strict_without_std_feature ... ok
+test borsh_tests::borsh_is_canonical_and_matches_std_bytes ... ok
+test serde_tests::serde_borrowed_keys_work_with_strict_helpers ... ok
+test schemars_tests::schemas_match_the_std_type_with_the_same_encoding ... ok
+test arbitrary_tests::arbitrary_reaches_grown_states ... ok
+test serde_tests::serde_encoding_ignores_representation ... ok
+test serde_tests::serde_duplicate_policy_and_strict_helpers ... ok
+test serde_tests::serde_round_trips_every_family ... ok
+test serde_tests::sorted_unique_decoding_covers_all_ordered_maps ... ok
+test rayon_tests::rayon_mutates_adaptive_ordered_values ... ok
+test rayon_tests::rayon_mutable_and_owned_iteration ... ok
+test rayon_tests::rayon_collect_equals_sequential_collect ... ok
+test arbitrary_tests::arbitrary_reaches_every_representation_with_valid_invariants ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/adaptive_performance.rs (target/package/frost-collections-0.4.0/target/debug/deps/adaptive_performance-336613ffe26d8ae7)
+
+running 6 tests
+test ordered_entry_preserves_promotion_and_closure_panic_behavior ... ok
+test hash_entry_panicking_before_promotion_keeps_the_map ... ok
+test ordered_entry_panicking_before_promotion_keeps_the_map ... ok
+test hash_entry_preserves_promotion_and_closure_panic_behavior ... ok
+test ordered_entry_searches_the_sorted_representation_once ... ok
+test hash_entry_searches_the_linear_representation_once ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/advanced.rs (target/package/frost-collections-0.4.0/target/debug/deps/advanced-0a05d0ba793dff9d)
+
+running 14 tests
+test dense_sets::universe_size_and_membership_cardinality_are_distinct ... ok
+test generational_maps::dense_and_secondary_maps_support_copied_key_iteration ... ok
+test dense_sets::padding_bits_are_not_members_and_retention_preserves_storage ... ok
+test generational_maps::secondary_membership_is_independent_of_primary_removal ... ok
+test persistent::borrowed_lookups_and_persistent_snapshots_are_independent ... ok
+test persistent::borrowed_removal_returns_stored_entries_and_keeps_persistent_snapshots ... ok
+test generational_maps::slotmap_rejects_stale_keys_and_clones_do_not_mutate_snapshot ... ok
+test persistent::equivalent_insert_retains_original_stored_key ... ok
+test persistent::ordered_maps_and_sets_preserve_order_and_borrowed_queries ... ok
+test persistent::persistent_sets_keep_first_representatives_and_remove_by_borrowed_query ... ok
+test persistent::vector_retains_snapshot_and_exposes_sequence_capabilities ... ok
+test roaring_sets::bitmap_iterates_values_and_keeps_cardinality_wide ... ok
+test roaring_sets::treemap_preserves_full_width_keys_and_snapshot ... ok
+test roaring_sets::set_mutation_capabilities_report_membership_changes ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/backend_review.rs (target/package/frost-collections-0.4.0/target/debug/deps/backend_review-054774a1e3b13cb3)
+
+running 4 tests
+test arrayvec_exact_length_is_independent_of_inline_capacity ... ok
+test arrayvec_exact_length_failure_preserves_owned_elements ... ok
+test value_and_cardinality_read_traits_remain_dyn_compatible ... ok
+test fst_read_traits_work_for_borrowed_bytes_and_seal_for_owned_bytes ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/bitmap_performance.rs (target/package/frost-collections-0.4.0/target/debug/deps/bitmap_performance-ebb79e3e0132c23b)
+
+running 3 tests
+test both_boundaries_mask_dirty_padding_without_losing_real_members ... ok
+test long_zero_extended_suffixes_in_both_directions ... ok
+test long_shared_word_spans_and_partial_tails ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/bitmap_set_ops.rs (target/package/frost-collections-0.4.0/target/debug/deps/bitmap_set_ops-cd18950efbb6a378)
+
+running 7 tests
+test fixed::padding_cannot_become_a_member_in_a_larger_universe ... ok
+test fixed::algebra_matches_logical_membership_with_arbitrary_blocks ... ok
+test bitmap::algebra_matches_reference_membership ... ok
+test treemap::algebra_matches_reference_membership ... ok
+test bitmap::sparse_dense_empty_and_extreme_members ... ok
+test fixed::empty_partial_and_unequal_universes_ignore_dirty_padding ... ok
+test treemap::sparse_dense_empty_and_extreme_members ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+     Running tests/concurrent.rs (target/package/frost-collections-0.4.0/target/debug/deps/concurrent-8f637f1f2f8abd1e)
+
+running 21 tests
+test live::dashmap_tests::set_callbacks_can_return_owned_members ... ok
+test live::skiplist_tests::borrowed_lookup_and_owned_extraction ... ok
+test live::scc_tests::set_callbacks_can_return_owned_members ... ok
+test snapshot::built_in_frozen_collections_are_valid_snapshot_payloads ... ok
+test live::scc_tests::borrowed_lookup_and_exclusive_updates_under_contention ... ok
+test snapshot::conditional_publication_compares_identity_and_returns_displaced_version ... ok
+test snapshot::many_guards_remain_valid_after_publication_and_store_drop ... ok
+test live::dashmap_tests::borrowed_lookup_and_exclusive_updates_under_contention ... ok
+test live::skiplist_tests::concurrent_insertions_preserve_order_after_writers_join ... ok
+test snapshot::guard_and_peek_observe_the_selected_version ... ok
+test snapshot::publication_preserves_owned_versions ... ok
+test snapshot::peek_unwinding_releases_its_guard_and_calls_the_callback_once ... ok
+test snapshot::newly_frozen_mutable_profiles_preserve_older_published_versions ... ok
+test snapshot::rejected_non_clone_candidate_keeps_its_storage_and_is_dropped_once ... ok
+test snapshot::successful_conditional_publication_transfers_non_clone_ownership_once ... ok
+test snapshot::readers_hold_one_version_across_a_synchronized_publication ... ok
+test snapshot::panic_on_a_retry_preserves_the_competing_publication ... ok
+test snapshot::update_panic_leaves_that_attempt_unpublished_and_the_store_usable ... ok
+test snapshot::update_retries_after_a_forced_conflict_and_returns_its_actual_predecessor ... ok
+test snapshot::competing_updates_have_a_complete_displaced_version_history ... ok
+test snapshot::readers_observe_one_complete_published_version ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/contracts.rs (target/package/frost-collections-0.4.0/target/debug/deps/contracts-f3467f0684af31f4)
+
+running 23 tests
+test defaults_do_not_require_element_default ... ok
+test deque_compact_is_contiguous_in_logical_order ... ok
+test adaptive_representations_are_logically_equal_and_keep_hasher ... ok
+test algorithms_accept_mutable_and_frozen_alike ... ok
+test erased_lookup_is_dyn_compatible ... ok
+test every_std_family_has_a_retaining_freeze ... ok
+test borrowed_string_queries ... ok
+test family_builders_keep_first_key_last_value ... ok
+test heap_order_vs_sorted_order_is_explicit ... ok
+test empty_ordered_range_never_panics_like_btree ... ok
+test inline_vec_is_canonical_for_equality_and_hash ... ok
+test indexmap_adapter_keeps_insertion_order_and_positions ... ok
+test layout_report ... ok
+test hashbrown_adapter_uses_equivalent ... ok
+test mutation_traits_on_backends ... ok
+test recoverable_failure_returns_source_unchanged ... ok
+test prelude_does_not_shadow_std_first_entry ... ok
+test rejected_input_and_slice_equality ... ok
+test seal_is_o1_and_keeps_capacity_compact_drops_it ... ok
+test sealing_preserves_already_stored_representatives ... ok
+test strict_builders_return_the_rejected_entry ... ok
+test ordered_families_dedup_by_ord_not_partial_eq ... ok
+test ordered_range_matches_btree_including_panics ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/core_review.rs (target/package/frost-collections-0.4.0/target/debug/deps/core_review-7ac464af276a50f2)
+
+running 14 tests
+test explicit_native_extraction_preserves_owned_values ... ok
+test hashed::every_hash_builder_preserves_first_key_and_last_value ... ok
+test hashed::frozen_adaptive_thaw_and_extraction_do_not_clone_the_hasher ... ok
+test hashed::explicit_hash_builders_need_neither_clone_nor_default_hashers ... ok
+test inline_collection_stops_at_the_first_none ... ok
+test ordered_duplicate_reduction_drops_each_value_once_on_panic ... ok
+test thawing_zero_sized_values_keeps_the_standard_capacity_convention ... ok
+test mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys ... ok
+test hashed::hash_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test small_inline_collection_does_not_consult_heap_reservation_hints ... ok
+test hashed::ordered_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test inline_zero_sized_reservation_checks_length_overflow ... ok
+test ordered_freezing_does_not_require_new_key_bounds ... ok
+test hashed::strict_hash_builders_return_the_rejected_input_entry ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/differential.rs (target/package/frost-collections-0.4.0/target/debug/deps/differential-15607fe32bd5ba63)
+
+running 5 tests
+test frozen_vec_roundtrip ... ok
+test inline_vec_roundtrip ... ok
+test adaptive_hash_matches_hashmap ... ok
+test ordered_map_matches_btree ... ok
+test ordered_set_matches_btree ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.60s
+
+     Running tests/ecosystem_review.rs (target/package/frost-collections-0.4.0/target/debug/deps/ecosystem_review-e7e6103e5836390b)
+
+running 12 tests
+test borsh_contracts::exact_wrapper_preserves_native_decoding_rules ... ok
+test borsh_contracts::hash_decoding_cannot_silently_collapse_eq_equivalent_ordered_keys ... ok
+test borsh_contracts::hash_set_encoding_matches_ordered_sets_and_rejects_noncanonical_input ... ok
+test borsh_contracts::ordered_set_encodings_are_canonical_and_strict ... ok
+test serde_contracts::hash_sets_roundtrip_without_a_stable_wire_order ... ok
+test serde_contracts::map_allocation_ignores_excessive_deserializer_size_hint ... ok
+test rayon_contracts::pure_traversal_needs_neither_hashing_nor_a_hasher ... ok
+test serde_contracts::ordered_sets_roundtrip_and_strict_decoding_rejects_duplicates ... ok
+test set_generation_matches_the_family_builder ... ok
+test set_schemas_follow_the_same_logical_encoding ... ok
+test rayon_contracts::collection_and_extension_do_not_send_the_hasher_to_workers ... ok
+test rayon_contracts::ordered_parallel_input_retains_first_representative_and_last_value ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/exhaustive_collections.rs (target/package/frost-collections-0.4.0/target/debug/deps/exhaustive_collections-8d6c5e3d19fae763)
+
+running 4 tests
+test inline_ownership_exhausts_three_operation_traces ... ok
+test inline_ownership_exhausts_five_operation_traces ... ok
+test ordered_algebra_exhausts_all_pairs_of_six_member_sets ... ok
+test dense::bitmap_algebra_exhausts_boundary_members_and_dirty_padding ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.45s
+
+     Running tests/families.rs (target/package/frost-collections-0.4.0/target/debug/deps/families-ed3cf9d1e2d35aab)
+
+running 13 tests
+test adaptive_hash_promotes_on_new_key_only ... ok
+test append_keeps_self_keys_on_every_toolchain ... ok
+test freeze_thaw_pairs_are_fixed ... ok
+test adaptive_ordered_promotes_and_keeps_order ... ok
+test adaptive_api_parity ... ok
+test inline_reserve_overflow_panics_like_vec ... ok
+test entry_apis_hide_the_backend ... ok
+test inline_retain_panic_keeps_unvisited_elements_like_vec ... ok
+test mutable_ordered_from_iter_keeps_first_key_representative ... ok
+test inline_vec_spills_once_and_demotes_only_explicitly ... ok
+test write_capabilities_work_across_every_mutable_map ... ok
+test inline_vec_matches_vec_under_random_ops ... ok
+test adaptive_maps_match_std_under_random_ops ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+
+     Running tests/hash_set_ops.rs (target/package/frost-collections-0.4.0/target/debug/deps/hash_set_ops-9f99b643e37222d3)
+
+running 5 tests
+test an_operand_only_traversed_does_not_need_a_hasher ... ok
+test creating_cloning_and_inspecting_iterators_does_not_probe_membership ... ok
+test representative_retention_survives_smaller_right_scans_and_collisions ... ok
+test empty_self_disjoint_and_overlap_obey_iterator_contracts ... ok
+test algebra_and_counts_match_native_sets ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests/inline_safety.rs (target/package/frost-collections-0.4.0/target/debug/deps/inline_safety-11a0378fbdca38bf)
+
+running 12 tests
+test drop_counts_inline_and_heap ... ok
+test inline_vec_ops_drop_exactly_once ... ok
+test over_aligned_elements_survive_mutation_spill_and_thaw ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test panicking_hint_after_spilling_drops_every_produced_value ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test owning_iterator_drop_panic_still_drops_its_remaining_range ... ok
+test rejected_element_drop_panic_restores_the_unvisited_suffix ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test zero_sized_and_zero_capacity ... ok
+test zero_sized_destructors_run_once_through_inline_ownership ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integer_output.rs (target/package/frost-collections-0.4.0/target/debug/deps/integer_output-9444387031328f72)
+
+running 19 tests
+test both_limits_are_combined_independently ... ok
+test contiguous_payload_diagnostics_report_actual_buffer_bytes ... ok
+test construction_limits_survive_default_algebra ... ok
+test empty_operands_and_identity_shortcuts_do_not_bypass_limits ... ok
+test equality_checks_members_even_when_metadata_matches ... ok
+test equality_and_hash_ignore_dense_padding_and_construction_history ... ok
+test canonical_hash_scout_thresholds_are_representation_independent ... ok
+test canonical_hash_events_match_across_representations_and_boundaries ... ok
+test limits_are_excluded_from_logical_equality_and_hash ... ok
+test output_policy_overrides_are_checked_and_retained ... ok
+test identity_sharing_obeys_forced_representations_and_inherited_limits ... ok
+test roaring_partition_limits_apply_to_promoted_outputs ... ok
+test signed_and_restricted_domains_survive_promoted_algebra ... ok
+test tiny_mixed_updates_preserve_a_dense_window ... ok
+test distant_dense_runs_promote_without_a_sorted_expansion ... ok
+test repeated_snapshot_updates_preserve_dense_storage_and_old_versions ... ok
+test explicit_large_dense_budget_is_not_clamped_to_the_default ... ok
+test mixed_promotion_handles_word_partition_and_unsigned_end_boundaries ... ok
+test compact_native_intersection_survives_auto_but_respects_output_limits ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.99s
+
+     Running tests/integer_sets.rs (target/package/frost-collections-0.4.0/target/debug/deps/integer_sets-c414407b6c26e3dc)
+
+running 30 tests
+test auto_planner_respects_local_span_and_scattered_upper_prefixes ... ok
+test builtin_codecs_preserve_width_boundaries_order_and_round_trips ... ok
+test broken_codec_laws_are_checked_without_unsafe_value_construction ... ok
+test bulk_algebra_and_replanning_do_not_reencode_or_decode_keys ... ok
+test a_decoder_that_changes_after_construction_causes_a_checked_panic ... ok
+test capability_traits_expose_reconstructed_values_and_wide_cardinality ... ok
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test budgets_are_inherited_by_results ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test explicit_budget_and_partition_limits_are_enforced ... ok
+test empty_and_duplicate_inputs_have_set_semantics_in_every_backend ... ok
+test cloning_and_identity_results_share_storage ... ok
+test forced_backends_and_iterators_preserve_typed_value_order ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test freeze_plan_preserves_failed_sources_and_ordinary_pairings ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+test logical_equality_order_and_hash_ignore_representation ... ok
+test narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes ... ok
+test chunked_results_share_untouched_containers ... ok
+test snapshot_publication_retains_integer_profile_versions ... ok
+test restricted_domains_reject_imported_gaps_and_algebra_only_selects_members ... ok
+test concurrent_integer_updates_publish_complete_versions_without_lost_ids ... ok
+test signed_encodings_preserve_generated_order ... ok
+test two_cluster_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets ... ok
+test windowed_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test finite_five_member_domains_exhaust_all_representation_pairs ... ok
+test mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes ... ok
+test full_containers_take_part_in_every_representation_pair ... ok
+test mixed_results_keep_the_compact_operand_representation ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.77s
+
+     Running tests/mutable_sets.rs (target/package/frost-collections-0.4.0/target/debug/deps/mutable_sets-92be8086f2e3307a)
+
+running 5 tests
+test hash_set_equality_and_consuming_iteration_are_logical ... ok
+test defaults_and_iterator_clones_do_not_require_element_traits ... ok
+test hash_set_keeps_first_rep_and_the_exact_hasher ... ok
+test ordered_set_keeps_first_rep_and_its_frozen_pair ... ok
+test ordered_set_iterators_match_sorted_reference ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ordered_performance.rs (target/package/frost-collections-0.4.0/target/debug/deps/ordered_performance-6a4fd3679bc25f62)
+
+running 6 tests
+test same_storage_queries_and_lazy_operations_need_no_key_comparisons ... ok
+test lazy_construction_does_no_comparisons_and_separated_ranges_stop_immediately ... ok
+test skewed_searches_match_standard_sets_and_survive_partial_consumption ... ok
+test all_skewed_scalar_and_iterator_entrypoints_stay_below_linear_comparison_work ... ok
+test skewed_predicates_skip_gaps_when_the_answer_requires_the_whole_small_operand ... ok
+test skewed_operations_skip_large_gaps_and_preserve_left_representatives ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/ordered_set_ops.rs (target/package/frost-collections-0.4.0/target/debug/deps/ordered_set_ops-6a0703d68f5eec85)
+
+running 8 tests
+test empty_singleton_identical_disjoint_and_overlapping_sets ... ok
+test hints_clones_counts_and_fused_exhaustion_track_partial_consumption ... ok
+test keys_may_borrow_nonstatic_data ... ok
+test overlap_keeps_the_left_representative_without_cloning_elements ... ok
+test scalar_predicates_short_circuit_and_scan_linearly ... ok
+test algebra_matches_btree_sets_for_random_inputs ... ok
+test shared_prefix_and_uneven_tails_match_standard_sets ... ok
+test skewed_algebra_matches_standard_sets ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s
+
+     Running tests/publication_model.rs (target/package/frost-collections-0.4.0/target/debug/deps/publication_model-3ffcaafd1f6c9342)
+
+running 2 tests
+test equal_contents_still_require_retry_after_identity_changes ... ok
+test three_writers_exhaust_all_load_and_compare_exchange_orders ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests/rayon_performance.rs (target/package/frost-collections-0.4.0/target/debug/deps/rayon_performance-2fdae0280d7aff4b)
+
+running 3 tests
+test truncated_parallel_set_traversal_drops_the_unvisited_suffix ... ok
+test owning_parallel_ordered_set_keeps_order_and_drops_each_member_once ... ok
+test owning_parallel_adaptive_ordered_map_preserves_both_representations ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/root_regressions.rs (target/package/frost-collections-0.4.0/target/debug/deps/root_regressions-79e08117f43a86bc)
+
+running 2 tests
+test already_valid_ordered_set_can_freeze_without_new_ordering_bounds ... ok
+test mutable_hash_set_debug_does_not_require_a_debug_hasher ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sets_review.rs (target/package/frost-collections-0.4.0/target/debug/deps/sets_review-5206ea800c8c6bc6)
+
+running 4 tests
+test hash_set_rejection_and_reservation_preserve_members_and_hasher ... ok
+test hashbrown_set_supports_borrowed_mutation_capabilities ... ok
+test insertion_ordered_set_keeps_explicit_removal_choice ... ok
+test ordered_set_strict_construction_and_mutation_match_native_semantics ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/specialized.rs (target/package/frost-collections-0.4.0/target/debug/deps/specialized-7e2bcc2849d696d0)
+
+running 7 tests
+test core_arrays_need_neither_alloc_nor_std ... ok
+test arrayvec_failure_returns_ownership_and_keeps_content ... ok
+test hashbrown_sets_compact_with_the_supplied_hasher ... ok
+test indexset_compact_retains_positions ... ok
+test static_maps_and_sets_preserve_their_query_and_order_contracts ... ok
+test smallvec_freeze_preserves_spill_state_and_compact_values ... ok
+test fst_lookup_decodes_values_and_streams_lend_keys ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples/adaptive.rs (target/package/frost-collections-0.4.0/target/debug/examples/adaptive-401a9d55791f70d6)
+
+running 1 test
+test tests::runs_adaptive_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/advanced.rs (target/package/frost-collections-0.4.0/target/debug/examples/advanced-11af2dc8d8244a25)
+
+running 1 test
+test tests::executes_advanced_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/concurrent.rs (target/package/frost-collections-0.4.0/target/debug/examples/concurrent-7767aa3162c5c086)
+
+running 1 test
+test tests::example_runs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/core.rs (target/package/frost-collections-0.4.0/target/debug/examples/core-5811a3e58ee3df4e)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/frameworks.rs (target/package/frost-collections-0.4.0/target/debug/examples/frameworks-cecab8cee57c7814)
+
+running 1 test
+test tests::executes_all_framework_scenarios ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples/integer_sets.rs (target/package/frost-collections-0.4.0/target/debug/examples/integer_sets-e4459fb243b2582c)
+
+running 1 test
+test tests::integer_example_executes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/mutable.rs (target/package/frost-collections-0.4.0/target/debug/examples/mutable-52aae57a48f3e5fe)
+
+running 1 test
+test complete_example_is_tested ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/sequences.rs (target/package/frost-collections-0.4.0/target/debug/examples/sequences-c63a471aa1805127)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/set_operations.rs (target/package/frost-collections-0.4.0/target/debug/examples/set_operations-9512d48c98ab9219)
+
+running 1 test
+test tests::executes_set_operations_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples/snapshots.rs (target/package/frost-collections-0.4.0/target/debug/examples/snapshots-938ba7a053d342e4)
+
+running 1 test
+test tests::example_runs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/static_maps.rs (target/package/frost-collections-0.4.0/target/debug/examples/static_maps-771a48c3e5b451bd)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests frost
+
+running 34 tests
+test src/../README.md - (line 27) ... ok
+test src/../README.md - (line 415) ... ok
+test src/../README.md - (line 175) ... ok
+test src/../README.md - (line 79) ... ok
+test src/../README.md - (line 254) ... ok
+test src/../README.md - (line 280) ... ok
+test src/../README.md - (line 40) ... ok
+test src/../README.md - (line 145) ... ok
+test src/adaptive/hash_map/frozen.rs - adaptive::hash_map::frozen::AdaptiveFrozenHashMap (line 65) ... ok
+test src/adapters/serde.rs - adapters::serde (line 21) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/adaptive/hash_map/mutable.rs - adaptive::hash_map::mutable::AdaptiveHashMap (line 42) ... ok
+test src/../README.md - (line 374) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 67) ... ok
+test src/adapters/rayon.rs - adapters::rayon (line 19) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore (line 168) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotGuard (line 100) ... ok
+test src/family/hash_map/mutable.rs - family::hash_map::mutable::MutableHashMap (line 26) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::peek (line 228) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::publish_if_current (line 272) ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 35) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedSet<T>::union (line 526) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 23) ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentLookup (line 9) ... ok
+test src/integer/mod.rs - integer (line 11) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::update (line 322) ... ok
+test src/integer/policy.rs - integer::policy::IntSetPolicy (line 98) ... ok
+test src/read.rs - read (line 38) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/integer/key.rs - integer::key::IntKey (line 53) ... ok
+test src/read.rs - read (line 7) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 25 tests
+test src/concurrent/live.rs - concurrent::live::ConcurrentLookup (line 20) - compile fail ... ok
+test src/../README.md - (line 69) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentSetLookup (line 99) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentUpdate (line 58) - compile fail ... ok
+test src/../README.md - (line 63) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 19) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentUpdate (line 68) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 27) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 39) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 45) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 33) - compile fail ... ok
+test src/family/hash_map/frozen.rs - family::hash_map::frozen::FrozenHashMap (line 22) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore (line 181) - compile fail ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 48) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 49) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::peek (line 235) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 56) - compile fail ... ok
+test src/integer/key.rs - integer::key::IntWord (line 11) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 62) - compile fail ... ok
+test src/integer/mod.rs - integer (line 22) - compile fail ... ok
+test src/plan.rs - plan (line 18) - compile fail ... ok
+test src/integer/mod.rs - integer (line 38) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 52) - compile fail ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+
+all doctests ran in 3.30s; merged doctests compilation took 2.74s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running unittests examples/adaptive.rs (target/package/frost-collections-0.4.0/target/debug/examples/adaptive-401a9d55791f70d6)
+
+running 1 test
+test tests::runs_adaptive_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/advanced.rs (target/package/frost-collections-0.4.0/target/debug/examples/advanced-11af2dc8d8244a25)
+
+running 1 test
+test tests::executes_advanced_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/concurrent.rs (target/package/frost-collections-0.4.0/target/debug/examples/concurrent-7767aa3162c5c086)
+
+running 1 test
+test tests::example_runs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples/core.rs (target/package/frost-collections-0.4.0/target/debug/examples/core-5811a3e58ee3df4e)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/frameworks.rs (target/package/frost-collections-0.4.0/target/debug/examples/frameworks-cecab8cee57c7814)
+
+running 1 test
+test tests::executes_all_framework_scenarios ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/integer_sets.rs (target/package/frost-collections-0.4.0/target/debug/examples/integer_sets-e4459fb243b2582c)
+
+running 1 test
+test tests::integer_example_executes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/mutable.rs (target/package/frost-collections-0.4.0/target/debug/examples/mutable-52aae57a48f3e5fe)
+
+running 1 test
+test complete_example_is_tested ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/sequences.rs (target/package/frost-collections-0.4.0/target/debug/examples/sequences-c63a471aa1805127)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/set_operations.rs (target/package/frost-collections-0.4.0/target/debug/examples/set_operations-9512d48c98ab9219)
+
+running 1 test
+test tests::executes_set_operations_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/snapshots.rs (target/package/frost-collections-0.4.0/target/debug/examples/snapshots-938ba7a053d342e4)
+
+running 1 test
+test tests::example_runs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/static_maps.rs (target/package/frost-collections-0.4.0/target/debug/examples/static_maps-771a48c3e5b451bd)
+
+running 1 test
+test example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+Verification scope package passed.

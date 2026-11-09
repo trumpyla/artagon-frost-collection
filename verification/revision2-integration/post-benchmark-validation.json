@@ -1,0 +1,109 @@
+{
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\n",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)\n",
+  "scope": "Affected int-set profile after removal of unconditional full Roaring optimization from cloned tiny updates; prior matrix remains evidence for unchanged feature profiles.",
+  "changed_files_since_final_matrix": [
+    "src/integer/storage.rs",
+    "src/integer/storage/word.rs"
+  ],
+  "source_digest": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549",
+  "checks": [
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "status": "passed",
+      "started_utc": "2026-11-09T12:52:55.023155+00:00",
+      "source_digest_before": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549",
+      "log": "post-benchmark-clippy.log",
+      "exit_code": 0,
+      "elapsed_seconds": 3.605,
+      "finished_utc": "2026-11-09T12:52:58.657345+00:00",
+      "source_digest_after": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549"
+    },
+    {
+      "name": "integer-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set",
+        "--test",
+        "integer_sets",
+        "--test",
+        "integer_output"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "status": "passed",
+      "started_utc": "2026-11-09T12:52:58.684474+00:00",
+      "source_digest_before": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549",
+      "log": "post-benchmark-integer-tests.log",
+      "exit_code": 0,
+      "elapsed_seconds": 12.598,
+      "finished_utc": "2026-11-09T12:53:11.306273+00:00",
+      "source_digest_after": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549"
+    },
+    {
+      "name": "thumbv6m",
+      "command": [
+        "cargo",
+        "build",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set",
+        "--target",
+        "thumbv6m-none-eabi"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "status": "passed",
+      "started_utc": "2026-11-09T12:53:11.315519+00:00",
+      "source_digest_before": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549",
+      "log": "post-benchmark-thumbv6m.log",
+      "exit_code": 0,
+      "elapsed_seconds": 5.084,
+      "finished_utc": "2026-11-09T12:53:16.406447+00:00",
+      "source_digest_after": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549"
+    },
+    {
+      "name": "thumbv7em",
+      "command": [
+        "cargo",
+        "build",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set",
+        "--target",
+        "thumbv7em-none-eabihf"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "status": "passed",
+      "started_utc": "2026-11-09T12:53:16.420623+00:00",
+      "source_digest_before": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549",
+      "log": "post-benchmark-thumbv7em.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.277,
+      "finished_utc": "2026-11-09T12:53:17.716535+00:00",
+      "source_digest_after": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549"
+    }
+  ],
+  "overall_status": "passed",
+  "final_source_digest": "276c6259a2de0f250c423f66f409b07c63012fd112bd96f273a3ff0c0093d549"
+}

@@ -1,4 +1,6 @@
 use alloc::vec::Vec;
+
+use super::Shared as Arc;
 use core::cmp::Ordering;
 use core::fmt;
 use core::hash::{Hash, Hasher};
@@ -16,10 +18,16 @@ use crate::{Rejected, TryFreezeWith};
 /// A structurally frozen set of losslessly encoded integer-domain values.
 ///
 /// Storage is private and selected when constructed. Each instance has sorted,
-/// dense-window, or width-specific Roaring storage. Feature unification never
+/// dense-window, width-specific Roaring, or shared chunked storage. Feature unification never
 /// adds representations to an already available profile. The `int-set` feature
 /// enables the complete profile with `alloc`. The optional `std` feature enables
 /// supported runtime CPU dispatch in the Roaring dependency.
+///
+/// Cloning shares the immutable storage in O(1). An algebra result equal to an
+/// operand shares that operand's allocation when its representation satisfies
+/// the result policy. Chunked storage additionally shares untouched 2^16-code
+/// containers between versions. Reference counts are atomic where the target
+/// supports pointer-width atomics and non-atomic otherwise.
 ///
 /// Iteration reconstructs `K` by value. There is no borrowed `&K`, mutable view,
 /// implicit numeric-range fill, or complement over all possible word patterns.
@@ -34,18 +42,22 @@ use crate::{Rejected, TryFreezeWith};
 /// though only unsigned codes are physically stored.
 #[must_use]
 pub struct FrozenIntSet<K: IntKey> {
-    storage: Storage<K::Word>,
+    storage: Arc<Storage<K::Word>>,
     limits: IntSetLimits,
     key: PhantomData<K>,
 }
 
 impl<K: IntKey> FrozenIntSet<K> {
-    /// Empty sorted set, allocating no member buffer.
+    /// Empty sorted set with a shared storage header and no member buffer.
     pub fn new() -> Self {
         Self::from_storage(Storage::empty(), IntSetLimits::default())
     }
 
     fn from_storage(storage: Storage<K::Word>, limits: IntSetLimits) -> Self {
+        Self::from_shared(Arc::new(storage), limits)
+    }
+
+    fn from_shared(storage: Arc<Storage<K::Word>>, limits: IntSetLimits) -> Self {
         Self {
             storage,
             limits,
@@ -132,15 +144,17 @@ impl<K: IntKey> FrozenIntSet<K> {
     ///
     /// This uses representation-aware conversion and retains the supplied limits
     /// for subsequent algebra. It may allocate or enumerate codes and is not a
-    /// cheap view conversion. The forced backend applies to this rebuild only.
+    /// cheap view conversion. Storage may be shared when the existing
+    /// representation already satisfies the policy. A forced backend applies
+    /// to this operation only; its limits persist in later algebra.
     ///
     /// # Errors
     /// Returns the selected representation's budget or partition rejection. This
     /// set remains unchanged, including when rebuilding fails.
     pub fn with_policy(&self, policy: IntSetPolicy) -> Result<Self, IntSetError> {
         self.storage
-            .replan(policy)
-            .map(|storage| Self::from_storage(storage, policy.limits()))
+            .replan_shared(policy)
+            .map(|storage| Self::from_shared(storage, policy.limits()))
     }
 
     /// Representation limits retained by this set and composed by default algebra.
@@ -148,9 +162,49 @@ impl<K: IntKey> FrozenIntSet<K> {
         self.limits
     }
 
+    /// Automatic result policy carrying this set's retained representation limits.
+    ///
+    /// This does not recover the backend requested during construction. Default
+    /// union, intersection, and symmetric difference take the smaller limits;
+    /// difference keeps the left operand's limits.
+    pub const fn policy(&self) -> IntSetPolicy {
+        self.limits.automatic()
+    }
+
+    /// Estimated payload bytes of the selected representation, for diagnostics.
+    ///
+    /// Sorted and dense payloads are exact. Roaring uses container statistics
+    /// to estimate its buffer and index storage; chunked storage counts container
+    /// payloads and index entries. This is not a resident-memory measurement.
+    /// This estimate excludes storage headers, reference counts, allocator
+    /// overhead, temporary allocations, and memory retained by other versions.
+    pub fn payload_bytes(&self) -> u64 {
+        self.storage.payload_bytes()
+    }
+
+    /// Whether both sets use the same immutable storage allocation.
+    ///
+    /// Equal sets with different result limits may share storage if that
+    /// representation satisfies both sets' limits.
+    pub fn shares_storage_with(&self, other: &Self) -> bool {
+        Arc::ptr_eq(&self.storage, &other.storage)
+    }
+
+    /// Number of 2^16-code containers physically shared with `other`.
+    ///
+    /// Only chunked storage shares containers; every other pair reports zero.
+    pub fn shared_chunks(&self, other: &Self) -> u64 {
+        self.storage.shared_chunks(&other.storage)
+    }
+
+    /// Number of chunk containers, or zero for other representations.
+    pub fn chunk_count(&self) -> u64 {
+        self.storage.chunk_count()
+    }
+
     /// Exact member-buffer payload bytes for sorted and dense storage.
     ///
-    /// Returns `None` for Roaring's noncontiguous storage. This excludes the set
+    /// Returns `None` for Roaring or chunked noncontiguous storage. This excludes the set
     /// wrapper, allocator headers, temporary allocations, and process overhead.
     pub fn contiguous_payload_bytes(&self) -> Option<usize> {
         self.storage.contiguous_payload_bytes()
@@ -239,10 +293,15 @@ impl<K: IntKey> FrozenIntSet<K> {
     /// Number of common members, using encoded backend kernels without decoding.
     ///
     /// Dense/Roaring pairs may allocate temporary compressed storage when a
-    /// bounded byte conversion replaces many membership probes. This does not
-    /// materialize a result set and does not mutate either operand.
+    /// bounded byte conversion replaces many membership probes. Chunked/Dense
+    /// pairs may allocate temporary chunks for the dense window. These
+    /// conversions do not materialize a result set or mutate either operand.
     pub fn intersection_len(&self, other: &Self) -> u64 {
-        self.storage.intersection_len(&other.storage)
+        if Arc::ptr_eq(&self.storage, &other.storage) {
+            self.cardinality()
+        } else {
+            self.storage.intersection_len(&other.storage)
+        }
     }
 
     /// Cardinality of the union, without allocating a result.
@@ -279,7 +338,7 @@ impl<K: IntKey> FrozenIntSet<K> {
 
     /// Whether every member is present in `other`.
     pub fn is_subset(&self, other: &Self) -> bool {
-        self.storage.is_subset(&other.storage)
+        Arc::ptr_eq(&self.storage, &other.storage) || self.storage.is_subset(&other.storage)
     }
     /// Whether every member of `other` is present in this set.
     pub fn is_superset(&self, other: &Self) -> bool {
@@ -287,7 +346,11 @@ impl<K: IntKey> FrozenIntSet<K> {
     }
     /// Whether the sets have no common member.
     pub fn is_disjoint(&self, other: &Self) -> bool {
-        self.storage.is_disjoint(&other.storage)
+        if Arc::ptr_eq(&self.storage, &other.storage) {
+            self.is_empty()
+        } else {
+            self.storage.is_disjoint(&other.storage)
+        }
     }
 
     /// Materialize the encoded intersection without decoding logical keys.
@@ -419,7 +482,7 @@ impl<K: IntKey> FrozenIntSet<K> {
         }
         self.storage
             .binary(&other.storage, operation, policy)
-            .map(|storage| Self::from_storage(storage, policy.limits()))
+            .map(|storage| Self::from_shared(storage, policy.limits()))
     }
 }
 
@@ -433,8 +496,9 @@ impl<K: IntKey> Default for FrozenIntSet<K> {
     }
 }
 impl<K: IntKey> Clone for FrozenIntSet<K> {
+    /// O(1): increments the immutable storage's reference count.
     fn clone(&self) -> Self {
-        Self::from_storage(self.storage.clone(), self.limits)
+        Self::from_shared(Arc::clone(&self.storage), self.limits)
     }
 }
 
@@ -448,7 +512,7 @@ impl<K: IntKey> FromIterator<K> for FrozenIntSet<K> {
 
 impl<K: IntKey> PartialEq for FrozenIntSet<K> {
     fn eq(&self, other: &Self) -> bool {
-        self.storage.logical_eq(&other.storage)
+        Arc::ptr_eq(&self.storage, &other.storage) || self.storage.equals(&other.storage)
     }
 }
 impl<K: IntKey> Eq for FrozenIntSet<K> {}
@@ -459,12 +523,16 @@ impl<K: IntKey> PartialOrd for FrozenIntSet<K> {
 }
 impl<K: IntKey> Ord for FrozenIntSet<K> {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.encoded_values().cmp(other.encoded_values())
+        if Arc::ptr_eq(&self.storage, &other.storage) {
+            Ordering::Equal
+        } else {
+            self.storage.compare(&other.storage)
+        }
     }
 }
 impl<K: IntKey> Hash for FrozenIntSet<K> {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.storage.hash(state);
+        self.storage.hash_into(state);
     }
 }
 impl<K: IntKey + fmt::Debug> fmt::Debug for FrozenIntSet<K> {

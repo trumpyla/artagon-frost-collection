@@ -1,0 +1,14 @@
+"cargo" build --lib --locked --no-default-features --features int-set --target "thumbv6m-none-eabi"
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.19s
+"cargo" build --lib --locked --no-default-features --features int-set --target "thumbv7em-none-eabihf"
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.60s
+"cargo" build --lib --locked --no-default-features --target "thumbv7em-none-eabihf"
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+"cargo" build --lib --locked --no-default-features \
+  --features alloc,hashbrown-0_17,indexmap-2,smallvec-1,arrayvec-0_7,fixedbitset-0_5,slotmap-1,phf-0_14,serde-1,borsh-1,schemars-1 \
+  --target "thumbv7em-none-eabihf"
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.66s

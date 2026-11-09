@@ -1,0 +1,23 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+warning: associated function `lsb0_bytes` is never used
+   --> src/integer/dense.rs:426:19
+    |
+ 39 | impl<W: Word> Dense<W> {
+    | ---------------------- associated function in this implementation
+...
+426 |     pub(crate) fn lsb0_bytes(words: &[u64]) -> Vec<u8> {
+    |                   ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `roaring_optimize` is never used
+  --> src/integer/storage/word.rs:37:8
+   |
+10 | pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
+   |                  ---- associated function in this trait
+...
+37 |     fn roaring_optimize(value: &mut Self::Roaring);
+   |        ^^^^^^^^^^^^^^^^
+
+warning: `frost-collections` (lib) generated 2 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.10s

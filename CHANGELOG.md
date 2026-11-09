@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased — collection algebra research integration
+
+- Preserve both supplied Frost research reports and add a linked synthesis for
+  map, sequence, bag, multimap, bimap, and prefix-index contracts and verification.
+- Keep the current single-library architecture. New families, expression APIs,
+  and the reports' workspace split remain proposals.
+- Record all five attachment digests, existing Windows-fix conflict resolutions,
+  and fresh checkout validation separately from supplied historical evidence.
+
+## Unreleased — revision 2 integrated with the reviewed main project
+
+- Integrate shared immutable storage into `FrozenIntSet`: O(1) clone, allocation
+  identity diagnostics, and policy-compatible reuse of identical algebra results.
+  An empty set now allocates a shared header. Use `Arc` on pointer-atomic targets
+  and `Rc` elsewhere; preserve ordinary pointer auto traits and alloc-only support.
+- Add explicit `IntSetPolicy::chunked()` storage with 2^16-code Array, Bitmap,
+  and Full containers. Changed results share untouched containers but copy the
+  flat directory. This does not implement a persistent tree or lazy expressions.
+- Preserve the main project's `IntSetLimits`, all four `*_with_policy` methods,
+  minimum-limit composition for commutative operations, left limits for
+  difference, bounded Dense promotion, and canonical member/run Hash events.
+  Shared, empty, and equal-result shortcuts still enforce output policies.
+- Retain the existing automatic memory score and 128-byte Dense preference;
+  reject revision 2's unconditional small-window Dense floor and larger-limit
+  inheritance. Automatic construction does not select Chunked.
+- Add narrow signed/unsigned, character, address-sized, and narrow unsigned
+  nonzero codecs. Decoding checks the logical type's valid range.
+- Add chunk/payload diagnostics, extend policy and Hash regression coverage to
+  all four representations, and retain the supplied property-test seed.
+- Preserve the newer generic set-algebra design and prior evidence. Supplied
+  revision benchmarks remain historical inputs, not measurements of the merged
+  tree. See [integration review](docs/reviews/revision2-integration-review.md) and
+  [supplied validation](docs/revision2-integration-validation.md).
+
 ## Unreleased — Make-based development tasks
 
 - Normalize native Windows `jq` CRLF output before passing discovered feature
@@ -9,6 +43,8 @@
 - Replace the Python documentation-link checker with a Bash 3.2+ helper and
   use `jq` for Cargo metadata. Add shell/Make failure-path tests.
 - Update CI and current contributor guidance; preserve historical evidence.
+- Carry the non-atomic integer target and bounded Dense/Chunked Miri regressions
+  into the Make targets and CI.
 
 ## Unreleased — general set-algebra design
 

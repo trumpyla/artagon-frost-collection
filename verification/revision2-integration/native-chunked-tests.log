@@ -1,0 +1,16 @@
+    Blocking waiting for file lock on build directory
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.47s
+     Running unittests src/lib.rs (target/debug/deps/frost-0d71255377866e48)
+
+running 7 tests
+test integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded ... ok
+test integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries ... ok
+test integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations ... ok
+test integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk ... ok
+test integer::chunked::tests::run_visitors_preserve_extreme_codes_and_stop_at_break ... ok
+test integer::chunked::tests::containers_normalize_at_both_thresholds ... ok
+test integer::chunked::tests::partial_fold_preserves_members_across_every_container_kind ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.46s
+

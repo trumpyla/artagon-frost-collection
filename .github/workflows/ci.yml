@@ -74,7 +74,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: rustup toolchain install 1.99.1 --profile minimal --target thumbv7em-none-eabihf
+      - run: rustup toolchain install 1.99.1 --profile minimal --target thumbv7em-none-eabihf,thumbv6m-none-eabi
       - run: make embedded
 
   integer-profile:

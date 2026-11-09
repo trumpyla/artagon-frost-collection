@@ -1,0 +1,20 @@
+{
+  "check": {
+    "log": "check.log",
+    "passed": true,
+    "sha256": "c4d3aa3e8ba9d946a92620276011832c6e584854b8a25e7cc3473d52fd63d19c",
+    "native_unit_integration_example_tests": 271,
+    "executable_doctests": 34,
+    "compile_fail_doctests": 25,
+    "repeated_examples_afterward": 11
+  },
+  "package": {
+    "log": "package.log",
+    "passed": true,
+    "sha256": "169f089aa5b85586b52ea069b07fa8bb3185eb9acde7930ca6c5e150b6a454d2",
+    "native_unit_integration_example_tests": 271,
+    "executable_doctests": 34,
+    "compile_fail_doctests": 25,
+    "repeated_examples_afterward": 11
+  }
+}

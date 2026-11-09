@@ -15,6 +15,9 @@ pub enum IntSetBackend {
     Dense,
     /// Use the width-specific Rust Roaring collection, subject to its partition cap.
     Roaring,
+    /// Store 2^16-code chunks as immutable shared containers. Algebra results
+    /// share untouched containers with their operands.
+    Chunked,
 }
 
 /// Observed representation, for diagnostics and workload measurement.
@@ -27,12 +30,14 @@ pub enum IntSetRepr {
     Dense,
     /// Width-specific Roaring containers.
     Roaring,
+    /// Shared immutable chunk containers.
+    Chunked,
 }
 
 /// Representation limits retained by a frozen integer set and its results.
 ///
 /// These cap dense payload bytes and Roaring upper-32-bit partitions. They do
-/// not cap sorted storage, temporary allocations, or total process memory.
+/// not cap sorted or chunked storage, temporary allocations, or total process memory.
 /// Union, intersection, and symmetric difference take the smaller limit from
 /// each operand; difference keeps the left operand's limits. Explicit
 /// `*_with_policy` operations replace these limits for their returned result.
@@ -129,6 +134,20 @@ impl IntSetPolicy {
     pub const fn roaring() -> Self {
         Self {
             backend: IntSetBackend::Roaring,
+            ..Self::auto()
+        }
+    }
+    /// Explicit chunked storage with structurally shared containers.
+    ///
+    /// Cloning and algebra share untouched 2^16-code containers between
+    /// versions, which suits snapshot-style workloads deriving many sets from
+    /// a common ancestor. Automatic construction never selects it. Neither the
+    /// dense-byte limit nor the Roaring-partition limit caps chunked storage;
+    /// each chunk carries index and allocation overhead, so scattered codes may
+    /// be better served by sorted storage.
+    pub const fn chunked() -> Self {
+        Self {
+            backend: IntSetBackend::Chunked,
             ..Self::auto()
         }
     }

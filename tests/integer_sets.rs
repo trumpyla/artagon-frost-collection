@@ -3,7 +3,7 @@
 
 use core::fmt::Debug;
 use core::iter::FusedIterator;
-use core::num::{NonZeroU32, NonZeroU64};
+use core::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 use frost::TryFreezeWith;
 use frost::family::{FrozenOrderedSet, MutableOrderedSet};
 use frost::integer::{FrozenIntSet, IntKey, IntSetError, IntSetPolicy, IntSetRepr};
@@ -14,10 +14,11 @@ use std::collections::{BTreeSet, hash_map::DefaultHasher};
 use std::hash::{Hash, Hasher};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 
-const POLICIES: [IntSetPolicy; 3] = [
+const POLICIES: [IntSetPolicy; 4] = [
     IntSetPolicy::sorted(),
     IntSetPolicy::dense(),
     IntSetPolicy::roaring(),
+    IntSetPolicy::chunked(),
 ];
 
 fn checked<K: IntKey>(values: &[K], policy: IntSetPolicy) -> FrozenIntSet<K> {
@@ -112,13 +113,26 @@ fn assert_algebra<K: IntKey + Debug>(
     );
 }
 
+/// Build with a policy, skipping only a dense window the budget rejects.
+fn eligible<K: IntKey>(values: &[K], policy: IntSetPolicy) -> Option<FrozenIntSet<K>> {
+    match FrozenIntSet::try_from_iter(values.iter().copied(), policy) {
+        Ok(set) => Some(set),
+        Err(IntSetError::DenseBudgetExceeded { .. }) => None,
+        Err(error) => panic!("unexpected construction failure: {error}"),
+    }
+}
+
 fn every_pair<K: IntKey + Debug>(left: &[K], right: &[K]) {
     let left_reference = left.iter().copied().collect();
     let right_reference = right.iter().copied().collect();
     for left_policy in POLICIES {
-        let left = checked(left, left_policy);
+        let Some(left) = eligible(left, left_policy) else {
+            continue;
+        };
         for right_policy in POLICIES {
-            let right = checked(right, right_policy);
+            let Some(right) = eligible(right, right_policy) else {
+                continue;
+            };
             assert_algebra(&left, &right, &left_reference, &right_reference);
         }
     }
@@ -162,11 +176,12 @@ fn builtin_codecs_preserve_width_boundaries_order_and_round_trips() {
 #[test]
 fn forced_backends_and_iterators_preserve_typed_value_order() {
     let values = [-5_i64, -3, -1, 0, 1, 65, 66];
-    for (policy, repr) in
-        POLICIES
-            .into_iter()
-            .zip([IntSetRepr::Sorted, IntSetRepr::Dense, IntSetRepr::Roaring])
-    {
+    for (policy, repr) in POLICIES.into_iter().zip([
+        IntSetRepr::Sorted,
+        IntSetRepr::Dense,
+        IntSetRepr::Roaring,
+        IntSetRepr::Chunked,
+    ]) {
         let set = checked(&values, policy);
         assert_eq!(set.representation(), repr);
         assert_cursor(&set.iter(), &values);
@@ -193,6 +208,7 @@ fn mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes() {
         for (policy, representation) in [
             (IntSetPolicy::dense(), IntSetRepr::Dense),
             (IntSetPolicy::roaring(), IntSetRepr::Roaring),
+            (IntSetPolicy::chunked(), IntSetRepr::Chunked),
         ] {
             let compressed = checked(compressed_values, policy);
             if !compressed.is_empty() {
@@ -282,7 +298,9 @@ fn far_apart_dense_operands_do_not_allocate_the_gap() {
     let right = checked(&[u64::MAX - 1, u64::MAX], IntSetPolicy::dense());
     let union = left.union(&right);
     assert_members(&union, &[0, 1, u64::MAX - 1, u64::MAX]);
-    assert_ne!(union.representation(), IntSetRepr::Dense);
+    // Four members fit more compactly in sorted storage than in two native
+    // partitions. Larger distant runs have a separate Roaring regression test.
+    assert_eq!(union.representation(), IntSetRepr::Sorted);
     assert_members(
         &left.symmetric_difference(&right),
         &[0, 1, u64::MAX - 1, u64::MAX],
@@ -772,16 +790,289 @@ proptest! {
     }
 
     #[test]
+    fn two_cluster_u64_algebra_matches_standard_sets_in_every_backend(
+        base in 0_u64..=u64::MAX - (1 << 41),
+        gap in 1_u64..(1 << 40),
+        left in proptest::collection::vec((0_u16..512, any::<bool>()), 0..65),
+        right in proptest::collection::vec((0_u16..512, any::<bool>()), 0..65),
+    ) {
+        let place = |(offset, far): (u16, bool)| base + u64::from(offset) + if far { gap } else { 0 };
+        let left: Vec<_> = left.into_iter().map(place).collect();
+        let right: Vec<_> = right.into_iter().map(place).collect();
+        every_pair(&left, &right);
+    }
+
+    #[test]
     fn arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets(
         left in proptest::collection::vec(any::<u64>(), 0..65),
         right in proptest::collection::vec(any::<u64>(), 0..65),
     ) {
         let left_reference = left.iter().copied().collect();
         let right_reference = right.iter().copied().collect();
-        for left_policy in [IntSetPolicy::sorted(), IntSetPolicy::roaring()] {
-            for right_policy in [IntSetPolicy::sorted(), IntSetPolicy::roaring()] {
+        for left_policy in [IntSetPolicy::sorted(), IntSetPolicy::roaring(), IntSetPolicy::chunked()] {
+            for right_policy in [IntSetPolicy::sorted(), IntSetPolicy::roaring(), IntSetPolicy::chunked()] {
                 assert_algebra(&checked(&left, left_policy), &checked(&right, right_policy), &left_reference, &right_reference);
             }
         }
     }
+}
+
+fn payload_stays_compact<K: IntKey + Debug>(
+    result: &FrozenIntSet<K>,
+    left: &FrozenIntSet<K>,
+    right: &FrozenIntSet<K>,
+) {
+    // A result never costs more than the operands it was derived from, plus
+    // a fixed allowance for one container or window of slack.
+    let allowance = 16 * 1024;
+    assert!(
+        result.payload_bytes() <= left.payload_bytes() + right.payload_bytes() + allowance,
+        "result payload {} exceeds operands {} + {} ({:?} from {:?} and {:?})",
+        result.payload_bytes(),
+        left.payload_bytes(),
+        right.payload_bytes(),
+        result.representation(),
+        left.representation(),
+        right.representation()
+    );
+}
+
+#[test]
+fn mixed_results_keep_the_compact_operand_representation() {
+    let base = 1_u64 << 40;
+    let big: Vec<u64> = (0..100_000_u64).map(|i| base + i * 2).collect();
+    let dense = checked(&big, IntSetPolicy::dense());
+    let singleton = checked(&[base + 1], IntSetPolicy::roaring());
+    let union = dense.union(&singleton);
+    assert_eq!(union.representation(), IntSetRepr::Dense);
+    assert_eq!(union.cardinality(), 100_001);
+    payload_stays_compact(&union, &dense, &singleton);
+    let tiny_sorted = checked(
+        &[base + 2, base + 4, base + 6, base + 7],
+        IntSetPolicy::sorted(),
+    );
+    let difference = dense.difference(&tiny_sorted);
+    assert_eq!(difference.representation(), IntSetRepr::Dense);
+    assert_eq!(difference.cardinality(), 99_997);
+    payload_stays_compact(&difference, &dense, &tiny_sorted);
+    let symmetric = dense.symmetric_difference(&tiny_sorted);
+    assert_eq!(symmetric.representation(), IntSetRepr::Dense);
+    assert_eq!(symmetric.cardinality(), 99_998);
+    let roaring = checked(&big, IntSetPolicy::roaring());
+    let plus = roaring.union(&tiny_sorted);
+    assert_eq!(plus.representation(), IntSetRepr::Roaring);
+    assert_eq!(plus.cardinality(), 100_001);
+    let minus = roaring.difference(&tiny_sorted);
+    assert_eq!(minus.representation(), IntSetRepr::Roaring);
+    assert_eq!(minus.cardinality(), 99_997);
+    // Balanced dense/Roaring pairs promote the window and use native kernels.
+    let shifted: Vec<u64> = (0..100_000_u64).map(|i| base + i * 3 + 1).collect();
+    let other = checked(&shifted, IntSetPolicy::roaring());
+    let common = dense.intersection(&other);
+    assert_eq!(common.representation(), IntSetRepr::Roaring);
+    assert_eq!(common.cardinality(), dense.intersection_len(&other));
+    let reference: BTreeSet<u64> = big.iter().copied().collect();
+    let shifted_reference: BTreeSet<u64> = shifted.iter().copied().collect();
+    assert_eq!(
+        common.iter().collect::<Vec<_>>(),
+        reference
+            .intersection(&shifted_reference)
+            .copied()
+            .collect::<Vec<_>>()
+    );
+    // Chunked operands absorb the other representation per container.
+    let chunked = checked(&big, IntSetPolicy::chunked());
+    for other in [&singleton, &tiny_sorted, &dense, &roaring] {
+        let union = chunked.union(other);
+        assert_eq!(union.representation(), IntSetRepr::Chunked);
+        assert_eq!(union.cardinality(), chunked.union_len(other));
+        payload_stays_compact(&union, &chunked, other);
+    }
+    // The snapshot pattern stays in its representation across updates.
+    let mut current = dense.clone();
+    for step in 0..32_u64 {
+        let addition = checked(&[base + 3_000_000 + step], IntSetPolicy::roaring());
+        current = current.union(&addition);
+        assert_eq!(current.representation(), IntSetRepr::Dense);
+    }
+    assert_eq!(current.cardinality(), 100_032);
+}
+
+#[test]
+fn budgets_are_inherited_by_results() {
+    let low = checked(&[0_u64, 5], IntSetPolicy::dense().with_dense_budget(8));
+    let high = checked(
+        &[1_u64 << 20, (1_u64 << 20) + 5],
+        IntSetPolicy::dense().with_dense_budget(8),
+    );
+    let union = low.union(&high);
+    assert_ne!(union.representation(), IntSetRepr::Dense);
+    assert_eq!(union.policy().max_dense_bytes(), 8);
+    assert_members(&union, &[0, 5, 1 << 20, (1 << 20) + 5]);
+
+    let near: Vec<u64> = (0..4096).collect();
+    let far: Vec<u64> = (131_072..131_072 + 4096).collect();
+    let small_budget = IntSetPolicy::dense().with_dense_budget(16 * 1024);
+    let capped = checked(&near, small_budget).union(&checked(&far, small_budget));
+    assert_eq!(capped.representation(), IntSetRepr::Roaring);
+    assert_eq!(capped.cardinality(), 8192);
+    let wide_budget = IntSetPolicy::dense().with_dense_budget(32 * 1024);
+    let widened = checked(&near, wide_budget).union(&checked(&far, wide_budget));
+    assert_eq!(widened.representation(), IntSetRepr::Dense);
+    assert_eq!(widened.policy().max_dense_bytes(), 32 * 1024);
+    // Preserve the main project's contract: the smaller limit controls a
+    // mixed-budget union, rather than silently widening the strict operand.
+    let mixed = checked(&near, small_budget).union(&checked(&far, wide_budget));
+    assert_eq!(mixed.representation(), IntSetRepr::Roaring);
+    assert_eq!(mixed.policy().max_dense_bytes(), 16 * 1024);
+}
+
+#[test]
+fn cloning_and_identity_results_share_storage() {
+    for policy in POLICIES {
+        let set = checked(&[1_u32, 70, 300, 70_000], policy);
+        let copy = set.clone();
+        assert!(copy.shares_storage_with(&set));
+        assert_eq!(copy, set);
+        let empty = FrozenIntSet::<u32>::new();
+        assert!(set.union(&empty).shares_storage_with(&set));
+        assert!(empty.union(&set).shares_storage_with(&set));
+        assert!(set.difference(&empty).shares_storage_with(&set));
+        assert!(set.union(&set).shares_storage_with(&set));
+        assert!(set.intersection(&set).shares_storage_with(&set));
+        let subset = checked(&[70_u32, 300], IntSetPolicy::sorted());
+        assert!(set.union(&subset).shares_storage_with(&set));
+        assert!(subset.union(&set).shares_storage_with(&set));
+        assert!(set.intersection(&subset).shares_storage_with(&subset));
+        assert!(subset.intersection(&set).shares_storage_with(&subset));
+        let disjoint = checked(&[2_u32, 71], IntSetPolicy::sorted());
+        assert!(set.difference(&disjoint).shares_storage_with(&set));
+        assert!(!set.union(&disjoint).shares_storage_with(&set));
+    }
+}
+
+#[test]
+fn chunked_results_share_untouched_containers() {
+    let values: Vec<u32> = (0..8)
+        .flat_map(|chunk| (0..100).map(move |i| chunk * 65_536 + i * 7))
+        .collect();
+    let snapshot = checked(&values, IntSetPolicy::chunked());
+    assert_eq!(snapshot.chunk_count(), 8);
+    let inside = checked(&[65_536 * 3 + 1], IntSetPolicy::chunked());
+    let updated = snapshot.union(&inside);
+    assert_eq!(updated.chunk_count(), 8);
+    assert_eq!(updated.shared_chunks(&snapshot), 7);
+    assert_eq!(updated.cardinality(), 801);
+    let outside = checked(&[65_536 * 9], IntSetPolicy::sorted());
+    let extended = snapshot.union(&outside);
+    assert_eq!(extended.chunk_count(), 9);
+    assert_eq!(extended.shared_chunks(&snapshot), 8);
+    let member = checked(&[65_536 * 3 + 7], IntSetPolicy::chunked());
+    let removed = snapshot.difference(&member);
+    assert_eq!(removed.shared_chunks(&snapshot), 7);
+    assert_eq!(removed.cardinality(), 799);
+    // Removing a non-member changes nothing and shares everything.
+    assert!(snapshot.difference(&inside).shares_storage_with(&snapshot));
+    // Shared containers short-circuit without reading their payload.
+    assert_eq!(snapshot.intersection(&updated), snapshot);
+    assert!(snapshot.is_subset(&updated));
+    assert_eq!(
+        updated.difference(&snapshot).iter().collect::<Vec<_>>(),
+        [65_536 * 3 + 1]
+    );
+    assert_eq!(snapshot.symmetric_difference(&updated).cardinality(), 1);
+    let mut current = snapshot.clone();
+    let mut expected: BTreeSet<u32> = values.iter().copied().collect();
+    for step in 0..64_u32 {
+        let value = 65_536 * (step % 8) + 65_000 + step;
+        let addition = checked(&[value], IntSetPolicy::chunked());
+        let next = current.union(&addition);
+        assert_eq!(next.shared_chunks(&current), 7);
+        expected.insert(value);
+        current = next;
+    }
+    assert_eq!(
+        current.iter().collect::<Vec<_>>(),
+        expected.into_iter().collect::<Vec<_>>()
+    );
+    // Full containers are recognized and need no payload.
+    let full: Vec<u32> = (0..65_536).collect();
+    let full_set = checked(&full, IntSetPolicy::chunked());
+    // Full containers have no member buffer; the reported index cost depends
+    // on the target's pointer width and alignment.
+    assert!(full_set.payload_bytes() <= 32);
+    let partial = checked(&[5_u32, 9], IntSetPolicy::chunked());
+    assert!(full_set.union(&partial).shares_storage_with(&full_set));
+    assert!(
+        partial
+            .intersection(&full_set)
+            .shares_storage_with(&partial)
+    );
+    assert_eq!(full_set.difference(&partial).cardinality(), 65_534);
+}
+
+#[test]
+fn full_containers_take_part_in_every_representation_pair() {
+    let mut full_plus: Vec<u32> = (0..65_536).collect();
+    full_plus.push(65_536 + 5);
+    full_plus.push(65_536 * 4 + 1);
+    let partial = [3_u32, 65_535, 65_536 + 5, 65_536 * 2 + 9, 65_536 * 4 + 2];
+    every_pair(&full_plus, &partial);
+    every_pair(&partial, &full_plus);
+    let two_full: Vec<u32> = (0..65_536).chain(65_536 * 3..65_536 * 4).collect();
+    every_pair(&full_plus, &two_full);
+    let chunked_full = checked(&two_full, IntSetPolicy::chunked());
+    assert_eq!(chunked_full.chunk_count(), 2);
+    assert!(chunked_full.payload_bytes() <= 64);
+    let nearly: Vec<u32> = (1..65_536).collect();
+    every_pair(&nearly, &two_full);
+    let complement = chunked_full.difference(&checked(&nearly, IntSetPolicy::chunked()));
+    assert_eq!(complement.cardinality(), 65_537);
+    assert!(complement.contains(&0));
+    assert!(!complement.contains(&1));
+}
+
+#[test]
+fn narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes() {
+    let bytes = [0_u8, 1, 127, 128, 255];
+    let signed_bytes = [i8::MIN, -1, 0, 1, i8::MAX];
+    let shorts = [0_u16, 1, u16::MAX];
+    let signed_shorts = [i16::MIN, -1, 0, i16::MAX];
+    let chars = ['a', 'z', '\u{10FFFF}', '\0'];
+    let sizes = [0_usize, 1, usize::MAX];
+    let signed_sizes = [isize::MIN, -1, 0, isize::MAX];
+    for policy in POLICIES {
+        assert_members(&checked(&bytes, policy), &bytes);
+        assert_members(&checked(&signed_bytes, policy), &signed_bytes);
+        assert_members(&checked(&shorts, policy), &shorts);
+        assert_members(&checked(&signed_shorts, policy), &signed_shorts);
+        let mut sorted_chars = chars;
+        sorted_chars.sort_unstable();
+        if let Some(set) = eligible(&chars, policy) {
+            assert_members(&set, &sorted_chars);
+        }
+        // Address-sized extremes span the whole word; dense windows decline.
+        if let Some(set) = eligible(&sizes, policy) {
+            assert_members(&set, &sizes);
+        } else {
+            assert_eq!(policy.backend(), frost::integer::IntSetBackend::Dense);
+        }
+        if let Some(set) = eligible(&signed_sizes, policy) {
+            assert_members(&set, &signed_sizes);
+        }
+        assert!(FrozenIntSet::<u8>::try_from_encoded([256], policy).is_err());
+        assert!(FrozenIntSet::<i8>::try_from_encoded([256], policy).is_err());
+        assert!(FrozenIntSet::<u16>::try_from_encoded([65_536], policy).is_err());
+        assert!(FrozenIntSet::<char>::try_from_encoded([0xD800], policy).is_err());
+        assert!(FrozenIntSet::<NonZeroU8>::try_from_encoded([0], policy).is_err());
+        assert!(FrozenIntSet::<NonZeroU16>::try_from_encoded([0, 70_000], policy).is_err());
+        let nonzero = FrozenIntSet::<NonZeroU8>::try_from_encoded([3, 1], policy).unwrap();
+        assert_eq!(
+            nonzero.iter().map(NonZeroU8::get).collect::<Vec<_>>(),
+            [1, 3]
+        );
+    }
+    assert_eq!(i8::decode(i8::MIN.encode()), Some(i8::MIN));
+    assert!(i8::MIN.encode() < 0_i8.encode() && 0_i8.encode() < i8::MAX.encode());
+    assert!(isize::MIN.encode() < 0_isize.encode() && 0_isize.encode() < isize::MAX.encode());
 }

@@ -1,5 +1,8 @@
 # Integer output validation
 
+> Historical evidence for the source revision named below. The current merged
+> implementation is documented in [revision-2 integration validation](revision2-integration-validation.md).
+
 This revision integrates the follow-up output and wrapper-cost review into the
 complete Frost source distribution. It independently reproduces the supplied
 summary, corrects the implementation, preserves the first measured iteration,

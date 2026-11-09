@@ -1,0 +1,69 @@
+set -euo pipefail; \
+metadata=$("cargo" metadata --format-version 1 --no-deps --locked); \
+features=$(printf '%s\n' "$metadata" | "jq" -er '[.packages[] | select(.name == "frost-collections")] | if length != 1 then error("expected one Frost package") else .[0] end | .features | keys | map(select(. != "default" and . != "alloc" and . != "std" and . != "advanced" and . != "concurrent" and . != "frameworks")) | if length == 0 then error("no isolated features found") else .[] end'); \
+while IFS= read -r feature; do \
+  feature=${feature%$'\r'}; \
+  printf '\nChecking isolated feature: %s\n' "$feature"; \
+  "cargo" clippy --lib --no-default-features --features "$feature" --locked -- -D warnings; \
+  "cargo" test --no-default-features --features "$feature" --locked; \
+  RUSTDOCFLAGS="${RUSTDOCFLAGS:+${RUSTDOCFLAGS} }-D warnings" \
+    "cargo" doc --no-default-features --features "$feature" --no-deps --locked; \
+done <<< "$features"
+set -euo pipefail; \
+metadata=$("cargo" metadata --format-version 1 --no-deps --locked); \
+examples=$(printf '%s\n' "$metadata" | "jq" -er '[.packages[] | select(.name == "frost-collections")] | if length != 1 then error("expected one Frost package") else .[0] end | [.targets[] | select(.kind | index("example")) | .name] | if length == 0 then error("no examples found") else .[] end'); \
+while IFS= read -r example; do \
+  example=${example%$'\r'}; \
+  "cargo" run --example "$example" --all-features --locked; \
+done <<< "$examples"
+set -euo pipefail; \
+metadata=$("cargo" metadata --format-version 1 --no-deps --locked); \
+manifest=$(printf '%s\n' "$metadata" | "jq" -er '.target_directory as $target | [.packages[] | select(.name == "frost-collections")] | if length != 1 then error("expected one Frost package") else .[0] end | [$target, "package", (.name + "-" + .version), "Cargo.toml"] | join("/")'); \
+manifest=${manifest%$'\r'}; \
+"cargo" package --locked --all-features --allow-dirty; \
+"cargo" test --manifest-path "$manifest" --all-features --locked; \
+"cargo" test --manifest-path "$manifest" --examples --all-features --locked
+"cargo" build --lib --locked --no-default-features --features int-set --target "thumbv6m-none-eabi"
+"cargo" build --lib --locked --no-default-features --features int-set --target "thumbv7em-none-eabihf"
+"cargo" build --lib --locked --no-default-features --target "thumbv7em-none-eabihf"
+"cargo" build --lib --locked --no-default-features \
+  --features alloc,hashbrown-0_17,indexmap-2,smallvec-1,arrayvec-0_7,fixedbitset-0_5,slotmap-1,phf-0_14,serde-1,borsh-1,schemars-1 \
+  --target "thumbv7em-none-eabihf"
+"cargo" "+nightly-2026-11-08" test --doc --all-features --locked
+MIRIFLAGS='-Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --test inline_safety --test families --test core_review -- --skip under_random_ops
+MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --test inline_safety
+MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
+MIRIFLAGS='-Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --no-default-features --features int-set \
+    --target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+MIRIFLAGS='-Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --no-default-features --features int-set \
+    --target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+MIRIFLAGS='-Zmiri-strict-provenance' \
+  "cargo" "+nightly-2026-11-08" miri test --locked --no-default-features --features int-set \
+    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+set -euo pipefail; \
+for case_name in \
+  integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+  integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+  integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+  integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+  integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+  integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do \
+  MIRIFLAGS='-Zmiri-strict-provenance' \
+    "cargo" "+nightly-2026-11-08" miri test --locked --no-default-features --features int-set \
+      --target i686-unknown-linux-gnu --lib "$case_name" -- --exact --test-threads=1; \
+done
+set -euo pipefail; \
+for case_name in canonical_hash_events_match_across_representations_and_boundaries \
+  canonical_hash_scout_thresholds_are_representation_independent \
+  equality_and_hash_ignore_dense_padding_and_construction_history \
+  empty_operands_and_identity_shortcuts_do_not_bypass_limits \
+  output_policy_overrides_are_checked_and_retained; do \
+  MIRIFLAGS='-Zmiri-strict-provenance' \
+    "cargo" "+nightly-2026-11-08" miri test --locked --no-default-features --features int-set \
+      --target i686-unknown-linux-gnu --test integer_output "$case_name" -- --exact --test-threads=1; \
+done

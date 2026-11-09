@@ -1,0 +1,27 @@
+{
+  "host": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "RUSTFLAGS": "",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\n",
+  "profile": "Cargo release defaults; no target-cpu override",
+  "dependency_versions": "All non-fixture harness (name,version) pairs are present in the root Cargo.lock",
+  "method": "Same executable; alternating first version by round; three rounds; five raw samples per version per round; median of round medians; calibration >=4 ms; setup/oracle outside timing; operation allocations/destruction inside timing.",
+  "comparison": "Reviewed input versus integration",
+  "host_limitations": "Shared execution host; CPU topology may be unavailable. No cross-platform or statistical confidence claim.",
+  "lscpu": {
+    "available": false,
+    "error": "lscpu: failed to determine number of CPUs: /sys/devices/system/cpu/possible: No such file or directory"
+  },
+  "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+}

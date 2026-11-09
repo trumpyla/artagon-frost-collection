@@ -1,0 +1,53 @@
+{
+  "note": "Counts are separate executions/configurations; do not add them as unique tests.",
+  "results": [
+    {
+      "target": "Running tests/integer_output.rs (target/debug/deps/integer_output-a3c51f9511241810)",
+      "passed": 18,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "target": "Running tests/integer_sets.rs (target/debug/deps/integer_sets-ce1f2e834dc3bf4a)",
+      "passed": 28,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "target": "Running tests/integer_output.rs (target/release/deps/integer_output-2e1e94c7cc344ba0)",
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "target": "Running tests/integer_sets.rs (target/release/deps/integer_sets-25aa3f149bfb451c)",
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "target": "Running unittests src/lib.rs (verification/int-key-downstream/target/debug/deps/frost_int_downstream-5db2675b227851aa)",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "target": "Doc-tests frost_int_downstream",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    }
+  ]
+}

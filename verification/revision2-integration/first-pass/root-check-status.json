@@ -1,0 +1,22 @@
+{
+  "check": {
+    "log": "check.log",
+    "passed": true,
+    "test_result_blocks": 50
+  },
+  "package": {
+    "log": "package.log",
+    "passed": true,
+    "test_result_blocks": 50
+  },
+  "all-features": {
+    "log": "all-features.log",
+    "passed": true,
+    "test_result_blocks": 39,
+    "unique_counts": {
+      "native_unit_integration_example_tests": 271,
+      "executable_doctests": 34,
+      "compile_fail_doctests": 25
+    }
+  }
+}

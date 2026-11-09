@@ -1,0 +1,40 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.01s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/adaptive`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/advanced`
+Persistent snapshot: Frozen({"queued": 3}); sparse members: 2; dense universe: 256; current object: Some("ready")
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/concurrent`
+Requests handled: 4000
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/core`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.53s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/frameworks`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.03s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/integer_sets`
+signed members: [-9, 0, 7]
+selected integer storage: Dense
+snapshot update shares 7 of 8 containers
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/mutable`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.74s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/sequences`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/set_operations`
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/snapshots`
+Original colors: ["red", "green"]
+Current colors: ["blue", "gold"]
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-github-pr)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running `/workspace/scratch/50bb50b82113/frost-collections/target/debug/examples/static_maps`

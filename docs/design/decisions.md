@@ -215,3 +215,38 @@ inputs. Hash compaction policy, direct small frozen-map construction, owned
 ordered results, and alternative wide-value layouts remain proposals requiring
 workload measurements. See [PERFORMANCE_REVIEW.md](../reviews/performance-review.md) for the
 full findings, current evidence, and ranked follow-up decisions.
+
+
+## Revision 2 integer integration — 2026-11-09
+
+The reviewed main archive and supplied revision 2 share an older base. Merge
+revision 2's useful mechanisms into main while retaining the newer generic
+set-algebra work and output-policy contracts. The
+[integration review](../reviews/revision2-integration-review.md) records concrete
+findings; [current validation](../revision2-integration-validation.md) records
+only checks executed against the resulting source.
+
+| Area | Integrated decision | Reason and cost |
+| --- | --- | --- |
+| Root ownership | Share all `FrozenIntSet` storage; O(1) clone | Related snapshots avoid a full copy for cloning or policy-compatible identity results. Empty values allocate a root; final release still destroys reachable storage. |
+| Chunk ownership | Explicit Chunked candidate with immutable Array, Bitmap, and Full containers | Changed results retain untouched payloads. A flat directory is rebuilt in O(C) for C containers; this is not a persistent tree. |
+| Public policies | Preserve `IntSetLimits`, `limits()`, and all four `*_with_policy` methods | Existing callers retain checked output selection. Empty, self, and no-op paths cannot bypass it. |
+| Limit composition | Componentwise minimum for union/intersection/XOR; left limits for difference | Reject revision 2's larger-limit rule, which would silently weaken a strict operand. |
+| Automatic planning | Retain the reviewed score and 128-byte Dense preference; do not automatically choose Chunked | Reject the unconditional 4 KiB Dense floor, which can expand tiny sparse sets. Explicit policies remain available. |
+| Hashing | Keep canonical content-selected member/run events across all four representations | Sharing and physical container boundaries are not semantic identity. Preserve exact Hasher-event regressions. |
+| Conversion | Keep bounded byte promotion and representation-aware result enforcement | Avoid restoring full sorted staging for every policy change or an unbounded byte importer extent. |
+| Built-in codecs | Add narrow integers, characters, address-sized integers, and narrow unsigned nonzero values | Words remain sealed to u32/u64; logical-domain imports remain checked. |
+| Alloc-only targets | Private Arc/Rc alias selected by pointer-atomic target capability | Preserve targets without pointer atomics; normal auto traits follow the selected pointer. Features do not change that selection. |
+| Evidence | Preserve old reports and raw revision samples as historical | Measurements from either input tree are not measurements of the merged implementation. |
+
+This revision changes the fixed implementation available to every `int-set`
+consumer, rather than conditionally changing its representation when an unrelated
+feature is enabled. Ordinary collection families, backends, hasher defaults,
+freeze/thaw pairs, Rust 1.99.1, and edition 2024 remain as before.
+
+The earlier proposal for a separate `PersistentIntSet` is narrowed to possible
+future directory/path-copying and bounded-sharing contracts. Its APIs are not
+implemented. The current Chunked candidate already provides immutable payload
+sharing within `FrozenIntSet`; the
+[persistent design](persistent-integer-storage.md) records that boundary. Generic
+borrowed set expressions and lazy integer evaluation remain proposals.

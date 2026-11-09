@@ -1,0 +1,290 @@
+Scope: ./scripts/verify.sh miri
+Invocation: complete script captured into bash -c with $0=./scripts/verify.sh and $1=miri
+FROST_MIRI_TOOLCHAIN=nightly-2026-11-08
+CARGO_TARGET_DIR=/workspace/scratch/50bb50b82113/miri-validation-target
+rustc 1.102.0-nightly (f5cedb83a 2026-11-07)
+binary: rustc
+commit-hash: f5cedb83a788ea9581097abc36a2a8503a7f541c
+commit-date: 2026-11-07
+host: x86_64-unknown-linux-gnu
+release: 1.102.0-nightly
+LLVM version: 23.1.5
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.44s
+   Doc-tests frost
+
+running 34 tests
+test src/../README.md - (line 145) ... ok
+test src/../README.md - (line 27) ... ok
+test src/../README.md - (line 374) ... ok
+test src/../README.md - (line 280) ... ok
+test src/../README.md - (line 415) ... ok
+test src/../README.md - (line 254) ... ok
+test src/../README.md - (line 79) ... ok
+test src/../README.md - (line 40) ... ok
+test src/adapters/serde.rs - adapters::serde (line 21) ... ok
+test src/adaptive/hash_map/frozen.rs - adaptive::hash_map::frozen::AdaptiveFrozenHashMap (line 65) ... ok
+test src/adaptive/ordered_map/mutable.rs - adaptive::ordered_map::mutable::AdaptiveOrderedMap (line 67) ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentLookup (line 9) ... ok
+test src/adaptive/seq/mutable.rs - adaptive::seq::mutable::InlineVec (line 33) ... ok
+test src/adapters/rayon.rs - adapters::rayon (line 19) ... ok
+test src/adaptive/seq/frozen.rs - adaptive::seq::frozen::InlineFrozenVec (line 35) ... ok
+test src/adaptive/hash_map/mutable.rs - adaptive::hash_map::mutable::AdaptiveHashMap (line 42) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotGuard (line 100) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::peek (line 228) ... ok
+test src/../README.md - (line 175) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedMap (line 102) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore (line 168) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::publish_if_current (line 272) ... ok
+test src/integer/mod.rs - integer (line 11) ... ok
+test src/family/vec/mutable.rs - family::vec::mutable::MutableVec (line 23) ... ok
+test src/family/hash_map/mutable.rs - family::hash_map::mutable::MutableHashMap (line 26) ... ok
+test src/family/ordered/mutable.rs - family::ordered::mutable::MutableOrderedMap (line 23) ... ok
+test src/integer/key.rs - integer::key::IntKey (line 53) ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 14) ... ok
+test src/read.rs - read (line 7) ... ok
+test src/read.rs - read (line 38) ... ok
+test src/integer/policy.rs - integer::policy::IntSetPolicy (line 98) ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 35) ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::update (line 322) ... ok
+test src/family/ordered/frozen.rs - family::ordered::frozen::FrozenOrderedSet<T>::union (line 526) ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 25 tests
+test src/concurrent/live.rs - concurrent::live::ConcurrentLookup (line 23) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentSetLookup (line 102) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentUpdate (line 61) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 19) - compile fail ... ok
+test src/../README.md - (line 69) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore (line 181) - compile fail ... ok
+test src/concurrent/live.rs - concurrent::live::ConcurrentUpdate (line 76) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 27) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 33) - compile fail ... ok
+test src/../README.md - (line 63) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 39) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotStore<F>::peek (line 235) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 52) - compile fail ... ok
+test src/family/hash_set.rs - family::hash_set::FrozenHashSet (line 48) - compile fail ... ok
+test src/family/hash_map/frozen.rs - family::hash_map::frozen::FrozenHashMap (line 22) - compile fail ... ok
+test src/family/vec/frozen.rs - family::vec::frozen::FrozenVec (line 23) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 55) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 43) - compile fail ... ok
+test src/integer/key.rs - integer::key::IntWord (line 11) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 59) - compile fail ... ok
+test src/plan.rs - plan (line 21) - compile fail ... ok
+test src/integer/mod.rs - integer (line 38) - compile fail ... ok
+test src/integer/mod.rs - integer (line 22) - compile fail ... ok
+test src/frozen.rs - frozen::Frozen (line 70) - compile fail ... ok
+test src/concurrent/snapshot.rs - concurrent::snapshot::SnapshotValue (line 45) - compile fail ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+all doctests ran in 3.92s; merged doctests compilation took 3.41s
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running tests/core_review.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/8575cb121a77626c/out/core_review-8575cb121a77626c)
+
+running 14 tests
+test explicit_native_extraction_preserves_owned_values ... ok
+test hashed::every_hash_builder_preserves_first_key_and_last_value ... ok
+test hashed::explicit_hash_builders_need_neither_clone_nor_default_hashers ... ok
+test hashed::frozen_adaptive_thaw_and_extraction_do_not_clone_the_hasher ... ok
+test hashed::hash_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test hashed::ordered_promotion_panic_keeps_a_valid_map_and_drops_values_once ... ok
+test hashed::strict_hash_builders_return_the_rejected_input_entry ... ok
+test inline_collection_stops_at_the_first_none ... ok
+test inline_zero_sized_reservation_checks_length_overflow ... ok
+test mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys ... ok
+test ordered_duplicate_reduction_drops_each_value_once_on_panic ... ok
+test ordered_freezing_does_not_require_new_key_bounds ... ok
+test small_inline_collection_does_not_consult_heap_reservation_hints ... ok
+test thawing_zero_sized_values_keeps_the_standard_capacity_convention ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.94s
+
+     Running tests/families.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/f42edc7934d01241/out/families-f42edc7934d01241)
+
+running 11 tests
+test adaptive_api_parity ... ok
+test adaptive_hash_promotes_on_new_key_only ... ok
+test adaptive_ordered_promotes_and_keeps_order ... ok
+test append_keeps_self_keys_on_every_toolchain ... ok
+test entry_apis_hide_the_backend ... ok
+test freeze_thaw_pairs_are_fixed ... ok
+test inline_reserve_overflow_panics_like_vec ... ok
+test inline_retain_panic_keeps_unvisited_elements_like_vec ... ok
+test inline_vec_spills_once_and_demotes_only_explicitly ... ok
+test mutable_ordered_from_iter_keeps_first_key_representative ... ok
+test write_capabilities_work_across_every_mutable_map ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 5.62s
+
+     Running tests/inline_safety.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/1e150c530c4b987f/out/inline_safety-1e150c530c4b987f)
+
+running 12 tests
+test drop_counts_inline_and_heap ... ok
+test inline_vec_ops_drop_exactly_once ... ok
+test over_aligned_elements_survive_mutation_spill_and_thaw ... ok
+test owning_iterator_drop_panic_still_drops_its_remaining_range ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test panicking_hint_after_spilling_drops_every_produced_value ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test rejected_element_drop_panic_restores_the_unvisited_suffix ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test zero_sized_and_zero_capacity ... ok
+test zero_sized_destructors_run_once_through_inline_ownership ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.77s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running tests/inline_safety.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/1e150c530c4b987f/out/inline_safety-1e150c530c4b987f)
+
+running 12 tests
+test drop_counts_inline_and_heap ... ok
+test inline_vec_ops_drop_exactly_once ... ok
+test over_aligned_elements_survive_mutation_spill_and_thaw ... ok
+test owning_iterator_drop_panic_still_drops_its_remaining_range ... ok
+test panicking_clone_drops_partial_copy_exactly_once ... ok
+test panicking_hint_after_spilling_drops_every_produced_value ... ok
+test panicking_retain_predicate_leaves_no_leak_or_double_drop ... ok
+test partially_consumed_owning_iterators_drop_the_rest ... ok
+test rejected_element_drop_panic_restores_the_unvisited_suffix ... ok
+test thaw_transfers_ownership_without_double_drop ... ok
+test zero_sized_and_zero_capacity ... ok
+test zero_sized_destructors_run_once_through_inline_ownership ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.84s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.51s
+     Running tests/exhaustive_collections.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/x86_64-unknown-linux-gnu/debug/build/frost-collections/124c5635f9ea6bc3/out/exhaustive_collections-124c5635f9ea6bc3)
+
+running 1 test
+test inline_ownership_exhausts_three_operation_traces ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 10.48s
+
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/integer_sets.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/816116c07f4f52bc/out/integer_sets-816116c07f4f52bc)
+
+running 4 tests
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 67.11s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 2 tests
+test integer::storage::word::tests::dense_byte_promotion_preserves_lsb_positions_and_width_ends ... ok
+test integer::storage::word::tests::dense_promotion_chunks_without_losing_partition_boundaries ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 15 filtered out; finished in 0.62s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 3 tests
+test integer::storage::tests::hash_scout_selects_content_format_at_both_thresholds ... ok
+test integer::storage::tests::run_scout_break_propagates_before_the_seventeenth_run_tail ... ok
+test integer::storage::tests::skewed_intersection_does_not_scan_the_large_operand ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 4.62s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.18s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.13s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.29s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.62s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::dense::tests::deleting_from_an_empty_window_is_a_no_op ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.13s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests src/lib.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/4ca09072ca0cf2dc/out/frost-4ca09072ca0cf2dc)
+
+running 1 test
+test integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.50s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running tests/integer_output.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/b15e8681978b13b2/out/integer_output-b15e8681978b13b2)
+
+running 1 test
+test canonical_hash_events_match_across_representations_and_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 56.31s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/integer_output.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/b15e8681978b13b2/out/integer_output-b15e8681978b13b2)
+
+running 1 test
+test canonical_hash_scout_thresholds_are_representation_independent ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 71.26s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running tests/integer_output.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/b15e8681978b13b2/out/integer_output-b15e8681978b13b2)
+
+running 1 test
+test equality_and_hash_ignore_dense_padding_and_construction_history ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 5.53s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running tests/integer_output.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/b15e8681978b13b2/out/integer_output-b15e8681978b13b2)
+
+running 1 test
+test empty_operands_and_identity_shortcuts_do_not_bypass_limits ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 5.88s
+
+    Blocking waiting for file lock on package cache
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/integer_output.rs (/workspace/scratch/50bb50b82113/miri-validation-target/miri/i686-unknown-linux-gnu/debug/build/frost-collections/b15e8681978b13b2/out/integer_output-b15e8681978b13b2)
+
+running 1 test
+test output_policy_overrides_are_checked_and_retained ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 1.39s
+
+
+Verification scope miri passed.

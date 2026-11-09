@@ -11,13 +11,16 @@ release. Version **0.4.0** adds fast frozen set algebra to the reviewed family,
 adaptive-storage, framework and concurrency design. The library is
 `no_std`; `alloc` and `std` add capabilities. The default enables only `std`.
 
-This unreleased revision integrates guarded snapshot reads and conditional
-publication, retains the reviewed kernel improvements, and adds deterministic
-concurrency models, finite exhaustive checks, and isolated proof harnesses.
-[Current validation](docs/integer-output-validation.md) distinguishes executed gates
-from the remaining release requirements. The [previous performance review](docs/reviews/performance-review.md)
-and [incoming patch assessment](docs/reviews/incoming-assessment.md) preserve the
-measurements, tradeoffs, and reasons for each integration decision.
+This unreleased revision integrates shared integer storage and explicit Chunked
+sets while retaining the main project's checked output policies and generic
+set-algebra design. Guarded snapshots, conditional publication, deterministic
+models, finite exhaustive checks, and isolated proof harnesses remain available.
+[Integration validation](docs/revision2-integration-validation.md) distinguishes
+executed gates from remaining release requirements;
+[GitHub import checks](verification/revision2-integration/github-import-ci/README.md)
+record the subsequent Make and CI adaptation. The
+[integration review](docs/reviews/revision2-integration-review.md) explains the
+selective merge; earlier reviews and benchmarks remain historical evidence.
 
 ## Core API
 
@@ -214,7 +217,7 @@ representation or selects a different hasher. Backends are reexported from
 | `arrayvec-0_7` | fixed-capacity inline vectors | `core`; compact conversion needs `alloc` |
 | `imbl-7` | persistent vector, hash map/set, ordered map/set | `std` |
 | `roaring-0_12` | compressed `u32` and `u64` integer sets | `std` |
-| `int-set` | typed frozen integer profile with fixed sorted/dense/Roaring candidates | `alloc` |
+| `int-set` | typed frozen integer profile with fixed Sorted/Dense/Roaring/Chunked candidates | `alloc` |
 | `fixedbitset-0_5` | dense bitsets | `alloc` |
 | `slotmap-1` | generational slot maps | `alloc` |
 | `phf-0_14` | compile-time perfect-hash maps/sets, including declaration-order variants | `core` at runtime |
@@ -244,10 +247,11 @@ This archive is not a claim that version 0.4.0 has been published to crates.io.
 ## Typed frozen integer sets
 
 Enable `int-set` for `FrozenIntSet<K>`, a separate profile for lossless integer
-codecs. `IntKey::Word` selects `u32` or `u64` at compile time. The four ordinary
-signed/unsigned primitives and `NonZeroU32`/`NonZeroU64` are supported; applications
-can implement `IntKey` for their own domain types. Signed encodings preserve
-numeric order by flipping the sign bit.
+codecs. `IntKey::Word` selects `u32` or `u64` at compile time. Built-in codecs cover
+`u8/u16/u32/u64`, `i8/i16/i32/i64`, `usize/isize`, `char`, and the corresponding
+fixed-width unsigned nonzero types. Applications can implement `IntKey` for their
+own domain types. Signed encodings preserve numeric order by changing their
+unsigned ordering coordinates; narrow and character decoders reject invalid codes.
 
 ```rust
 # #[cfg(feature = "int-set")]
@@ -262,54 +266,90 @@ assert_eq!(left.union_len(&right), 5);
 # }
 ```
 
-The complete profile has fixed sorted, dense-window, and width-specific Roaring
-candidates. Automatic construction makes a bounded, memory-oriented choice;
-explicit policies and representation diagnostics support workload testing. Dense
+The complete profile has fixed Sorted, Dense, Roaring, and Chunked candidates.
+Automatic construction chooses among the first three using the existing memory
+score; it does not select Chunked or force small inputs into a 4 KiB Dense window.
+`IntSetPolicy::chunked()` explicitly chooses shared 2^16-code containers. Dense
 windows use absolute encoded coordinates, including for differently based sets.
-Cardinality is `u64`; inclusive spans use `u128` so the full `u64` domain does not
-overflow. This profile supports `no_std + alloc`; enabling `std` also enables
-the dependency's supported runtime CPU dispatch. The existing `roaring-0_12`
-integration keeps its prior `std` requirement and native adapter API.
-For a manifest that disables default features, request `features = ["int-set", "std"]`
-if it also needs standard-library families or the dependency's std APIs. The
-earlier integer-profile revision enabled `std` transitively; this revision makes
-that choice explicit.
+Cardinality is `u64`; inclusive spans use `u128` so the full `u64` span does not
+overflow.
 
-Algebra preserves compact outputs: small updates can clone and edit Dense bits,
+All representations share immutable storage, making `clone()` an O(1) reference
+count increment. A result equal to an operand reuses its allocation when the
+result policy permits that representation. Chunked storage also shares untouched
+containers when deriving a changed result:
+
+```rust
+# #[cfg(feature = "int-set")]
+# {
+use frost::integer::{FrozenIntSet, IntSetPolicy};
+let before = FrozenIntSet::try_from_iter(
+    [1_u32, 65_537], IntSetPolicy::chunked(),
+).unwrap();
+let copy = before.clone();
+assert!(copy.shares_storage_with(&before));
+let update: FrozenIntSet<u32> = [2].into_iter().collect();
+let after = before.union(&update);
+assert_eq!(after.shared_chunks(&before), 1);
+assert_eq!(before.iter().collect::<Vec<_>>(), [1, 65_537]);
+# }
+```
+
+The chunk directory is a flat sorted index. A changed result copies directory
+entries and shares unaffected payloads; it does not have logarithmic tree-path
+updates. Chunked containers use sorted `u16` arrays, fixed bitmaps, or a full
+container marker. Retained versions retain their reachable allocations, and
+final-owner destruction can release many containers. `new()` allocates a shared
+storage header even when its member buffer is empty.
+
+The profile supports `no_std + alloc`. Shared storage uses `Arc` on targets with
+pointer-width atomics and `Rc` otherwise, retaining the selected pointer's normal
+auto traits. Enabling `std` also enables the dependency's supported runtime CPU
+dispatch. The existing `roaring-0_12` integration keeps its `std` requirement and
+native adapter API. Consumers that disable default features must explicitly add
+`std` if they need standard-library families or the dependency's std APIs.
+
+Algebra preserves compact outputs: small updates can copy and edit Dense bits,
 while distant Dense windows can promote to Roaring. Each set retains its Dense
 payload and Roaring partition limits. Union, intersection, and symmetric
 difference use the smaller limit from each operand; difference keeps the left
-limits. A forced construction backend is a preference for that construction,
-not a permanent result type. Use `union_with_policy` and the corresponding
-methods for the other operations to choose an explicit result policy. Limits do
-not bound sorted buffers, temporary allocations, or total process memory.
+limits. `IntSetLimits`, `limits()`, and all four `*_with_policy` methods remain
+available. A forced construction backend is not a permanent result type. Empty,
+identical, and shared operands still obey the requested output policy. These
+limits do not bound Sorted or Chunked storage, temporary allocations, retained
+versions, or total process memory.
 
-Same-representation equality uses native or contiguous comparisons. Hashing
-selects a canonical member or run stream from logical contents, so equal sets
-hash identically across storage types and construction histories. The hash bytes are not a serialization format.
-Count operations keep values encoded; some Dense/Roaring counts allocate
-temporary conversion storage to avoid individual membership probes.
+`contiguous_payload_bytes()` reports exact Sorted/Dense buffers; `payload_bytes()`
+provides a broader storage estimate, including a statistics-based Roaring proxy.
+Neither is a measurement of resident memory. `chunk_count()` and `shared_chunks()`
+make chunk retention observable. Logical equality and canonical member/run Hash
+event streams ignore representation, sharing, policies, and construction history.
+Hash bytes are not a serialization format. Count and predicate kernels keep
+values encoded; some mixed pairs allocate temporary conversion storage.
 
 Iteration yields decoded keys by value. Bulk set operations use canonical codes
 without reconstructing keys. Checked imports reject invalid and noncanonical
-codes and test ordering on the observed input. Custom codecs must still preserve
-the complete value and remain stable; equality alone cannot verify discarded
+codes and test ordering on the observed input. Custom codecs must preserve the
+complete value and remain stable; equality alone cannot verify discarded
 metadata. Ordinary ordered sets retain their existing `freeze()` result.
 
-See [the integer design](docs/design/integer-sets.md) and
-[adversarial review](docs/reviews/integer-design-audit.md) for contracts, planner
-limits, and implementation decisions. The [output review](docs/reviews/integer-output-review.md),
-[current validation](docs/integer-output-validation.md), and
-[comparative benchmarks](docs/integer-output-benchmarks.md) record the follow-up
-corrections and the evidence actually produced. Proposed new collection families
-remain in the [integer roadmap](docs/design/integer-roadmap.md).
+See [the integer design](docs/design/integer-sets.md),
+[revision integration review](docs/reviews/revision2-integration-review.md), and
+[current validation](docs/revision2-integration-validation.md) for the current
+contracts and executed checks. The earlier
+[output review](docs/reviews/integer-output-review.md),
+[output validation](docs/integer-output-validation.md), and
+[comparative benchmarks](docs/integer-output-benchmarks.md) are retained as
+historical evidence; their measurements are not results for this merged source.
 
-The [lazy-views research review](docs/reviews/lazy-views-adversarial-review.md)
-proposes explicit borrowed [integer expressions](docs/design/integer-views.md)
-and a separate [persistent integer profile](docs/design/persistent-integer-storage.md).
-Those types are design proposals, not implemented APIs. Current integer algebra
-remains eager. The review preserves the supplied research, checks primary
-sources, and includes an independent finite model of cardinality bounds.
+The [general set-algebra design](docs/design/set-algebra.md) and
+[borrowed integer expressions](docs/design/integer-views.md) remain proposals;
+current integer algebra is eager. The
+[persistent-storage design](docs/design/persistent-integer-storage.md) now
+separates the implemented flat shared chunks from proposed persistent tree
+directories and a possible future `PersistentIntSet`. The
+[integer roadmap](docs/design/integer-roadmap.md) records the remaining admission
+gates. No lazy expression engine or separate persistent family is implemented.
 
 ## Framework contracts
 
@@ -414,6 +454,9 @@ See [the documentation index](docs/README.md),
 [contributor guide](CONTRIBUTING.md), and
 [maintainer notes](docs/maintainers/guide.md). [AGENTS.md](AGENTS.md) records the
 same invariants and verification expectations for automated changes.
-[Current validation](docs/integer-output-validation.md) records executed results;
-[verification scope](docs/verification.md) states model assumptions and bounds.
+[Integration validation](docs/revision2-integration-validation.md) records the
+reviewed source's executed results;
+[GitHub import checks](verification/revision2-integration/github-import-ci/README.md)
+record the PR checkout and Make workflow separately.
+[Verification scope](docs/verification.md) states model assumptions and bounds.
 No throughput or latency advantage is claimed without workload-specific evidence.

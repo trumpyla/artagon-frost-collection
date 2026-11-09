@@ -1,0 +1,4 @@
+1..3
+ok 1 native Windows jq line endings do not alter feature arguments
+ok 2 native Windows jq line endings do not alter example arguments
+ok 3 native Windows jq line endings do not alter the packaged manifest path

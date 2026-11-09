@@ -1,0 +1,47 @@
+{
+  "executed": "standalone rustc compile and direct execution against the already-built all-features debug library",
+  "rust_version": "1.99.1",
+  "linked_rlib_path": "/workspace/scratch/50bb50b82113/frost-collections/target/debug/deps/libfrost-9d7d95afdb961a00.rlib",
+  "dependency_search_path": "/workspace/scratch/50bb50b82113/frost-collections/target/debug/deps",
+  "build_provenance": "The library artifact was produced by the main integration all-features debug build before the oracle. The Cargo fingerprint records all features and no extra rustflags. The artifact path was rebuilt after this oracle for documentation edits; its later bytes are not claimed as the exact linked artifact.",
+  "oracle_executable_built_utc": "2026-11-09T12:30:59.186589+00:00",
+  "oracle_log_completed_utc": "2026-11-09T12:31:28.289199+00:00",
+  "oracle_source_sha256": "25c04b746cfe525e302246a6781faa4bdbe9e10303f2fc6bae9497147547a603",
+  "checks_passed": 507840,
+  "logic_snapshot_at_review": {
+    "src/integer/mod.rs": {
+      "sha256": "7335e8426b32da1a3c086ca5ba8f969142f866f1986b42414cac98777655a087",
+      "mtime_utc": "2026-11-09T12:20:09.579937+00:00"
+    },
+    "src/integer/key.rs": {
+      "sha256": "087666d0d3a09ef7af314540d595db9e4a948eb642db0656e2e667401ace760a",
+      "mtime_utc": "2026-11-09T12:20:09.578022+00:00"
+    },
+    "src/integer/policy.rs": {
+      "sha256": "9536acaaf3df981adfe0ac0a33f8eea92618886d008a582794b16556d46f570f",
+      "mtime_utc": "2026-11-09T12:20:09.580447+00:00"
+    },
+    "src/integer/set.rs": {
+      "sha256": "83b920ccb985720338d1b1ffcba8d831ee21d3106b6bce7564d9078c0a1a6f28",
+      "mtime_utc": "2026-11-09T12:21:51.246585+00:00"
+    },
+    "src/integer/storage.rs": {
+      "sha256": "3c296ffd6a4e29f5206b28f6aaffeb303716b119e0314d42c764d371700140cf",
+      "mtime_utc": "2026-11-09T12:24:20.559862+00:00"
+    },
+    "src/integer/storage/word.rs": {
+      "sha256": "c34772c120c079eb2a8cf9754858d716d0b9a33fe49a592d6d7c49e0650ca3d3",
+      "mtime_utc": "2026-11-09T12:23:09.376867+00:00"
+    },
+    "src/integer/chunked.rs": {
+      "sha256": "e3dee7988167e6e23723b19ba76dd602b9f9509a999a29ededf0f3421b5957a1",
+      "mtime_utc": "2026-11-09T12:26:48.130454+00:00"
+    },
+    "src/integer/dense.rs": {
+      "sha256": "d15e59e0c600fe2932419a719946603b077f71ed7eef92ef20d734b61fe05ef2",
+      "mtime_utc": "2026-11-09T12:23:49.894939+00:00"
+    }
+  },
+  "scope": "Finite selected u64 workloads and result-policy boundaries. Not exhaustive over all possible sets, custom codecs, allocator failures, or all target architectures.",
+  "portable_manifest_execution": "not executed during this review; supplied for future reruns"
+}

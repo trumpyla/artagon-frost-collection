@@ -1,0 +1,5 @@
+{
+  "observed_utc": "2026-11-09T12:31:07.338883+00:00",
+  "source_digest": "8887013ad1610099863c85df7f55ed346b1f102e5e075915b43c05360ceb8683",
+  "note": "Observed during isolated int-set feature stage, after root confirmed source stable. Profiles excluded integer module; earlier matrix features also excluded integer module. Subsequent platform and integer gates capture their own source digests."
+}

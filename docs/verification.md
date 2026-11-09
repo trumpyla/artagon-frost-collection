@@ -20,13 +20,16 @@ their results. The presence of a harness, workflow, or proof annotation is not a
 successful verification result. Do not describe an unavailable, unsupported,
 timed-out, or partially explored check as passing.
 
-The current integer output corrections have a separate
-[execution record](integer-output-validation.md) under `verification/integer-output/`.
-Earlier logs under `verification/results/` describe the prior production candidate;
-the initial integer addition is recorded under `verification/int-set/` and its
-[historical report](integer-validation.md).
+The shared-storage and explicit Chunked integration has a separate
+[execution record](revision2-integration-validation.md) under
+`verification/revision2-integration/`. The subsequent
+[GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md)
+record the PR checkout's verification separately. The earlier
+[integer output corrections](integer-output-validation.md), initial
+[integer addition](integer-validation.md), and logs under `verification/results/`
+remain historical evidence for their recorded source revisions.
 
-### Optional-tool status recorded in this review
+### Historical optional-tool status
 
 The Kani package's ordinary helper test passed with Rust 1.99.1 on
 `x86_64-unknown-linux-gnu`; see the
@@ -35,8 +38,9 @@ lockfile records the tested dependency resolution. This is a native test result,
 not a Kani proof result. The verifier command was unavailable
 ([log](../verification/results/kani-availability.log)), and offline resolution
 could not find Loom ([log](../verification/results/loom-availability.log)).
-Therefore the six symbolic Kani proofs and the two Loom explorations remain
-unexecuted gates in this review.
+Therefore that review did not execute the six symbolic Kani proofs or the two
+Loom explorations. These historical logs do not establish a result for a later
+checkout; record any fresh execution separately.
 
 ## Coverage map
 
@@ -46,8 +50,9 @@ unexecuted gates in this review.
 | Same file: dense algebra | Actual public bitmap operations and full-word kernels | Six membership positions at word boundaries; eight logical lengths; all valid masks; independent clean/all-one input padding | Every possible multiword bitmap, every padding pattern, or every architecture |
 | Same file: inline ownership | Actual `InlineVec` mutation, retention, spill, shrink, freeze, and thaw | All 7^5 operation traces at capacities 0 and 2; 33,614 traces total | Arbitrary capacities, arbitrary destructors, or panic behavior |
 | `tests/publication_model.rs` | The exact production `publication::update` loop | All modeled load/CAS orders for three one-shot writers, and a two-writer equal-value publication case | arc-swap internals, weak-memory behaviors inside a primitive, fairness, or unbounded writer progress |
-| `tests/integer_sets.rs` | Actual typed constructors, all nine storage pairs, all four materialized operations, counts, predicates, and cached bounds | All pairs of subsets of five boundary values for both unsigned widths: 18,432 input/representation combinations, plus generated and adversarial cases | Arbitrary codecs, every integer input, all allocations, or internals of the Roaring dependency |
-| `tests/integer_output.rs` and integer storage unit tests | Actual result planning, byte promotion, limit inheritance, native equality, canonical Hash, and snapshot updates | All nine input representation pairs and three forced outputs across four boundary windows; explicit budget/identity cases; endian/chunk regressions; exact Hasher event sequences | Minimal memory for every workload, bounded process memory, arbitrary codecs, or the complete dependency implementation |
+| `tests/integer_sets.rs` | Actual typed constructors, all 16 ordered storage pairs, all four materialized operations, counts, predicates, and cached bounds | All pairs of subsets of five boundary values for both unsigned widths: 32,768 input/representation combinations, plus generated, codec, sharing, and adversarial cases | Arbitrary codecs, every integer input, all allocations, or internals of the Roaring dependency |
+| `tests/integer_output.rs` and integer storage unit tests | Actual result planning, byte promotion, minimum/left limit inheritance, native equality, canonical Hash, policy-compatible sharing, and snapshot updates | All 16 input representation pairs and four forced outputs across four boundary windows; explicit budget/identity cases; endian/chunk regressions; exact Hasher event sequences | Minimal memory for every workload, bounded process memory, arbitrary codecs, or the complete dependency implementation |
+| Integer Dense/Chunked unit regressions | Actual shared containers, saved iterator cursors, conversion kernels, and run visitors | Empty and maximum-code boundaries, overlapping-container reuse, partial Array/Bitmap/Full folds, and early breaks; six bounded cases also selected by `make miri` | Persistent-tree complexity, every container size or cursor position, or all allocator behavior |
 | `tests/concurrent.rs` | Actual snapshot wrapper and dependency | Native regression histories, forced conflict/retry, and bounded concurrent writer workloads | Exhaustive operating-system schedules or a proof of the dependency |
 | `tests/inline_safety.rs` under Miri | Actual unsafe inline storage through public APIs | Concrete ownership, alignment, zero-sized-value, partial-iterator, and panic paths | Soundness for every safe caller or a complete model of Rust's semantics |
 | Three-operation inline test under Miri | Actual inline transitions and per-element ownership counters | All 7^3 traces at capacities 0 and 2; 686 traces total | The larger native five-operation domain, arbitrary capacities, or every unwind path |
@@ -64,8 +69,11 @@ runtime dependencies or supported Rust version.
 Run from the repository root:
 
 ```sh
-cargo +1.99.1 test --locked --test exhaustive_collections --features fixedbitset-0_5
+make bounded
 ```
+
+This target also runs the snapshot retry model and the ordinary Kani property
+helpers. Those native helper tests do not invoke a symbolic verifier.
 
 The ordered-set oracle encodes membership in a six-bit integer. It independently
 specifies union, intersection, difference, symmetric difference, subset,
@@ -93,11 +101,7 @@ all remaining owners. The separate panic regressions cover unwinding behavior.
 
 ## Snapshot retry model
 
-Run:
-
-```sh
-cargo +1.99.1 test --locked --test publication_model -- --nocapture
-```
+The retry model runs as part of `make bounded`.
 
 Both the real store and the model call
 [`src/concurrent/publication.rs`](../src/concurrent/publication.rs). The test
@@ -149,7 +153,7 @@ progress properties remain outside this model.
 ### Optional Loom lane
 
 ```sh
-cargo +1.99.1 test --manifest-path verification/loom/Cargo.toml
+make loom
 ```
 
 This isolated package pins Loom 0.7.3. Its backend implements the trusted store
@@ -160,8 +164,8 @@ value and the complete set of displaced versions.
 The builder explicitly clears permutation, duration, preemption, and checkpoint
 limits inherited from the environment. Its 256-branch ceiling is a failure
 condition if exceeded. Do not lower the exploration coverage to obtain a green
-release check. Obtain dependencies, generate and retain this package's lockfile,
-and rerun with `--locked` before recording a reproducible release result.
+release check. The Make target uses the isolated package's committed lockfile
+with `--locked`; preserve that dependency resolution with the recorded result.
 
 Loom can only observe operations implemented using its instrumented types.
 Merely running ordinary `std` atomics or arc-swap under `loom::model` would not
@@ -177,51 +181,49 @@ inline buffer owns exactly the initialized prefix, and an owning iterator owns
 exactly its remaining contiguous range. Moving storage must transfer that
 ownership before any destructor can run.
 
-The reproducible nightly selected for this review is `nightly-2026-11-08`:
+The default diagnostic nightly is `nightly-2026-11-08`. Install its components,
+then run the complete ownership target:
 
 ```sh
 rustup toolchain install nightly-2026-11-08 --component miri --component rust-src
 cargo +nightly-2026-11-08 miri setup
-cargo +nightly-2026-11-08 miri test --locked --test inline_safety
-cargo +nightly-2026-11-08 miri test --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
+make miri
 ```
 
-The three-operation test has its own name and is also an ordinary native test.
+The `inline_ownership_exhausts_three_operation_traces` test is also an ordinary native test.
 It uses the same ownership-checking helper as the five-operation test, crosses
 the capacity-two spill boundary, and keeps interpreter runtime manageable. The
 five-operation test remains unchanged and is not silently reduced under Miri.
 
-The integer profile adds a separate 32-bit arithmetic and alignment check:
-
-```sh
-MIRIFLAGS=-Zmiri-strict-provenance cargo +nightly-2026-11-08 miri test --locked \
-  --no-default-features --features int-set --target i686-unknown-linux-gnu \
-  --test integer_sets dense_ -- --test-threads=1
-```
-
-These four named tests execute the production constructors and operations near
+The same Make target includes a separate 32-bit arithmetic and alignment lane:
+alloc-only `int-set` on `i686-unknown-linux-gnu` with strict provenance. Its four
+`integer_sets` tests selected by `dense_` execute constructors and operations near
 signed zero, `u64::MAX`, and distant dense windows. They verify checked rejection
 of a full-width dense allocation before narrowing to the 32-bit address size.
-They are not exhaustive over all 64-bit inputs. The command is included in the
-Miri script for future CI runs; its current result is recorded in
-[integer output validation](integer-output-validation.md).
+They are not exhaustive over all 64-bit inputs. The
+[integration validation](revision2-integration-validation.md) records the
+reviewed source's completed Miri execution; later Make-based results belong in
+the separate [GitHub import record](../verification/revision2-integration/github-import-ci/README.md).
 
 The earlier integration review's complete `scripts/verify.sh miri` gate passed using the
 installed `nightly` alias for that dated toolchain; see the
-[current Miri log](../verification/results/miri-current.log). Strict-provenance
+[historical Miri log](../verification/results/miri-current.log). Strict-provenance
 Stacked Borrows passed 37 cases across `core_review`, `families`, and
 `inline_safety`, excluding two named random-operation cases. Strict-provenance
 Tree Borrows passed all 12 inline-safety cases again and the separately named
 686-trace ownership test. The same gate also passed 51 native nightly doctests;
 those doctests are compiler checks, not Miri executions.
 
-The output revision also runs two private conversion unit tests and selected
+The current target also runs two private conversion unit tests and selected
 public output tests on the 32-bit Miri target. The conversion test instantiates
 the same private chunking function with small chunks to exercise splitting
 without allocating an 8 MiB scratch buffer in the interpreter. Native tests keep
 the production-sized path and the explicit greater-than-8-MiB result-budget case.
-Selected Miri names and executed counts are recorded in the current report;
-large native-only or unselected cases are not counted as Miri passes.
+Six additional bounded Dense/Chunked regressions cover saved fold cursors,
+full-container runs and early breaks, unchanged overlapping allocations,
+Dense-to-Chunked boundaries, empty Dense deletion, and maximum-code endpoints.
+Selected Miri names and executed counts belong in the corresponding execution
+record; large native-only or unselected cases are not counted as Miri passes.
 
 Keep alignment, validity, aliasing, race, and leak checks enabled. If the target
 or toolchain rejects an operation, record the unsupported check and investigate;
@@ -232,6 +234,22 @@ in the results. A normal unit-test pass is not evidence of a Miri pass.
 Miri detects violations on executed paths. Its own documentation explicitly
 distinguishes that from a proof of soundness and describes incomplete concurrent
 schedule and weak-memory exploration. See the [official Miri guide][miri].
+
+## Embedded integer ownership branches
+
+Install both default bare-metal targets, then run:
+
+```sh
+rustup target add thumbv7em-none-eabihf thumbv6m-none-eabi
+make embedded
+```
+
+The integer profile uses `Arc` on targets with pointer-width atomics and `Rc`
+otherwise. The first target exercises the Arc branch; `thumbv6m-none-eabi`
+exercises the Rc branch that an unconditional `alloc::sync::Arc` import would
+break. The Make target also builds core-only and the alloc-compatible integration
+set on `thumbv7em-none-eabihf`. These are compilation checks, not embedded-hardware
+execution. Neither target replaces isolated host feature checks.
 
 ## Optional Kani proofs
 
@@ -259,15 +277,14 @@ The verifier is installed separately according to the [Kani installation
 guide][kani-install]. Run the native property helpers first, then the verifier:
 
 ```sh
-cargo +1.99.1 test --manifest-path verification/kani/Cargo.toml
-cd verification/kani
-cargo kani --lib
+make bounded
+make kani
 ```
 
-The first command checks that the property helpers compile and execute against
-the real implementations. It does not exercise `kani::any`, the proof attributes,
-or symbolic verification. A release must report the Kani command separately and
-require all six expected harnesses to be discovered and pass.
+The first target includes a check that the property helpers compile and execute
+against the real implementations. It does not exercise `kani::any`, the proof
+attributes, or symbolic verification. A release must report the Kani target
+separately and require all six expected harnesses to be discovered and pass.
 
 As reviewed on 2026-11-09, Kani 0.68.0 is the published release and uses its own
 nightly compiler dated 2026-08-21. This crate requires Rust 1.99.1. Compatibility

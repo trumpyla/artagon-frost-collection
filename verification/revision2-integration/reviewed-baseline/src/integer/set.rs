@@ -1,0 +1,584 @@
+use alloc::vec::Vec;
+use core::cmp::Ordering;
+use core::fmt;
+use core::hash::{Hash, Hasher};
+use core::iter::FusedIterator;
+use core::marker::PhantomData;
+
+use super::storage::{Operation, Storage, Word, Words};
+use super::{
+    IntKey, IntSetError, IntSetLimits, IntSetPolicy, IntSetRepr, IntSetStatistics, IntWord,
+};
+use crate::family::{FrozenOrderedSet, MutableOrderedSet};
+use crate::read::{Cardinality, ElementType, SetContains, ValueElements};
+use crate::{Rejected, TryFreezeWith};
+
+/// A structurally frozen set of losslessly encoded integer-domain values.
+///
+/// Storage is private and selected when constructed. Each instance has sorted,
+/// dense-window, or width-specific Roaring storage. Feature unification never
+/// adds representations to an already available profile. The `int-set` feature
+/// enables the complete profile with `alloc`. The optional `std` feature enables
+/// supported runtime CPU dispatch in the Roaring dependency.
+///
+/// Iteration reconstructs `K` by value. There is no borrowed `&K`, mutable view,
+/// implicit numeric-range fill, or complement over all possible word patterns.
+/// Use `valid_universe.difference(&set)` for a domain-relative complement.
+///
+/// Counts are `u64`; this type implements [`Cardinality`], not [`crate::read::Len`].
+/// [`try_len`](Self::try_len) makes conversion to a target's `usize` explicit.
+/// The complete `u64` universe has 2^64 members and cannot be represented by
+/// this cardinality contract. A sparse set can still span that entire universe;
+/// [`IntSetStatistics::span`] uses `u128` to describe it without overflow.
+/// The phantom key preserves its lifetimes and auto-trait restrictions even
+/// though only unsigned codes are physically stored.
+#[must_use]
+pub struct FrozenIntSet<K: IntKey> {
+    storage: Storage<K::Word>,
+    limits: IntSetLimits,
+    key: PhantomData<K>,
+}
+
+impl<K: IntKey> FrozenIntSet<K> {
+    /// Empty sorted set, allocating no member buffer.
+    pub fn new() -> Self {
+        Self::from_storage(Storage::empty(), IntSetLimits::default())
+    }
+
+    fn from_storage(storage: Storage<K::Word>, limits: IntSetLimits) -> Self {
+        Self {
+            storage,
+            limits,
+            key: PhantomData,
+        }
+    }
+
+    /// Encode keys, validate their observed codec laws, normalize, and plan storage.
+    ///
+    /// Duplicates collapse according to the canonical integer code. This profile
+    /// reconstructs full keys under the [`IntKey`] laws; it cannot retain metadata
+    /// that a codec discards. Normalization sorts once in O(n log n) time with O(n)
+    /// staging storage. Checked validation adds linear codec work. Policy limits
+    /// cover the documented candidate costs, not the staging vector or allocator.
+    ///
+    /// # Errors
+    /// Returns a codec-law violation observed in the input, a rejected explicit
+    /// representation, or an unrepresentable cardinality. Consumed input is not
+    /// returned; use [`TryFreezeWith`] on an owned source to recover it on failure.
+    /// User codec/ordering panics and allocator failures are not returned as errors.
+    pub fn try_from_iter<I: IntoIterator<Item = K>>(
+        input: I,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        let mut words = Vec::new();
+        for (index, key) in input.into_iter().enumerate() {
+            let word = key.encode();
+            let decoded = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if decoded != key || decoded.cmp(&key) != Ordering::Equal {
+                return Err(IntSetError::CodecRoundTrip { index });
+            }
+            if decoded.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
+            }
+            words.push(word);
+        }
+        Self::normalize(words, policy)
+    }
+
+    /// Import encoded members with checked decoding and canonicality validation.
+    ///
+    /// This accepts logical words, not an unchecked serialized backend. Gaps in
+    /// a restricted key domain are rejected. Duplicates and input order normalize
+    /// exactly as in [`try_from_iter`](Self::try_from_iter).
+    ///
+    /// # Errors
+    /// Returns an invalid/noncanonical code, observed order violation, or rejected
+    /// storage policy. The consumed source is not returned. Allocation failures
+    /// and panics in user code follow ordinary Rust behavior.
+    pub fn try_from_encoded<I: IntoIterator<Item = K::Word>>(
+        input: I,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        let mut words = Vec::new();
+        for (index, word) in input.into_iter().enumerate() {
+            let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if key.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
+            }
+            words.push(word);
+        }
+        Self::normalize(words, policy)
+    }
+
+    fn normalize(mut words: Vec<K::Word>, policy: IntSetPolicy) -> Result<Self, IntSetError> {
+        words.sort_unstable();
+        words.dedup();
+        let mut previous = None;
+        for (index, &word) in words.iter().enumerate() {
+            let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if key.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
+            }
+            if previous.is_some_and(|prior: K| prior.cmp(&key) != Ordering::Less) {
+                return Err(IntSetError::NonMonotonicEncoding { index });
+            }
+            previous = Some(key);
+        }
+        Storage::from_sorted(words, policy)
+            .map(|storage| Self::from_storage(storage, policy.limits()))
+    }
+
+    /// Rebuild the same logical codes under an explicit policy, without decoding.
+    ///
+    /// This uses representation-aware conversion and retains the supplied limits
+    /// for subsequent algebra. It may allocate or enumerate codes and is not a
+    /// cheap view conversion. The forced backend applies to this rebuild only.
+    ///
+    /// # Errors
+    /// Returns the selected representation's budget or partition rejection. This
+    /// set remains unchanged, including when rebuilding fails.
+    pub fn with_policy(&self, policy: IntSetPolicy) -> Result<Self, IntSetError> {
+        self.storage
+            .replan(policy)
+            .map(|storage| Self::from_storage(storage, policy.limits()))
+    }
+
+    /// Representation limits retained by this set and composed by default algebra.
+    pub const fn limits(&self) -> IntSetLimits {
+        self.limits
+    }
+
+    /// Exact member-buffer payload bytes for sorted and dense storage.
+    ///
+    /// Returns `None` for Roaring's noncontiguous storage. This excludes the set
+    /// wrapper, allocator headers, temporary allocations, and process overhead.
+    pub fn contiguous_payload_bytes(&self) -> Option<usize> {
+        self.storage.contiguous_payload_bytes()
+    }
+
+    /// Actual representation, for diagnostics.
+    pub fn representation(&self) -> IntSetRepr {
+        self.storage.representation()
+    }
+
+    /// Number of distinct members, cached independently of iteration.
+    pub fn cardinality(&self) -> u64 {
+        self.storage.cardinality()
+    }
+
+    /// Cardinality if it fits this target's address-sized integer.
+    pub fn try_len(&self) -> Option<usize> {
+        usize::try_from(self.cardinality()).ok()
+    }
+
+    /// Whether the set has no members.
+    pub fn is_empty(&self) -> bool {
+        self.cardinality() == 0
+    }
+
+    /// Membership lookup, encoding the query once.
+    pub fn contains(&self, key: &K) -> bool {
+        self.storage.contains(key.encode())
+    }
+
+    /// Inclusive logical bounds, reconstructed from cached encoded bounds.
+    ///
+    /// # Panics
+    /// Panics if a previously valid code no longer decodes because the codec
+    /// violates its stability law, or if user decoding itself panics.
+    pub fn bounds(&self) -> Option<(K, K)> {
+        self.storage
+            .bounds()
+            .map(|(first, last)| (decode::<K>(first), decode::<K>(last)))
+    }
+
+    /// Ascending logical members, reconstructed by value as requested.
+    ///
+    /// Decoding is checked; a law-breaking decoder can panic during traversal.
+    pub fn iter(&self) -> IntSetIter<'_, K> {
+        IntSetIter {
+            words: self.storage.iter(),
+            key: PhantomData,
+        }
+    }
+
+    /// Ascending canonical codes, without reconstructing keys or exposing a backend.
+    pub fn encoded_values(&self) -> EncodedValues<'_, K::Word> {
+        EncodedValues {
+            words: self.storage.iter(),
+        }
+    }
+
+    /// Scan encoded members to explain their distribution, without decoding keys.
+    pub fn statistics(&self) -> IntSetStatistics {
+        let encoded_bounds = self
+            .storage
+            .bounds()
+            .map(|(low, high)| (low.to_u64(), high.to_u64()));
+        let mut statistics = IntSetStatistics {
+            cardinality: self.cardinality(),
+            encoded_bounds,
+            span: encoded_bounds.map_or(0, |(low, high)| u128::from(high) - u128::from(low) + 1),
+            runs: 0,
+            high32_partitions: 0,
+        };
+        let mut previous: Option<u64> = None;
+        for word in self.encoded_values() {
+            let word = word.to_u64();
+            if previous.and_then(|previous| previous.checked_add(1)) != Some(word) {
+                statistics.runs += 1;
+            }
+            if previous.is_none_or(|previous| previous >> 32 != word >> 32) {
+                statistics.high32_partitions += 1;
+            }
+            previous = Some(word);
+        }
+        statistics
+    }
+
+    /// Number of common members, using encoded backend kernels without decoding.
+    ///
+    /// Dense/Roaring pairs may allocate temporary compressed storage when a
+    /// bounded byte conversion replaces many membership probes. This does not
+    /// materialize a result set and does not mutate either operand.
+    pub fn intersection_len(&self, other: &Self) -> u64 {
+        self.storage.intersection_len(&other.storage)
+    }
+
+    /// Cardinality of the union, without allocating a result.
+    ///
+    /// May allocate temporary conversion storage as in [`intersection_len`](Self::intersection_len).
+    ///
+    /// # Panics
+    /// Panics if the mathematical cardinality exceeds `u64::MAX`.
+    pub fn union_len(&self, other: &Self) -> u64 {
+        self.cardinality()
+            .checked_add(other.cardinality() - self.intersection_len(other))
+            .expect("integer set union cardinality exceeds u64")
+    }
+
+    /// Cardinality of members present only in this set.
+    ///
+    /// May allocate temporary conversion storage as in [`intersection_len`](Self::intersection_len).
+    pub fn difference_len(&self, other: &Self) -> u64 {
+        self.cardinality() - self.intersection_len(other)
+    }
+
+    /// Cardinality of members present in exactly one operand.
+    ///
+    /// May allocate temporary conversion storage as in [`intersection_len`](Self::intersection_len).
+    ///
+    /// # Panics
+    /// Panics if the mathematical cardinality exceeds `u64::MAX`.
+    pub fn symmetric_difference_len(&self, other: &Self) -> u64 {
+        let common = self.intersection_len(other);
+        (self.cardinality() - common)
+            .checked_add(other.cardinality() - common)
+            .expect("integer set symmetric difference cardinality exceeds u64")
+    }
+
+    /// Whether every member is present in `other`.
+    pub fn is_subset(&self, other: &Self) -> bool {
+        self.storage.is_subset(&other.storage)
+    }
+    /// Whether every member of `other` is present in this set.
+    pub fn is_superset(&self, other: &Self) -> bool {
+        other.is_subset(self)
+    }
+    /// Whether the sets have no common member.
+    pub fn is_disjoint(&self, other: &Self) -> bool {
+        self.storage.is_disjoint(&other.storage)
+    }
+
+    /// Materialize the encoded intersection without decoding logical keys.
+    ///
+    /// Uses the smaller dense-byte and Roaring-partition limit from the two
+    /// operands. Result storage preserves or promotes compact representations.
+    /// Use [`intersection_with_policy`](Self::intersection_with_policy) to choose
+    /// explicit limits or a forced result representation.
+    pub fn intersection(&self, other: &Self) -> Self {
+        self.binary_default(
+            other,
+            Operation::Intersection,
+            self.limits.common(other.limits),
+        )
+    }
+
+    /// Materialize the encoded union without synthesizing new domain codes.
+    ///
+    /// Uses the smaller dense-byte and Roaring-partition limit from the operands.
+    /// Dense windows beyond that budget can promote to Roaring; sorted storage
+    /// remains a fallback when compressed candidates are ineligible.
+    ///
+    /// # Panics
+    /// Panics if the mathematical cardinality exceeds `u64::MAX`.
+    pub fn union(&self, other: &Self) -> Self {
+        self.binary_default(other, Operation::Union, self.limits.common(other.limits))
+    }
+
+    /// Materialize this set minus `other`, keeping this set's representation limits.
+    pub fn difference(&self, other: &Self) -> Self {
+        self.binary_default(other, Operation::Difference, self.limits)
+    }
+
+    /// Materialize members present in exactly one operand.
+    ///
+    /// Uses the smaller dense-byte and Roaring-partition limit from the operands.
+    ///
+    /// # Panics
+    /// Panics if the mathematical cardinality exceeds `u64::MAX`.
+    pub fn symmetric_difference(&self, other: &Self) -> Self {
+        self.binary_default(
+            other,
+            Operation::SymmetricDifference,
+            self.limits.common(other.limits),
+        )
+    }
+
+    /// Materialize an intersection with explicit result representation and limits.
+    ///
+    /// The supplied policy replaces inherited limits for the returned set.
+    /// Neither input changes. Codec values remain encoded throughout the operation.
+    ///
+    /// # Errors
+    /// Returns a rejected forced representation or unrepresentable cardinality.
+    /// Allocation failures are not converted into returned errors.
+    pub fn intersection_with_policy(
+        &self,
+        other: &Self,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        self.binary_checked(other, Operation::Intersection, policy)
+    }
+
+    /// Materialize a union with explicit result representation and limits.
+    ///
+    /// # Errors
+    /// Returns a rejected forced representation or cardinality exceeding u64.
+    /// Allocation failures are not converted into returned errors.
+    pub fn union_with_policy(
+        &self,
+        other: &Self,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        self.binary_checked(other, Operation::Union, policy)
+    }
+
+    /// Materialize a difference with explicit result representation and limits.
+    ///
+    /// # Errors
+    /// Returns a rejected forced representation or unrepresentable cardinality.
+    /// Allocation failures are not converted into returned errors.
+    pub fn difference_with_policy(
+        &self,
+        other: &Self,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        self.binary_checked(other, Operation::Difference, policy)
+    }
+
+    /// Materialize a symmetric difference with explicit result policy.
+    ///
+    /// # Errors
+    /// Returns a rejected forced representation or cardinality exceeding u64.
+    /// Allocation failures are not converted into returned errors.
+    pub fn symmetric_difference_with_policy(
+        &self,
+        other: &Self,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        self.binary_checked(other, Operation::SymmetricDifference, policy)
+    }
+
+    fn binary_default(&self, other: &Self, operation: Operation, limits: IntSetLimits) -> Self {
+        self.binary_checked(other, operation, limits.automatic())
+            .unwrap_or_else(|error| panic!("integer set operation failed: {error}"))
+    }
+
+    fn binary_checked(
+        &self,
+        other: &Self,
+        operation: Operation,
+        policy: IntSetPolicy,
+    ) -> Result<Self, IntSetError> {
+        if matches!(operation, Operation::Union | Operation::SymmetricDifference)
+            && self
+                .cardinality()
+                .checked_add(other.cardinality())
+                .is_none()
+        {
+            let common = self.intersection_len(other);
+            let count = match operation {
+                Operation::Union => self.cardinality().checked_add(other.cardinality() - common),
+                Operation::SymmetricDifference => {
+                    (self.cardinality() - common).checked_add(other.cardinality() - common)
+                }
+                Operation::Intersection | Operation::Difference => unreachable!(),
+            };
+            count.ok_or(IntSetError::CardinalityOverflow)?;
+        }
+        self.storage
+            .binary(&other.storage, operation, policy)
+            .map(|storage| Self::from_storage(storage, policy.limits()))
+    }
+}
+
+fn decode<K: IntKey>(word: K::Word) -> K {
+    K::decode(word).expect("IntKey::decode rejected a previously validated code")
+}
+
+impl<K: IntKey> Default for FrozenIntSet<K> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl<K: IntKey> Clone for FrozenIntSet<K> {
+    fn clone(&self) -> Self {
+        Self::from_storage(self.storage.clone(), self.limits)
+    }
+}
+
+/// Automatic, checked construction. Panics on an observed codec-law violation.
+impl<K: IntKey> FromIterator<K> for FrozenIntSet<K> {
+    fn from_iter<I: IntoIterator<Item = K>>(input: I) -> Self {
+        Self::try_from_iter(input, IntSetPolicy::auto())
+            .unwrap_or_else(|error| panic!("integer set construction failed: {error}"))
+    }
+}
+
+impl<K: IntKey> PartialEq for FrozenIntSet<K> {
+    fn eq(&self, other: &Self) -> bool {
+        self.storage.logical_eq(&other.storage)
+    }
+}
+impl<K: IntKey> Eq for FrozenIntSet<K> {}
+impl<K: IntKey> PartialOrd for FrozenIntSet<K> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl<K: IntKey> Ord for FrozenIntSet<K> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.encoded_values().cmp(other.encoded_values())
+    }
+}
+impl<K: IntKey> Hash for FrozenIntSet<K> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.storage.hash(state);
+    }
+}
+impl<K: IntKey + fmt::Debug> fmt::Debug for FrozenIntSet<K> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_set().entries(self.iter()).finish()
+    }
+}
+
+/// Borrowing iterator yielding reconstructed logical values in ascending order.
+///
+/// Cardinality can exceed `usize`; no `ExactSizeIterator` promise is made.
+pub struct IntSetIter<'a, K: IntKey> {
+    words: Words<'a, K::Word>,
+    key: PhantomData<K>,
+}
+impl<K: IntKey> Clone for IntSetIter<'_, K> {
+    fn clone(&self) -> Self {
+        Self {
+            words: self.words.clone(),
+            key: PhantomData,
+        }
+    }
+}
+impl<K: IntKey> Iterator for IntSetIter<'_, K> {
+    type Item = K;
+    fn next(&mut self) -> Option<K> {
+        self.words.next().map(decode::<K>)
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.words.size_hint()
+    }
+}
+impl<K: IntKey> FusedIterator for IntSetIter<'_, K> {}
+impl<K: IntKey> fmt::Debug for IntSetIter<'_, K> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("IntSetIter")
+            .field("size_hint", &self.size_hint())
+            .finish_non_exhaustive()
+    }
+}
+
+/// Borrowing iterator over canonical unsigned codes, independent of the backend.
+pub struct EncodedValues<'a, W: IntWord> {
+    words: Words<'a, W>,
+}
+impl<W: IntWord> Clone for EncodedValues<'_, W> {
+    fn clone(&self) -> Self {
+        Self {
+            words: self.words.clone(),
+        }
+    }
+}
+impl<W: IntWord> Iterator for EncodedValues<'_, W> {
+    type Item = W;
+    fn next(&mut self) -> Option<W> {
+        self.words.next()
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.words.size_hint()
+    }
+}
+impl<W: IntWord> FusedIterator for EncodedValues<'_, W> {}
+impl<W: IntWord> fmt::Debug for EncodedValues<'_, W> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("EncodedValues")
+            .field("size_hint", &self.size_hint())
+            .finish_non_exhaustive()
+    }
+}
+
+impl<'a, K: IntKey> IntoIterator for &'a FrozenIntSet<K> {
+    type Item = K;
+    type IntoIter = IntSetIter<'a, K>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+impl<K: IntKey> ElementType for FrozenIntSet<K> {
+    type Item = K;
+}
+impl<K: IntKey> Cardinality for FrozenIntSet<K> {
+    fn cardinality(&self) -> u64 {
+        self.cardinality()
+    }
+}
+impl<K: IntKey> SetContains<K> for FrozenIntSet<K> {
+    fn contains(&self, key: &K) -> bool {
+        self.contains(key)
+    }
+}
+impl<K: IntKey> ValueElements for FrozenIntSet<K> {
+    type Values<'a>
+        = IntSetIter<'a, K>
+    where
+        Self: 'a;
+    fn values(&self) -> Self::Values<'_> {
+        self.iter()
+    }
+}
+
+macro_rules! integer_freeze_plan {
+    ($source:ty) => {
+        impl<K: IntKey> TryFreezeWith<IntSetPolicy> for $source {
+            type Output = FrozenIntSet<K>;
+            type Error = Rejected<Self, IntSetError>;
+            fn try_freeze_with(self, policy: IntSetPolicy) -> Result<Self::Output, Self::Error> {
+                match FrozenIntSet::try_from_iter(self.iter().copied(), policy) {
+                    Ok(set) => Ok(set),
+                    Err(error) => Err(Rejected { input: self, error }),
+                }
+            }
+        }
+    };
+}
+integer_freeze_plan!(Vec<K>);
+integer_freeze_plan!(MutableOrderedSet<K>);
+integer_freeze_plan!(FrozenOrderedSet<K>);

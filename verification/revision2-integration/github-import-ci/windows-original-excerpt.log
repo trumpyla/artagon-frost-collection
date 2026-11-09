@@ -1,0 +1,13 @@
+2026-11-09T13:48:07.4750874Z ##[group]Run make examples
+2026-11-09T13:48:07.4751144Z [36;1mmake examples[0m
+2026-11-09T13:48:07.4760607Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-09T13:48:07.4761063Z env:
+2026-11-09T13:48:07.4761214Z   CARGO_TERM_COLOR: always
+2026-11-09T13:48:07.4761404Z   RUST_BACKTRACE: 1
+2026-11-09T13:48:07.4761563Z ##[endgroup]
+2026-11-09T13:48:07.9415048Z [1m[91merror[0m: no example target named `adaptive
+2026-11-09T13:48:07.9415457Z ` in default-run packages
+2026-11-09T13:48:07.9415613Z 
+2026-11-09T13:48:07.9415760Z help: a target with a similar name exists: `adaptive`
+2026-11-09T13:48:07.9483178Z make: *** [Makefile:103: examples] Error 101
+2026-11-09T13:48:07.9540214Z ##[error]Process completed with exit code 2.

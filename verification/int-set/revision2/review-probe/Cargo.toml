@@ -1,0 +1,14 @@
+[package]
+name = "review-probe"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Probe programs from the integer-profile adversarial review"
+
+[workspace]
+
+[dependencies]
+frost-collections = { path = "../../../..", default-features = false, features = ["int-set", "std"] }
+roaring = "0.12.0"

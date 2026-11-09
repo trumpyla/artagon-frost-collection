@@ -65,7 +65,18 @@ tests when they express the intended algorithmic complexity.
 Historical results and their environment are under `verification/history/` and
 [the previous review](../reviews/performance-review.md). The prior production
 candidate's results are under `verification/results/`; integer-profile results
-are under `verification/int-set/`. Current output-policy comparisons are under
+are under `verification/int-set/`. Historical output-policy comparisons are under
 `verification/integer-output/`, including the explicitly preserved first pass.
-[Current validation](../integer-output-validation.md)
+[Current validation](../revision2-integration-validation.md)
 states which runs were actually completed for this revision.
+
+## Reviewed-main versus revision-2 integration
+
+The current same-executable comparison lives in
+`verification/revision2-integration/ab-harness/`. Its checked-in baseline fixture
+contains the actual reviewed main source; only Cargo package/library names were
+changed to let both implementations coexist. Both use the same integer/std
+features and dependency versions. Run it serially after verification workers
+finish, retain stdout and stderr, and report medians and regressions rather than
+selecting the fastest round. See the current validation report for the exact
+executed command, source digests, host, and results.

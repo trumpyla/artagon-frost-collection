@@ -1,0 +1,10 @@
+{
+  "rows": 634,
+  "paired_cases": 420,
+  "new_only_cases": 214,
+  "paired_median_old_over_new": 1.0329938534055776,
+  "at_least_20_percent_less_time": 136,
+  "at_least_20_percent_more_time": 22,
+  "within_20_percent_time": 262,
+  "summary": "Unweighted per-case ratios, not an application-wide speedup or a statistical confidence estimate."
+}

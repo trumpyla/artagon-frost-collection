@@ -1,0 +1,216 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.72s
+     Running tests/integer_output.rs (target/debug/deps/integer_output-a3c51f9511241810)
+
+running 18 tests
+test both_limits_are_combined_independently ... ok
+test canonical_hash_events_match_across_representations_and_boundaries ... ok
+test contiguous_payload_diagnostics_report_actual_buffer_bytes ... ok
+test construction_limits_survive_default_algebra ... ok
+test empty_operands_and_identity_shortcuts_do_not_bypass_limits ... ok
+test equality_and_hash_ignore_dense_padding_and_construction_history ... ok
+test limits_are_excluded_from_logical_equality_and_hash ... ok
+test roaring_partition_limits_apply_to_promoted_outputs ... ok
+test output_policy_overrides_are_checked_and_retained ... ok
+test identity_sharing_obeys_forced_representations_and_inherited_limits ... ok
+test canonical_hash_scout_thresholds_are_representation_independent ... ok
+test equality_checks_members_even_when_metadata_matches ... ok
+test signed_and_restricted_domains_survive_promoted_algebra ... ok
+test tiny_mixed_updates_preserve_a_dense_window ... ok
+test distant_dense_runs_promote_without_a_sorted_expansion ... ok
+test compact_native_intersection_survives_auto_but_respects_output_limits ... ok
+test explicit_large_dense_budget_is_not_clamped_to_the_default ... ok
+test mixed_promotion_handles_word_partition_and_unsigned_end_boundaries ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.93s
+
+     Running tests/integer_sets.rs (target/debug/deps/integer_sets-ce1f2e834dc3bf4a)
+
+running 28 tests
+test builtin_codecs_preserve_width_boundaries_order_and_round_trips ... ok
+test a_decoder_that_changes_after_construction_causes_a_checked_panic ... ok
+test broken_codec_laws_are_checked_without_unsafe_value_construction ... ok
+test auto_planner_respects_local_span_and_scattered_upper_prefixes ... ok
+test capability_traits_expose_reconstructed_values_and_wide_cardinality ... ok
+test budgets_are_inherited_by_results ... ok
+test cloning_and_identity_results_share_storage ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test explicit_budget_and_partition_limits_are_enforced ... ok
+test empty_and_duplicate_inputs_have_set_semantics_in_every_backend ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+test freeze_plan_preserves_failed_sources_and_ordinary_pairings ... ok
+test logical_equality_order_and_hash_ignore_representation ... ok
+test bulk_algebra_and_replanning_do_not_reencode_or_decode_keys ... ok
+test forced_backends_and_iterators_preserve_typed_value_order ... ok
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test restricted_domains_reject_imported_gaps_and_algebra_only_selects_members ... ok
+test narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes ... ok
+test signed_encodings_preserve_generated_order ... ok
+test chunked_results_share_untouched_containers ... ok
+test two_cluster_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets ... ok
+test windowed_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test mixed_results_keep_the_compact_operand_representation ... ok
+test finite_five_member_domains_exhaust_all_representation_pairs ... ok
+test mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes ... ok
+test full_containers_take_part_in_every_representation_pair ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.84s
+
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling libc v0.2.191
+   Compiling rand_core v0.10.1
+   Compiling cfg-if v1.0.5
+   Compiling getrandom v0.4.3
+   Compiling crossbeam-utils v0.8.23
+   Compiling libm v0.2.16
+   Compiling rustix v1.1.6
+   Compiling serde_core v1.0.229
+   Compiling crossbeam-epoch v0.9.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling autocfg v1.5.1
+   Compiling linux-raw-sys v0.12.1
+   Compiling rustversion v1.0.23
+   Compiling zmij v1.0.23
+   Compiling bitflags v2.13.2
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.9
+   Compiling ref-cast v1.0.27
+   Compiling once_cell v1.21.4
+   Compiling cfg_aliases v0.2.2
+   Compiling fastrand v2.5.0
+   Compiling rayon-core v1.13.0
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling wait-timeout v0.2.1
+   Compiling borsh v1.8.1
+   Compiling tempfile v3.27.0
+   Compiling fearless_simd v1.2.0
+   Compiling bit-vec v0.10.1
+   Compiling byteorder v1.5.0
+   Compiling bytemuck v1.25.2
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling foldhash v0.2.0
+   Compiling equivalent v1.0.3
+   Compiling allocator-api2 v0.2.21
+   Compiling quick-error v1.2.3
+   Compiling fnv v1.0.7
+   Compiling cpufeatures v0.3.1
+   Compiling chacha20 v0.10.2
+   Compiling hashbrown v0.17.1
+   Compiling bit-set v0.11.1
+   Compiling rand v0.10.3
+   Compiling serde_derive_internals v0.30.0
+   Compiling rand_xorshift v0.5.0
+   Compiling unarray v0.1.4
+   Compiling core_detect v1.0.0
+   Compiling regex-syntax v0.8.11
+   Compiling rusty-fork v0.3.1
+   Compiling either v1.19.0
+   Compiling dyn-clone v1.0.20
+   Compiling indexmap v2.14.2
+   Compiling rayon v1.12.0
+   Compiling fearless_simd_macros v0.1.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling schemars_derive v1.2.3
+   Compiling arbitrary v1.5.0
+   Compiling proptest v1.12.0
+   Compiling arc-swap v1.9.4
+   Compiling schemars v1.2.3
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `release` profile [optimized] target(s) in 37.42s
+     Running tests/integer_output.rs (target/release/deps/integer_output-2e1e94c7cc344ba0)
+
+running 19 tests
+test both_limits_are_combined_independently ... ok
+test canonical_hash_events_match_across_representations_and_boundaries ... ok
+test contiguous_payload_diagnostics_report_actual_buffer_bytes ... ok
+test construction_limits_survive_default_algebra ... ok
+test empty_operands_and_identity_shortcuts_do_not_bypass_limits ... ok
+test identity_sharing_obeys_forced_representations_and_inherited_limits ... ok
+test equality_and_hash_ignore_dense_padding_and_construction_history ... ok
+test canonical_hash_scout_thresholds_are_representation_independent ... ok
+test output_policy_overrides_are_checked_and_retained ... ok
+test limits_are_excluded_from_logical_equality_and_hash ... ok
+test equality_checks_members_even_when_metadata_matches ... ok
+test repeated_snapshot_updates_preserve_dense_storage_and_old_versions ... ok
+test roaring_partition_limits_apply_to_promoted_outputs ... ok
+test compact_native_intersection_survives_auto_but_respects_output_limits ... ok
+test tiny_mixed_updates_preserve_a_dense_window ... ok
+test distant_dense_runs_promote_without_a_sorted_expansion ... ok
+test explicit_large_dense_budget_is_not_clamped_to_the_default ... ok
+test signed_and_restricted_domains_survive_promoted_algebra ... ok
+test mixed_promotion_handles_word_partition_and_unsigned_end_boundaries ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/integer_sets.rs (target/release/deps/integer_sets-25aa3f149bfb451c)
+
+running 30 tests
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test auto_planner_respects_local_span_and_scattered_upper_prefixes ... ok
+test a_decoder_that_changes_after_construction_causes_a_checked_panic ... ok
+test broken_codec_laws_are_checked_without_unsafe_value_construction ... ok
+test builtin_codecs_preserve_width_boundaries_order_and_round_trips ... ok
+test budgets_are_inherited_by_results ... ok
+test capability_traits_expose_reconstructed_values_and_wide_cardinality ... ok
+test bulk_algebra_and_replanning_do_not_reencode_or_decode_keys ... ok
+test cloning_and_identity_results_share_storage ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test empty_and_duplicate_inputs_have_set_semantics_in_every_backend ... ok
+test explicit_budget_and_partition_limits_are_enforced ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+test freeze_plan_preserves_failed_sources_and_ordinary_pairings ... ok
+test logical_equality_order_and_hash_ignore_representation ... ok
+test forced_backends_and_iterators_preserve_typed_value_order ... ok
+test chunked_results_share_untouched_containers ... ok
+test restricted_domains_reject_imported_gaps_and_algebra_only_selects_members ... ok
+test snapshot_publication_retains_integer_profile_versions ... ok
+test signed_encodings_preserve_generated_order ... ok
+test narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes ... ok
+test concurrent_integer_updates_publish_complete_versions_without_lost_ids ... ok
+test mixed_results_keep_the_compact_operand_representation ... ok
+test two_cluster_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test windowed_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes ... ok
+test arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets ... ok
+test finite_five_member_domains_exhaust_all_representation_pairs ... ok
+test full_containers_take_part_in_every_representation_pair ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling libm v0.2.16
+   Compiling fearless_simd v1.2.0
+   Compiling syn v3.0.9
+   Compiling fearless_simd_macros v0.1.0
+   Compiling roaring v0.12.0
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+   Compiling frost-int-downstream v0.0.0 (/workspace/scratch/50bb50b82113/frost-collections/verification/int-key-downstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.17s
+     Running unittests src/lib.rs (verification/int-key-downstream/target/debug/deps/frost_int_downstream-5db2675b227851aa)
+
+running 2 tests
+test tests::downstream_keys_and_private_width_mapping_are_usable_generically ... ok
+test tests::downstream_freeze_plan_and_forced_backends_agree ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests frost_int_downstream
+
+running 1 test
+test src/lib.rs - (line 6) - compile fail ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+
+Verification scope integers passed.

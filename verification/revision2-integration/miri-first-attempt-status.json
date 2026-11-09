@@ -1,0 +1,39 @@
+{
+  "command": [
+    "./scripts/verify.sh",
+    "miri"
+  ],
+  "toolchain": "nightly-2026-11-08",
+  "target_directory": "/workspace/scratch/50bb50b82113/miri-validation-target",
+  "started_at": "2026-11-09T12:27:13.338087+00:00",
+  "source_sha256_start": {
+    "scripts/verify.sh": "2ad3e9332a92beb27cef4f4bffd16362fcf42bbafdc78cbd72ce6904300fed62",
+    "Cargo.toml": "a2e641669c77754a684098ac88dd54ff7656173b93732c1ff30a7a29454ec634",
+    "Cargo.lock": "e15d5382abf7d70019a927d34305dfdfeaf1a9b6b824da63d7f0e74d146254eb",
+    "src/integer/chunked.rs": "e3dee7988167e6e23723b19ba76dd602b9f9509a999a29ededf0f3421b5957a1",
+    "src/integer/dense.rs": "d15e59e0c600fe2932419a719946603b077f71ed7eef92ef20d734b61fe05ef2",
+    "src/integer/key.rs": "087666d0d3a09ef7af314540d595db9e4a948eb642db0656e2e667401ace760a",
+    "src/integer/mod.rs": "7335e8426b32da1a3c086ca5ba8f969142f866f1986b42414cac98777655a087",
+    "src/integer/policy.rs": "9536acaaf3df981adfe0ac0a33f8eea92618886d008a582794b16556d46f570f",
+    "src/integer/set.rs": "83b920ccb985720338d1b1ffcba8d831ee21d3106b6bce7564d9078c0a1a6f28",
+    "src/integer/storage/word.rs": "c34772c120c079eb2a8cf9754858d716d0b9a33fe49a592d6d7c49e0650ca3d3",
+    "src/integer/storage.rs": "3c296ffd6a4e29f5206b28f6aaffeb303716b119e0314d42c764d371700140cf"
+  },
+  "exit_code": 2,
+  "finished_at": "2026-11-09T12:35:22.663407+00:00",
+  "source_sha256_end": {
+    "scripts/verify.sh": "dea523aab3df49e49ad2b1ac7142b29407714801205c57a34de184cfdc5fa94c",
+    "Cargo.toml": "a2e641669c77754a684098ac88dd54ff7656173b93732c1ff30a7a29454ec634",
+    "Cargo.lock": "e15d5382abf7d70019a927d34305dfdfeaf1a9b6b824da63d7f0e74d146254eb",
+    "src/integer/chunked.rs": "e3dee7988167e6e23723b19ba76dd602b9f9509a999a29ededf0f3421b5957a1",
+    "src/integer/dense.rs": "d15e59e0c600fe2932419a719946603b077f71ed7eef92ef20d734b61fe05ef2",
+    "src/integer/key.rs": "087666d0d3a09ef7af314540d595db9e4a948eb642db0656e2e667401ace760a",
+    "src/integer/mod.rs": "7335e8426b32da1a3c086ca5ba8f969142f866f1986b42414cac98777655a087",
+    "src/integer/policy.rs": "9536acaaf3df981adfe0ac0a33f8eea92618886d008a582794b16556d46f570f",
+    "src/integer/set.rs": "7549c4864f141256b617d86993c624cb5c9d7f14689cb1c36c5d4754008c359a",
+    "src/integer/storage/word.rs": "c34772c120c079eb2a8cf9754858d716d0b9a33fe49a592d6d7c49e0650ca3d3",
+    "src/integer/storage.rs": "3c296ffd6a4e29f5206b28f6aaffeb303716b119e0314d42c764d371700140cf"
+  },
+  "interruption_note": "All 64 Miri tests and 59 nightly doctests completed successfully. The script file changed during execution; Bash encountered a shifted read offset after returning from the captured miri() body and exited 2 on a do token. Final gate rerun uses the entire final script captured in memory with the same $0 and miri argument.",
+  "source_changes_note": "Root reported the set.rs change during this run was rustdoc only: documenting the existing Chunked/Dense intersection_len temporary allocation. No executable logic changed."
+}

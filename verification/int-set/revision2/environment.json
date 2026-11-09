@@ -1,0 +1,28 @@
+{
+  "recorded_utc": "2026-11-09T04:33:45.284241+00:00",
+  "platform": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
+  "cpu_model": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "vcpus": 2,
+  "affinity": "taskset -c 1 for every timed run",
+  "rustc": [
+    "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "binary: rustc",
+    "commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "commit-date: 2026-10-13",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.99.1",
+    "LLVM version: 23.1.1"
+  ],
+  "cargo_profile": "bench (release defaults); RUSTFLAGS unset, so x86-64 baseline without POPCNT",
+  "features": {
+    "repository_bench": "int-set,roaring-0_12",
+    "ab_harness_new": "int-set,roaring-0_12",
+    "ab_harness_old": "int-set (renamed baseline package frost-baseline)"
+  },
+  "benchmark_protocol": {
+    "repository_bench": "benches/integer_sets.rs; calibrate to >=4 ms, seven samples in execution order; three complete runs (bench-1..3.csv) plus three runs of the baseline binary (baseline-binary-1..3.csv) interleaved",
+    "same_binary_ab": "ab-harness compiles the 0.4.0 integer-profile baseline and the revised crate into one executable, validates every answer, measures old then new alternately for three rounds of five samples each (>=4 ms batches) and reports the minimum median; ab-same-binary.csv",
+    "caveat": "Two-binary comparisons on this host showed layout effects of up to 2x on unchanged std::BTreeSet control loops; the same-binary table is the comparison used in the report."
+  },
+  "revised_bench_sha256_prefix": "475d648ba4ca9a4d"
+}

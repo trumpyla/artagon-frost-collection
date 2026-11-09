@@ -1,12 +1,18 @@
 # Persistent integer storage: an adversarial design
 
-Status: **proposed separate profile; no implementation or new performance claim**.
-Research checked on 2026-11-09. This document expands the persistent-storage
-item in the [integer roadmap](integer-roadmap.md). The implemented
-[integer profile](integer-sets.md), its
-[output-policy review](../reviews/integer-output-review.md), and the
-[snapshot publication contract](snapshots.md) remain authoritative for current
-behavior. The [supplied research](../reviews/supplied/lazy-views-research.md)
+Status: **flat shared chunks are implemented; tree directories and a separate
+`PersistentIntSet` family remain proposals**. No new performance claim is made
+here. The upstream research below records checks from the earlier 2026-11-09
+review; issue/PR statuses were not refreshed for this integration.
+
+The current [integer profile](integer-sets.md) supports O(1) root sharing and
+explicit Chunked storage with shared Array, Bitmap, and Full containers. Its
+directory is flat and copied for changed results. The
+[integration review](../reviews/revision2-integration-review.md),
+[current validation](../revision2-integration-validation.md), and
+[snapshot publication contract](snapshots.md) govern implemented behavior.
+This document retains the stronger ownership, indexing, and lifecycle proposals
+from the [integer roadmap](integer-roadmap.md). The [supplied research](../reviews/supplied/lazy-views-research.md)
 is preserved separately from the decisions here. The companion
 [view design](integer-views.md) and
 [adversarial review](../reviews/lazy-views-adversarial-review.md) address query
@@ -14,20 +20,32 @@ evaluation and the broader research claims.
 
 ## 1. Decision and purpose
 
-Use `PersistentIntSet<K>` for a version-preserving integer collection with
-structural sharing. Keep `FrozenIntSet<K>` as the existing compact, independently
-owned profile. “Persistent” means that earlier values remain available after
-deriving a new value; it does not mean durable storage or a serialization format.
-The name describes an ownership contract without exposing a tree or bitmap
-implementation in application signatures.
+Revision 2 supplies a concrete first sharing mechanism inside `FrozenIntSet<K>`.
+All root clones share storage, and `IntSetPolicy::chunked()` enables sharing of
+untouched 2^16-code container payloads. This supersedes the earlier assumption
+that `FrozenIntSet::clone()` always copied storage. The public profile still has
+eager metadata, eager algebra, retained Dense/Roaring limits, and ordinary
+family-independent integer codecs.
 
-This is an optimization for repeated derivation of related sets, especially
-small updates with retained readers. The current implementation already preserves
-compact mixed-algebra outputs, enforces retained result limits, and updates
-small Dense operands without recomputing the entire cardinality. Persistence is
-not required to repair those issues. Its opportunity is to avoid copying
-unaffected payloads and, with an appropriate directory, unaffected index paths.
-The corrected implementation is the comparison baseline.
+A possible future `PersistentIntSet<K>` must justify a stronger contract than
+that mechanism: for example, a persistent directory with changed-path copying,
+explicit insertion/removal APIs, or chunk/payload limits. Those APIs and limits
+are not implemented. “Persistent” here means old values remain available after
+deriving new values; it does not mean durable storage or a serialization format.
+
+| Capability | Implemented now | Still proposed |
+| --- | --- | --- |
+| Root clone and identity reuse | Shared `FrozenIntSet` root; policy-compatible reuse | No additional family is required for this alone |
+| Unchanged payload sharing | Explicit Chunked Array/Bitmap/Full containers | Run containers, alternate chunk shapes, or broader owned imports |
+| Directory updates | Flat sorted directory copied for changed results | Persistent tree/radix paths with subtree reuse |
+| Limits | Existing Dense-byte/Roaring-partition limits | Dedicated reachable-chunk/payload bounds |
+| Query evaluation | Eager integer operations | Borrowed lazy expressions and evaluation contexts |
+
+Repeated derivation with retained readers remains the motivating workload.
+Compare future tree designs with the implemented flat Chunked candidate, the
+compact Dense update path, and native Roaring. Payload sharing alone does not
+remove directory copying, reference updates, retained-version memory, or release
+costs. The earlier whole-payload implementation is no longer the only baseline.
 
 The initial public profile should be structurally immutable. Construction,
 insertion, removal, and algebra produce new values; they never modify a value
@@ -55,7 +73,7 @@ for ownership boundaries, metadata, error paths, and test selection.
 | [Java Roaring #874](https://github.com/RoaringBitmap/RoaringBitmap/pull/874), merged 2026-10-19 | Position-indexed sharing flags became detached from moved containers, and missing mutator overrides could write into a source bitmap. | Keep sharing ownership attached to private objects. Do not inherit an extensible mutable API or maintain separate positional ownership flags. |
 | [Java Roaring #885](https://github.com/RoaringBitmap/RoaringBitmap/pull/885), **open and unmerged** when checked | Proposes a separate persistent bitmap with shared containers, identity shortcuts, and explicit conversion boundaries. Its reported results include both gains and losses; one-off conversions can erase gains. | Treat it as a proposal and benchmark reference, not a released guarantee or a Rust speedup. Measure complete retained-version workflows and losing cases. |
 
-CRoaring's current [public header](https://github.com/RoaringBitmap/CRoaring/blob/master/include/roaring/roaring.h)
+The earlier review's [CRoaring public header](https://github.com/RoaringBitmap/CRoaring/blob/master/include/roaring/roaring.h)
 also warns about mixing its copy-on-write and non-copy-on-write modes. A public
 mode flag that changes ownership obligations is unsuitable for this Rust
 profile. The safe API should make the legal ownership model the only available
@@ -96,25 +114,30 @@ u64 word type does not permit mixing `UserId` with `OrderId`. A phantom marker
 must retain K's relevant lifetime and auto-trait restrictions. No manual
 `Send`/`Sync` implementation is needed.
 
-A proposed `persistent-int-set` feature enables this complete profile. It must
-not add a representation to `FrozenIntSet`, change that type's clone cost,
-change a freeze/thaw partner, or select a different hasher for an existing type.
-Conversion in either direction is explicit and is charged in benchmarks.
+If a later separate family uses a `persistent-int-set` feature, enabling that
+feature must not change the existing `FrozenIntSet` candidate set, clone contract,
+freeze/thaw pairings, or hasher behavior. The current revision's Chunked candidate
+is already part of the complete fixed `int-set` profile, with explicit selection;
+it is not enabled by that hypothetical future feature. Conversion between any
+future family and `FrozenIntSet` is explicit and is charged in benchmarks.
 Whether a consuming conversion can reuse an allocation is an optimization,
 never a blanket zero-copy promise.
 
-An Arc-based implementation can target `alloc` without inherently requiring
-`std`, but only where pointer-width atomics exist. Gate availability using
-[`target_has_atomic = "ptr"`](https://doc.rust-lang.org/reference/conditional-compilation.html#target_has_atomic).
-Do not silently substitute Rc on other targets. If there is a demonstrated
-single-threaded use case, introduce a separately named local profile, such as
-`LocalPersistentIntSet<K>`, with its own documented costs and auto traits.
-Enabling a feature must not change one public type between Arc and Rc.
+The implemented `FrozenIntSet` uses a documented target-dependent Shared alias:
+Arc where pointer-width atomics exist and Rc otherwise. Its clone cost and auto
+traits follow the selected pointer; feature unification never switches that
+choice. This preserves the existing allocating profile on non-atomic targets.
+A future separately named family that explicitly promises concurrent sharing may
+instead require [`target_has_atomic = "ptr"`](https://doc.rust-lang.org/reference/conditional-compilation.html#target_has_atomic).
+That would be a new family contract, not a silent limitation on `FrozenIntSet`.
 
-## 4. Private representation and invariants
+## 4. Proposed directory representation and invariants
 
-Use immutable published nodes with a fixed encoded coordinate system. A
-16-bit chunk split is a useful first prototype:
+The skeleton below describes a future directory-backed profile, including
+possible Run containers and subtree metadata. Current Chunked storage has
+Array/Bitmap/Full containers, eager root metadata, and a flat directory; it has
+no Run variant or tree nodes. Preserve immutable published objects and fixed
+encoded coordinates in either design. The proposed shape is:
 
 ```text
 encoded word = (prefix << 16) | low
@@ -370,8 +393,9 @@ deterministically without pretending to recover from global allocator aborts.
 
 ## 10. Benchmark and admission gates
 
-Measure the complete workflow with the current optimized `FrozenIntSet`,
-`Arc<FrozenIntSet>`, a flat Arc-chunk prototype, and a genuinely persistent
+Measure the complete workflow with the current optimized `FrozenIntSet` in its
+Sorted/Dense/Roaring and explicit Chunked representations, any application-level
+`Arc<FrozenIntSet>`, and a genuinely persistent
 directory control. Include native Roaring and imbl where their contracts match
 the case. Distinguish prepared shared versions from one-off conversion into and
 out of the profile. The upstream Java proposal explicitly reports mixed
@@ -400,5 +424,7 @@ if those results demonstrate a useful workload benefit that includes conversion,
 retention, and release costs, and if its extra implementation surface is
 maintainable. Otherwise retain the experiment and the existing compact profile.
 
-This document records a design and its release gates. It does not claim that
-the proposed profile, tests, or measurements have been implemented or executed.
+This document records the remaining tree-directory and separate-family design
+and its release gates. Implemented flat sharing is described at the top and in
+the integer profile; no claim is made that the proposed tree, future family, or
+its complete verification and measurement program has been executed.

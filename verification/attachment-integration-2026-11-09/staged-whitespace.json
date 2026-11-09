@@ -1,0 +1,22 @@
+{
+  "command": "git diff --cached --check",
+  "exit_code": 2,
+  "files": {
+    "patches/revision2-integration-code.diff": 57,
+    "verification/attachment-integration-2026-11-09/check.log": 1,
+    "verification/attachment-integration-2026-11-09/miri-retry.log": 1,
+    "verification/revision2-integration/before/baseline-integers.log": 1,
+    "verification/revision2-integration/before/revision2-integers.log": 1,
+    "verification/revision2-integration/github-import-ci/check.log": 1,
+    "verification/revision2-integration/github-import-ci/integers.log": 1,
+    "verification/revision2-integration/github-import-ci/package.log": 1,
+    "verification/revision2-integration/github-import-ci/windows-original-excerpt.log": 1,
+    "verification/revision2-integration/input/integer-revision2-code.diff": 56,
+    "verification/revision2-integration/input/integer-revision2.diff": 95,
+    "verification/revision2-integration/native-chunked-tests.log": 1,
+    "verification/revision2-integration/post-benchmark-integer-tests.log": 1,
+    "verification/revision2-integration/post-benchmark-integers.log": 1,
+    "verification/revision2-integration/retained-evidence-whitespace.log": 208
+  },
+  "disposition": "Retain byte-identical supplied patch context, reports, and historical evidence; do not rewrite inputs to suppress whitespace diagnostics."
+}

@@ -4,3 +4,9 @@
 
 # Local trigram index; rebuild with the commands in TOOLS.md.
 .tgrep/
+
+# Preserve supplied revision evidence and this integration's verification logs,
+# including on hosts whose global Git excludes ignore *.log.
+!verification/int-set/revision2/**/*.log
+!verification/revision2-integration/**/*.log
+!verification/attachment-integration-2026-11-09/*.log

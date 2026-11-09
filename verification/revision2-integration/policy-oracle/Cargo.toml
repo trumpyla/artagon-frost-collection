@@ -1,0 +1,15 @@
+[package]
+name = "frost-policy-oracle"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+
+[workspace]
+
+[[bin]]
+name = "frost-policy-oracle"
+path = "../policy-oracle.rs"
+
+[dependencies]
+frost = { package = "frost-collections", path = "../../..", features = ["int-set"] }

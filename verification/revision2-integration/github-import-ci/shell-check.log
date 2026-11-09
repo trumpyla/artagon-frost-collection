@@ -1,0 +1,30 @@
+"/workspace/scratch/50bb50b82113/environment-validation/shell-tools/shellcheck-v0.11.0/shellcheck" --shell=bash --severity=info scripts/check-doc-links.sh verification/shell/*.bats
+"/workspace/scratch/50bb50b82113/environment-validation/shell-tools/shfmt" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh
+"/workspace/scratch/50bb50b82113/environment-validation/shell-tools/shfmt" -ln bats -d -i 2 -ci -bn verification/shell/*.bats
+make shell-test
+FROST_TEST_BASH="bash" FROST_TEST_MAKE="make" "/workspace/scratch/50bb50b82113/environment-validation/shell-tools/bats-core-bats-core-7868b95/bin/bats" verification/shell
+1..24
+ok 1 checks root and nested links with encoded spaces, UTF-8, and fragments
+ok 2 ignores external URLs, anchors, queries, and supplied historical inputs
+ok 3 reports every missing local link and returns failure
+ok 4 preserves newline filenames and multiline labels
+ok 5 keeps malformed percent escapes literal and decodes encoded punctuation
+ok 6 rejects encoded NUL instead of silently truncating the path
+ok 7 decoded shell syntax remains an inert filename
+ok 8 accepts existing symlink destinations and rejects broken ones
+ok 9 checks links inside symlinked Markdown files
+ok 10 propagates discovery failure instead of reporting zero links
+ok 11 rejects unknown options, extra arguments, and a missing root
+ok 12 help and dry runs do not execute Cargo or parse metadata
+ok 13 the default is a build and phony targets ignore same-named files
+ok 14 metadata failures stop discovery before any verification command
+ok 15 invalid JSON fails closed before packaging
+ok 16 an empty feature matrix fails instead of silently succeeding
+ok 17 isolated features exclude bundles and retain per-feature checks
+ok 18 native Windows jq line endings do not alter feature arguments
+ok 19 a failed feature check stops the loop before tests or later features
+ok 20 example discovery runs only examples and propagates execution failure
+ok 21 native Windows jq line endings do not alter example arguments
+ok 22 package tests preserve the manifest path as one argument
+ok 23 native Windows jq line endings do not alter the packaged manifest path
+ok 24 failed packaging never runs tests on an old extracted package

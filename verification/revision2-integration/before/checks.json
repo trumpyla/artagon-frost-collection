@@ -1,0 +1,43 @@
+{
+  "checks": [
+    {
+      "name": "reviewed-main-integer-regressions",
+      "command": "cargo test --locked --features int-set,arc-swap-1 --test integer_sets --test integer_output",
+      "status": "passed",
+      "tests": {
+        "integer_output": 18,
+        "integer_sets": 23
+      },
+      "log": "baseline-integers.log"
+    },
+    {
+      "name": "supplied-revision2-integer-regressions",
+      "command": "cargo test --locked --features int-set,arc-swap-1 --test integer_sets",
+      "status": "passed",
+      "tests": {
+        "integer_sets": 30
+      },
+      "log": "revision2-integers.log"
+    },
+    {
+      "name": "reviewed-main-no-pointer-atomics",
+      "command": "cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi",
+      "status": "passed",
+      "log": "baseline-thumbv6m.log"
+    },
+    {
+      "name": "supplied-revision2-no-pointer-atomics",
+      "command": "cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi",
+      "status": "failed",
+      "reason": "alloc::sync::Arc is unavailable without pointer-width atomics",
+      "log": "revision2-thumbv6m.log"
+    },
+    {
+      "name": "integrated-no-pointer-atomics-initial-check",
+      "command": "cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi",
+      "status": "passed_with_warnings",
+      "log": "integrated-thumbv6m.log",
+      "caveat": "Initial working-tree check; integration continues. Final source should be rechecked."
+    }
+  ]
+}

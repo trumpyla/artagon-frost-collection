@@ -15,7 +15,12 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
 
     fn to_u64(self) -> u64;
     fn try_from_u64(value: u64) -> Option<Self>;
+    fn from_u64(value: u64) -> Self {
+        Self::try_from_u64(value).expect("code fits the stored word width")
+    }
     fn roaring_from_sorted(words: &[Self]) -> Self::Roaring;
+    fn roaring_from_ascending(codes: impl Iterator<Item = Self>) -> Self::Roaring;
+    fn roaring_containers(value: &Self::Roaring) -> u64;
     fn roaring_from_dense(base: u64, words: &[u64]) -> Self::Roaring;
     fn roaring_iter(value: &Self::Roaring) -> Self::RoaringIter<'_>;
     fn roaring_visit_runs(value: &Self::Roaring, visit: impl FnMut(u64, u64));
@@ -29,7 +34,6 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
     fn roaring_contains(value: &Self::Roaring, member: Self) -> bool;
     fn roaring_insert(value: &mut Self::Roaring, member: Self) -> bool;
     fn roaring_remove(value: &mut Self::Roaring, member: Self) -> bool;
-    fn roaring_optimize(value: &mut Self::Roaring);
     fn roaring_intersection_len(left: &Self::Roaring, right: &Self::Roaring) -> u64;
     fn roaring_is_subset(left: &Self::Roaring, right: &Self::Roaring) -> bool;
     fn roaring_is_disjoint(left: &Self::Roaring, right: &Self::Roaring) -> bool;
@@ -37,7 +41,7 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
 }
 
 macro_rules! word {
-    ($word:ty, $backend:ty, $iterator:ty, $dense:ident, $runs:ident, $try_runs:ident, $estimate:ident) => {
+    ($word:ty, $backend:ty, $iterator:ty, $dense:ident, $runs:ident, $try_runs:ident, $estimate:ident, $containers:ident) => {
         impl Word for $word {
             type Roaring = $backend;
             type RoaringIter<'a> = $iterator;
@@ -49,10 +53,40 @@ macro_rules! word {
                 Self::try_from(value).ok()
             }
             fn roaring_from_sorted(words: &[Self]) -> Self::Roaring {
-                let mut result = <$backend>::from_sorted_iter(words.iter().copied())
+                // Keep sparse stretches in bulk append and insert long consecutive
+                // runs as ranges, avoiding one native insertion per run member.
+                let mut result = <$backend>::new();
+                let mut segment = 0;
+                let mut run = 0;
+                for index in 1..=words.len() {
+                    let continues = index < words.len()
+                        && words[index - 1].checked_add(1) == Some(words[index]);
+                    if continues {
+                        continue;
+                    }
+                    if index - run >= 32 {
+                        result
+                            .append(words[segment..run].iter().copied())
+                            .expect("internal codes are ascending");
+                        result.insert_range(words[run]..=words[index - 1]);
+                        segment = index;
+                    }
+                    run = index;
+                }
+                result
+                    .append(words[segment..].iter().copied())
+                    .expect("internal codes are ascending");
+                result.optimize();
+                result
+            }
+            fn roaring_from_ascending(codes: impl Iterator<Item = Self>) -> Self::Roaring {
+                let mut result = <$backend>::from_sorted_iter(codes)
                     .expect("internal codes are strictly ascending and unique");
                 result.optimize();
                 result
+            }
+            fn roaring_containers(value: &Self::Roaring) -> u64 {
+                $containers(value)
             }
             fn roaring_from_dense(base: u64, words: &[u64]) -> Self::Roaring {
                 $dense(base, words)
@@ -87,9 +121,6 @@ macro_rules! word {
             fn roaring_remove(value: &mut Self::Roaring, member: Self) -> bool {
                 value.remove(member)
             }
-            fn roaring_optimize(value: &mut Self::Roaring) {
-                value.optimize();
-            }
             fn roaring_intersection_len(left: &Self::Roaring, right: &Self::Roaring) -> u64 {
                 left.intersection_len(right)
             }
@@ -104,12 +135,17 @@ macro_rules! word {
                 right: &Self::Roaring,
                 op: Operation,
             ) -> Self::Roaring {
-                match op {
+                // Optimize a newly computed native binary result once. Tiny
+                // clone-and-edit paths deliberately bypass this full scan, as
+                // they did in the reviewed main implementation.
+                let mut result = match op {
                     Operation::Union => left | right,
                     Operation::Intersection => left & right,
                     Operation::Difference => left - right,
                     Operation::SymmetricDifference => left ^ right,
-                }
+                };
+                result.optimize();
+                result
             }
         }
     };
@@ -122,7 +158,8 @@ word!(
     dense32,
     runs32,
     try_runs32,
-    estimate32
+    estimate32,
+    containers32
 );
 word!(
     u64,
@@ -131,8 +168,20 @@ word!(
     dense64,
     runs64,
     try_runs64,
-    estimate64
+    estimate64,
+    containers64
 );
+
+fn containers32(value: &roaring::RoaringBitmap) -> u64 {
+    u64::from(value.statistics().n_containers)
+}
+
+fn containers64(value: &roaring::RoaringTreemap) -> u64 {
+    value
+        .bitmaps()
+        .map(|(_, bitmap)| containers32(bitmap))
+        .sum()
+}
 
 fn runs32(value: &roaring::RoaringBitmap, mut visit: impl FnMut(u64, u64)) {
     let mut iter = value.iter();

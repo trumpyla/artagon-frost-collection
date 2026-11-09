@@ -1,0 +1,86 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.48s
+     Running unittests src/lib.rs (frost-collections/target/debug/deps/frost-d097ed28239d8e11)
+
+running 17 tests
+test backends::bitmap::cardinality_tests::symmetric_difference_rejects_actual_cardinality_overflow - should panic ... ok
+test backends::bitmap::cardinality_tests::union_rejects_actual_cardinality_overflow - should panic ... ok
+test integer::chunked::tests::containers_normalize_at_both_thresholds ... ok
+test backends::bitmap::cardinality_tests::overlap_prevents_spurious_intermediate_overflow ... ok
+test integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries ... ok
+test integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded ... ok
+test integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk ... ok
+test integer::dense::tests::deleting_from_an_empty_window_is_a_no_op ... ok
+test integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations ... ok
+test integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code ... ok
+test integer::storage::word::tests::dense_byte_promotion_preserves_lsb_positions_and_width_ends ... ok
+test integer::storage::tests::skewed_intersection_does_not_scan_the_large_operand ... ok
+test integer::storage::tests::hash_scout_selects_content_format_at_both_thresholds ... ok
+test integer::storage::tests::run_scout_break_propagates_before_the_seventeenth_run_tail ... ok
+test integer::chunked::tests::run_visitors_preserve_extreme_codes_and_stop_at_break ... ok
+test integer::storage::word::tests::dense_promotion_chunks_without_losing_partition_boundaries ... ok
+test integer::chunked::tests::partial_fold_preserves_members_across_every_container_kind ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/integer_output.rs (frost-collections/target/debug/deps/integer_output-f74f2d3655644a87)
+
+running 19 tests
+test both_limits_are_combined_independently ... ok
+test contiguous_payload_diagnostics_report_actual_buffer_bytes ... ok
+test construction_limits_survive_default_algebra ... ok
+test empty_operands_and_identity_shortcuts_do_not_bypass_limits ... ok
+test equality_and_hash_ignore_dense_padding_and_construction_history ... ok
+test limits_are_excluded_from_logical_equality_and_hash ... ok
+test identity_sharing_obeys_forced_representations_and_inherited_limits ... ok
+test output_policy_overrides_are_checked_and_retained ... ok
+test roaring_partition_limits_apply_to_promoted_outputs ... ok
+test equality_checks_members_even_when_metadata_matches ... ok
+test canonical_hash_events_match_across_representations_and_boundaries ... ok
+test canonical_hash_scout_thresholds_are_representation_independent ... ok
+test signed_and_restricted_domains_survive_promoted_algebra ... ok
+test repeated_snapshot_updates_preserve_dense_storage_and_old_versions ... ok
+test explicit_large_dense_budget_is_not_clamped_to_the_default ... ok
+test distant_dense_runs_promote_without_a_sorted_expansion ... ok
+test tiny_mixed_updates_preserve_a_dense_window ... ok
+test mixed_promotion_handles_word_partition_and_unsigned_end_boundaries ... ok
+test compact_native_intersection_survives_auto_but_respects_output_limits ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+     Running tests/integer_sets.rs (frost-collections/target/debug/deps/integer_sets-8eb19bafcd06f9fe)
+
+running 30 tests
+test a_decoder_that_changes_after_construction_causes_a_checked_panic ... ok
+test broken_codec_laws_are_checked_without_unsafe_value_construction ... ok
+test builtin_codecs_preserve_width_boundaries_order_and_round_trips ... ok
+test capability_traits_expose_reconstructed_values_and_wide_cardinality ... ok
+test auto_planner_respects_local_span_and_scattered_upper_prefixes ... ok
+test dense_full_u64_span_is_rejected_before_narrowing_or_allocating ... ok
+test bulk_algebra_and_replanning_do_not_reencode_or_decode_keys ... ok
+test explicit_budget_and_partition_limits_are_enforced ... ok
+test far_apart_dense_operands_do_not_allocate_the_gap ... ok
+test cloning_and_identity_results_share_storage ... ok
+test empty_and_duplicate_inputs_have_set_semantics_in_every_backend ... ok
+test forced_backends_and_iterators_preserve_typed_value_order ... ok
+test freeze_plan_preserves_failed_sources_and_ordinary_pairings ... ok
+test dense_windows_near_u64_max_align_without_overflow ... ok
+test budgets_are_inherited_by_results ... ok
+test logical_equality_order_and_hash_ignore_representation ... ok
+test all_backend_pairs_align_distinct_dense_windows_and_signed_zero ... ok
+test narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes ... ok
+test signed_encodings_preserve_generated_order ... ok
+test chunked_results_share_untouched_containers ... ok
+test concurrent_integer_updates_publish_complete_versions_without_lost_ids ... ok
+test snapshot_publication_retains_integer_profile_versions ... ok
+test restricted_domains_reject_imported_gaps_and_algebra_only_selects_members ... ok
+test two_cluster_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test windowed_u64_algebra_matches_standard_sets_in_every_backend ... ok
+test finite_five_member_domains_exhaust_all_representation_pairs ... ok
+test mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes ... ok
+test mixed_results_keep_the_compact_operand_representation ... ok
+test arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets ... ok
+test full_containers_take_part_in_every_representation_pair ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.95s
+

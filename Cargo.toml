@@ -39,7 +39,8 @@ smallvec-1 = ["alloc", "dep:smallvec"]
 arrayvec-0_7 = ["dep:arrayvec"]
 imbl-7 = ["std", "dep:imbl"]
 roaring-0_12 = ["std", "dep:roaring"]
-# The complete integer profile has fixed sorted, dense, and Roaring candidates.
+# The complete integer profile has fixed sorted, dense, Roaring, and explicit
+# chunked candidates. Automatic construction does not select chunked storage.
 # Other integration features never change its representation alternatives.
 int-set = ["alloc", "dep:roaring"]
 fixedbitset-0_5 = ["alloc", "dep:fixedbitset"]

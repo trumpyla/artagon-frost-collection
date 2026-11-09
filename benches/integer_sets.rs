@@ -16,34 +16,37 @@ use std::fmt::Debug;
 use std::hint::black_box;
 use support::{as_u64, measure};
 
+const POLICIES: [(&str, IntSetPolicy); 5] = [
+    ("auto", IntSetPolicy::auto()),
+    ("sorted", IntSetPolicy::sorted()),
+    ("dense", IntSetPolicy::dense()),
+    ("roaring", IntSetPolicy::roaring()),
+    ("chunked", IntSetPolicy::chunked()),
+];
+
 fn profiles<K: IntKey + Debug>(name: &str, values: &[K]) -> Vec<(&'static str, FrozenIntSet<K>)> {
-    [
-        ("auto", IntSetPolicy::auto()),
-        ("sorted", IntSetPolicy::sorted()),
-        ("dense", IntSetPolicy::dense()),
-        ("roaring", IntSetPolicy::roaring()),
-    ]
-    .into_iter()
-    .filter_map(|(label, policy)| {
-        match FrozenIntSet::try_from_iter(values.iter().copied(), policy) {
-            Ok(set) => {
-                eprintln!(
-                    "{name}.{label}: {:?}; cardinality={}; span={}; partitions={}",
-                    set.representation(),
-                    set.cardinality(),
-                    set.statistics().span,
-                    set.statistics().high32_partitions
-                );
-                Some((label, set))
+    POLICIES
+        .into_iter()
+        .filter_map(|(label, policy)| {
+            match FrozenIntSet::try_from_iter(values.iter().copied(), policy) {
+                Ok(set) => {
+                    eprintln!(
+                        "{name}.{label}: {:?}; cardinality={}; span={}; partitions={}",
+                        set.representation(),
+                        set.cardinality(),
+                        set.statistics().span,
+                        set.statistics().high32_partitions
+                    );
+                    Some((label, set))
+                }
+                Err(error) if matches!(error, IntSetError::DenseBudgetExceeded { .. }) => {
+                    eprintln!("{name}.{label}: excluded by checked dense budget: {error}");
+                    None
+                }
+                Err(error) => panic!("unexpected construction failure for {name}.{label}: {error}"),
             }
-            Err(error) if matches!(error, IntSetError::DenseBudgetExceeded { .. }) => {
-                eprintln!("{name}.{label}: excluded by checked dense budget: {error}");
-                None
-            }
-            Err(error) => panic!("unexpected construction failure for {name}.{label}: {error}"),
-        }
-    })
-    .collect()
+        })
+        .collect()
 }
 
 fn same_profile<K: IntKey + Debug>(
@@ -162,8 +165,78 @@ fn compare<K: IntKey + Debug>(name: &str, left: &[K], right: &[K], mixed: bool) 
                     common,
                     || black_box(black_box(left).intersection(black_box(right))).cardinality(),
                 );
+                // New in this revision: mixed union/difference outputs and their
+                // representation, which used to degrade to sorted codes.
+                let union = left.union(right);
+                assert_eq!(union.iter().collect::<Vec<_>>(), expected[1]);
+                eprintln!(
+                    "{name}.mixed_{left_label}_{right_label}.union: {:?}; payload={} bytes",
+                    union.representation(),
+                    union.payload_bytes()
+                );
+                measure(
+                    &format!("{name}.mixed_{left_label}_{right_label}.union_materialize"),
+                    as_u64(expected[1].len()),
+                    || black_box(black_box(left).union(black_box(right))).cardinality(),
+                );
+                let difference = left.difference(right);
+                assert_eq!(difference.iter().collect::<Vec<_>>(), expected[2]);
+                measure(
+                    &format!("{name}.mixed_{left_label}_{right_label}.difference_materialize"),
+                    as_u64(expected[2].len()),
+                    || black_box(black_box(left).difference(black_box(right))).cardinality(),
+                );
             }
         }
+    }
+}
+
+/// Snapshot-style updates: one new member joins a large set, repeatedly.
+fn snapshot<K: IntKey + Debug>(name: &str, values: &[K], additions: &[K]) {
+    for (label, policy) in POLICIES {
+        let Ok(base) = FrozenIntSet::try_from_iter(values.iter().copied(), policy) else {
+            continue;
+        };
+        let singletons: Vec<_> = additions
+            .iter()
+            .map(|&value| FrozenIntSet::try_from_iter([value], IntSetPolicy::sorted()).unwrap())
+            .collect();
+        let mut expected: BTreeSet<_> = values.iter().copied().collect();
+        expected.extend(additions.iter().copied());
+        let mut current = base.clone();
+        for singleton in &singletons {
+            current = current.union(singleton);
+        }
+        assert_eq!(
+            current.iter().collect::<Vec<_>>(),
+            expected.iter().copied().collect::<Vec<_>>()
+        );
+        eprintln!(
+            "{name}.{label}.snapshot: {:?} -> {:?}; shared_chunks={}",
+            base.representation(),
+            current.representation(),
+            current.shared_chunks(&base)
+        );
+        let expected_len = as_u64(expected.len());
+        measure(
+            &format!("{name}.{label}.snapshot_update"),
+            expected_len,
+            || {
+                let mut current = black_box(&base).clone();
+                for singleton in black_box(&singletons) {
+                    current = current.union(singleton);
+                }
+                current.cardinality()
+            },
+        );
+        measure(&format!("{name}.{label}.clone"), base.cardinality(), || {
+            black_box(black_box(&base).clone()).cardinality()
+        });
+        let twin = FrozenIntSet::try_from_iter(values.iter().copied(), policy).unwrap();
+        assert_eq!(base, twin);
+        measure(&format!("{name}.{label}.equality"), 1, || {
+            u64::from(black_box(&base) == black_box(&twin))
+        });
     }
 }
 
@@ -175,12 +248,7 @@ fn construction<K: IntKey + Debug>(name: &str, input: &[K]) {
         .into_iter()
         .collect();
     let expected = as_u64(expected_values.len());
-    for (label, policy) in [
-        ("auto", IntSetPolicy::auto()),
-        ("sorted", IntSetPolicy::sorted()),
-        ("dense", IntSetPolicy::dense()),
-        ("roaring", IntSetPolicy::roaring()),
-    ] {
+    for (label, policy) in POLICIES {
         match FrozenIntSet::try_from_iter(input.iter().copied(), policy) {
             Ok(set) => assert_eq!(set.iter().collect::<Vec<_>>(), expected_values),
             Err(error) => {
@@ -306,6 +374,11 @@ fn main() {
     );
     construction("u64.scattered_prefixes", &scattered_left);
     native64("u64.scattered_prefixes", &scattered_left, &scattered_right);
+
+    let additions: Vec<u64> = (0..64).map(|v| base + 1_000_003 + v * 97).collect();
+    snapshot("u64.large_base", &clustered_left, &additions);
+    let window_additions: Vec<u32> = (0..64).map(|v| 2_000_000 + v * 97).collect();
+    snapshot("u32.window", &large, &window_additions);
 
     let signed_left: Vec<i64> = (-8192..8192).step_by(2).collect();
     let signed_right: Vec<i64> = (-8161..8223).step_by(3).collect();

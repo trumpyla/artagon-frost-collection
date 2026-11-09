@@ -1,5 +1,8 @@
 # Integer profile: implementation and validation
 
+> Historical evidence for the source revision named below. The current merged
+> implementation is documented in [revision-2 integration validation](revision2-integration-validation.md).
+
 > Historical evidence for the initial integer-profile delivery. Follow-up output
 > policies, alloc-only support, and current results are recorded in
 > [integer output validation](integer-output-validation.md).

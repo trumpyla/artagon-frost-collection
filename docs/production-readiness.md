@@ -1,9 +1,13 @@
 # Prior integration validation and release readiness
 
 This record describes the snapshot/project-hardening baseline. The subsequent
-integer profile and its current execution record are documented in
-[integer validation](integer-validation.md). The counts below remain historical
-evidence for their original source revision.
+integer profile, output-policy work, and shared-storage integration have their
+own records; see the latest
+[integration validation](revision2-integration-validation.md) and the separate
+[GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md).
+The counts and script-based execution claims below remain historical evidence
+for their original source revision. Use the root [Makefile](../Makefile) for
+current verification commands.
 
 ## Assessment
 

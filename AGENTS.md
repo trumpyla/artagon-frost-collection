@@ -67,9 +67,21 @@ An empty search or graph result alone never proves a symbol is unused.
   checked imports, logical-domain type separation, and by-value traversal.
   Dense offsets use absolute aligned coordinates; span arithmetic uses `u128`.
   Count queries and materialized algebra must not decode every member. The
-  complete `int-set` feature has fixed candidates and requires alloc; std enables
-  the dependency's optional runtime CPU dispatch and std APIs. Retain result
-  limits, preserve compact algebra outputs, and keep Hash event streams identical across representations.
+  complete `int-set` feature has fixed Sorted, Dense, Roaring, and Chunked
+  candidates and requires alloc; std enables the dependency's optional runtime
+  CPU dispatch and std APIs. Chunked is explicitly selected, never chosen by
+  automatic construction. Retain the memory score and 128-byte Dense preference.
+  Preserve IntSetLimits and all *_with_policy APIs: commutative operations take
+  the smaller limits; difference keeps the left limits. Every identity shortcut
+  must check result eligibility. Keep Hash event streams identical across all
+  representations and sharing histories.
+- Integer storage uses the private Shared alias: Arc with pointer atomics, Rc
+  otherwise. Clones share immutable storage; changed Chunked results share
+  untouched containers but copy the flat directory. No logarithmic path-copy
+  claim is valid for that index. Keep published containers immutable and retain
+  old-version tests, partial-iterator tests, and both atomic/non-atomic embedded
+  builds. FrozenIntSet::new allocates its shared header. Reference counts and
+  final-owner release are observable costs, not free operations.
 
 ## Verification and review
 

@@ -32,7 +32,8 @@ wrapper. Reserve the roadmap's `FrozenIntSetView<'a, K>` spelling for a future
 validated view of encoded backing storage, if that work proceeds. A storage
 view and an algebra expression have different validation and ownership rules.
 
-The first implementation can use today's Sorted, Dense, and Roaring storage.
+The first expression implementation can use today's Sorted, Dense, Roaring, and
+explicit Chunked storage through the encoded-value boundary.
 It does not require an in-house Roaring replacement, a persistent directory,
 Elias–Fano, runtime code generation, unsafe intrinsics, or a public cursor trait.
 The first benefit to demonstrate is a terminal query that avoids constructing
@@ -367,7 +368,7 @@ decision. Never publish an unknown-cardinality sentinel as a valid set.
 ## 8. Materialization and limits
 
 `materialize(policy)` explicitly chooses the output policy for the existing
-three-candidate FrozenIntSet profile. It is equivalent in membership to
+fixed-candidate FrozenIntSet profile. It is equivalent in membership to
 collecting the expression, but should feed canonical encoded results directly
 to a private validated result builder rather than decoding and re-encoding
 every K. The builder retains exact metadata and never fabricates a key.
@@ -420,6 +421,8 @@ shape. Retain losing cases. Compare against the current eager profile and
 native controls under identical CPU flags. Do not use timing assertions as
 correctness tests or import a published threshold without Frost measurements.
 
-Existing [validation](../integer-output-validation.md) verifies the current
-integer implementation only. None of its test counts or timings is evidence
-that these proposed expression types have been implemented or validated.
+The [integration validation](../revision2-integration-validation.md) verifies
+the eager integer implementation. The earlier
+[output validation](../integer-output-validation.md) remains historical evidence.
+Neither report's test counts or timings establish that these proposed expression
+types have been implemented or validated.

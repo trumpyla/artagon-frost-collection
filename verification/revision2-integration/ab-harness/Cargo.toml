@@ -1,0 +1,14 @@
+[package]
+name = "frost-integration-ab"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Same executable comparison of reviewed main and integrated revision"
+
+[workspace]
+
+[dependencies]
+frost = { package = "frost-collections", path = "../../..", default-features = false, features = ["int-set", "std"] }
+frost_baseline = { package = "frost-reviewed-baseline", path = "../reviewed-baseline", default-features = false, features = ["int-set", "std"] }

@@ -51,6 +51,27 @@ fn main() {
     );
     println!("signed members: {:?}", signed.iter().collect::<Vec<_>>());
     println!("selected integer storage: {:?}", members.representation());
+
+    // Storage is shared: clones increment a reference count in O(1). A result
+    // that equals an operand reuses it when its result policy permits that
+    // representation. Chunked storage shares untouched containers between a
+    // snapshot and the versions derived from it.
+    let snapshot: FrozenIntSet<u32> = FrozenIntSet::try_from_iter(
+        (0..8).flat_map(|chunk| (0..100).map(move |i| chunk * 65_536 + i * 7)),
+        IntSetPolicy::chunked(),
+    )
+    .unwrap();
+    let copy = snapshot.clone();
+    assert!(copy.shares_storage_with(&snapshot));
+    let next = snapshot.union(&[65_536 * 3 + 1].into_iter().collect());
+    assert_eq!(next.chunk_count(), 8);
+    assert_eq!(next.shared_chunks(&snapshot), 7);
+    assert!(snapshot.intersection(&next).shares_storage_with(&snapshot));
+    println!(
+        "snapshot update shares {} of {} containers",
+        next.shared_chunks(&snapshot),
+        next.chunk_count()
+    );
 }
 
 #[cfg(test)]

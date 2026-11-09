@@ -1,0 +1,16 @@
+[package]
+name = "ab-harness"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Same-binary A/B harness: 0.4.0 integer profile versus the revised crate"
+
+[workspace]
+
+[dependencies]
+frost = { package = "frost-collections", path = "../../../..", default-features = false, features = ["int-set", "roaring-0_12"] }
+# Copy the 0.4.0 tree next to this directory as `frost-baseline`, renaming the
+# package to `frost-baseline` and its library to `frost_baseline`.
+frost_baseline = { package = "frost-baseline", path = "../frost-baseline", default-features = false, features = ["int-set"] }

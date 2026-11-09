@@ -1,0 +1,45 @@
+{
+  "recorded_utc": "2026-11-09T13:10:05.869290+00:00",
+  "checks": [
+    {
+      "name": "format",
+      "command": "/home/agent/.cargo/bin/cargo fmt --check",
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "documentation-links",
+      "command": "python3 scripts/check-doc-links.py",
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "exit_code": 0,
+      "output": "Verified 455 repository-local documentation links.\n"
+    },
+    {
+      "name": "integration-patch",
+      "command": "git apply --check /workspace/scratch/50bb50b82113/frost-collections/patches/revision2-integration-code.diff",
+      "cwd": "/workspace/scratch/50bb50b82113/baseline/frost-collections",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "whitespace",
+      "command": "git diff --check",
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "staged-source-and-documentation-whitespace",
+      "command": "git diff --cached --check -- . :(exclude)**/*.diff :(exclude)**/*.log",
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "source_scope": "Production Rust source unchanged after final native, packaged-source, affected-feature, embedded, Miri, and benchmark runs; documentation and evidence finalized afterward.",
+  "retained_evidence_whitespace": {
+    "unfiltered_exit_code": 2,
+    "log": "retained-evidence-whitespace.log",
+    "reason": "Unified diffs retain single-space empty context lines; raw execution logs retain terminal blank lines. Those byte-preserved evidence formats are excluded from the source/documentation whitespace check."
+  }
+}

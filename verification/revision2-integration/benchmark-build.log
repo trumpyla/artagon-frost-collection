@@ -1,0 +1,15 @@
+     Locking 29 packages to highest Rust 1.99.1 compatible versions
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling libm v0.2.16
+   Compiling bytemuck v1.25.2
+   Compiling byteorder v1.5.0
+   Compiling fearless_simd v1.2.0
+   Compiling syn v3.0.9
+   Compiling fearless_simd_macros v0.1.0
+   Compiling roaring v0.12.0
+   Compiling frost-reviewed-baseline v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections/verification/revision2-integration/reviewed-baseline)
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/frost-collections)
+   Compiling frost-integration-ab v0.0.0 (/workspace/scratch/50bb50b82113/frost-collections/verification/revision2-integration/ab-harness)
+    Finished `release` profile [optimized] target(s) in 36.62s

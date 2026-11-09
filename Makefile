@@ -13,6 +13,7 @@ SHFMT ?= shfmt
 AST_GREP ?= ast-grep
 MIRI_TOOLCHAIN ?= nightly-2026-11-08
 EMBEDDED_TARGET ?= thumbv7em-none-eabihf
+EMBEDDED_NO_ATOMICS_TARGET ?= thumbv6m-none-eabi
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
 	test-examples profiles features integers examples package embedded miri \
@@ -33,7 +34,7 @@ help:
 	  'make integers     Debug/release integer tests and downstream codec crate' \
 	  'make examples     Run every example program (requires jq)' \
 	  'make package      Build/test the extracted Cargo package (requires jq)' \
-	  'make embedded     Bare-metal builds; install EMBEDDED_TARGET first' \
+	  'make embedded     Install EMBEDDED_TARGET and EMBEDDED_NO_ATOMICS_TARGET first' \
 	  'make miri         Ownership diagnostics with MIRI_TOOLCHAIN' \
 	  'make bounded      Finite collection/retry models and native Kani helpers' \
 	  'make loom|kani    Optional protocol model or symbolic proofs' \
@@ -134,6 +135,7 @@ package:
 	"$(CARGO)" test --manifest-path "$$manifest" --examples --all-features --locked
 
 embedded:
+	"$(CARGO)" build --lib --locked --no-default-features --features int-set --target "$(EMBEDDED_NO_ATOMICS_TARGET)"
 	"$(CARGO)" build --lib --locked --no-default-features --features int-set --target "$(EMBEDDED_TARGET)"
 	"$(CARGO)" build --lib --locked --no-default-features --target "$(EMBEDDED_TARGET)"
 	"$(CARGO)" build --lib --locked --no-default-features \
@@ -157,6 +159,18 @@ miri:
 	MIRIFLAGS='-Zmiri-strict-provenance' \
 	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+	@set -euo pipefail; \
+	for case_name in \
+	  integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+	  integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+	  integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+	  integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+	  integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+	  integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do \
+	  MIRIFLAGS='-Zmiri-strict-provenance' \
+	    "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	      --target i686-unknown-linux-gnu --lib "$$case_name" -- --exact --test-threads=1; \
+	done
 	@set -euo pipefail; \
 	for case_name in canonical_hash_events_match_across_representations_and_boundaries \
 	  canonical_hash_scout_thresholds_are_representation_independent \

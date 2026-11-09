@@ -1,0 +1,72 @@
+   Compiling frost-collections v0.4.0 (/workspace/scratch/50bb50b82113/revision2/frost)
+error[E0432]: unresolved import `alloc::sync`
+  --> src/integer/chunked.rs:18:12
+   |
+18 | use alloc::sync::Arc;
+   |            ^^^^ could not find `sync` in `alloc`
+   |
+note: found an item that was configured out
+  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/alloc/src/lib.rs:263:36
+   |
+   = note: the item is gated behind the `ptr` feature
+
+error[E0432]: unresolved import `alloc::sync`
+ --> src/integer/set.rs:1:12
+  |
+1 | use alloc::sync::Arc;
+  |            ^^^^ could not find `sync` in `alloc`
+  |
+note: found an item that was configured out
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/alloc/src/lib.rs:263:36
+  |
+  = note: the item is gated behind the `ptr` feature
+
+error[E0432]: unresolved import `alloc::sync`
+  --> src/integer/storage.rs:12:12
+   |
+12 | use alloc::sync::Arc;
+   |            ^^^^ could not find `sync` in `alloc`
+   |
+note: found an item that was configured out
+  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/alloc/src/lib.rs:263:36
+   |
+   = note: the item is gated behind the `ptr` feature
+
+error[E0308]: mismatched types
+   --> src/integer/chunked.rs:712:25
+    |
+712 |                     for &low in lows {
+    |                         ^^^^    ---- this is an iterator with items of type `u16`
+    |                         |
+    |                         expected `u16`, found `&_`
+    |
+    = note:   expected type `u16`
+            found reference `&_`
+
+error[E0308]: mismatched types
+   --> src/integer/storage.rs:842:32
+    |
+371 | impl<W: Word> Storage<W> {
+    |      - expected this type parameter
+...
+842 |         if self.cardinality == 0 {
+    |                                ^ expected type parameter `W`, found integer
+    |
+    = note: expected type parameter `W`
+                         found type `{integer}`
+
+error[E0308]: mismatched types
+   --> src/integer/storage.rs:848:33
+    |
+371 | impl<W: Word> Storage<W> {
+    |      - expected this type parameter
+...
+848 |         if other.cardinality == 0 {
+    |                                 ^ expected type parameter `W`, found integer
+    |
+    = note: expected type parameter `W`
+                         found type `{integer}`
+
+Some errors have detailed explanations: E0308, E0432.
+For more information about an error, try `rustc --explain E0308`.
+error: could not compile `frost-collections` (lib) due to 6 previous errors

@@ -9,10 +9,11 @@ use std::collections::BTreeSet;
 use std::fmt::Debug;
 use std::hash::{Hash, Hasher};
 
-const POLICIES: [IntSetPolicy; 3] = [
+const POLICIES: [IntSetPolicy; 4] = [
     IntSetPolicy::sorted(),
     IntSetPolicy::dense(),
     IntSetPolicy::roaring(),
+    IntSetPolicy::chunked(),
 ];
 
 fn set<K: IntKey>(values: impl IntoIterator<Item = K>, policy: IntSetPolicy) -> FrozenIntSet<K> {
@@ -629,4 +630,60 @@ fn repeated_snapshot_updates_preserve_dense_storage_and_old_versions() {
         assert_members(&current, &expected);
     }
     assert_members(&retained, &initial);
+}
+
+#[test]
+fn identity_sharing_obeys_forced_representations_and_inherited_limits() {
+    let values: Vec<_> = (0_u64..130).collect();
+    let sets: Vec<_> = POLICIES
+        .into_iter()
+        .map(|policy| set(values.iter().copied(), policy))
+        .collect();
+    for (index, original) in sets.iter().enumerate() {
+        let unchanged = original.with_policy(POLICIES[index]).unwrap();
+        assert!(unchanged.shares_storage_with(original));
+        for other in &sets {
+            // For equal sets, prefer a policy-compatible operand over rebuilding
+            // an incompatible operand merely because it came first.
+            let left_result = original
+                .intersection_with_policy(other, POLICIES[index])
+                .unwrap();
+            let right_result = other.union_with_policy(original, POLICIES[index]).unwrap();
+            assert!(left_result.shares_storage_with(original));
+            assert!(right_result.shares_storage_with(original));
+        }
+    }
+
+    let strict = sets[0]
+        .with_policy(
+            IntSetPolicy::sorted()
+                .with_dense_budget(0)
+                .with_roaring_partition_limit(0),
+        )
+        .unwrap();
+    for other in &sets[1..3] {
+        let result = other.intersection(&strict);
+        assert_eq!(result.limits(), strict.limits());
+        assert!(result.shares_storage_with(&strict));
+    }
+
+    // Chunked storage is outside the dense/Roaring limits. Tightening those
+    // limits can retain its allocation without weakening the carried policy.
+    let chunked = sets[3]
+        .with_policy(
+            IntSetPolicy::chunked()
+                .with_dense_budget(0)
+                .with_roaring_partition_limit(0),
+        )
+        .unwrap();
+    assert!(chunked.shares_storage_with(&sets[3]));
+    assert_eq!(chunked.limits(), strict.limits());
+    assert_eq!(chunked.contiguous_payload_bytes(), None);
+    assert!(matches!(
+        chunked.union_with_policy(
+            &chunked,
+            IntSetPolicy::roaring().with_roaring_partition_limit(0),
+        ),
+        Err(IntSetError::RoaringPartitionLimit { .. })
+    ));
 }

@@ -1,0 +1,103 @@
+{
+  "gates": [
+    {
+      "command": "make check",
+      "exit_code": 0,
+      "log": "check.log",
+      "native_tests": 271,
+      "doctests": 59
+    },
+    {
+      "command": "make shell-check SHELL=/bin/bash",
+      "exit_code": 0,
+      "log": "shell-check.log",
+      "shell_tests": 24,
+      "bash": "3.2.57",
+      "make": "3.81"
+    },
+    {
+      "command": "make doc-links",
+      "exit_code": 0,
+      "log": "doc-links.log",
+      "checked_links": 485
+    },
+    {
+      "command": "CARGO_TARGET_DIR=target/attachment-miri make miri",
+      "attempt": 1,
+      "exit_code": 2,
+      "log": "miri.log",
+      "reason": "crates.io download timed out for linux-raw-sys 0.12.1; native Miri scopes passed before interruption"
+    },
+    {
+      "command": "CARGO_TARGET_DIR=target/attachment-miri make miri",
+      "attempt": 2,
+      "exit_code": 0,
+      "log": "miri-retry.log",
+      "toolchain": "nightly-2026-11-08",
+      "targets": [
+        "aarch64-apple-darwin",
+        "i686-unknown-linux-gnu"
+      ]
+    },
+    {
+      "command": "make features integers embedded tools-check",
+      "exit_code": 0,
+      "log": "feature-integer-embedded.log",
+      "isolated_features": 20,
+      "embedded_targets": [
+        "thumbv6m-none-eabi",
+        "thumbv7em-none-eabihf"
+      ],
+      "ast_grep_rule_tests": 1,
+      "scanned_rust_files": 67
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit_code": 2,
+      "evidence": "staged-whitespace.json",
+      "reason": "Whitespace in retained supplied diff context and historical/fresh test logs; evidence bytes preserved."
+    },
+    {
+      "command": "git diff --cached --check excluding supplied patch/log evidence",
+      "exit_code": 0
+    }
+  ],
+  "remaining": [],
+  "isolated_features": [
+    "arbitrary-1",
+    "arc-swap-1",
+    "arrayvec-0_7",
+    "borsh-1",
+    "crossbeam-skiplist-0_1",
+    "dashmap-6",
+    "fixedbitset-0_5",
+    "fst-0_4",
+    "hashbrown-0_17",
+    "imbl-7",
+    "indexmap-2",
+    "int-set",
+    "phf-0_14",
+    "rayon-1",
+    "roaring-0_12",
+    "scc-3",
+    "schemars-1",
+    "serde-1",
+    "slotmap-1",
+    "smallvec-1"
+  ],
+  "source_manifest_verified": true,
+  "imported_paths_ignored": [],
+  "log_redaction": "Fresh logs replace the local checkout and home directory with $REPO and $HOME.",
+  "not_executed": [
+    "make verify",
+    "make package",
+    "make loom",
+    "make kani",
+    "fresh benchmarks"
+  ],
+  "scope": "Verification of the local attachment integration before commit and push."
+}

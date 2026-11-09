@@ -1,9 +1,11 @@
 //! Frozen integer sets with domain types and private, distribution-aware storage.
 //!
 //! Enable `int-set` for the complete profile: sorted codes, bounded dense
-//! windows, and the existing Rust Roaring backend. This feature supports
-//! `no_std + alloc`; enabling `std` also enables the dependency's supported
-//! runtime CPU dispatch. It does not alter the ordinary ordered family's
+//! windows, the existing Rust Roaring backend, and explicitly selected chunked
+//! storage with shared containers. This feature supports `no_std + alloc`;
+//! enabling `std` also enables the dependency's supported runtime CPU dispatch.
+//! Shared storage uses `Arc` on targets with pointer-width atomics and `Rc` on
+//! targets without them. It does not alter the ordinary ordered family's
 //! freeze/thaw partner.
 //!
 //! ```
@@ -39,6 +41,15 @@
 //! set.insert(3);
 //! ```
 
+// Keep the allocating profile available on targets without atomic pointers.
+// No manual auto-trait implementations: the chosen pointer's traits apply.
+#[cfg(not(target_has_atomic = "ptr"))]
+use alloc::rc::Rc as Shared;
+#[cfg(target_has_atomic = "ptr")]
+use alloc::sync::Arc as Shared;
+
+mod chunked;
+mod dense;
 mod key;
 mod policy;
 mod set;

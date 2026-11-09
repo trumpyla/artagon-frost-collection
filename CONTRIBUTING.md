@@ -42,7 +42,7 @@ timed. Preserve regressions. See [benchmark guidance](docs/maintainers/benchmark
 | `make features` | Each optional integration independently |
 | `make integers` | Integer profile in debug/release and a separate downstream codec crate |
 | `make examples` | Execute every example program |
-| `make embedded` | Core and alloc-compatible bare-metal compilation |
+| `make embedded` | Core and alloc-compatible bare-metal compilation, including integer storage with and without pointer atomics |
 | `make miri` | Pinned-nightly ownership and aliasing diagnostics |
 | `make package` | Build and test the actual Cargo source package |
 | `make bounded` | Exhaustive finite collections and retry model |
@@ -62,8 +62,11 @@ The Makefile delegates Rust freshness and compilation to Cargo. Command targets
 are phony, metadata discovery happens only inside recipes, and compound recipes
 stop on failures even with GNU Make 3.81. Override executable paths with
 `CARGO=...`, `JQ=...`, or `SHELL=...`; set `MIRI_TOOLCHAIN=...` and
-`EMBEDDED_TARGET=...` explicitly for diagnostic variants. `make clean` calls
-Cargo clean and does not remove verification evidence.
+`EMBEDDED_TARGET=...` and `EMBEDDED_NO_ATOMICS_TARGET=...` explicitly for
+diagnostic variants. The default embedded scope requires both
+`thumbv7em-none-eabihf` and `thumbv6m-none-eabi`; install them with
+`rustup target add thumbv7em-none-eabihf thumbv6m-none-eabi` before that gate.
+`make clean` calls Cargo clean and does not remove verification evidence.
 
 Shell changes use the Artagon shell-authoring, shell-testing, and shell-linting
 guidance. The link checker is an executed Bash script with BSD/GNU `find`,

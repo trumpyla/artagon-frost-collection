@@ -7,9 +7,12 @@ accepts the completed evidence. Keep this distinct from a compilation failure.
 ## Required evidence
 
 1. Choose a clean candidate commit and record Rust, nightly diagnostic version,
-   targets, lockfile hash, and platform. Run `make verify`.
+   targets, lockfile hash, and platform. Run `make verify` for the host matrix.
 2. Run `make embedded` and `make miri`. Review
-   warnings and filtered tests; never count a filtered case as a pass.
+   warnings and filtered tests; never count a filtered case as a pass. Install
+   both default embedded targets, `thumbv7em-none-eabihf` and `thumbv6m-none-eabi`,
+   to check integer storage with and without pointer atomics. The Miri target
+   includes the bounded Dense/Chunked regressions and the 32-bit integer lane.
 3. Run `make bounded` and `make loom`. For any
    symbolic-proof claim, run the Kani harnesses with a compatible pinned tool
    and retain solver results and unwind assertions. An unavailable or
@@ -27,14 +30,17 @@ accepts the completed evidence. Keep this distinct from a compilation failure.
 7. Check public API changes, compile-fail contracts, feature combinations,
    changelog, docs links, licensing, and migration notes. The normal checks cover
    individual integrations and their union, not the entire feature powerset.
+   Review the supported host CI results separately from local results. Changes
+   to Make recipes or shell helpers also require `make shell-check`.
 
 ## Owner decisions before distribution
 
-Set the canonical repository/documentation URLs, maintainers, supported target
+Confirm the canonical repository/documentation URLs, maintainers, supported target
 matrix, version/support policy, and the private security channel described in
-[SECURITY.md](../../SECURITY.md). These facts cannot be inferred from an attached
-archive. Enable the required CI jobs and branch protection in the actual host
-repository. Review license compatibility for the features you distribute.
+[SECURITY.md](../../SECURITY.md). A source import does not establish a registry
+publishing or support policy. Enable the required CI jobs and branch protection
+in the actual host repository. Review license compatibility for the features you
+distribute.
 
 Choose the release version for these unreleased APIs and update Cargo/changelog
 consistently. Only then deliberately enable publishing, verify `cargo publish
@@ -44,8 +50,12 @@ benchmark/test archive.
 
 ## Evidence record
 
-Update [current validation](../integer-output-validation.md) with each executed gate,
-command, exit status, meaningful case count, log location, and known limits.
-Do not overwrite historical evidence or relabel the previous implementation's
-numbers as fresh results. Store the source fingerprint alongside benchmark and
-test output so a future maintainer can identify the exact implementation.
+Record each executed gate with its command, exit status, meaningful case count,
+log location, and known limits. The
+[integration validation](../revision2-integration-validation.md) describes the
+reviewed source and its original script-based execution; the
+[GitHub import and Make checks](../../verification/revision2-integration/github-import-ci/README.md)
+describe the later PR checkout. Preserve those scopes when adding release
+evidence. Do not overwrite historical evidence or relabel earlier numbers as
+fresh results. Store the source fingerprint alongside benchmark and test output
+so a future maintainer can identify the exact implementation.

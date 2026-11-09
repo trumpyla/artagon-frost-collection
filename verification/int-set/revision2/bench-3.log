@@ -1,0 +1,112 @@
+u32.cluster.left.auto: Dense; cardinality=8192; span=16383; partitions=1
+u32.cluster.left.sorted: Sorted; cardinality=8192; span=16383; partitions=1
+u32.cluster.left.dense: Dense; cardinality=8192; span=16383; partitions=1
+u32.cluster.left.roaring: Roaring; cardinality=8192; span=16383; partitions=1
+u32.cluster.left.chunked: Chunked; cardinality=8192; span=16383; partitions=1
+u32.cluster.right.auto: Dense; cardinality=5462; span=16384; partitions=1
+u32.cluster.right.sorted: Sorted; cardinality=5462; span=16384; partitions=1
+u32.cluster.right.dense: Dense; cardinality=5462; span=16384; partitions=1
+u32.cluster.right.roaring: Roaring; cardinality=5462; span=16384; partitions=1
+u32.cluster.right.chunked: Chunked; cardinality=5462; span=16384; partitions=1
+u32.skew.left.auto: Roaring; cardinality=65536; span=65536; partitions=1
+u32.skew.left.sorted: Sorted; cardinality=65536; span=65536; partitions=1
+u32.skew.left.dense: Dense; cardinality=65536; span=65536; partitions=1
+u32.skew.left.roaring: Roaring; cardinality=65536; span=65536; partitions=1
+u32.skew.left.chunked: Chunked; cardinality=65536; span=65536; partitions=1
+u32.skew.right.auto: Roaring; cardinality=64; span=64513; partitions=1
+u32.skew.right.sorted: Sorted; cardinality=64; span=64513; partitions=1
+u32.skew.right.dense: Dense; cardinality=64; span=64513; partitions=1
+u32.skew.right.roaring: Roaring; cardinality=64; span=64513; partitions=1
+u32.skew.right.chunked: Chunked; cardinality=64; span=64513; partitions=1
+u32.skew.mixed_sorted_sorted.union: Sorted; payload=262144 bytes
+u32.skew.mixed_sorted_dense.union: Sorted; payload=262144 bytes
+u32.skew.mixed_sorted_roaring.union: Sorted; payload=262144 bytes
+u32.skew.mixed_sorted_chunked.union: Sorted; payload=262144 bytes
+u32.skew.mixed_dense_sorted.union: Dense; payload=8192 bytes
+u32.skew.mixed_dense_dense.union: Dense; payload=8192 bytes
+u32.skew.mixed_dense_roaring.union: Dense; payload=8192 bytes
+u32.skew.mixed_dense_chunked.union: Dense; payload=8192 bytes
+u32.skew.mixed_roaring_sorted.union: Roaring; payload=131072 bytes
+u32.skew.mixed_roaring_dense.union: Roaring; payload=131072 bytes
+u32.skew.mixed_roaring_roaring.union: Roaring; payload=131072 bytes
+u32.skew.mixed_roaring_chunked.union: Roaring; payload=131072 bytes
+u32.skew.mixed_chunked_sorted.union: Chunked; payload=16 bytes
+u32.skew.mixed_chunked_dense.union: Chunked; payload=16 bytes
+u32.skew.mixed_chunked_roaring.union: Chunked; payload=16 bytes
+u32.skew.mixed_chunked_chunked.union: Chunked; payload=16 bytes
+u32.runs.left.auto: Roaring; cardinality=4096; span=197632; partitions=1
+u32.runs.left.sorted: Sorted; cardinality=4096; span=197632; partitions=1
+u32.runs.left.dense: Dense; cardinality=4096; span=197632; partitions=1
+u32.runs.left.roaring: Roaring; cardinality=4096; span=197632; partitions=1
+u32.runs.left.chunked: Chunked; cardinality=4096; span=197632; partitions=1
+u32.runs.right.auto: Roaring; cardinality=4096; span=197632; partitions=1
+u32.runs.right.sorted: Sorted; cardinality=4096; span=197632; partitions=1
+u32.runs.right.dense: Dense; cardinality=4096; span=197632; partitions=1
+u32.runs.right.roaring: Roaring; cardinality=4096; span=197632; partitions=1
+u32.runs.right.chunked: Chunked; cardinality=4096; span=197632; partitions=1
+u64.large_base.left.auto: Dense; cardinality=8192; span=16383; partitions=1
+u64.large_base.left.sorted: Sorted; cardinality=8192; span=16383; partitions=1
+u64.large_base.left.dense: Dense; cardinality=8192; span=16383; partitions=1
+u64.large_base.left.roaring: Roaring; cardinality=8192; span=16383; partitions=1
+u64.large_base.left.chunked: Chunked; cardinality=8192; span=16383; partitions=1
+u64.large_base.right.auto: Dense; cardinality=5462; span=16384; partitions=1
+u64.large_base.right.sorted: Sorted; cardinality=5462; span=16384; partitions=1
+u64.large_base.right.dense: Dense; cardinality=5462; span=16384; partitions=1
+u64.large_base.right.roaring: Roaring; cardinality=5462; span=16384; partitions=1
+u64.large_base.right.chunked: Chunked; cardinality=5462; span=16384; partitions=1
+u64.large_base.mixed_sorted_sorted.union: Sorted; payload=87496 bytes
+u64.large_base.mixed_sorted_dense.union: Dense; payload=2064 bytes
+u64.large_base.mixed_sorted_roaring.union: Roaring; payload=21874 bytes
+u64.large_base.mixed_sorted_chunked.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_dense_sorted.union: Dense; payload=2064 bytes
+u64.large_base.mixed_dense_dense.union: Dense; payload=2064 bytes
+u64.large_base.mixed_dense_roaring.union: Roaring; payload=21874 bytes
+u64.large_base.mixed_dense_chunked.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_roaring_sorted.union: Roaring; payload=21874 bytes
+u64.large_base.mixed_roaring_dense.union: Roaring; payload=21874 bytes
+u64.large_base.mixed_roaring_roaring.union: Roaring; payload=21874 bytes
+u64.large_base.mixed_roaring_chunked.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_chunked_sorted.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_chunked_dense.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_chunked_roaring.union: Chunked; payload=8208 bytes
+u64.large_base.mixed_chunked_chunked.union: Chunked; payload=8208 bytes
+u64.scattered_prefixes.left.auto: Sorted; cardinality=4096; span=1841962244615753716; partitions=4096
+u64.scattered_prefixes.left.sorted: Sorted; cardinality=4096; span=1841962244615753716; partitions=4096
+u64.scattered_prefixes.left.dense: excluded by checked dense budget: dense payload requires 230245280576969216 bytes; limit is 8388608
+u64.scattered_prefixes.left.roaring: Roaring; cardinality=4096; span=1841962244615753716; partitions=4096
+u64.scattered_prefixes.left.chunked: Chunked; cardinality=4096; span=1841962244615753716; partitions=4096
+u64.scattered_prefixes.right.auto: Sorted; cardinality=4096; span=3683924489231507431; partitions=4096
+u64.scattered_prefixes.right.sorted: Sorted; cardinality=4096; span=3683924489231507431; partitions=4096
+u64.scattered_prefixes.right.dense: excluded by checked dense budget: dense payload requires 460490561153938432 bytes; limit is 8388608
+u64.scattered_prefixes.right.roaring: Roaring; cardinality=4096; span=3683924489231507431; partitions=4096
+u64.scattered_prefixes.right.chunked: Chunked; cardinality=4096; span=3683924489231507431; partitions=4096
+u64.large_base.auto.snapshot: Dense -> Dense; shared_chunks=0
+u64.large_base.sorted.snapshot: Sorted -> Sorted; shared_chunks=0
+u64.large_base.dense.snapshot: Dense -> Dense; shared_chunks=0
+u64.large_base.roaring.snapshot: Roaring -> Roaring; shared_chunks=0
+u64.large_base.chunked.snapshot: Chunked -> Chunked; shared_chunks=1
+u32.window.auto.snapshot: Roaring -> Roaring; shared_chunks=0
+u32.window.sorted.snapshot: Sorted -> Sorted; shared_chunks=0
+u32.window.dense.snapshot: Dense -> Dense; shared_chunks=0
+u32.window.roaring.snapshot: Roaring -> Roaring; shared_chunks=0
+u32.window.chunked.snapshot: Chunked -> Chunked; shared_chunks=1
+i64.across_zero.left.auto: Dense; cardinality=8192; span=16383; partitions=2
+i64.across_zero.left.sorted: Sorted; cardinality=8192; span=16383; partitions=2
+i64.across_zero.left.dense: Dense; cardinality=8192; span=16383; partitions=2
+i64.across_zero.left.roaring: Roaring; cardinality=8192; span=16383; partitions=2
+i64.across_zero.left.chunked: Chunked; cardinality=8192; span=16383; partitions=2
+i64.across_zero.right.auto: Dense; cardinality=5462; span=16384; partitions=2
+i64.across_zero.right.sorted: Sorted; cardinality=5462; span=16384; partitions=2
+i64.across_zero.right.dense: Dense; cardinality=5462; span=16384; partitions=2
+i64.across_zero.right.roaring: Roaring; cardinality=5462; span=16384; partitions=2
+i64.across_zero.right.chunked: Chunked; cardinality=5462; span=16384; partitions=2
+user_id.large_base.left.auto: Dense; cardinality=8192; span=16383; partitions=1
+user_id.large_base.left.sorted: Sorted; cardinality=8192; span=16383; partitions=1
+user_id.large_base.left.dense: Dense; cardinality=8192; span=16383; partitions=1
+user_id.large_base.left.roaring: Roaring; cardinality=8192; span=16383; partitions=1
+user_id.large_base.left.chunked: Chunked; cardinality=8192; span=16383; partitions=1
+user_id.large_base.right.auto: Dense; cardinality=5462; span=16384; partitions=1
+user_id.large_base.right.sorted: Sorted; cardinality=5462; span=16384; partitions=1
+user_id.large_base.right.dense: Dense; cardinality=5462; span=16384; partitions=1
+user_id.large_base.right.roaring: Roaring; cardinality=5462; span=16384; partitions=1
+user_id.large_base.right.chunked: Chunked; cardinality=5462; span=16384; partitions=1

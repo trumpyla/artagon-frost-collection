@@ -1,6 +1,6 @@
 use core::fmt;
 use core::hash::Hash;
-use core::num::{NonZeroU32, NonZeroU64};
+use core::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 
 /// A supported unsigned storage word: exactly `u32` or `u64`.
 ///
@@ -109,6 +109,110 @@ unsigned_key!(u32);
 unsigned_key!(u64);
 signed_key!(i32, u32, 1_u32 << 31);
 signed_key!(i64, u64, 1_u64 << 63);
+
+/// Narrow integers widen into `u32` codes; decoding rejects codes above the
+/// narrow range, so imported words outside the domain are errors.
+macro_rules! narrow_unsigned_key {
+    ($key:ty) => {
+        impl IntKey for $key {
+            type Word = u32;
+            #[inline]
+            fn encode(self) -> u32 {
+                u32::from(self)
+            }
+            #[inline]
+            fn decode(word: u32) -> Option<Self> {
+                Self::try_from(word).ok()
+            }
+        }
+    };
+}
+narrow_unsigned_key!(u8);
+narrow_unsigned_key!(u16);
+
+/// Narrow signed integers shift into the unsigned range of their width and
+/// then widen; order is preserved and the domain stays checked.
+macro_rules! narrow_signed_key {
+    ($key:ty, $unsigned:ty) => {
+        impl IntKey for $key {
+            type Word = u32;
+            #[inline]
+            #[allow(clippy::cast_sign_loss)] // Same-width two's-complement encoding.
+            fn encode(self) -> u32 {
+                u32::from((self as $unsigned) ^ (1 << (<$unsigned>::BITS - 1)))
+            }
+            #[inline]
+            #[allow(clippy::cast_possible_wrap)] // Inverse of the same-width encoding.
+            fn decode(word: u32) -> Option<Self> {
+                let narrow = <$unsigned>::try_from(word).ok()?;
+                Some((narrow ^ (1 << (<$unsigned>::BITS - 1))) as $key)
+            }
+        }
+    };
+}
+narrow_signed_key!(i8, u8);
+narrow_signed_key!(i16, u16);
+
+/// Characters encode as their scalar value; surrogate gaps are rejected codes.
+impl IntKey for char {
+    type Word = u32;
+    #[inline]
+    fn encode(self) -> u32 {
+        u32::from(self)
+    }
+    #[inline]
+    fn decode(word: u32) -> Option<Self> {
+        char::from_u32(word)
+    }
+}
+
+/// Address-sized integers use 64-bit codes on every target; decoding checks
+/// that a code fits the current target's address width.
+impl IntKey for usize {
+    type Word = u64;
+    #[inline]
+    fn encode(self) -> u64 {
+        self as u64
+    }
+    #[inline]
+    fn decode(word: u64) -> Option<Self> {
+        Self::try_from(word).ok()
+    }
+}
+
+impl IntKey for isize {
+    type Word = u64;
+    #[inline]
+    #[allow(clippy::cast_sign_loss)] // Sign-extended two's-complement encoding.
+    fn encode(self) -> u64 {
+        (self as i64 as u64) ^ (1_u64 << 63)
+    }
+    #[inline]
+    #[allow(clippy::cast_possible_wrap)] // Inverse of the sign-extended encoding.
+    fn decode(word: u64) -> Option<Self> {
+        Self::try_from((word ^ (1_u64 << 63)) as i64).ok()
+    }
+}
+
+impl IntKey for NonZeroU8 {
+    type Word = u32;
+    fn encode(self) -> u32 {
+        u32::from(self.get())
+    }
+    fn decode(word: u32) -> Option<Self> {
+        u8::try_from(word).ok().and_then(Self::new)
+    }
+}
+
+impl IntKey for NonZeroU16 {
+    type Word = u32;
+    fn encode(self) -> u32 {
+        u32::from(self.get())
+    }
+    fn decode(word: u32) -> Option<Self> {
+        u16::try_from(word).ok().and_then(Self::new)
+    }
+}
 
 impl IntKey for NonZeroU32 {
     type Word = u32;

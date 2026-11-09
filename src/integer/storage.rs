@@ -2,22 +2,28 @@
 //!
 //! Dense bases are absolute multiples of 64. Operations align those coordinates
 //! before combining words; equal local offsets alone never imply equal members.
+//!
+//! Algebra between different representations promotes one operand into the
+//! other's representation (or edits a copy of the larger operand) instead of
+//! degrading to sorted codes. A result that equals an operand shares that
+//! operand's allocation.
 
+use super::Shared as Arc;
 use alloc::borrow::Cow;
 use alloc::boxed::Box;
-use alloc::vec;
 use alloc::vec::Vec;
 use core::cmp::Ordering;
 use core::hash::{Hash, Hasher};
 use core::iter::FusedIterator;
-use core::marker::PhantomData;
 use core::mem::size_of;
 use core::ops::ControlFlow;
 
+use super::chunked::{Chunked, ChunkedIter};
+use super::dense::{Dense, DenseIter, dense_bytes};
 use super::{IntSetBackend, IntSetError, IntSetPolicy, IntSetRepr};
 use crate::family::ordered::set_ops;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Operation {
     Union,
     Intersection,
@@ -25,30 +31,114 @@ pub(crate) enum Operation {
     SymmetricDifference,
 }
 
+/// Allocation-scale preference retained from the reviewed main planner.
+/// This is a deterministic memory allowance, not a measured CPU threshold.
+const DENSE_PREFERENCE_BYTES: u128 = 128;
+const SMALL_SORTED_UPDATES: u64 = 64;
+
+/// A probe into a compressed operand costs roughly this many promoted words.
+const PROBE_WORDS: u64 = 4;
+
+/// Limits carried by a set and inherited by its results.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(crate) struct Budget {
+    pub(crate) dense_bytes: usize,
+    pub(crate) roaring_partitions: usize,
+}
+
+impl Budget {
+    pub(crate) const fn from_policy(policy: IntSetPolicy) -> Self {
+        Self {
+            dense_bytes: policy.max_dense_bytes,
+            roaring_partitions: policy.max_roaring_partitions,
+        }
+    }
+    fn dense_limit(self) -> usize {
+        self.dense_bytes.min(isize::MAX as usize)
+    }
+}
+
 mod word;
 pub(crate) use word::Word;
-
-/// Prefer Dense when Roaring would save at most this many estimated bytes. This
-/// fixed allocation-scale allowance is not a measured CPU crossover threshold.
-const DENSE_PREFERENCE_BYTES: u128 = 128;
-
-/// Bound per-member native mutations. Larger sorted operands use the native
-/// sorted builder and container algebra instead of repeated tree searches.
-const SMALL_SORTED_UPDATES: usize = 64;
 
 #[derive(Clone)]
 enum Repr<W: Word> {
     Sorted(Box<[W]>),
     Dense(Dense<W>),
     Roaring(W::Roaring),
+    Chunked(Chunked<W>),
 }
 
-/// Immutable cardinality and bounds are cached even for the partitioned backend.
+/// Immutable cardinality and bounds are cached for every representation.
 #[derive(Clone)]
 pub(crate) struct Storage<W: Word> {
     repr: Repr<W>,
     cardinality: u64,
     bounds: Option<(W, W)>,
+}
+
+/// Planning statistics gathered in one pass over strictly ascending codes.
+struct Survey {
+    partitions: u64,
+    roaring_score: u128,
+}
+
+/// Deterministic planning proxy, not an allocator or resident-memory
+/// measurement. It includes conservative container and treemap-entry overhead.
+fn survey<W: Word>(words: &[W]) -> Survey {
+    if words.is_empty() {
+        return Survey {
+            partitions: 0,
+            roaring_score: 32,
+        };
+    }
+    let mut partitions = 0_u64;
+    let mut previous: Option<u64> = None;
+    let mut container_members = 0_u64;
+    let mut container_runs = 0_u64;
+    let mut score = 32_u128;
+    let close = |members: u64, runs: u64| -> u128 {
+        32 + u128::from((2 * members).min(8192).min(4 * runs + 2))
+    };
+    for &word in words {
+        let value = word.to_u64();
+        if previous.is_none_or(|previous| previous >> 32 != value >> 32) {
+            partitions += 1;
+        }
+        if previous.is_some_and(|previous| previous >> 16 != value >> 16) {
+            score += close(container_members, container_runs);
+            container_members = 0;
+            container_runs = 0;
+        }
+        if previous.and_then(|previous| previous.checked_add(1)) != Some(value)
+            || container_members == 0
+        {
+            container_runs += 1;
+        }
+        container_members += 1;
+        previous = Some(value);
+    }
+    score += close(container_members, container_runs);
+    if size_of::<W>() == 8 {
+        score += u128::from(partitions) * 80;
+    }
+    Survey {
+        partitions,
+        roaring_score: score,
+    }
+}
+
+fn partition_count<W: Word>(words: &[W]) -> u64 {
+    let mut count = 0;
+    let mut previous = None;
+    for &word in words {
+        let prefix = word.to_u64() >> 32;
+        if previous != Some(prefix) {
+            count += 1;
+        }
+        previous = Some(prefix);
+    }
+    count
 }
 
 impl<W: Word> Storage<W> {
@@ -69,38 +159,11 @@ impl<W: Word> Storage<W> {
             .first()
             .zip(words.last())
             .map(|(&low, &high)| (low, high));
-        let (partitions, roaring_score) = match policy.backend {
-            IntSetBackend::Auto => roaring_score(&words),
-            IntSetBackend::Roaring => (partition_count(&words), 0),
-            IntSetBackend::Sorted | IntSetBackend::Dense => (0, 0),
-        };
+        let budget = Budget::from_policy(policy);
         let dense_bytes = bounds.map_or(0, |(low, high)| dense_bytes(low.to_u64(), high.to_u64()));
-        let dense_limit = policy.max_dense_bytes.min(isize::MAX as usize);
+        let dense_limit = budget.dense_limit();
         let backend = match policy.backend {
-            IntSetBackend::Auto => {
-                if words.is_empty() {
-                    IntSetBackend::Sorted
-                } else {
-                    let sorted_score = words.len() as u128 * size_of::<W>() as u128 + 16;
-                    let mut backend = IntSetBackend::Sorted;
-                    let mut score = sorted_score;
-                    if dense_bytes <= dense_limit as u128 && dense_bytes + 24 < score {
-                        backend = IntSetBackend::Dense;
-                        score = dense_bytes + 24;
-                    }
-                    let allowance = if backend == IntSetBackend::Dense {
-                        DENSE_PREFERENCE_BYTES
-                    } else {
-                        0
-                    };
-                    if partitions <= policy.max_roaring_partitions as u64
-                        && roaring_score + allowance < score
-                    {
-                        backend = IntSetBackend::Roaring;
-                    }
-                    backend
-                }
-            }
+            IntSetBackend::Auto => plan(&words, dense_bytes, budget),
             explicit => explicit,
         };
         let repr = match backend {
@@ -115,6 +178,7 @@ impl<W: Word> Storage<W> {
                 Repr::Dense(Dense::from_sorted(&words))
             }
             IntSetBackend::Roaring => {
+                let partitions = partition_count(&words);
                 if partitions > policy.max_roaring_partitions as u64 {
                     return Err(IntSetError::RoaringPartitionLimit {
                         partitions,
@@ -123,6 +187,7 @@ impl<W: Word> Storage<W> {
                 }
                 Repr::Roaring(W::roaring_from_sorted(&words))
             }
+            IntSetBackend::Chunked => Repr::Chunked(Chunked::from_sorted(&words)),
             IntSetBackend::Auto => unreachable!("automatic planning chooses a concrete backend"),
         };
         Ok(Self {
@@ -156,14 +221,20 @@ impl<W: Word> Storage<W> {
     }
 
     fn dense(value: Dense<W>) -> Self {
-        let cardinality = value
-            .words
-            .iter()
-            .map(|word| u64::from(word.count_ones()))
-            .sum();
+        let cardinality = value.cardinality();
         let bounds = value.bounds();
         Self {
             repr: Repr::Dense(value),
+            cardinality,
+            bounds,
+        }
+    }
+
+    fn chunked(value: Chunked<W>) -> Self {
+        let cardinality = value.cardinality();
+        let bounds = value.bounds();
+        Self {
+            repr: Repr::Chunked(value),
             cardinality,
             bounds,
         }
@@ -181,36 +252,82 @@ impl<W: Word> Storage<W> {
             Repr::Sorted(_) => IntSetRepr::Sorted,
             Repr::Dense(_) => IntSetRepr::Dense,
             Repr::Roaring(_) => IntSetRepr::Roaring,
+            Repr::Chunked(_) => IntSetRepr::Chunked,
         }
     }
 
     pub(crate) fn contiguous_payload_bytes(&self) -> Option<usize> {
         match &self.repr {
             Repr::Sorted(words) => Some(core::mem::size_of_val(words.as_ref())),
-            Repr::Dense(dense) => Some(core::mem::size_of_val(dense.words.as_ref())),
-            Repr::Roaring(_) => None,
+            Repr::Dense(dense) => Some(dense.payload_bytes()),
+            Repr::Roaring(_) | Repr::Chunked(_) => None,
         }
     }
 
-    pub(crate) fn logical_eq(&self, other: &Self) -> bool {
-        if core::ptr::eq(self, other) {
-            return true;
+    /// Estimated payload bytes of the stored representation.
+    pub(crate) fn payload_bytes(&self) -> u64 {
+        match &self.repr {
+            Repr::Sorted(words) => words.len() as u64 * size_of::<W>() as u64,
+            Repr::Dense(dense) => dense.payload_bytes() as u64,
+            Repr::Roaring(value) => u64::try_from(W::roaring_estimate(value).1).unwrap_or(u64::MAX),
+            Repr::Chunked(chunked) => chunked.payload_bytes(),
         }
+    }
+
+    pub(crate) fn chunk_count(&self) -> u64 {
+        match &self.repr {
+            Repr::Chunked(chunked) => chunked.chunk_count() as u64,
+            _ => 0,
+        }
+    }
+
+    pub(crate) fn shared_chunks(&self, other: &Self) -> u64 {
+        match (&self.repr, &other.repr) {
+            (Repr::Chunked(left), Repr::Chunked(right)) => left.shared_chunks(right),
+            _ => 0,
+        }
+    }
+
+    pub(crate) fn contains(&self, member: W) -> bool {
+        match &self.repr {
+            Repr::Sorted(words) => words.binary_search(&member).is_ok(),
+            Repr::Dense(words) => words.contains(member),
+            Repr::Roaring(words) => W::roaring_contains(words, member),
+            Repr::Chunked(chunks) => chunks.contains(member),
+        }
+    }
+
+    pub(crate) fn iter(&self) -> Words<'_, W> {
+        Words {
+            inner: match &self.repr {
+                Repr::Sorted(words) => WordIter::Sorted(words.iter().copied()),
+                Repr::Dense(words) => WordIter::Dense(words.iter()),
+                Repr::Roaring(words) => WordIter::Roaring(W::roaring_iter(words)),
+                Repr::Chunked(chunks) => WordIter::Chunked(chunks.iter()),
+            },
+            remaining: self.cardinality,
+        }
+    }
+
+    /// Representation-independent equality with same-representation fast paths.
+    pub(crate) fn equals(&self, other: &Self) -> bool {
         if self.cardinality != other.cardinality || self.bounds != other.bounds {
             return false;
         }
         match (&self.repr, &other.repr) {
             (Repr::Sorted(left), Repr::Sorted(right)) => left == right,
+            (Repr::Dense(left), Repr::Dense(right)) => left == right,
             (Repr::Roaring(left), Repr::Roaring(right)) => left == right,
-            (Repr::Dense(left), Repr::Dense(right)) => {
-                if left.base == right.base && left.words.len() == right.words.len() {
-                    left.words == right.words
-                } else {
-                    left.is_subset(right)
-                }
-            }
+            (Repr::Chunked(left), Repr::Chunked(right)) => left == right,
             _ => self.iter().eq(other.iter()),
         }
+    }
+
+    pub(crate) fn compare(&self, other: &Self) -> Ordering {
+        if self.equals(other) {
+            return Ordering::Equal;
+        }
+        self.iter().cmp(other.iter())
     }
 
     /// The format depends only on content: cardinality, then either a run tag
@@ -218,7 +335,7 @@ impl<W: Word> Storage<W> {
     /// 32-bit word representations). A short run scout avoids hashing two
     /// endpoints per isolated member. Physical storage never selects the stream;
     /// these bytes are not a persistent serialization format.
-    pub(crate) fn hash<H: Hasher>(&self, state: &mut H) {
+    pub(crate) fn hash_into<H: Hasher>(&self, state: &mut H) {
         const MEMBER_TAG: u8 = 0;
         const RUN_TAG: u8 = 1;
         const SMALL_SET: u64 = 64;
@@ -286,6 +403,11 @@ impl<W: Word> Storage<W> {
                     word.to_u64().hash(state);
                 }
             }
+            Repr::Chunked(chunks) => {
+                for word in chunks.iter() {
+                    word.to_u64().hash(state);
+                }
+            }
         }
     }
 
@@ -306,6 +428,7 @@ impl<W: Word> Storage<W> {
             }
             Repr::Dense(dense) => dense.try_visit_runs(visit),
             Repr::Roaring(roaring) => W::roaring_try_visit_runs(roaring, visit),
+            Repr::Chunked(chunks) => chunks.try_visit_runs(visit),
         }
     }
 
@@ -332,6 +455,7 @@ impl<W: Word> Storage<W> {
                 }
                 Repr::Dense(dense) => dense.visit_runs(&mut coalesce),
                 Repr::Roaring(roaring) => W::roaring_visit_runs(roaring, &mut coalesce),
+                Repr::Chunked(chunks) => chunks.visit_runs(&mut coalesce),
             }
         }
         if let Some((start, end)) = pending {
@@ -339,24 +463,18 @@ impl<W: Word> Storage<W> {
         }
     }
 
-    pub(crate) fn contains(&self, member: W) -> bool {
-        match &self.repr {
-            Repr::Sorted(words) => words.binary_search(&member).is_ok(),
-            Repr::Dense(words) => words.contains(member),
-            Repr::Roaring(words) => W::roaring_contains(words, member),
+    fn separated(&self, other: &Self) -> bool {
+        match (self.bounds, other.bounds) {
+            (Some((left_min, left_max)), Some((right_min, right_max))) => {
+                left_max < right_min || right_max < left_min
+            }
+            _ => true,
         }
     }
 
-    pub(crate) fn iter(&self) -> Words<'_, W> {
-        Words {
-            inner: match &self.repr {
-                Repr::Sorted(words) => WordIter::Sorted(words.iter().copied()),
-                Repr::Dense(words) => WordIter::Dense(words.iter()),
-                Repr::Roaring(words) => WordIter::Roaring(W::roaring_iter(words)),
-            },
-            remaining: self.cardinality,
-        }
-    }
+    // ----------------------------------------------------------------------
+    // Counting predicates
+    // ----------------------------------------------------------------------
 
     pub(crate) fn intersection_len(&self, other: &Self) -> u64 {
         if core::ptr::eq(self, other) {
@@ -371,75 +489,73 @@ impl<W: Word> Storage<W> {
             }
             (Repr::Dense(left), Repr::Dense(right)) => left.intersection_len(right),
             (Repr::Roaring(left), Repr::Roaring(right)) => W::roaring_intersection_len(left, right),
-            (Repr::Sorted(left), Repr::Dense(right)) => {
-                if prefer_sorted_probe(self.cardinality, other.cardinality, right.words.len()) {
-                    probe_count(left.iter().copied(), |word| right.contains(word))
-                } else {
-                    probe_count(right.iter(), |word| left.binary_search(&word).is_ok())
-                }
-            }
-            (Repr::Dense(left), Repr::Sorted(right)) => {
-                if prefer_sorted_probe(other.cardinality, self.cardinality, left.words.len()) {
-                    probe_count(right.iter().copied(), |word| left.contains(word))
-                } else {
-                    probe_count(left.iter(), |word| right.binary_search(&word).is_ok())
-                }
-            }
-            (Repr::Sorted(left), Repr::Roaring(right)) => {
-                if prefer_sorted_probe(self.cardinality, other.cardinality, 0) {
-                    probe_count(left.iter().copied(), |word| {
-                        W::roaring_contains(right, word)
-                    })
-                } else {
-                    probe_count(W::roaring_iter(right), |word| {
-                        left.binary_search(&word).is_ok()
-                    })
-                }
-            }
-            (Repr::Roaring(left), Repr::Sorted(right)) => {
-                if prefer_sorted_probe(other.cardinality, self.cardinality, 0) {
-                    probe_count(right.iter().copied(), |word| {
-                        W::roaring_contains(left, word)
-                    })
-                } else {
-                    probe_count(W::roaring_iter(left), |word| {
-                        right.binary_search(&word).is_ok()
-                    })
-                }
-            }
-            (Repr::Dense(left), Repr::Roaring(right)) => {
-                if prefer_dense_promotion(left.words.len(), self.cardinality.min(other.cardinality))
-                {
-                    let promoted = W::roaring_from_dense(left.base, &left.words);
-                    W::roaring_intersection_len(&promoted, right)
-                } else if self.cardinality <= other.cardinality {
-                    probe_count(left.iter(), |word| W::roaring_contains(right, word))
-                } else {
-                    probe_count(W::roaring_iter(right), |word| left.contains(word))
-                }
-            }
-            (Repr::Roaring(left), Repr::Dense(right)) => {
-                if prefer_dense_promotion(
-                    right.words.len(),
-                    self.cardinality.min(other.cardinality),
+            (Repr::Chunked(left), Repr::Chunked(right)) => left.intersection_len(right),
+            (Repr::Sorted(sorted), Repr::Dense(dense))
+            | (Repr::Dense(dense), Repr::Sorted(sorted)) => {
+                let sub = window_slice(sorted, dense);
+                if prefer_sorted_probe(
+                    sub.len() as u64,
+                    dense_cardinality(self, other),
+                    dense.words.len(),
                 ) {
-                    let promoted = W::roaring_from_dense(right.base, &right.words);
-                    W::roaring_intersection_len(left, &promoted)
-                } else if self.cardinality <= other.cardinality {
-                    probe_count(W::roaring_iter(left), |word| right.contains(word))
+                    probe_count(sub.iter().copied(), |word| dense.contains(word))
                 } else {
-                    probe_count(right.iter(), |word| W::roaring_contains(left, word))
+                    probe_count(dense.iter(), |word| sub.binary_search(&word).is_ok())
                 }
             }
-        }
-    }
-
-    fn separated(&self, other: &Self) -> bool {
-        match (self.bounds, other.bounds) {
-            (Some((left_min, left_max)), Some((right_min, right_max))) => {
-                left_max < right_min || right_max < left_min
+            (Repr::Sorted(sorted), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Sorted(sorted)) => {
+                let sorted_len = sorted.len() as u64;
+                let roaring_len = W::roaring_len(roaring);
+                if prefer_sorted_probe(sorted_len, roaring_len, 0) {
+                    probe_count(sorted.iter().copied(), |word| {
+                        W::roaring_contains(roaring, word)
+                    })
+                } else {
+                    probe_count(W::roaring_iter(roaring), |word| {
+                        sorted.binary_search(&word).is_ok()
+                    })
+                }
             }
-            _ => true,
+            (Repr::Dense(dense), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Dense(dense)) => {
+                match dense_roaring_strategy(
+                    dense.words.len() as u64,
+                    dense_cardinality(self, other),
+                    W::roaring_len(roaring),
+                ) {
+                    DenseRoaring::Promote => W::roaring_intersection_len(
+                        &W::roaring_from_dense(dense.base, &dense.words),
+                        roaring,
+                    ),
+                    DenseRoaring::IterateDense => {
+                        probe_count(dense.iter(), |word| W::roaring_contains(roaring, word))
+                    }
+                    DenseRoaring::IterateRoaring => {
+                        probe_count(W::roaring_iter(roaring), |word| dense.contains(word))
+                    }
+                }
+            }
+            (Repr::Chunked(chunks), Repr::Dense(dense))
+            | (Repr::Dense(dense), Repr::Chunked(chunks)) => {
+                chunks.intersection_len(&Chunked::from_dense(dense.base, &dense.words))
+            }
+            (Repr::Chunked(chunks), Repr::Sorted(sorted))
+            | (Repr::Sorted(sorted), Repr::Chunked(chunks)) => {
+                if prefer_sorted_probe(sorted.len() as u64, chunks.cardinality(), 0) {
+                    probe_count(sorted.iter().copied(), |word| chunks.contains(word))
+                } else {
+                    probe_count(chunks.iter(), |word| sorted.binary_search(&word).is_ok())
+                }
+            }
+            (Repr::Chunked(chunks), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Chunked(chunks)) => {
+                if chunks.cardinality() <= W::roaring_len(roaring) {
+                    probe_count(chunks.iter(), |word| W::roaring_contains(roaring, word))
+                } else {
+                    probe_count(W::roaring_iter(roaring), |word| chunks.contains(word))
+                }
+            }
         }
     }
 
@@ -451,46 +567,71 @@ impl<W: Word> Storage<W> {
             (Repr::Sorted(left), Repr::Sorted(right)) => set_ops::is_disjoint(left, right),
             (Repr::Dense(left), Repr::Dense(right)) => left.is_disjoint(right),
             (Repr::Roaring(left), Repr::Roaring(right)) => W::roaring_is_disjoint(left, right),
-            (Repr::Sorted(left), Repr::Dense(right)) => {
-                if prefer_sorted_probe(self.cardinality, other.cardinality, right.words.len()) {
-                    left.iter().all(|&word| !right.contains(word))
+            (Repr::Chunked(left), Repr::Chunked(right)) => left.is_disjoint(right),
+            (Repr::Sorted(sorted), Repr::Dense(dense))
+            | (Repr::Dense(dense), Repr::Sorted(sorted)) => {
+                let sub = window_slice(sorted, dense);
+                if prefer_sorted_probe(
+                    sub.len() as u64,
+                    dense_cardinality(self, other),
+                    dense.words.len(),
+                ) {
+                    sub.iter().all(|&word| !dense.contains(word))
                 } else {
-                    right.iter().all(|word| left.binary_search(&word).is_err())
+                    dense.iter().all(|word| sub.binary_search(&word).is_err())
                 }
             }
-            (Repr::Dense(left), Repr::Sorted(right)) => {
-                if prefer_sorted_probe(other.cardinality, self.cardinality, left.words.len()) {
-                    right.iter().all(|&word| !left.contains(word))
+            (Repr::Sorted(sorted), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Sorted(sorted)) => {
+                if prefer_sorted_probe(sorted.len() as u64, W::roaring_len(roaring), 0) {
+                    sorted
+                        .iter()
+                        .all(|&word| !W::roaring_contains(roaring, word))
                 } else {
-                    left.iter().all(|word| right.binary_search(&word).is_err())
+                    W::roaring_iter(roaring).all(|word| sorted.binary_search(&word).is_err())
                 }
             }
-            (Repr::Sorted(left), Repr::Roaring(right)) => {
-                if prefer_sorted_probe(self.cardinality, other.cardinality, 0) {
-                    left.iter().all(|&word| !W::roaring_contains(right, word))
-                } else {
-                    W::roaring_iter(right).all(|word| left.binary_search(&word).is_err())
+            (Repr::Dense(dense), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Dense(dense)) => {
+                match dense_roaring_strategy(
+                    dense.words.len() as u64,
+                    dense_cardinality(self, other),
+                    W::roaring_len(roaring),
+                ) {
+                    DenseRoaring::Promote => W::roaring_is_disjoint(
+                        &W::roaring_from_dense(dense.base, &dense.words),
+                        roaring,
+                    ),
+                    DenseRoaring::IterateDense => {
+                        dense.iter().all(|word| !W::roaring_contains(roaring, word))
+                    }
+                    DenseRoaring::IterateRoaring => {
+                        W::roaring_iter(roaring).all(|word| !dense.contains(word))
+                    }
                 }
             }
-            (Repr::Roaring(left), Repr::Sorted(right)) => {
-                if prefer_sorted_probe(other.cardinality, self.cardinality, 0) {
-                    right.iter().all(|&word| !W::roaring_contains(left, word))
+            (Repr::Chunked(chunks), Repr::Dense(dense))
+            | (Repr::Dense(dense), Repr::Chunked(chunks)) => {
+                chunks.is_disjoint(&Chunked::from_dense(dense.base, &dense.words))
+            }
+            (Repr::Chunked(chunks), Repr::Sorted(sorted))
+            | (Repr::Sorted(sorted), Repr::Chunked(chunks)) => {
+                if prefer_sorted_probe(sorted.len() as u64, chunks.cardinality(), 0) {
+                    sorted.iter().all(|&word| !chunks.contains(word))
                 } else {
-                    W::roaring_iter(left).all(|word| right.binary_search(&word).is_err())
+                    chunks
+                        .iter()
+                        .all(|word| sorted.binary_search(&word).is_err())
                 }
             }
-            (Repr::Dense(left), Repr::Roaring(right)) => {
-                if self.cardinality <= other.cardinality {
-                    left.iter().all(|word| !W::roaring_contains(right, word))
+            (Repr::Chunked(chunks), Repr::Roaring(roaring))
+            | (Repr::Roaring(roaring), Repr::Chunked(chunks)) => {
+                if chunks.cardinality() <= W::roaring_len(roaring) {
+                    chunks
+                        .iter()
+                        .all(|word| !W::roaring_contains(roaring, word))
                 } else {
-                    W::roaring_iter(right).all(|word| !left.contains(word))
-                }
-            }
-            (Repr::Roaring(left), Repr::Dense(right)) => {
-                if self.cardinality <= other.cardinality {
-                    W::roaring_iter(left).all(|word| !right.contains(word))
-                } else {
-                    right.iter().all(|word| !W::roaring_contains(left, word))
+                    W::roaring_iter(roaring).all(|word| !chunks.contains(word))
                 }
             }
         }
@@ -516,11 +657,13 @@ impl<W: Word> Storage<W> {
             (Repr::Sorted(left), Repr::Sorted(right)) => set_ops::is_subset(left, right),
             (Repr::Dense(left), Repr::Dense(right)) => left.is_subset(right),
             (Repr::Roaring(left), Repr::Roaring(right)) => W::roaring_is_subset(left, right),
+            (Repr::Chunked(left), Repr::Chunked(right)) => left.is_subset(right),
             (Repr::Sorted(left), Repr::Dense(right)) => {
                 left.iter().all(|&word| right.contains(word))
             }
             (Repr::Dense(left), Repr::Sorted(right)) => {
-                left.iter().all(|word| right.binary_search(&word).is_ok())
+                let sub = window_slice(right, left);
+                left.iter().all(|word| sub.binary_search(&word).is_ok())
             }
             (Repr::Sorted(left), Repr::Roaring(right)) => {
                 left.iter().all(|&word| W::roaring_contains(right, word))
@@ -529,224 +672,173 @@ impl<W: Word> Storage<W> {
                 W::roaring_iter(left).all(|word| right.binary_search(&word).is_ok())
             }
             (Repr::Dense(left), Repr::Roaring(right)) => {
-                left.iter().all(|word| W::roaring_contains(right, word))
+                if dense_roaring_strategy(
+                    left.words.len() as u64,
+                    self.cardinality,
+                    W::roaring_len(right),
+                ) == DenseRoaring::Promote
+                {
+                    W::roaring_is_subset(&W::roaring_from_dense(left.base, &left.words), right)
+                } else {
+                    left.iter().all(|word| W::roaring_contains(right, word))
+                }
             }
             (Repr::Roaring(left), Repr::Dense(right)) => {
+                W::roaring_iter(left).all(|word| right.contains(word))
+            }
+            (Repr::Chunked(left), Repr::Dense(right)) => {
+                left.is_subset(&Chunked::from_dense(right.base, &right.words))
+            }
+            (Repr::Dense(left), Repr::Chunked(right)) => {
+                Chunked::from_dense(left.base, &left.words).is_subset(right)
+            }
+            (Repr::Chunked(left), Repr::Sorted(right)) => {
+                left.iter().all(|word| right.binary_search(&word).is_ok())
+            }
+            (Repr::Sorted(left), Repr::Chunked(right)) => {
+                left.iter().all(|&word| right.contains(word))
+            }
+            (Repr::Chunked(left), Repr::Roaring(right)) => {
+                left.iter().all(|word| W::roaring_contains(right, word))
+            }
+            (Repr::Roaring(left), Repr::Chunked(right)) => {
                 W::roaring_iter(left).all(|word| right.contains(word))
             }
         }
     }
 
-    pub(crate) fn replan(&self, policy: IntSetPolicy) -> Result<Self, IntSetError> {
-        self.clone().finish(policy)
+    // ----------------------------------------------------------------------
+    // Materialized algebra
+    // ----------------------------------------------------------------------
+
+    /// Whether the current representation satisfies an output policy.
+    fn accepts(&self, policy: IntSetPolicy) -> bool {
+        match &self.repr {
+            Repr::Sorted(_) => {
+                matches!(policy.backend, IntSetBackend::Auto | IntSetBackend::Sorted)
+            }
+            Repr::Dense(dense) => {
+                matches!(policy.backend, IntSetBackend::Auto | IntSetBackend::Dense)
+                    && dense.payload_bytes() <= policy.max_dense_bytes.min(isize::MAX as usize)
+            }
+            Repr::Roaring(_) => {
+                matches!(policy.backend, IntSetBackend::Auto | IntSetBackend::Roaring)
+                    && self.partitions() <= policy.max_roaring_partitions as u64
+            }
+            Repr::Chunked(_) => {
+                matches!(policy.backend, IntSetBackend::Auto | IntSetBackend::Chunked)
+            }
+        }
     }
 
-    /// Every path, including identity and empty operations, honors the supplied
-    /// result policy. Representation choices are never inherited as requirements.
+    pub(crate) fn replan_shared(
+        self: &Arc<Self>,
+        policy: IntSetPolicy,
+    ) -> Result<Arc<Self>, IntSetError> {
+        if policy.backend != IntSetBackend::Auto && self.accepts(policy) {
+            return Ok(Arc::clone(self));
+        }
+        self.as_ref().clone().finish(policy).map(Arc::new)
+    }
+
+    fn share_or_replan(self: &Arc<Self>, policy: IntSetPolicy) -> Result<Arc<Self>, IntSetError> {
+        if self.accepts(policy) {
+            Ok(Arc::clone(self))
+        } else {
+            self.replan_shared(policy)
+        }
+    }
+
+    /// Every path, including empty and equal operands, enforces output limits.
+    /// Reuse an eligible operand allocation when the logical result is identical.
     pub(crate) fn binary(
-        &self,
-        other: &Self,
+        self: &Arc<Self>,
+        other: &Arc<Self>,
         op: Operation,
         policy: IntSetPolicy,
-    ) -> Result<Self, IntSetError> {
-        if core::ptr::eq(self, other) {
+    ) -> Result<Arc<Self>, IntSetError> {
+        let empty = || Self::from_sorted(Vec::new(), policy).map(Arc::new);
+        if Arc::ptr_eq(self, other) {
             return match op {
-                Operation::Union | Operation::Intersection => self.replan(policy),
-                Operation::Difference | Operation::SymmetricDifference => {
-                    Self::from_sorted(Vec::new(), policy)
-                }
+                Operation::Union | Operation::Intersection => self.share_or_replan(policy),
+                Operation::Difference | Operation::SymmetricDifference => empty(),
             };
         }
-        if self.cardinality == 0 || other.cardinality == 0 {
+        if self.cardinality == 0 {
             return match op {
-                Operation::Union | Operation::SymmetricDifference => {
-                    if self.cardinality == 0 {
-                        other.replan(policy)
-                    } else {
-                        self.replan(policy)
-                    }
-                }
-                Operation::Intersection => Self::from_sorted(Vec::new(), policy),
-                Operation::Difference => self.replan(policy),
+                Operation::Union | Operation::SymmetricDifference => other.share_or_replan(policy),
+                Operation::Intersection | Operation::Difference => empty(),
+            };
+        }
+        if other.cardinality == 0 {
+            return match op {
+                Operation::Intersection => empty(),
+                _ => self.share_or_replan(policy),
             };
         }
         if self.separated(other) {
             match op {
-                Operation::Intersection => return Self::from_sorted(Vec::new(), policy),
-                Operation::Difference => return self.replan(policy),
+                Operation::Intersection => return empty(),
+                Operation::Difference => return self.share_or_replan(policy),
                 Operation::Union | Operation::SymmetricDifference => {}
             }
         }
-        if let (Repr::Sorted(left), Repr::Sorted(right)) = (&self.repr, &other.repr) {
-            let result = match op {
-                Operation::Union => set_ops::SetUnion::new(left, right).copied().collect(),
-                Operation::Intersection => set_ops::SetIntersection::new(left, right)
-                    .copied()
-                    .collect(),
-                Operation::Difference => {
-                    set_ops::SetDifference::new(left, right).copied().collect()
-                }
-                Operation::SymmetricDifference => set_ops::SetSymmetricDifference::new(left, right)
-                    .copied()
-                    .collect(),
-            };
-            return Self::from_sorted(result, policy);
-        }
-
-        if let Some(result) = self.filtered_binary(other, op) {
-            return Self::from_sorted(result, policy);
-        }
-        if policy.backend == IntSetBackend::Sorted {
-            return Ok(Self::sorted(mixed(
-                self.iter(),
-                other.iter(),
-                |word| self.contains(word),
-                |word| other.contains(word),
-                self.cardinality <= other.cardinality,
-                op,
-            )));
-        }
-        if let Some(result) = self.dense_binary(other, op, policy) {
-            return result.finish(policy);
-        }
-
-        // A sparse sorted operand can itself rule out Roaring for union/XOR.
-        // Avoid constructing a large treemap only to throw it away afterward.
-        if matches!(op, Operation::Union | Operation::SymmetricDifference) {
-            let excessive = [&self.repr, &other.repr].into_iter().any(|repr| {
+        // A scattered sorted operand can rule out the native partition budget.
+        // Avoid constructing a large temporary treemap only to discard it.
+        if policy.backend == IntSetBackend::Auto
+            && matches!(op, Operation::Union | Operation::SymmetricDifference)
+            && !matches!(&self.repr, Repr::Chunked(_))
+            && !matches!(&other.repr, Repr::Chunked(_))
+            && [&self.repr, &other.repr].into_iter().any(|repr| {
                 matches!(repr, Repr::Sorted(words) if partition_count(words) > policy.max_roaring_partitions as u64)
-            });
-            if excessive && policy.backend == IntSetBackend::Auto {
-                return Self::from_sorted(merge(self.iter(), other.iter(), op), policy);
-            }
-        }
-
-        // A small sorted operand updates a native clone without reconstructing
-        // every member of the larger Roaring operand.
-        match (&self.repr, &other.repr, op) {
-            (Repr::Roaring(left), Repr::Sorted(right), _)
-                if right.len() <= SMALL_SORTED_UPDATES
-                    && matches!(
-                        op,
-                        Operation::Union | Operation::Difference | Operation::SymmetricDifference
-                    ) =>
-            {
-                return Self::roaring(roaring_update::<W>(left, right, op)).finish(policy);
-            }
-            (
-                Repr::Sorted(left),
-                Repr::Roaring(right),
-                Operation::Union | Operation::SymmetricDifference,
-            ) if left.len() <= SMALL_SORTED_UPDATES => {
-                return Self::roaring(roaring_update::<W>(right, left, op)).finish(policy);
-            }
-            _ => {}
-        }
-
-        // Dense promotion scans bitmap words, using bounded little-endian byte
-        // chunks. In particular, two distant dense runs never require a sorted
-        // staging array merely because their combined dense window is too wide.
-        let left = self.as_roaring();
-        let right = other.as_roaring();
-        let mut result = W::roaring_binary(&left, &right, op);
-        W::roaring_optimize(&mut result);
-        Self::roaring(result).finish(policy)
-    }
-
-    fn dense_binary(&self, other: &Self, op: Operation, policy: IntSetPolicy) -> Option<Self> {
-        if policy.backend == IntSetBackend::Roaring {
-            return None;
-        }
-        if let (Repr::Dense(left), Repr::Dense(right)) = (&self.repr, &other.repr)
-            && let Some(dense) = left.binary(right, op, policy.max_dense_bytes)
+            })
         {
-            return Some(Self::dense(dense));
+            return Self::from_sorted(merge(self.iter(), other.iter(), op, 0), policy).map(Arc::new);
         }
-        if !matches!(op, Operation::Intersection) {
-            if let Some(result) = self.dense_update(other, op, policy) {
-                return Some(result);
-            }
-            if !matches!(op, Operation::Difference)
-                && let Some(result) = other.dense_update(self, op, policy)
-            {
-                return Some(result);
-            }
+        let combined = if policy.backend != IntSetBackend::Roaring
+            && policy.backend != IntSetBackend::Chunked
+            && !matches!(op, Operation::Intersection)
+            && !matches!((&self.repr, &other.repr), (Repr::Dense(_), Repr::Dense(_)))
+            && !matches!(&self.repr, Repr::Chunked(_))
+            && !matches!(&other.repr, Repr::Chunked(_))
+        {
+            let fast = self.dense_update(other, op, policy).or_else(|| {
+                if op == Operation::Difference {
+                    None
+                } else {
+                    other.dense_update(self, op, policy)
+                }
+            });
+            fast.map_or_else(
+                || self.combine(other, op, Budget::from_policy(policy)),
+                Combined::Stored,
+            )
+        } else {
+            self.combine(other, op, Budget::from_policy(policy))
+        };
+        let cardinality = match &combined {
+            Combined::Stored(storage) => storage.cardinality,
+            Combined::Codes(codes) => codes.len() as u64,
+        };
+        let equals_left = cardinality == self.cardinality
+            && matches!(
+                op,
+                Operation::Union | Operation::Intersection | Operation::Difference
+            );
+        let equals_right = cardinality == other.cardinality
+            && matches!(op, Operation::Union | Operation::Intersection);
+        // Try both operands: equal contents can have differently eligible layouts.
+        if equals_left && self.accepts(policy) {
+            return Ok(Arc::clone(self));
         }
-        None
-    }
-
-    /// Filter an already addressable sorted input or a small compressed input.
-    /// Large compressed operands continue to the native container kernels.
-    fn filtered_binary(&self, other: &Self, op: Operation) -> Option<Vec<W>> {
-        match (&self.repr, &other.repr, op) {
-            (Repr::Sorted(left), Repr::Dense(right), Operation::Difference) => Some(
-                left.iter()
-                    .copied()
-                    .filter(|&word| !right.contains(word))
-                    .collect(),
-            ),
-            (Repr::Sorted(left), Repr::Roaring(right), Operation::Difference) => Some(
-                left.iter()
-                    .copied()
-                    .filter(|&word| !W::roaring_contains(right, word))
-                    .collect(),
-            ),
-            (Repr::Sorted(left), Repr::Dense(right), Operation::Intersection) => {
-                Some(sorted_compressed_intersection(
-                    left,
-                    right.iter(),
-                    |word| right.contains(word),
-                    other.cardinality,
-                    right.words.len(),
-                ))
-            }
-            (Repr::Sorted(left), Repr::Roaring(right), Operation::Intersection) => {
-                Some(sorted_compressed_intersection(
-                    left,
-                    W::roaring_iter(right),
-                    |word| W::roaring_contains(right, word),
-                    other.cardinality,
-                    0,
-                ))
-            }
-            (Repr::Dense(left), Repr::Sorted(right), Operation::Intersection) => {
-                Some(sorted_compressed_intersection(
-                    right,
-                    left.iter(),
-                    |word| left.contains(word),
-                    self.cardinality,
-                    left.words.len(),
-                ))
-            }
-            (Repr::Roaring(left), Repr::Sorted(right), Operation::Intersection) => {
-                Some(sorted_compressed_intersection(
-                    right,
-                    W::roaring_iter(left),
-                    |word| W::roaring_contains(left, word),
-                    self.cardinality,
-                    0,
-                ))
-            }
-            (Repr::Dense(dense), Repr::Roaring(roaring), Operation::Intersection)
-                if other.cardinality <= dense.words.len() as u64 + 64 =>
-            {
-                Some(
-                    W::roaring_iter(roaring)
-                        .filter(|&word| dense.contains(word))
-                        .collect(),
-                )
-            }
-            (Repr::Roaring(roaring), Repr::Dense(dense), Operation::Intersection)
-                if self.cardinality <= dense.words.len() as u64 + 64 =>
-            {
-                Some(
-                    W::roaring_iter(roaring)
-                        .filter(|&word| dense.contains(word))
-                        .collect(),
-                )
-            }
-            _ => None,
+        if equals_right && other.accepts(policy) {
+            return Ok(Arc::clone(other));
         }
+        match combined {
+            Combined::Stored(storage) => storage.finish(policy),
+            Combined::Codes(codes) => Self::from_sorted(codes, policy),
+        }
+        .map(Arc::new)
     }
 
     fn as_roaring(&self) -> Cow<'_, W::Roaring> {
@@ -754,6 +846,7 @@ impl<W: Word> Storage<W> {
             Repr::Sorted(words) => Cow::Owned(W::roaring_from_sorted(words)),
             Repr::Dense(dense) => Cow::Owned(W::roaring_from_dense(dense.base, &dense.words)),
             Repr::Roaring(roaring) => Cow::Borrowed(roaring),
+            Repr::Chunked(chunks) => Cow::Owned(W::roaring_from_ascending(chunks.iter())),
         }
     }
 
@@ -762,6 +855,7 @@ impl<W: Word> Storage<W> {
             Repr::Sorted(words) => partition_count(words),
             Repr::Dense(dense) => dense.partition_count(),
             Repr::Roaring(roaring) => W::roaring_estimate(roaring).0,
+            Repr::Chunked(chunks) => chunks.partition_count(),
         }
     }
 
@@ -773,6 +867,7 @@ impl<W: Word> Storage<W> {
         let sorted_score = u128::from(self.cardinality) * size_of::<W>() as u128 + 16;
         let backend = if policy.backend == IntSetBackend::Auto {
             match &self.repr {
+                Repr::Chunked(_) => return Ok(self),
                 Repr::Sorted(_) => {
                     let Repr::Sorted(words) = self.repr else {
                         unreachable!()
@@ -860,6 +955,15 @@ impl<W: Word> Storage<W> {
                     Ok(Self::roaring(self.as_roaring().into_owned()))
                 }
             }
+            IntSetBackend::Chunked => match &self.repr {
+                Repr::Chunked(_) => Ok(self),
+                Repr::Dense(dense) => {
+                    Ok(Self::chunked(Chunked::from_dense(dense.base, &dense.words)))
+                }
+                _ => Ok(Self::chunked(Chunked::from_ascending(
+                    self.iter().map(Word::to_u64),
+                ))),
+            },
             IntSetBackend::Auto => unreachable!("result planning chooses a concrete backend"),
         }
     }
@@ -932,6 +1036,81 @@ impl<W: Word> Storage<W> {
             bounds: result_bounds,
         })
     }
+
+    fn combine(&self, other: &Self, op: Operation, budget: Budget) -> Combined<W> {
+        Combined::Stored(match (&self.repr, &other.repr) {
+            (Repr::Roaring(left), Repr::Roaring(right)) => {
+                Self::roaring(W::roaring_binary(left, right, op))
+            }
+            (Repr::Chunked(left), Repr::Chunked(right)) => Self::chunked(left.binary(right, op)),
+            (Repr::Dense(left), Repr::Dense(right)) => {
+                let limit = budget.dense_limit();
+                match left.binary(right, op, limit) {
+                    Some(value) => Self::dense(value),
+                    // Two dense islands too far apart for one window: Roaring
+                    // is the representation built for exactly that shape.
+                    None => Self::roaring(W::roaring_binary(
+                        &W::roaring_from_dense(left.base, &left.words),
+                        &W::roaring_from_dense(right.base, &right.words),
+                        op,
+                    )),
+                }
+            }
+            (Repr::Sorted(left), Repr::Sorted(right)) => {
+                let result = match op {
+                    Operation::Union => set_ops::SetUnion::new(left, right).copied().collect(),
+                    Operation::Intersection => set_ops::SetIntersection::new(left, right)
+                        .copied()
+                        .collect(),
+                    Operation::Difference => {
+                        set_ops::SetDifference::new(left, right).copied().collect()
+                    }
+                    Operation::SymmetricDifference => {
+                        set_ops::SetSymmetricDifference::new(left, right)
+                            .copied()
+                            .collect()
+                    }
+                };
+                Self::sorted(result)
+            }
+            (Repr::Dense(dense), Repr::Sorted(sorted)) => {
+                return dense_sorted(dense, self.cardinality, sorted, op, true, budget);
+            }
+            (Repr::Sorted(sorted), Repr::Dense(dense)) => {
+                return dense_sorted(dense, other.cardinality, sorted, op, false, budget);
+            }
+            (Repr::Dense(dense), Repr::Roaring(roaring)) => {
+                dense_roaring(dense, self.cardinality, roaring, op, true, budget)
+            }
+            (Repr::Roaring(roaring), Repr::Dense(dense)) => {
+                dense_roaring(dense, other.cardinality, roaring, op, false, budget)
+            }
+            (Repr::Sorted(sorted), Repr::Roaring(roaring)) => {
+                return sorted_roaring(sorted, roaring, op, true);
+            }
+            (Repr::Roaring(roaring), Repr::Sorted(sorted)) => {
+                return sorted_roaring(sorted, roaring, op, false);
+            }
+            (Repr::Chunked(chunks), Repr::Dense(dense)) => {
+                Self::chunked(chunks.binary(&Chunked::from_dense(dense.base, &dense.words), op))
+            }
+            (Repr::Dense(dense), Repr::Chunked(chunks)) => {
+                Self::chunked(Chunked::from_dense(dense.base, &dense.words).binary(chunks, op))
+            }
+            (Repr::Chunked(chunks), Repr::Sorted(sorted)) => {
+                chunked_sorted(chunks, sorted, op, true)
+            }
+            (Repr::Sorted(sorted), Repr::Chunked(chunks)) => {
+                chunked_sorted(chunks, sorted, op, false)
+            }
+            (Repr::Chunked(chunks), Repr::Roaring(roaring)) => {
+                chunked_roaring(chunks, roaring, op, true)
+            }
+            (Repr::Roaring(roaring), Repr::Chunked(chunks)) => {
+                chunked_roaring(chunks, roaring, op, false)
+            }
+        })
+    }
 }
 
 fn combined_bounds<W: Word>(left: Option<(W, W)>, right: Option<(W, W)>) -> Option<(W, W)> {
@@ -942,38 +1121,6 @@ fn combined_bounds<W: Word>(left: Option<(W, W)>, right: Option<(W, W)>) -> Opti
     }
 }
 
-fn roaring_update<W: Word>(original: &W::Roaring, updates: &[W], op: Operation) -> W::Roaring {
-    let mut result = original.clone();
-    for &word in updates {
-        match op {
-            Operation::Union => {
-                W::roaring_insert(&mut result, word);
-            }
-            Operation::Difference => {
-                W::roaring_remove(&mut result, word);
-            }
-            Operation::SymmetricDifference => {
-                if !W::roaring_remove(&mut result, word) {
-                    W::roaring_insert(&mut result, word);
-                }
-            }
-            Operation::Intersection => unreachable!("intersection uses membership filtering"),
-        }
-    }
-    W::roaring_optimize(&mut result);
-    result
-}
-
-/// Bound the byte-conversion work against the number of membership probes it
-/// replaces. This conservative structural heuristic is not a CPU timing model.
-fn prefer_dense_promotion(dense_words: usize, probes: u64) -> bool {
-    dense_words as u128 * 8 < u128::from(probes)
-}
-
-/// Choose traversal before the filtering loop. Scanning the compressed side
-/// is useful only when its cardinality is smaller than the addressable sorted
-/// operand, so either direction has an addressable result without expansion of
-/// a large compressed set. Both input iterators preserve ascending code order.
 fn sorted_compressed_intersection<W: Word>(
     sorted: &[W],
     compressed: impl Iterator<Item = W>,
@@ -995,49 +1142,126 @@ fn sorted_compressed_intersection<W: Word>(
     }
 }
 
+/// A materialized result, or merged codes finished only if the result is not
+/// one of the operands. Fresh results are finished under the output policy.
+enum Combined<W: Word> {
+    Stored(Storage<W>),
+    Codes(Vec<W>),
+}
+
+/// A Roaring set with fewer than this many members per container is treated as
+/// scattered: copying its container tree costs more than merging its codes.
+const WELL_FILLED_MEMBERS: u64 = 16;
+
+/// Automatic planning over strictly ascending codes.
+fn plan<W: Word>(words: &[W], dense_bytes: u128, budget: Budget) -> IntSetBackend {
+    if words.is_empty() {
+        return IntSetBackend::Sorted;
+    }
+    let dense_ok = dense_bytes <= budget.dense_limit() as u128;
+    let sorted_score = words.len() as u128 * size_of::<W>() as u128 + 16;
+    let mut backend = IntSetBackend::Sorted;
+    let mut score = sorted_score;
+    if dense_ok && dense_bytes + 24 < score {
+        backend = IntSetBackend::Dense;
+        score = dense_bytes + 24;
+    }
+    let survey = survey(words);
+    let allowance = if backend == IntSetBackend::Dense {
+        DENSE_PREFERENCE_BYTES
+    } else {
+        0
+    };
+    if survey.partitions <= budget.roaring_partitions as u64
+        && survey.roaring_score + allowance < score
+    {
+        backend = IntSetBackend::Roaring;
+    }
+    backend
+}
+
 /// Compare scanning sorted codes with repeated binary searches into them.
 /// `bit_length(n)` equals ceil(log2(n + 1)) for n > 0, without overflowing at
-/// `u64::MAX`. The wide product bounds comparison work rather than claiming a
-/// machine-specific crossover. Near-balanced operands favor direct compressed
-/// membership; genuinely tiny compressed operands still search the sorted side.
-/// Dense iteration also scans zero words, so its word count contributes to the
-/// estimated traversal work even when the bitmap has very few members.
+/// `u64::MAX`. Dense iteration also scans zero words, so its word count
+/// contributes to the estimated traversal work even for few members.
 fn prefer_sorted_probe(sorted_len: u64, compressed_len: u64, traversal_words: usize) -> bool {
     let comparisons = sorted_len.bit_width();
     u128::from(sorted_len)
         <= u128::from(compressed_len) * u128::from(comparisons) + traversal_words as u128
 }
 
+/// How to combine a dense window with a Roaring set, in word-cost units.
+///
+/// Promoting the window costs about two units per word plus the native kernel.
+/// Iterating the window and probing Roaring costs one unit per word plus
+/// [`PROBE_WORDS`] per member; iterating Roaring and probing the window costs
+/// about [`ITERATE_WORDS`] per Roaring member. These are work estimates, not
+/// cycle counts; the direction tests in the suite pin the resulting answers.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum DenseRoaring {
+    Promote,
+    IterateDense,
+    IterateRoaring,
+}
+
+const ITERATE_WORDS: u64 = 5;
+
+fn dense_roaring_strategy(words: u64, dense_members: u64, roaring_members: u64) -> DenseRoaring {
+    let promote = words.saturating_mul(2);
+    let iterate_dense = words.saturating_add(dense_members.saturating_mul(PROBE_WORDS));
+    let iterate_roaring = roaring_members.saturating_mul(ITERATE_WORDS);
+    if promote <= iterate_dense && promote <= iterate_roaring {
+        DenseRoaring::Promote
+    } else if iterate_dense <= iterate_roaring {
+        DenseRoaring::IterateDense
+    } else {
+        DenseRoaring::IterateRoaring
+    }
+}
+
+/// Cardinality of whichever operand is the dense one.
+fn dense_cardinality<W: Word>(left: &Storage<W>, right: &Storage<W>) -> u64 {
+    if matches!(left.repr, Repr::Dense(_)) {
+        left.cardinality
+    } else {
+        right.cardinality
+    }
+}
+
+/// The part of a sorted slice that can fall inside a dense window. Tiny slices
+/// are returned whole: two binary searches would cost more than they save.
+fn window_slice<'a, W: Word>(sorted: &'a [W], dense: &Dense<W>) -> &'a [W] {
+    if dense.is_empty() {
+        return &[];
+    }
+    if sorted.len() <= 128 {
+        return sorted;
+    }
+    let start = sorted.partition_point(|word| word.to_u64() < dense.window_start());
+    let end = sorted.partition_point(|word| word.to_u64() <= dense.window_end());
+    &sorted[start..end.max(start)]
+}
+
 fn probe_count<W>(words: impl Iterator<Item = W>, mut contains: impl FnMut(W) -> bool) -> u64 {
     words.fold(0, |count, word| count + u64::from(contains(word)))
 }
 
-fn mixed<W: Word>(
-    left: impl Iterator<Item = W>,
-    right: impl Iterator<Item = W>,
-    mut left_contains: impl FnMut(W) -> bool,
-    mut right_contains: impl FnMut(W) -> bool,
-    probe_left: bool,
-    op: Operation,
-) -> Vec<W> {
-    match op {
-        Operation::Intersection if probe_left => {
-            left.filter(|&word| right_contains(word)).collect()
-        }
-        Operation::Intersection => right.filter(|&word| left_contains(word)).collect(),
-        Operation::Difference => left.filter(|&word| !right_contains(word)).collect(),
-        Operation::Union | Operation::SymmetricDifference => merge(left, right, op),
-    }
+/// Whether a dense result window of `window_bytes` is an acceptable output for
+/// at most `members` codes: within the limit and competitive with sorted storage.
+fn accept_dense_result<W: Word>(window_bytes: u128, members: u64, limit: usize) -> bool {
+    window_bytes <= limit as u128
+        && window_bytes + 24 <= u128::from(members) * size_of::<W>() as u128 + 16
 }
 
 fn merge<W: Word>(
     left: impl Iterator<Item = W>,
     right: impl Iterator<Item = W>,
     op: Operation,
+    capacity: usize,
 ) -> Vec<W> {
     let mut left = left.peekable();
     let mut right = right.peekable();
-    let mut out = Vec::new();
+    let mut out = Vec::with_capacity(capacity);
     while let (Some(&a), Some(&b)) = (left.peek(), right.peek()) {
         match a.cmp(&b) {
             Ordering::Less => {
@@ -1070,397 +1294,317 @@ fn merge<W: Word>(
     out
 }
 
-fn partition_count<W: Word>(words: &[W]) -> u64 {
-    let mut count = 0;
-    let mut previous = None;
-    for &word in words {
-        let prefix = word.to_u64() >> 32;
-        if previous != Some(prefix) {
-            count += 1;
+fn dense_sorted<W: Word>(
+    dense: &Dense<W>,
+    dense_count: u64,
+    sorted: &[W],
+    op: Operation,
+    dense_left: bool,
+    budget: Budget,
+) -> Combined<W> {
+    let sub = window_slice(sorted, dense);
+    let limit = budget.dense_limit();
+    match op {
+        // Dense membership is a single load, so the intersection probes the
+        // sorted slice into the window (or searches the slice for each dense
+        // member when the window is far sparser). The result is bounded by the
+        // smaller operand and stays sorted.
+        Operation::Intersection => {
+            Combined::Stored(Storage::sorted(sorted_compressed_intersection(
+                sub,
+                dense.iter(),
+                |word| dense.contains(word),
+                dense_count,
+                dense.words.len(),
+            )))
         }
-        previous = Some(prefix);
+        Operation::Difference if dense_left => Combined::Stored(Storage::dense(
+            dense.without_members(sub.iter().map(|word| word.to_u64())),
+        )),
+        Operation::Difference => Combined::Stored(Storage::sorted(
+            sorted
+                .iter()
+                .copied()
+                .filter(|&word| !dense.contains(word))
+                .collect(),
+        )),
+        Operation::Union | Operation::SymmetricDifference => {
+            let (low, high) = (
+                sorted[0].to_u64().min(dense.window_start()),
+                sorted[sorted.len() - 1].to_u64().max(dense.window_end()),
+            );
+            let window_bytes = dense_bytes(low, high);
+            let members = dense_count + sorted.len() as u64;
+            if accept_dense_result::<W>(window_bytes, members, limit)
+                && let Some(value) = dense.with_members(
+                    sorted.iter().map(|word| word.to_u64()),
+                    sorted[0].to_u64(),
+                    sorted[sorted.len() - 1].to_u64(),
+                    matches!(op, Operation::SymmetricDifference),
+                    limit,
+                )
+            {
+                return Combined::Stored(Storage::dense(value));
+            }
+            let promoted_dense = W::roaring_from_dense(dense.base, &dense.words);
+            let promoted_sorted = W::roaring_from_sorted(sorted);
+            Combined::Stored(Storage::roaring(if dense_left {
+                W::roaring_binary(&promoted_dense, &promoted_sorted, op)
+            } else {
+                W::roaring_binary(&promoted_sorted, &promoted_dense, op)
+            }))
+        }
     }
-    count
 }
 
-/// Deterministic planning proxy, not an allocator or resident-memory measurement.
-/// It includes conservative container and treemap-entry overhead. Run structure
-/// matters: the candidate is optimized into run containers after construction.
-fn roaring_score<W: Word>(words: &[W]) -> (u64, u128) {
-    if words.is_empty() {
-        return (0, 32);
-    }
-    let mut partitions = 0_u64;
-    let mut previous: Option<u64> = None;
-    let mut container_members = 0_u128;
-    let mut container_runs = 0_u128;
-    let mut score = 32_u128;
-    for &word in words {
-        let value = word.to_u64();
-        if previous.is_none_or(|previous| previous >> 32 != value >> 32) {
-            partitions += 1;
-        }
-        if previous.is_some_and(|previous| previous >> 16 != value >> 16) {
-            score += 32
-                + (2 * container_members)
-                    .min(8192)
-                    .min(4 * container_runs + 2);
-            container_members = 0;
-            container_runs = 0;
-        }
-        if previous.and_then(|previous| previous.checked_add(1)) != Some(value)
-            || container_members == 0
-        {
-            container_runs += 1;
-        }
-        container_members += 1;
-        previous = Some(value);
-    }
-    score += 32
-        + (2 * container_members)
-            .min(8192)
-            .min(4 * container_runs + 2);
-    if size_of::<W>() == 8 {
-        score += u128::from(partitions) * 80;
-    }
-    (partitions, score)
-}
-
-fn dense_bytes(low: u64, high: u64) -> u128 {
-    let base = low & !63;
-    ((u128::from(high) - u128::from(base)) / 64 + 1) * 8
-}
-
-#[derive(Clone)]
-struct Dense<W: Word> {
-    base: u64,
-    words: Box<[u64]>,
-    word: PhantomData<W>,
-}
-
-impl<W: Word> Dense<W> {
-    fn empty() -> Self {
-        Self {
-            base: 0,
-            words: Box::new([]),
-            word: PhantomData,
-        }
-    }
-
-    fn from_sorted(values: &[W]) -> Self {
-        let Some(&first) = values.first() else {
-            return Self::empty();
-        };
-        let base = first.to_u64() & !63;
-        let last = values.last().expect("nonempty input").to_u64();
-        let count = usize::try_from(dense_bytes(base, last) / 8)
-            .expect("planner checked addressable dense span");
-        let mut words = vec![0_u64; count];
-        for &value in values {
-            let offset = value.to_u64() - base;
-            words[usize::try_from(offset / 64).expect("offset in allocated dense span")] |=
-                1_u64 << (offset % 64);
-        }
-        Self {
-            base,
-            words: words.into_boxed_slice(),
-            word: PhantomData,
-        }
-    }
-
-    /// Caller has already checked the payload budget with wide arithmetic.
-    fn from_bounds(bounds: Option<(W, W)>) -> Self {
-        let Some((low, high)) = bounds else {
-            return Self::empty();
-        };
-        let count = usize::try_from(dense_bytes(low.to_u64(), high.to_u64()) / 8)
-            .expect("planner checked addressable dense span");
-        Self {
-            base: low.to_u64() & !63,
-            words: vec![0; count].into_boxed_slice(),
-            word: PhantomData,
-        }
-    }
-
-    fn expanded(&self, bounds: Option<(W, W)>) -> Self {
-        if bounds.is_some_and(|(low, high)| {
-            low.to_u64() & !63 == self.base
-                && dense_bytes(low.to_u64(), high.to_u64()) == self.words.len() as u128 * 8
-        }) {
-            return self.clone();
-        }
-        let mut result = Self::from_bounds(bounds);
-        if !self.words.is_empty() {
-            let offset = usize::try_from((self.base - result.base) / 64)
-                .expect("bounded dense expansion offset");
-            result.words[offset..offset + self.words.len()].copy_from_slice(&self.words);
-        }
-        result
-    }
-
-    fn set(&mut self, member: W, present: bool) {
-        let offset = member.to_u64() - self.base;
-        let index = usize::try_from(offset / 64).expect("member lies in the allocated window");
-        let mask = 1_u64 << (offset % 64);
-        if present {
-            self.words[index] |= mask;
+fn dense_roaring<W: Word>(
+    dense: &Dense<W>,
+    dense_count: u64,
+    roaring: &W::Roaring,
+    op: Operation,
+    dense_left: bool,
+    budget: Budget,
+) -> Storage<W> {
+    let roaring_len = W::roaring_len(roaring);
+    let strategy = dense_roaring_strategy(dense.words.len() as u64, dense_count, roaring_len);
+    let native = |op: Operation| {
+        let promoted = W::roaring_from_dense(dense.base, &dense.words);
+        Storage::roaring(if dense_left {
+            W::roaring_binary(&promoted, roaring, op)
         } else {
-            self.words[index] &= !mask;
+            W::roaring_binary(roaring, &promoted, op)
+        })
+    };
+    match op {
+        Operation::Intersection => match strategy {
+            DenseRoaring::Promote => native(op),
+            DenseRoaring::IterateDense => Storage::sorted(
+                dense
+                    .iter()
+                    .filter(|&word| W::roaring_contains(roaring, word))
+                    .collect(),
+            ),
+            DenseRoaring::IterateRoaring => Storage::sorted(
+                W::roaring_iter(roaring)
+                    .filter(|&word| dense.contains(word))
+                    .collect(),
+            ),
+        },
+        Operation::Difference if dense_left => {
+            if strategy == DenseRoaring::IterateRoaring {
+                Storage::dense(dense.without_members(W::roaring_iter(roaring).map(Word::to_u64)))
+            } else {
+                native(op)
+            }
+        }
+        Operation::Difference => {
+            if dense_count.saturating_mul(8) <= roaring_len {
+                let mut result = roaring.clone();
+                for word in dense.iter() {
+                    W::roaring_remove(&mut result, word);
+                }
+                Storage::roaring(result)
+            } else {
+                native(op)
+            }
+        }
+        Operation::Union | Operation::SymmetricDifference => {
+            if strategy == DenseRoaring::IterateRoaring
+                && let Some((low, high)) = W::roaring_bounds(roaring)
+            {
+                let limit = budget.dense_limit();
+                let window_bytes = dense_bytes(
+                    low.to_u64().min(dense.window_start()),
+                    high.to_u64().max(dense.window_end()),
+                );
+                if accept_dense_result::<W>(window_bytes, dense_count + roaring_len, limit)
+                    && let Some(value) = dense.with_members(
+                        W::roaring_iter(roaring).map(Word::to_u64),
+                        low.to_u64(),
+                        high.to_u64(),
+                        matches!(op, Operation::SymmetricDifference),
+                        limit,
+                    )
+                {
+                    return Storage::dense(value);
+                }
+            }
+            native(op)
         }
     }
+}
 
-    /// These ranges come only from existing consecutive members. No domain
-    /// gaps or invented numeric-universe members are introduced by conversion.
-    fn insert_run(&mut self, start: u64, end: u64) {
-        let first = usize::try_from((start - self.base) / 64).expect("bounded run start");
-        let last = usize::try_from((end - self.base) / 64).expect("bounded run end");
-        let first_mask = u64::MAX << (start % 64);
-        let last_mask = u64::MAX >> (63 - end % 64);
-        if first == last {
-            self.words[first] |= first_mask & last_mask;
+fn sorted_roaring<W: Word>(
+    sorted: &[W],
+    roaring: &W::Roaring,
+    op: Operation,
+    sorted_left: bool,
+) -> Combined<W> {
+    let sorted_len = sorted.len() as u64;
+    let roaring_len = W::roaring_len(roaring);
+    // Copying a scattered container tree costs more than merging its codes,
+    // and the planner would not keep such a set in Roaring either. Counting
+    // containers is O(containers), so only the paths that copy ask.
+    let well_filled =
+        || roaring_len >= W::roaring_containers(roaring).saturating_mul(WELL_FILLED_MEMBERS);
+    let small_sorted = sorted_len <= SMALL_SORTED_UPDATES;
+    let roaring_dominant = sorted_len <= roaring_len.saturating_mul(4);
+    let native = |op: Operation| {
+        let promoted = W::roaring_from_sorted(sorted);
+        Storage::roaring(if sorted_left {
+            W::roaring_binary(&promoted, roaring, op)
         } else {
-            self.words[first] |= first_mask;
-            self.words[first + 1..last].fill(u64::MAX);
-            self.words[last] |= last_mask;
+            W::roaring_binary(roaring, &promoted, op)
+        })
+    };
+    let merged = |op: Operation| {
+        let capacity = usize::try_from(sorted_len + roaring_len).unwrap_or(0);
+        Combined::Codes(if sorted_left {
+            merge(
+                sorted.iter().copied(),
+                W::roaring_iter(roaring),
+                op,
+                capacity,
+            )
+        } else {
+            merge(
+                W::roaring_iter(roaring),
+                sorted.iter().copied(),
+                op,
+                capacity,
+            )
+        })
+    };
+    match op {
+        Operation::Intersection => {
+            Combined::Stored(Storage::sorted(sorted_compressed_intersection(
+                sorted,
+                W::roaring_iter(roaring),
+                |word| W::roaring_contains(roaring, word),
+                roaring_len,
+                0,
+            )))
+        }
+        Operation::Difference if sorted_left => Combined::Stored(Storage::sorted(
+            sorted
+                .iter()
+                .copied()
+                .filter(|&word| !W::roaring_contains(roaring, word))
+                .collect(),
+        )),
+        Operation::Difference => {
+            if !well_filled() {
+                merged(op)
+            } else if small_sorted {
+                let mut result = roaring.clone();
+                for &word in sorted {
+                    W::roaring_remove(&mut result, word);
+                }
+                Combined::Stored(Storage::roaring(result))
+            } else {
+                Combined::Stored(native(op))
+            }
+        }
+        Operation::Union | Operation::SymmetricDifference => {
+            if !well_filled() {
+                merged(op)
+            } else if small_sorted {
+                let mut result = roaring.clone();
+                for &word in sorted {
+                    // A symmetric difference toggles: remove when present.
+                    let toggled_off = matches!(op, Operation::SymmetricDifference)
+                        && W::roaring_remove(&mut result, word);
+                    if !toggled_off {
+                        W::roaring_insert(&mut result, word);
+                    }
+                }
+                Combined::Stored(Storage::roaring(result))
+            } else if roaring_dominant {
+                Combined::Stored(native(op))
+            } else {
+                merged(op)
+            }
         }
     }
+}
 
-    fn trim_to_bounds(&mut self, bounds: Option<(W, W)>) {
-        let Some((low, high)) = bounds else {
-            *self = Self::empty();
-            return;
-        };
-        let first = usize::try_from((low.to_u64() - self.base) / 64).expect("stored lower bound");
-        let last = usize::try_from((high.to_u64() - self.base) / 64).expect("stored upper bound");
-        if first == 0 && last + 1 == self.words.len() {
-            return;
-        }
-        let mut words = core::mem::replace(&mut self.words, Box::new([])).into_vec();
-        words.truncate(last + 1);
-        if first != 0 {
-            words.drain(..first);
-        }
-        self.base += first as u64 * 64;
-        self.words = words.into_boxed_slice();
-    }
-
-    fn visit_runs(&self, mut visit: impl FnMut(u64, u64)) {
-        let _: ControlFlow<()> = self.try_visit_runs(|start, end| {
-            visit(start, end);
-            ControlFlow::Continue(())
+fn chunked_sorted<W: Word>(
+    chunks: &Chunked<W>,
+    sorted: &[W],
+    op: Operation,
+    chunked_left: bool,
+) -> Storage<W> {
+    let chunked_len = chunks.cardinality();
+    if (sorted.len() as u64) <= chunked_len.saturating_mul(4) {
+        let promoted = Chunked::from_sorted(sorted);
+        return Storage::chunked(if chunked_left {
+            chunks.binary(&promoted, op)
+        } else {
+            promoted.binary(chunks, op)
         });
     }
-
-    fn try_visit_runs<B>(
-        &self,
-        mut visit: impl FnMut(u64, u64) -> ControlFlow<B>,
-    ) -> ControlFlow<B> {
-        for (index, &word) in self.words.iter().enumerate() {
-            let base = self.base + index as u64 * 64;
-            let mut pending = word;
-            while pending != 0 {
-                let start = pending.trailing_zeros();
-                let count = (pending >> start).trailing_ones();
-                visit(base + u64::from(start), base + u64::from(start + count - 1))?;
-                let mask = (u64::MAX >> (64 - count)) << start;
-                pending &= !mask;
-            }
-        }
-        ControlFlow::Continue(())
-    }
-
-    fn partition_count(&self) -> u64 {
-        let mut previous = None;
-        let mut count = 0;
-        for (index, &word) in self.words.iter().enumerate() {
-            if word == 0 {
-                continue;
-            }
-            let prefix = (self.base + index as u64 * 64) >> 32;
-            if previous != Some(prefix) {
-                count += 1;
-                previous = Some(prefix);
-            }
-        }
-        count
-    }
-
-    fn start_block(&self) -> u64 {
-        self.base / 64
-    }
-    fn end_block(&self) -> u64 {
-        self.start_block() + self.words.len() as u64
-    }
-
-    fn contains(&self, member: W) -> bool {
-        let Some(offset) = member.to_u64().checked_sub(self.base) else {
-            return false;
-        };
-        let Ok(index) = usize::try_from(offset / 64) else {
-            return false;
-        };
-        self.words
-            .get(index)
-            .is_some_and(|word| word & (1_u64 << (offset % 64)) != 0)
-    }
-
-    fn at_block(&self, block: u64) -> u64 {
-        let Some(offset) = block.checked_sub(self.start_block()) else {
-            return 0;
-        };
-        usize::try_from(offset)
-            .ok()
-            .and_then(|index| self.words.get(index))
-            .copied()
-            .unwrap_or(0)
-    }
-
-    fn iter(&self) -> DenseIter<'_, W> {
-        DenseIter {
-            dense: self,
-            index: 0,
-            pending: 0,
+    // A dominant sorted operand is probed, never promoted; results that are
+    // subsets of the chunked operand stay chunked.
+    match op {
+        Operation::Intersection => Storage::chunked(Chunked::from_ascending(
+            chunks
+                .iter()
+                .filter(|word| sorted.binary_search(word).is_ok())
+                .map(Word::to_u64),
+        )),
+        Operation::Difference if chunked_left => Storage::chunked(Chunked::from_ascending(
+            chunks
+                .iter()
+                .filter(|word| sorted.binary_search(word).is_err())
+                .map(Word::to_u64),
+        )),
+        Operation::Difference => Storage::sorted(
+            sorted
+                .iter()
+                .copied()
+                .filter(|&word| !chunks.contains(word))
+                .collect(),
+        ),
+        Operation::Union | Operation::SymmetricDifference => {
+            let capacity = usize::try_from(sorted.len() as u64 + chunked_len).unwrap_or(0);
+            Storage::sorted(if chunked_left {
+                merge(chunks.iter(), sorted.iter().copied(), op, capacity)
+            } else {
+                merge(sorted.iter().copied(), chunks.iter(), op, capacity)
+            })
         }
     }
+}
 
-    fn bounds(&self) -> Option<(W, W)> {
-        let (low_index, low) = self
-            .words
-            .iter()
-            .enumerate()
-            .find(|(_, word)| **word != 0)?;
-        let (high_index, high) = self
-            .words
-            .iter()
-            .enumerate()
-            .rfind(|(_, word)| **word != 0)?;
-        let low = self.base + low_index as u64 * 64 + u64::from(low.trailing_zeros());
-        let high = self.base + high_index as u64 * 64 + u64::from(63 - high.leading_zeros());
-        Some((
-            W::try_from_u64(low).expect("stored word width"),
-            W::try_from_u64(high).expect("stored word width"),
-        ))
-    }
-
-    fn overlap<'a>(&'a self, other: &'a Self) -> (&'a [u64], &'a [u64]) {
-        let start = self.start_block().max(other.start_block());
-        let end = self.end_block().min(other.end_block());
-        if start >= end {
-            return (&[], &[]);
-        }
-        let count = usize::try_from(end - start).expect("overlap is addressable");
-        let a = usize::try_from(start - self.start_block()).expect("overlap index");
-        let b = usize::try_from(start - other.start_block()).expect("overlap index");
-        (&self.words[a..a + count], &other.words[b..b + count])
-    }
-
-    fn intersection_len(&self, other: &Self) -> u64 {
-        let (left, right) = self.overlap(other);
-        left.iter()
-            .zip(right)
-            .map(|(a, b)| u64::from((a & b).count_ones()))
-            .sum()
-    }
-    fn is_disjoint(&self, other: &Self) -> bool {
-        let (left, right) = self.overlap(other);
-        left.iter().zip(right).all(|(a, b)| a & b == 0)
-    }
-    fn is_subset(&self, other: &Self) -> bool {
-        self.words
-            .iter()
-            .enumerate()
-            .all(|(index, word)| word & !other.at_block(self.start_block() + index as u64) == 0)
-    }
-
-    /// None means the union window exceeds the bounded materialization policy.
-    fn binary(&self, other: &Self, op: Operation, max_dense_bytes: usize) -> Option<Self> {
-        let (start, end) = match op {
-            Operation::Union | Operation::SymmetricDifference => {
-                if self.words.is_empty() {
-                    return Some(other.clone());
-                }
-                if other.words.is_empty() {
-                    return Some(self.clone());
-                }
-                (
-                    self.start_block().min(other.start_block()),
-                    self.end_block().max(other.end_block()),
-                )
-            }
-            Operation::Intersection => (
-                self.start_block().max(other.start_block()),
-                self.end_block().min(other.end_block()),
-            ),
-            Operation::Difference => (self.start_block(), self.end_block()),
-        };
-        if start >= end {
-            return Some(Self::empty());
-        }
-        let bytes = u128::from(end - start) * 8;
-        let limit = max_dense_bytes.min(isize::MAX as usize);
-        if bytes > limit as u128 || bytes > isize::MAX as u128 {
-            return None;
-        }
-        let mut words =
-            Vec::with_capacity(usize::try_from(end - start).expect("bounded output window"));
-        for block in start..end {
-            let a = self.at_block(block);
-            let b = other.at_block(block);
-            words.push(match op {
-                Operation::Union => a | b,
-                Operation::Intersection => a & b,
-                Operation::Difference => a & !b,
-                Operation::SymmetricDifference => a ^ b,
-            });
-        }
-        let Some(first) = words.iter().position(|&word| word != 0) else {
-            return Some(Self::empty());
-        };
-        let last = words
-            .iter()
-            .rposition(|&word| word != 0)
-            .expect("nonempty result");
-        words.truncate(last + 1);
-        if first != 0 {
-            words.drain(..first);
-        }
-        Some(Self {
-            base: (start + first as u64) * 64,
-            words: words.into_boxed_slice(),
-            word: PhantomData,
+fn chunked_roaring<W: Word>(
+    chunks: &Chunked<W>,
+    roaring: &W::Roaring,
+    op: Operation,
+    chunked_left: bool,
+) -> Storage<W> {
+    if W::roaring_len(roaring) <= chunks.cardinality().saturating_mul(4) {
+        let promoted = Chunked::from_ascending(W::roaring_iter(roaring).map(Word::to_u64));
+        Storage::chunked(if chunked_left {
+            chunks.binary(&promoted, op)
+        } else {
+            promoted.binary(chunks, op)
+        })
+    } else {
+        let promoted = W::roaring_from_ascending(chunks.iter());
+        Storage::roaring(if chunked_left {
+            W::roaring_binary(&promoted, roaring, op)
+        } else {
+            W::roaring_binary(roaring, &promoted, op)
         })
     }
 }
-
-#[derive(Clone)]
-struct DenseIter<'a, W: Word> {
-    dense: &'a Dense<W>,
-    index: usize,
-    pending: u64,
-}
-
-impl<W: Word> Iterator for DenseIter<'_, W> {
-    type Item = W;
-    fn next(&mut self) -> Option<W> {
-        loop {
-            if self.pending != 0 {
-                let bit = self.pending.trailing_zeros();
-                self.pending &= self.pending - 1;
-                let code = self.dense.base + (self.index as u64 - 1) * 64 + u64::from(bit);
-                return Some(W::try_from_u64(code).expect("dense members retain their word width"));
-            }
-            self.pending = *self.dense.words.get(self.index)?;
-            self.index += 1;
-        }
-    }
-}
-impl<W: Word> FusedIterator for DenseIter<'_, W> {}
 
 #[derive(Clone)]
 enum WordIter<'a, W: Word> {
     Sorted(core::iter::Copied<core::slice::Iter<'a, W>>),
     Dense(DenseIter<'a, W>),
     Roaring(W::RoaringIter<'a>),
+    Chunked(ChunkedIter<'a, W>),
 }
 
 #[derive(Clone)]
@@ -1479,6 +1623,7 @@ impl<W: Word> Iterator for Words<'_, W> {
             WordIter::Sorted(iter) => iter.next(),
             WordIter::Dense(iter) => iter.next(),
             WordIter::Roaring(iter) => iter.next(),
+            WordIter::Chunked(iter) => iter.next(),
         };
         if next.is_some() {
             self.remaining -= 1;
@@ -1491,6 +1636,18 @@ impl<W: Word> Iterator for Words<'_, W> {
         match usize::try_from(self.remaining) {
             Ok(count) => (count, Some(count)),
             Err(_) => (usize::MAX, None),
+        }
+    }
+    /// Dispatch once per traversal rather than once per element.
+    fn fold<B, F: FnMut(B, W) -> B>(self, init: B, f: F) -> B {
+        if self.remaining == 0 {
+            return init;
+        }
+        match self.inner {
+            WordIter::Sorted(iter) => iter.fold(init, f),
+            WordIter::Dense(iter) => iter.fold(init, f),
+            WordIter::Roaring(iter) => iter.fold(init, f),
+            WordIter::Chunked(iter) => iter.fold(init, f),
         }
     }
 }
@@ -1531,10 +1688,11 @@ mod tests {
                 IntSetPolicy::sorted(),
                 IntSetPolicy::dense(),
                 IntSetPolicy::roaring(),
+                IntSetPolicy::chunked(),
             ] {
                 let storage = Storage::from_sorted(values.clone(), policy).unwrap();
                 let mut events = HashEvents::default();
-                storage.hash(&mut events);
+                storage.hash_into(&mut events);
                 assert_eq!(events.0[0], (64, count));
                 assert_eq!(events.0[1], (8, expected_tag));
             }
@@ -1545,10 +1703,11 @@ mod tests {
                 IntSetPolicy::sorted(),
                 IntSetPolicy::dense(),
                 IntSetPolicy::roaring(),
+                IntSetPolicy::chunked(),
             ] {
                 let storage = Storage::from_sorted(values.clone(), policy).unwrap();
                 let mut events = HashEvents::default();
-                storage.hash(&mut events);
+                storage.hash_into(&mut events);
                 assert_eq!(events.0[0], (64, runs * 5));
                 assert_eq!(events.0[1], (8, expected_tag));
                 let endpoints = if runs == 16 { 32 } else { 85 };
@@ -1567,6 +1726,7 @@ mod tests {
             IntSetPolicy::sorted(),
             IntSetPolicy::dense(),
             IntSetPolicy::roaring(),
+            IntSetPolicy::chunked(),
         ] {
             let storage = Storage::from_sorted(values.clone(), policy).unwrap();
             let mut runs = 0;

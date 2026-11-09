@@ -1,0 +1,301 @@
+{
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\n",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)\n",
+  "checks": [
+    {
+      "name": "profiles",
+      "command": [
+        "./scripts/verify.sh",
+        "profiles"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "profiles.log",
+      "started_utc": "2026-11-09T12:25:38.325432+00:00",
+      "source_digest_before": "c206cdf8a97d568ec8963b19b30ef118984f36021a73c9b34bfdac1bda1b8a40",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:26:29.761845+00:00",
+      "elapsed_seconds": 51.436,
+      "source_digest_after": "1d83cd003a564240218957f6fdf691c8d508a6619b8f378304bd4e5b5a9e7ddd"
+    },
+    {
+      "name": "features",
+      "command": [
+        "./scripts/verify.sh",
+        "features"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "features.log",
+      "started_utc": "2026-11-09T12:26:29.819607+00:00",
+      "source_digest_before": "1d83cd003a564240218957f6fdf691c8d508a6619b8f378304bd4e5b5a9e7ddd",
+      "status": "failed",
+      "exit_code": 2,
+      "finished_utc": "2026-11-09T12:34:55.129430+00:00",
+      "elapsed_seconds": 505.31,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "failure_class": "shell_wrapper_interrupted_by_concurrent_script_edit",
+      "completed_isolated_features": 20,
+      "rust_feature_failures": 0
+    },
+    {
+      "name": "embedded",
+      "command": [
+        "./scripts/verify.sh",
+        "embedded"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "embedded.log",
+      "started_utc": "2026-11-09T12:34:55.151896+00:00",
+      "source_digest_before": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:35:33.554788+00:00",
+      "elapsed_seconds": 38.403,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c"
+    },
+    {
+      "name": "integers",
+      "command": [
+        "./scripts/verify.sh",
+        "integers"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "integers.log",
+      "started_utc": "2026-11-09T12:35:33.572960+00:00",
+      "source_digest_before": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:36:38.109117+00:00",
+      "elapsed_seconds": 64.536,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c"
+    },
+    {
+      "name": "thumbv6m-int-set",
+      "command": [
+        "cargo",
+        "build",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set",
+        "--target",
+        "thumbv6m-none-eabi"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "thumbv6m-int-set.log",
+      "started_utc": "2026-11-09T12:36:38.126535+00:00",
+      "source_digest_before": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:36:38.191116+00:00",
+      "elapsed_seconds": 0.064,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "note": "Cached final-source confirmation; embedded already executed this target."
+    },
+    {
+      "name": "native-isolated-int-set",
+      "command": [
+        "cargo",
+        "build",
+        "--lib",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "int-set"
+      ],
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "native-isolated-int-set.log",
+      "started_utc": "2026-11-09T12:36:38.205139+00:00",
+      "source_digest_before": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:36:41.771235+00:00",
+      "elapsed_seconds": 3.566,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c"
+    },
+    {
+      "name": "features-final",
+      "command": [
+        "./scripts/verify.sh",
+        "features"
+      ],
+      "execution": "Exact script body captured before launch; bash -c body SCRIPT_PATH features preserves $0 and eliminates in-place edit offsets.",
+      "script_sha256": "dea523aab3df49e49ad2b1ac7142b29407714801205c57a34de184cfdc5fa94c",
+      "script_snapshot": "verify-script-tested.sh",
+      "cwd": "/workspace/scratch/50bb50b82113/frost-collections",
+      "log": "features-final.log",
+      "started_utc": "2026-11-09T12:37:28.512155+00:00",
+      "source_digest_before": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+      "status": "passed",
+      "exit_code": 0,
+      "finished_utc": "2026-11-09T12:41:04.269387+00:00",
+      "elapsed_seconds": 215.757,
+      "source_digest_after": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c"
+    }
+  ],
+  "notes": [
+    "The initial profiles pass excluded the integer module. A concurrent chunked.rs unit-test addition did not affect those core/alloc/default configurations.",
+    "The first feature script completed clippy, tests, and rustdoc for all 20 isolated features, then its wrapper exited 2 because editing verify.sh in place moved the active shell file offset. No feature test or Rust diagnostic failed. The original features.log remains unchanged.",
+    "After int-set was tested, four rustdoc comment lines changed in set.rs to document existing temporary allocations. No runtime or test behavior changed. Platform and integer gates used the final source digest.",
+    "The extra thumbv6m command was a 0.064-second cached confirmation after the updated embedded script already built that target."
+  ],
+  "effective_gate_results": {
+    "profiles": {
+      "status": "passed",
+      "attempt": "profiles",
+      "log": "profiles.log"
+    },
+    "features": {
+      "status": "passed",
+      "attempt": "features-final",
+      "log": "features-final.log"
+    },
+    "embedded": {
+      "status": "passed",
+      "attempt": "embedded",
+      "log": "embedded.log"
+    },
+    "integers": {
+      "status": "passed",
+      "attempt": "integers",
+      "log": "integers.log"
+    },
+    "thumbv6m-int-set": {
+      "status": "passed",
+      "attempt": "thumbv6m-int-set",
+      "log": "thumbv6m-int-set.log"
+    },
+    "native-isolated-int-set": {
+      "status": "passed",
+      "attempt": "native-isolated-int-set",
+      "log": "native-isolated-int-set.log"
+    }
+  },
+  "overall_final_status": "passed",
+  "isolated_features": [
+    {
+      "name": "arbitrary-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "arc-swap-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "arrayvec-0_7",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "borsh-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "crossbeam-skiplist-0_1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "dashmap-6",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "fixedbitset-0_5",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "fst-0_4",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "hashbrown-0_17",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "imbl-7",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "indexmap-2",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "int-set",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "phf-0_14",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "rayon-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "roaring-0_12",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "scc-3",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "schemars-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "serde-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "slotmap-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    },
+    {
+      "name": "smallvec-1",
+      "clippy": "passed",
+      "tests": "passed",
+      "rustdoc": "passed"
+    }
+  ],
+  "final_source_digest": "a4187fe56fc7cdd784dd1ad28a468481329c0eba1f569578a2be7c11af86bc5c",
+  "consolidated_utc": "2026-11-09T12:41:35.170882+00:00",
+  "integer_test_counts_file": "integer-test-counts.json"
+}

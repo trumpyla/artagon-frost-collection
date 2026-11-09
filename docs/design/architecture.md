@@ -28,6 +28,11 @@ composition to mutable/frozen families and compatible native backends, with
 separate borrowed, encoded-value, and lending-stream boundaries. It is a design,
 not an implemented change to the current API or kernels.
 
+The [collection algebra research synthesis](collection-algebra.md) extends the
+proposed semantic scope to maps, sequences, bags, multimaps, bimaps, and prefix
+indexes. These are future contracts within the current single-library boundary;
+the supplied reports' workspace split and API sketches are not implemented.
+
 The subsequent [performance review](../reviews/performance-review.md) keeps these public
 boundaries. It adds shape-aware ordered kernels and simpler dense word loops,
 reuses adaptive lookup results and owned parallel buffers, and measures their
@@ -295,13 +300,29 @@ Sources: [adaptive architecture](../../src/adaptive/mod.rs),
 The explicit `int-set` feature adds the typed integer profile in
 [`frost::integer`](../../src/integer/mod.rs). `FrozenIntSet<K>` preserves the
 logical key domain while `IntKey::Word` selects sealed `u32` or `u64` machinery.
-Its private candidates are sorted codes, aligned dense windows, and width-specific
-Roaring containers. The feature enables this complete fixed profile with `alloc`;
-`std` optionally enables the dependency's supported runtime CPU dispatch.
-Other dependency features do not add candidates. Ordinary `freeze()` pairings
-retain their documented meaning. See [integer design](integer-sets.md) for
-codec laws, retained representation limits, bounded planning, and encoded bulk
-operations. Result selection preserves compact storage across mixed operations.
+Its fixed private candidates are sorted codes, aligned dense windows,
+width-specific Roaring containers, and explicitly selected shared Chunked
+storage. Automatic construction chooses among Sorted, Dense, and Roaring using
+the retained memory score. `IntSetPolicy::chunked()` selects the fourth candidate.
+The feature enables the complete profile with `alloc`; `std` optionally enables
+the dependency's supported runtime CPU dispatch. Other dependency features do
+not add candidates, and ordinary `freeze()` pairings retain their meaning.
+
+All integer representations share an immutable root, so cloning increments one
+reference count. Equal-result algebra can reuse an eligible operand allocation.
+Chunked results additionally share untouched 2^16-code containers; changed roots
+copy a flat sorted directory, not a logarithmic tree path. `Shared` selects Arc
+on pointer-atomic targets and Rc otherwise without feature-dependent switching
+or manual auto-trait implementations. The empty value still allocates its root.
+
+The merged public API retains `IntSetLimits`, `limits()`, and all four
+`*_with_policy` operations. Commutative algebra takes the smaller limits;
+difference keeps left limits. Identity reuse must satisfy those limits and any
+forced result representation. Canonical Hash events remain independent of
+physical storage and sharing. See [integer design](integer-sets.md),
+[integration review](../reviews/revision2-integration-review.md), and
+[current validation](../revision2-integration-validation.md). Borrowed expression
+views and persistent tree directories remain proposed extensions.
 
 Native optional backends are reexported from `frost::backend` so specialized
 algorithms retain their full native APIs. Frost implements only capabilities

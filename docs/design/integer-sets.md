@@ -9,6 +9,9 @@ Enable `int-set` to obtain the complete profile with `no_std + alloc`. The
 optional `std` feature forwards Roaring's std support and runtime CPU dispatch.
 The native Roaring reexports and adapters remain available with either
 `int-set` or `roaring-0_12`; the latter retains its existing std requirement.
+Immutable storage uses `Arc` where pointer-width atomics exist and `Rc`
+otherwise, so the allocating profile remains available on both target kinds.
+Normal pointer auto traits apply; there are no manual Send/Sync implementations.
 Enabling another feature does not add representations to this profile. The ordinary `MutableOrderedSet::freeze()`
 pairing remains `FrozenOrderedSet`. No new mutable integer family or fictitious
 mutable wrapper is introduced.
@@ -40,11 +43,17 @@ input staging vector.
 
 | Logical type | Word | Encoding |
 | --- | --- | --- |
+| u8 / u16 | u32 | Widen value; decoding checks the original width |
+| i8 / i16 | u32 | Flip the sign bit at the original width, then widen; checked decoding |
 | u32 | u32 | Identity |
 | i32 | u32 | Same-width bit pattern XOR `1 << 31` |
 | u64 | u64 | Identity |
 | i64 | u64 | Same-width bit pattern XOR `1 << 63` |
-| NonZeroU32 / NonZeroU64 | Corresponding unsigned word | Extract value; checked nonzero decoding |
+| usize | u64 | Widen value; decoding checks the target's address width |
+| isize | u64 | Sign-extend through i64 and flip bit 63; checked target-width decoding |
+| char | u32 | Unicode scalar value; reject surrogate and out-of-range codes |
+| NonZeroU8 / NonZeroU16 / NonZeroU32 | u32 | Extract value; checked width and nonzero decoding |
+| NonZeroU64 | u64 | Extract value; checked nonzero decoding |
 | Application newtype | Associated u32 or u64 | Application-defined canonical codec |
 
 The signed mapping is a bijection that preserves numerical ordering. It maps
@@ -132,16 +141,18 @@ explicitly scans the codes to report runs and upper-32-bit partitions.
 
 ## Fixed representation candidates and planning
 
-| Word | Sorted | Dense | Roaring |
-| --- | --- | --- | --- |
-| u32 | Ascending boxed u32 codes | Aligned local window of u64 bitmap words | RoaringBitmap |
-| u64 | Ascending boxed u64 codes | Aligned local window of u64 bitmap words | RoaringTreemap |
+| Word | Sorted | Dense | Roaring | Chunked |
+| --- | --- | --- | --- | --- |
+| u32 | Ascending boxed u32 codes | Aligned local window of u64 bitmap words | RoaringBitmap | Shared containers indexed by the upper 16 bits |
+| u64 | Ascending boxed u64 codes | Aligned local window of u64 bitmap words | RoaringTreemap | Shared containers indexed by the upper 48 bits |
 
-The planner provides `auto`, `sorted`, `dense`, and `roaring` policies. Auto is
-a deterministic memory-oriented heuristic, not a learned or proven speed
-selector. Explicit selections make benchmark and application decisions
-reviewable. The default limits are 8 MiB of dense payload and 4,096 distinct
-upper-32-bit Roaring partitions. Builders can change those limits explicitly.
+The planner provides `auto`, `sorted`, `dense`, `roaring`, and `chunked` policies.
+Automatic construction chooses among Sorted, Dense, and Roaring; Chunked requires
+explicit selection. Auto is a deterministic memory-oriented heuristic, not a
+learned or proven speed selector. Explicit selections make application and
+benchmark decisions reviewable. Default limits are 8 MiB of dense payload and
+4,096 distinct upper-32-bit Roaring partitions. Builders can change those limits.
+Neither limit caps Chunked storage or its directory.
 
 Dense payload is computed from the actual aligned window with wide arithmetic
 before allocating. Its byte limit is a hard payload bound. Roaring's partition
@@ -163,6 +174,10 @@ more complicated representation, including for `0..1000`. It is not a measured
 CPU crossover or a universal throughput claim. Explicit sorted/dense policies avoid the
 Roaring statistics pass; explicit Roaring checks its partition cap. The dense
 payload must also fit the target's allocation-size bound before allocation.
+This integration retains the reviewed score instead of revision 2's unconditional
+4 KiB Dense floor, so a tiny sparse set is not promoted solely because its window
+fits that floor. The score does not include the shared-root allocation or predict
+the full lifecycle cost of reference counting.
 
 The basic payload estimates `4*n`, `8*n`, and `8*ceil(W/64)` explain why local
 windows help. The often-quoted 3.125%/1.5625% break-even densities ignore headers,
@@ -192,9 +207,11 @@ complement relative to an explicit valid universe is `universe.difference(&set)`
 ### Dispatch and result shape
 
 Same-backend Roaring pairs use native operations, Dense pairs use aligned word
-kernels, and Sorted pairs use encoded merge/seek algorithms. Scalar counts and
-materialized algebra do not call the logical codec for every member. Decoding
-happens when a caller requests values.
+kernels, Sorted pairs use encoded merge/seek algorithms, and Chunked pairs merge
+sorted prefixes and combine private containers. Shared container identity gives
+union/intersection reuse and difference/XOR omission at the same prefix. Scalar
+counts and materialized algebra do not call the logical codec for every member.
+Decoding happens when a caller requests values.
 
 | Operands / shape | Materialized result path |
 | --- | --- |
@@ -202,9 +219,13 @@ happens when a caller requests values.
 | Dense / Dense with a legal result window | Aligned word operation; trim empty edge words and retain a competitive Dense result |
 | Dense with a small update operand | Clone or extend the bitmap and update bits; derive cardinality from changed bits |
 | Distant Dense windows | Convert through bounded little-endian byte chunks and combine native Roaring values |
-| Roaring with Sorted additions/removals | At most 64 Sorted members update a native clone; bulk inputs use sorted native construction and container algebra |
+| Roaring with Sorted additions/removals | Small updates can modify a native clone; bulk or scattered shapes select native algebra or encoded merging |
 | Intersection involving Sorted | Choose which side to traverse using the skew-aware work estimate, then filter with a typed membership loop |
-| Dense / Roaring intersection | Filter a sufficiently small Roaring operand or promote Dense and run native operations |
+| Dense / Roaring intersection | Select encoded probing or bounded Dense promotion using the structural work estimate |
+| Chunked / Chunked | Merge prefix directories; share untouched or identical containers; combine changed containers |
+| Chunked / Sorted | Promote a proportionate Sorted side to chunks; probe or merge when Sorted dominates |
+| Chunked / Dense | Convert bitmap words directly into chunk containers, then merge |
+| Chunked / Roaring | Promote Roaring into chunks when proportionate; otherwise promote the chunked side to native Roaring |
 
 These paths avoid enumerating a large compressed result merely because operands
 use different representations. Auto result selection preserves a legal Dense
@@ -214,8 +235,10 @@ recover a modest estimated Dense saving. Tiny Dense updates need not rescore
 every run. Consequently, Auto is deterministic
 for a given input path, but is not a globally minimal-memory canonical format:
 construction history and operand representations can affect the output. Even
-`with_policy(IntSetPolicy::auto())` may retain such a Dense result. Contents,
-ordering, equality and hashing do not depend on that choice.
+`with_policy(IntSetPolicy::auto())` may retain such a Dense result. An existing
+Chunked operand/result can also remain Chunked under Auto; automatic construction
+from input codes does not select it. Contents, ordering, equality and hashing do
+not depend on that choice.
 
 For sorted/compressed intersection counts, materialized intersections and
 disjointness, direction accounts
@@ -224,13 +247,15 @@ compressed members, scan Sorted when `n <= m * bit_width(n) + scan_words`, using
 u128 for the comparison. `scan_words` is the Dense buffer length or zero for
 Roaring. This retains compressed-side probing for extreme cardinality skew.
 
-Dense/Roaring intersection counts instead consider byte promotion when the Dense
-byte count is smaller than the smaller operand's cardinality. This heuristic
-compares units of structural work, not measured CPU cycles. The path allocates
-temporary Roaring and byte buffers but does not materialize the intersection.
-Union, difference and XOR counts can use it through their intersection count.
-Short-circuit disjointness continues to probe. The benchmark includes conversion
-and destruction, so its cost is not hidden by timing only the native kernel.
+Dense/Roaring scalar kernels compare three structural work estimates: promotion
+costs `2 * dense_words`, scanning Dense costs `dense_words + 4 * dense_members`,
+and scanning Roaring costs `5 * roaring_members`. Arithmetic saturates when
+forming these estimates. These are heuristic work units, not measured CPU
+cycles. Promotion allocates temporary Roaring and byte buffers without
+materializing the requested result. Count, disjointness, and some subset paths
+can use it. Chunked/Dense predicates may likewise construct temporary chunks.
+A predicate returning a scalar is not a promise of allocation-free execution;
+benchmarks must include conversion and destruction.
 
 Dense promotion never reinterprets Rust memory: it uses explicit little-endian
 bytes, splits at upper-32-bit boundaries, and limits each temporary byte chunk
@@ -266,23 +291,62 @@ Roaring result with too many partitions returns `IntSetError`. Empty, identical,
 and disjoint operands follow the same policy rules; shortcuts cannot bypass a
 forced result type or a stricter limit. Auto always has Sorted as a fallback
 for representable cardinality. These are representation limits, **not total
-memory limits**: Sorted buffers, input staging, temporary conversions and
-allocator overhead can exceed them, and allocation failure follows ordinary
+memory limits**: Sorted and Chunked storage, input staging, temporary conversions,
+retained versions, and allocator overhead can exceed them. Allocation failure follows ordinary
 Rust behavior rather than returning a policy error.
 
-`with_policy(policy)` rebuilds the same codes through representation-aware
-conversion and replaces retained limits. It may allocate or enumerate codes;
-it is not a cheap view. `contiguous_payload_bytes()` reports exact Sorted or
-Dense member-buffer bytes and returns `None` for noncontiguous Roaring storage.
-It excludes wrapper, allocator and temporary memory. Roaring serialized size is
-only a separate wire-size proxy and must not be reported as resident allocation.
+`with_policy(policy)` applies representation-aware conversion and replaces
+retained limits. An already satisfied explicit policy shares the current root.
+Other conversions may allocate or enumerate codes; this is not a lazy view.
+`policy()` returns an Auto policy containing the retained limits, not the original
+construction request. `contiguous_payload_bytes()` reports exact Sorted or Dense
+member-buffer bytes and returns `None` for Roaring and Chunked.
+
+`payload_bytes()` extends diagnostics to all candidates. Sorted/Dense buffers
+are exact, Chunked counts payloads and directory entries, and Roaring uses its
+container statistics plus index-overhead estimates. These diagnostics exclude
+storage/reference headers, allocator overhead, temporary candidates, and memory
+held only by other versions. They are not resident-memory measurements or
+allocator bounds. Serialized size remains a separate wire-size metric.
+
+### Shared ownership and changed-version costs
+
+Every set owns a shared immutable storage root. `clone()` increments one
+reference count in O(1), and `shares_storage_with()` exposes root identity.
+An empty `new()` allocates that root even though it has no member buffer. Roots
+and containers use Arc on pointer-atomic targets and Rc otherwise. The type's
+normal auto traits follow that choice and the logical key marker.
+
+Algebra reuses an equal operand's allocation only if that operand satisfies the
+result representation and limits. If both operands equal the result, either
+eligible operand can be used. Discovering equality can still require a pair
+kernel and temporary result before reuse; O(1) cloning is not an O(1) guarantee
+for every no-op algebra call. Tight limits or a forced representation may require
+conversion even when the mathematical answer equals an input.
+
+Chunked storage splits a code into `code >> 16` and a low `u16`. Its flat directory
+holds ascending prefix keys and corresponding shared containers. An Array holds
+at most 4,096 sorted low parts; Bitmap holds 1,024 u64 words and a count; Full
+represents all 65,536 low parts without a member payload. Empty chunks are omitted.
+There is no run-container variant or persistent radix/tree directory in this
+implementation. `chunk_count()` reports directory entries; `shared_chunks(other)`
+counts matching-prefix containers with the same allocation.
+
+A changed Chunked result copies directory metadata and increments references to
+reused containers. With C directory entries this retains an O(C) directory cost,
+even when one small chunk changes. Old versions keep their reachable allocations
+alive. Dropping the final owner can release all newly unreachable containers and
+is not a constant-time operation. These costs and candidate limits distinguish
+the current mechanism from the future tree-directory proposal in
+[persistent storage](persistent-integer-storage.md).
 
 ### Equality, ordering and hashing
 
-Equality first checks cardinality and bounds, then uses native Roaring equality
-or contiguous array equality for matching representations. Mixed representations
-compare encoded members. Ordered comparison remains lexicographic comparison of
-canonical ascending words.
+Shared-root equality and ordering return immediately. Otherwise equality checks
+cardinality and bounds, then uses matching-representation comparisons, including
+Chunked prefix/container comparisons with shared-container shortcuts. Mixed
+representations compare logical encoded membership. Ordered comparison remains
+lexicographic comparison of canonical ascending words.
 
 Hashing selects its event stream from logical content, independently of the
 physical representation. It first hashes the u64 cardinality. Empty sets stop
@@ -298,16 +362,17 @@ member loop instead. The scout stops early and bounds stack storage; finding the
 first 16 runs can still traverse a long prefix, so it is not constant-time work.
 No per-member storage enum dispatch or heap allocation is needed by Hash.
 
-Sorted codes, Dense word scans and native Roaring range iterators produce the
-same maximal runs, including across word, 16-bit container and upper-32-bit
+Sorted codes, Dense word scans, native Roaring ranges, and Chunked container
+visitors produce the same maximal runs, including across word, 16-bit container and upper-32-bit
 boundaries. Adjacency uses checked arithmetic at u64::MAX. Both values and the
 sequence of Hasher calls match for equal sets, regardless of representation,
 policy or construction history. Cardinality and a content-selected format tag
 keep the variable-length streams distinct; endpoint hashing never includes
 physical container boundaries.
 
-This format changes from the earlier per-member implementation; Rust Hash output
-is not a persistent serialization contract. Roaring 0.12 has native Eq but no
+The preceding output-policy revision changed the original per-member format.
+This integration preserves its canonical events and extends them to Chunked;
+Rust Hash output is not a persistent serialization contract. Roaring 0.12 has native Eq but no
 native Hash to delegate. A first implementation hashed every run and regressed
 sparse/alternating workloads because isolated members required two endpoint
 writes each. The bounded scout and member fallback address that measured cost.
@@ -315,8 +380,8 @@ Few-run, many-run, alternating, local-sparse and scattered-prefix cases remain
 in the comparative harness; no universal Hash throughput advantage is claimed.
 
 The codec laws make these encoded operations correspond to the logical domain.
-Cloning clones storage; this profile does not promise cheap shared ownership.
-A separately named shared profile would need its own contract.
+Root and container identity accelerate eligible cases without participating in
+logical equality, ordering, or the Hasher event stream.
 
 ## SIMD and deferred additions
 
@@ -336,7 +401,9 @@ Offset-narrowed u64 storage, C-backed CRoaring, alternate codecs, extra block-si
 parameters, rank/select APIs, serializers, and a mutable integer family are
 deferred. They are not needed to establish this profile's width, codec, planning,
 and mixed-algebra contracts. See the [adversarial review](../reviews/integer-design-audit.md)
-for the original decisions, the [output review](../reviews/integer-output-review.md)
-for the corrections, and [current validation](../integer-output-validation.md)
-for executed evidence. The [roadmap](integer-roadmap.md) records the proposed
+for the original decisions and the [output review](../reviews/integer-output-review.md)
+for the preceding corrections. The
+[integration review](../reviews/revision2-integration-review.md) and
+[current validation](../revision2-integration-validation.md) cover this merged
+source. Earlier validation and benchmark reports remain historical evidence. The [roadmap](integer-roadmap.md) records the proposed
 future families and their measurement and verification gates.

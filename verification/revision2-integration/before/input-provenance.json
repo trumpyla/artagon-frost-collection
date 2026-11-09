@@ -1,0 +1,22 @@
+{
+  "full_diff_applies_in_reverse_to_revision2": true,
+  "code_diff_applies_in_reverse_to_revision2": true,
+  "code_diff_is_exact_subset": true,
+  "full_diff_paths": 29,
+  "code_diff_paths": 12,
+  "reviewed_main_accepts_full_diff": false,
+  "reconstructed_parent": "/workspace/scratch/50bb50b82113/environment-validation/revision2-parent",
+  "inputs": {
+    "frost-revision2.zip": "f1fbced6fb17f6d588d769eaec46a0e726c10360c48a9687a5e4ef53a77c789c",
+    "integer-revision2.diff": "7270777c92254de534b148b4d4a0a1735b72d2922212480647862031f4e51e38",
+    "frost-collections-reviewed(1).zip": "c0de570969986ccba03d90f2bea70f57cc457050f18bd1fb110392329f8b7ea6",
+    "integer-revision2-code.diff": "a297348991ed80e5c7e166f1a9c9169b8237ad2770fa30792885a1511056124f"
+  },
+  "reconstructed_parent_matches_embedded_baseline": [
+    "src/integer/storage.rs",
+    "src/integer/set.rs",
+    "src/integer/key.rs",
+    "src/integer/policy.rs",
+    "Cargo.toml"
+  ]
+}

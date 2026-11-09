@@ -1,5 +1,8 @@
 # Integer-profile benchmark evidence
 
+> Historical evidence for the source revision named below. The current merged
+> implementation is documented in [revision-2 integration validation](revision2-integration-validation.md).
+
 > Historical results before the output-policy corrections. See the current
 > [output benchmark comparison](integer-output-benchmarks.md) for new measurements.
 

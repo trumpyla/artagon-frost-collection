@@ -11,12 +11,15 @@ Start with the [crate README](../README.md) for API examples and features.
 | [Typed integer profile](design/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra |
 | [Integer adversarial review](reviews/integer-design-audit.md) | Design risks, corrections, and scope decisions |
 | [Integer output review](reviews/integer-output-review.md) | Disposition of the supplied follow-up findings and operation contracts |
-| [Current validation](integer-output-validation.md) | Executed output-policy, feature, concurrency, and verification gates |
-| [Current integer benchmarks](integer-output-benchmarks.md) | Same-harness baseline/candidate comparisons and CPU target controls |
+| [Revision 2 integration review](reviews/revision2-integration-review.md) | Selective merge, corrected regressions, sharing contracts, and retained main APIs |
+| [Integration validation](revision2-integration-validation.md) | Commands and results for the merged source before GitHub import, with remaining evidence limits |
+| [GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md) | Later PR checkout and build-tool adaptation, recorded separately from original integration evidence |
+| [Prior output validation](integer-output-validation.md) | Historical output-policy, feature, concurrency, and verification gates |
+| [Prior integer benchmarks](integer-output-benchmarks.md) | Historical same-harness comparisons and CPU target controls; not merged-source measurements |
 | [Integer roadmap](design/integer-roadmap.md) | Proposed future families and their acceptance criteria |
 | [Lazy views research review](reviews/lazy-views-adversarial-review.md) | Adversarial findings, corrected source claims, and design decisions |
 | [Borrowed integer expressions](design/integer-views.md) | Proposed IntSetExpr API, bounds, cursors, evaluation, and admission tests |
-| [Persistent integer storage](design/persistent-integer-storage.md) | Separate proposed ownership profile, sharing costs, and snapshot invariants |
+| [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family |
 | [Search-source audit](reviews/lazy-views-source-audit.md) | Versioned Rust/FST/Lucene/Tantivy contracts and checked issue/PR statuses |
 | [Views performance audit](reviews/lazy-views-performance-audit.md) | Paper evidence, experiment limits, and future benchmark design |
 | [Expression bounds model](../verification/integer-views/README.md) | Executed finite mathematics checks; no production views implementation |
@@ -24,6 +27,8 @@ Start with the [crate README](../README.md) for API examples and features.
 | [Initial integer benchmarks](integer-benchmarks.md) | Historical representation tradeoffs and mixed-probe improvement |
 | [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes |
 | [General set algebra](design/set-algebra.md) | Proposed typed views for all set categories, representative semantics, execution, and ownership |
+| [Collection algebra research](design/collection-algebra.md) | Frost1/Frost2 synthesis for maps, sequences, bags, multimaps, bimaps, and prefix indexes; proposed contracts within the single library |
+| [Attachment integration](../verification/attachment-integration-2026-11-09/README.md) | Input digests, conflict resolutions, and checks run on this checkout |
 | [Generic algebra review](reviews/generic-set-algebra-review.md) | Coverage gaps, research iteration, baseline checks, and finite semantic evidence |
 | [Generic algebra model](../verification/set-algebra/README.md) | Reproduced representative/order counterexamples; no production view implementation |
 | [Maintainer guide](maintainers/guide.md) | Code map, invariants, and change-specific checks |

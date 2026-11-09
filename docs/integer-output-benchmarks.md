@@ -1,5 +1,8 @@
 # Integer output benchmark comparison
 
+> Historical evidence for the source revision named below. The current merged
+> implementation is documented in [revision-2 integration validation](revision2-integration-validation.md).
+
 The final implementation preserves compact output in the reviewed workloads and
 removes large per-member costs from equality and long-run hashing. The retained
 measurements also show regressions in balanced Sorted-minus-Roaring difference,

@@ -1,0 +1,2 @@
+"bash" scripts/check-doc-links.sh
+Verified 485 repository-local documentation links.

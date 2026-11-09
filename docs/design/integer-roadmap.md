@@ -3,12 +3,15 @@
 ## Status and design boundary
 
 This document evaluates structures proposed after the first `FrozenIntSet`
-implementation. All names below are provisional, and none of these additional
-families is implemented by the output-selection correction. The current profile
-still has its documented fixed Sorted, Dense, and Roaring candidates. See the
-[output review](../reviews/integer-output-review.md) for the implemented
-revision's motivation and contracts, and the
-[integer design](integer-sets.md) for the existing key/word boundary.
+implementation. Additional family names below remain provisional. The integrated
+profile now has fixed Sorted, Dense, Roaring, and explicit Chunked candidates,
+with shared immutable roots and shared Chunked payloads. Flat chunk-directory
+updates still copy directory metadata; persistent tree paths and a separate
+`PersistentIntSet` are not implemented. Generic and integer lazy views remain
+proposals. See the [integration review](../reviews/revision2-integration-review.md),
+[current validation](../revision2-integration-validation.md), and
+[integer design](integer-sets.md) for the current contracts. Earlier research and
+benchmark references are historical inputs, not merged-source measurements.
 
 Adding structures should solve a measured application problem. Improving one
 membership microbenchmark is not enough if construction, iteration, output
@@ -66,7 +69,8 @@ Rust profile's storage alternatives.
 
 An arena does not solve small-update persistence. Producing a different logical
 set normally means allocating another arena and copying unaffected payloads.
-Structural sharing requires a separate chunked ownership strategy.
+The current explicit Chunked candidate provides payload sharing through a
+separate ownership strategy; the proposed flat arena would need its own answer.
 
 ### Admission measurements
 
@@ -153,8 +157,8 @@ validity when they only select existing codes.
 
 `FrozenRangeSet<K>` could be an explicit family, or a range-aware integer profile
 could have a fixed four-candidate set from its introduction. Adding a feature
-that changes the already-available `FrozenIntSet<K>` from three candidates to
-four would violate the current profile rule. A versioned design change or a
+that adds a fifth candidate to the already-available four-candidate
+`FrozenIntSet<K>` would violate the current profile rule. A versioned design change or a
 separate profile should make that decision visible.
 
 Alternating members have one range per member and can make endpoints less
@@ -255,18 +259,18 @@ see the [integer expression design](integer-views.md) and
 
 ### Workload fit
 
-For many readers and repeated small logical changes, structural sharing can
-reduce repeated copying. A proposed `PersistentIntSet<K>` could divide encoded
-space into immutable chunks and publish a root referencing those chunks.
-Updating one region copies its chunk and the index path while retaining the
-other chunks. This is a different ownership contract from `FrozenIntSet`, whose
-clone can copy its storage.
+For many readers and repeated small logical changes, the implemented
+`FrozenIntSet` already shares immutable roots, and explicit Chunked storage shares
+unaffected Array/Bitmap/Full payloads. A changed Chunked result copies its flat
+directory and increments references to reused containers. With C containers,
+that directory work remains O(C), even when only one payload changes.
 
-An `Arc` around a complete ordinary set gives cheap snapshot sharing but still
-requires copying its payload to change a member. A flat chunk directory also
-copies the entire directory when changed. A persistent tree can avoid that cost
-through path copying, but adds nodes, indirection, and implementation complexity.
-The number of sparse u64 prefixes is an important adversarial workload for both.
+A future persistent directory could copy only changed tree/radix paths and reuse
+whole subtrees. A separately named `PersistentIntSet<K>` needs a useful ownership,
+update, or limit contract beyond the sharing now available in `FrozenIntSet`.
+It would add nodes, indirection, and implementation complexity. The number of
+sparse u64 prefixes is an important adversarial workload for both designs.
+Wrapping a whole set in another Arc does not remove these derivation costs.
 
 ### Required invariants
 
@@ -292,8 +296,8 @@ universal memory cap.
 
 Measure update sizes, batch sizes, directory/chunk sizes, reader counts, write
 contention, retained versions, clone/drop costs, allocation count, and peak
-memory. Compare the corrected dense small-update path and native Roaring before
-adding a tree. If updates are rare or replace most members, sharing may lose.
+memory. Compare the current flat Chunked candidate, corrected Dense small-update
+path, and native Roaring before adding a tree. If updates are rare or replace most members, sharing may lose.
 
 Test old-version immutability, disjoint and conflicting updates, retry behavior,
 correct reclamation/drop counts, and logical linearization at publication.
@@ -367,7 +371,7 @@ invalid codes, duplicate entries, and representative preservation.
 | Work | Application signal | Gate before adding public API |
 | --- | --- | --- |
 | Current output policy, equality/hash, sorted builders, alloc support | Compact collections inflate or exceed intended candidate limits after ordinary operations | Regressions, matched native controls, isolated feature builds, and update-chain measurements |
-| Persistent chunks | Frequent small updates with concurrent readers | Demonstrated reduction in update/retention cost under realistic version lifetimes |
+| Persistent directory / stronger sharing family | Flat Chunked directory copying dominates frequent small updates | Reduction in complete update/retention cost versus the implemented flat candidate, including reference traffic and final release |
 | Rank-indexed map | Integer keys are a large share of frozen map memory | Whole-map memory and lookup win including rank metadata and miss handling |
 | Static/borrowed profile | Fixed shipped data and startup allocation dominate | Checked load/validation contract and reproducible end-to-end startup improvement |
 | Range profile | Long runs remain costly after native run optimization | Wins across range algebra plus bounded behavior under fragmentation |
