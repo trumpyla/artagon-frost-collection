@@ -82,6 +82,8 @@ profiles:
 
 # Keep metadata discovery in recipes: make help/-n never executes Cargo.
 # GNU Make 3.81 ignores .SHELLFLAGS, so compound recipes set strict options too.
+# Native Windows jq emits CRLF. Strip only each record's trailing carriage return
+# before passing feature names, example names, or package paths to Cargo.
 features:
 	@set -euo pipefail; \
 	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
@@ -92,6 +94,7 @@ features:
 	   . != "std" and . != "advanced" and . != "concurrent" and . != "frameworks")) | \
 	   if length == 0 then error("no isolated features found") else .[] end'); \
 	while IFS= read -r feature; do \
+	  feature=$${feature%$$'\r'}; \
 	  printf '\nChecking isolated feature: %s\n' "$$feature"; \
 	  "$(CARGO)" clippy --lib --no-default-features --features "$$feature" --locked -- -D warnings; \
 	  "$(CARGO)" test --no-default-features --features "$$feature" --locked; \
@@ -108,6 +111,7 @@ examples:
 	   [.targets[] | select(.kind | index("example")) | .name] | \
 	   if length == 0 then error("no examples found") else .[] end'); \
 	while IFS= read -r example; do \
+	  example=$${example%$$'\r'}; \
 	  "$(CARGO)" run --example "$$example" --all-features --locked; \
 	done <<< "$$examples"
 
@@ -124,6 +128,7 @@ package:
 	   [.packages[] | select(.name == "frost-collections")] | \
 	   if length != 1 then error("expected one Frost package") else .[0] end | \
 	   [$$target, "package", (.name + "-" + .version), "Cargo.toml"] | join("/")'); \
+	manifest=$${manifest%$$'\r'}; \
 	"$(CARGO)" package --locked --all-features --allow-dirty; \
 	"$(CARGO)" test --manifest-path "$$manifest" --all-features --locked; \
 	"$(CARGO)" test --manifest-path "$$manifest" --examples --all-features --locked

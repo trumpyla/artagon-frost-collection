@@ -40,6 +40,21 @@ run_make() {
     "SHELL=$frost_bash" "CARGO=$frost_cargo" "$@"
 }
 
+use_crlf_jq() {
+  frost_jq="$BATS_TEST_TMPDIR/jq stub"
+  export FROST_TEST_JQ_REAL
+  FROST_TEST_JQ_REAL=$(command -v jq)
+  cat >"$frost_jq" <<'STUB'
+#!/usr/bin/env bash
+set -euo pipefail
+lines=$("$FROST_TEST_JQ_REAL" "$@")
+while IFS= read -r line; do
+  printf '%s\r\n' "$line"
+done <<< "$lines"
+STUB
+  chmod +x "$frost_jq"
+}
+
 @test "help and dry runs do not execute Cargo or parse metadata" {
   run_make help
   [ "$status" -eq 0 ]
@@ -113,4 +128,33 @@ run_make() {
   [ "$status" -ne 0 ]
   [ "$(wc -l <"$FROST_TEST_LOG")" -eq 2 ]
   [[ "$(<"$FROST_TEST_LOG")" != *'CALL <test>'* ]]
+}
+
+@test "native Windows jq line endings do not enter feature arguments" {
+  use_crlf_jq
+  run_make features "JQ=$frost_jq"
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 7 ]
+  [[ "$(<"$FROST_TEST_LOG")" != *$'\r'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<--features> <alpha-feature>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<--features> <zeta-feature>'* ]]
+}
+
+@test "native Windows jq line endings do not enter example names" {
+  use_crlf_jq
+  run_make examples "JQ=$frost_jq"
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+  [[ "$(<"$FROST_TEST_LOG")" != *$'\r'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<--example> <first>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<--example> <second>'* ]]
+}
+
+@test "native Windows jq line endings do not enter package manifest paths" {
+  use_crlf_jq
+  run_make package "JQ=$frost_jq"
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 4 ]
+  [[ "$(<"$FROST_TEST_LOG")" != *$'\r'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.toml>'* ]]
 }

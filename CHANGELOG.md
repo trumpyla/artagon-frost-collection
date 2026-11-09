@@ -2,6 +2,8 @@
 
 ## Unreleased — Make-based development tasks
 
+- Normalize native Windows `jq` CRLF output before passing discovered feature
+  names, example names, and package paths to Cargo; cover all three with regressions.
 - Replace verification dispatchers with GNU Make targets for builds, checks,
   profiles, feature matrices, packaging, ownership diagnostics, and formal tools.
 - Replace the Python documentation-link checker with a Bash 3.2+ helper and
