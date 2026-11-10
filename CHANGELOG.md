@@ -16,6 +16,11 @@ stream changes. Measurements and their limits are in
   bounds span more partitions than the limit. The planner survey stops once the
   Roaring score can no longer beat the selected candidate; the selected backend
   is unchanged.
+- Skip the sort, deduplication, and second validation pass for input that
+  arrives strictly ascending; the first pass makes the same order comparison at
+  the same index. Sort unsorted input through a temporary bitmap when its span
+  is no larger than the staged codes. Error variants and indices are unchanged
+  on every path.
 - Cache the Roaring partition count, container count, and memory score with the
   immutable native value. Policy eligibility checks on identity, empty, and
   equal-result shortcuts, result planning, and the copy heuristic no longer

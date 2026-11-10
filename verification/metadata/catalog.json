@@ -7589,6 +7589,48 @@
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-033",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:construction_normalizes_every_arrival_order_identically",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: construction normalizes every arrival order identically",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (feature = \"int-set\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-034",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:construction_reports_contract_errors_on_every_path",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: construction reports contract errors on every path",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (feature = \"int-set\")",
+      "cost": "unreviewed"
     }
   ]
 }

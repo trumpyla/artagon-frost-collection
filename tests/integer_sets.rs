@@ -539,6 +539,258 @@ impl IntKey for Unstable {
     }
 }
 
+/// A codec with one fault of each kind at a fixed code, for comparing error
+/// reporting across construction paths. Code 13 does not decode, code 21
+/// decodes to a key with another code, and the keys for codes 40 and 41
+/// compare in the opposite order to their codes.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct Quirk(u32);
+impl Quirk {
+    const fn rank(self) -> u32 {
+        match self.0 {
+            40 => 41,
+            41 => 40,
+            other => other,
+        }
+    }
+}
+impl PartialOrd for Quirk {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl Ord for Quirk {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        self.rank().cmp(&other.rank())
+    }
+}
+impl IntKey for Quirk {
+    type Word = u32;
+    fn encode(self) -> u32 {
+        self.0
+    }
+    fn decode(word: u32) -> Option<Self> {
+        match word {
+            13 => None,
+            21 => Some(Self(22)),
+            other => Some(Self(other)),
+        }
+    }
+}
+
+/// The two-pass construction contract, written without any fast path: check
+/// each key in arrival order, sort and deduplicate the codes, then check each
+/// code in sorted order. Indices are arrival positions in the first pass and
+/// sorted positions in the second.
+fn reference_construction<K: IntKey>(
+    keys: Option<&[K]>,
+    codes: &[K::Word],
+) -> Result<Vec<K::Word>, IntSetError> {
+    let mut words = Vec::new();
+    if let Some(keys) = keys {
+        for (index, &key) in keys.iter().enumerate() {
+            let word = key.encode();
+            let decoded = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if decoded != key || decoded.cmp(&key) != core::cmp::Ordering::Equal {
+                return Err(IntSetError::CodecRoundTrip { index });
+            }
+            if decoded.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
+            }
+            words.push(word);
+        }
+    } else {
+        for (index, &word) in codes.iter().enumerate() {
+            let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if key.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
+            }
+            words.push(word);
+        }
+    }
+    words.sort_unstable();
+    words.dedup();
+    let mut previous: Option<K> = None;
+    for (index, &word) in words.iter().enumerate() {
+        let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+        if key.encode() != word {
+            return Err(IntSetError::NonCanonicalCode { index });
+        }
+        if previous.is_some_and(|prior| prior.cmp(&key) != core::cmp::Ordering::Less) {
+            return Err(IntSetError::NonMonotonicEncoding { index });
+        }
+        previous = Some(key);
+    }
+    Ok(words)
+}
+
+/// Deterministic arrival orders of one multiset of codes.
+fn arrival_orders(sorted: &[u32], seed: u64) -> Vec<Vec<u32>> {
+    let mut state = seed | 1;
+    let mut next = move || {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        state
+    };
+    let mut shuffled = sorted.to_vec();
+    for index in (1..shuffled.len()).rev() {
+        let other = usize::try_from(next() % (index as u64 + 1)).unwrap();
+        shuffled.swap(index, other);
+    }
+    let mut descending = sorted.to_vec();
+    descending.reverse();
+    let mut duplicated = shuffled.clone();
+    duplicated.extend(sorted.iter().step_by(3));
+    let mut one_swap = sorted.to_vec();
+    if one_swap.len() > 1 {
+        let last = one_swap.len() - 1;
+        one_swap.swap(last - 1, last);
+    }
+    let mut repeated_tail = sorted.to_vec();
+    repeated_tail.extend(sorted.last());
+    vec![
+        sorted.to_vec(),
+        descending,
+        shuffled,
+        duplicated,
+        one_swap,
+        repeated_tail,
+    ]
+}
+
+/// Ascending input skips the sort, dense unsorted input is sorted through a
+/// bitmap, and other input is sorted by comparison. All three must produce the
+/// same members under every policy, on both sides of the bitmap threshold
+/// (the span equals the staged bytes) and at the ends of both word widths.
+#[test]
+fn construction_normalizes_every_arrival_order_identically() {
+    let shapes: Vec<Vec<u32>> = vec![
+        vec![],
+        vec![7],
+        (0..63).collect(),                            // below the bitmap minimum
+        (0..64).map(|code| code * 32 + 31).collect(), // 64 codes, span 2,048 bits: bitmap
+        (0..64).map(|code| code * 33).collect(),      // 64 codes, span 2,080 bits: comparison sort
+        (0..5_000).map(|code| code * 7 + 3).collect(),
+        (0..300).map(|code| u32::MAX - code * 5).rev().collect(),
+        (0..200).map(|code| code * 1_000_003).collect(),
+        (0..70_000).collect(),
+    ];
+    for (seed, shape) in shapes.iter().enumerate() {
+        let expected: BTreeSet<u32> = shape.iter().copied().collect();
+        let expected: Vec<u32> = expected.into_iter().collect();
+        for order in arrival_orders(shape, seed as u64 + 1) {
+            for policy in POLICIES.into_iter().chain([IntSetPolicy::auto()]) {
+                let built = FrozenIntSet::try_from_iter(order.iter().copied(), policy);
+                let imported = FrozenIntSet::<u32>::try_from_encoded(order.iter().copied(), policy);
+                match (built, imported) {
+                    (Ok(built), Ok(imported)) => {
+                        assert_members(&built, &expected);
+                        assert_eq!(built, imported);
+                    }
+                    (Err(left), Err(right)) => {
+                        assert_eq!(left, right);
+                        assert!(matches!(left, IntSetError::DenseBudgetExceeded { .. }));
+                    }
+                    other => panic!("construction paths disagree: {other:?}"),
+                }
+            }
+        }
+    }
+    // Signed keys and the top of the 64-bit domain, shuffled into a dense span.
+    let signed: Vec<i64> = (-200..200).map(|value| value * 3).collect();
+    let top: Vec<u64> = (0..400).map(|value| u64::MAX - value * 2).rev().collect();
+    let mut signed_shuffled = signed.clone();
+    signed_shuffled.rotate_left(137);
+    signed_shuffled.swap(3, 250);
+    let mut top_shuffled = top.clone();
+    top_shuffled.rotate_left(91);
+    for policy in POLICIES.into_iter().chain([IntSetPolicy::auto()]) {
+        assert_members(&checked(&signed_shuffled, policy), &signed);
+        assert_members(&checked(&top_shuffled, policy), &top);
+    }
+}
+
+/// Every construction path reports the error the two-pass contract reports:
+/// the same variant and the same index, for keys and for imported codes, for
+/// ascending, unsorted sparse, and unsorted dense (bitmap-sorted) input.
+#[test]
+fn construction_reports_contract_errors_on_every_path() {
+    let mut state = 0x2545_F491_4F6C_DD1D_u64;
+    let mut next = move || {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        state
+    };
+    let mut outcomes = BTreeSet::new();
+    for case in 0..4_000 {
+        // Short inputs take the comparison sort; long dense ones the bitmap.
+        let length = if case % 4 == 0 {
+            64 + next() % 40
+        } else {
+            next() % 9
+        };
+        let universe = if case % 3 == 0 { 48 } else { 400 };
+        let faults = [13_u32, 21, 40, 41];
+        let mut codes: Vec<u32> = (0..length)
+            .map(|_| {
+                let roll = next();
+                if roll % 23 == 0 {
+                    faults[usize::try_from((roll >> 8) % 4).unwrap()]
+                } else {
+                    // Keep ordinary codes clear of the fault codes.
+                    100 + u32::try_from((roll >> 8) % universe).unwrap()
+                }
+            })
+            .collect();
+        match case % 5 {
+            0 => codes.sort_unstable(),
+            1 => {
+                codes.sort_unstable();
+                codes.dedup();
+            }
+            _ => {}
+        }
+        let keys: Vec<Quirk> = codes.iter().copied().map(Quirk).collect();
+        for policy in [IntSetPolicy::auto(), IntSetPolicy::sorted()] {
+            let expected = reference_construction::<Quirk>(Some(&keys), &[]);
+            let actual = FrozenIntSet::try_from_iter(keys.iter().copied(), policy)
+                .map(|set| set.encoded_values().collect::<Vec<_>>());
+            assert_eq!(actual, expected, "keys {codes:?}");
+            let expected = reference_construction::<Quirk>(None, &codes);
+            let actual = FrozenIntSet::<Quirk>::try_from_encoded(codes.iter().copied(), policy)
+                .map(|set| set.encoded_values().collect::<Vec<_>>());
+            assert_eq!(actual, expected, "codes {codes:?}");
+            outcomes.insert(match expected {
+                Ok(_) => "ok",
+                Err(IntSetError::InvalidCode { .. }) => "invalid",
+                Err(IntSetError::NonCanonicalCode { .. }) => "noncanonical",
+                Err(IntSetError::NonMonotonicEncoding { .. }) => "nonmonotonic",
+                Err(_) => "other",
+            });
+        }
+    }
+    assert_eq!(
+        outcomes.into_iter().collect::<Vec<_>>(),
+        ["invalid", "noncanonical", "nonmonotonic", "ok"]
+    );
+    // The first pass completes before any order violation is reported, even
+    // when ascending input reveals the violation earlier.
+    assert_eq!(
+        FrozenIntSet::try_from_iter([40, 41, 50, 13].map(Quirk), IntSetPolicy::auto()).err(),
+        Some(IntSetError::InvalidCode { index: 3 })
+    );
+    assert_eq!(
+        FrozenIntSet::try_from_iter([39, 40, 41, 50].map(Quirk), IntSetPolicy::auto()).err(),
+        Some(IntSetError::NonMonotonicEncoding { index: 2 })
+    );
+    assert_eq!(
+        FrozenIntSet::try_from_iter([41, 40].map(Quirk), IntSetPolicy::auto()).err(),
+        Some(IntSetError::NonMonotonicEncoding { index: 1 })
+    );
+}
+
 #[test]
 fn a_decoder_that_changes_after_construction_causes_a_checked_panic() {
     let set: FrozenIntSet<_> = [Unstable(3)].into_iter().collect();
