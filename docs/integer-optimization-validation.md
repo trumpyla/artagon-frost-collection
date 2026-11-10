@@ -6,6 +6,10 @@ integer profile optimizations, family construction and iterator costs, and
 emptied adaptive tree ranges. The design decisions are in
 [decisions](design/decisions.md).
 
+The later [merge review](reviews/integer-optimizations-merge-review.md) records
+additional corrections and fresh macOS checks separately from the Linux
+measurements and historical gate results below.
+
 The series changes costs and fixes three defects. It adds no public item,
 feature, dependency, representation candidate, or policy limit, and it does not
 change the Hash event stream.
