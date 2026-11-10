@@ -12,6 +12,8 @@ SHELLCHECK ?= shellcheck
 SHFMT ?= shfmt
 AST_GREP ?= ast-grep
 MIRI_TOOLCHAIN ?= nightly-2026-11-08
+MIRI_SURVEY_JOBS ?= 4
+MIRI_SURVEY_SHARDS := $(foreach shape,0 1 2 3 4 5 6 7 8 9 10,$(foreach width,32 64,$(foreach policy,0 1 2 3,miri-survey-$(shape)-$(width)-$(policy))))
 FUZZ_TOOLCHAIN ?= $(MIRI_TOOLCHAIN)
 EMBEDDED_TARGET ?= thumbv7em-none-eabihf
 EMBEDDED_NO_ATOMICS_TARGET ?= thumbv6m-none-eabi
@@ -39,7 +41,7 @@ AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 	test-examples profiles features integers examples package embedded miri \
 	bounded loom kani nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
-	tools-check search-index integer-ab clean
+	tools-check search-index integer-ab miri-survey $(MIRI_SURVEY_SHARDS) clean
 
 all: build
 
@@ -58,6 +60,7 @@ help:
 	  'make package      Build/test the extracted Cargo package (requires jq)' \
 	  'make embedded     Install EMBEDDED_TARGET and EMBEDDED_NO_ATOMICS_TARGET first' \
 	  'make miri         Ownership diagnostics with MIRI_TOOLCHAIN' \
+	  'make miri-survey  Full planner matrix in isolated 32-bit Miri processes' \
 	  'make bounded      Finite collection/retry models and native Kani helpers' \
 	  'make loom|kani    Optional protocol model or symbolic proofs' \
 	  'make nextest      Run test suite with cargo-nextest (.config/nextest.toml)' \
@@ -190,7 +193,8 @@ miri:
 	    --target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
 	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
-	    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+	    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1 \
+	    --skip integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey
 	@set -euo pipefail; \
 	for case_name in \
 	  integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
@@ -213,6 +217,20 @@ miri:
 	    "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	      --target i686-unknown-linux-gnu --test integer_output "$$case_name" -- --exact --test-threads=1; \
 	done
+	+$(MAKE) miri-survey
+
+# Preserve every planner input, word width, and policy while resetting Miri's
+# finite simulated address space between cases. No validation is disabled.
+miri-survey:
+	+$(MAKE) -j$(MIRI_SURVEY_JOBS) $(MIRI_SURVEY_SHARDS)
+
+$(MIRI_SURVEY_SHARDS):
+	FROST_MIRI_SURVEY_CASE="$(patsubst miri-survey-%,%,$@)" \
+	  MIRIFLAGS='-Zmiri-strict-provenance -Zmiri-env-forward=FROST_MIRI_SURVEY_CASE' \
+	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	    --target i686-unknown-linux-gnu --lib \
+	    integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey \
+	    -- --exact --test-threads=1
 
 bounded:
 	"$(CARGO)" test --locked --test exhaustive_collections --features fixedbitset-0_5

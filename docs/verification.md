@@ -234,6 +234,19 @@ Dense-to-Chunked boundaries, empty Dense deletion, and maximum-code endpoints.
 Selected Miri names and executed counts belong in the corresponding execution
 record; large native-only or unselected cases are not counted as Miri passes.
 
+The complete early-survey planner matrix runs as 88 separate 32-bit Miri
+processes: eleven unchanged input shapes, both word widths, and four policies.
+`make miri` includes `make miri-survey`; the latter can also run alone and uses
+`MIRI_SURVEY_JOBS=4` by default. The original single-process matrix exhausted
+the interpreter's simulated 32-bit address space: Miri does not reuse stack
+addresses. Fresh processes retain every original input and comparison without
+disabling validation. Native tests always execute the complete matrix in one
+test, including the aggregate assertion that every automatic backend is chosen.
+The test accepts the fixed shape-width-policy selector only under `cfg(miri)`;
+the Make recipe forwards only that selector into the isolated interpreter.
+See the [merge review](reviews/integer-optimizations-merge-review.md) and the
+[Miri flag documentation](https://github.com/rust-lang/miri/blob/master/README.md#miri--z-flags-and-environment-variables).
+
 Keep alignment, validity, aliasing, race, and leak checks enabled. If the target
 or toolchain rejects an operation, record the unsupported check and investigate;
 do not disable validation and report an equivalent result. Additional Miri seeds

@@ -10,6 +10,7 @@ setup() {
   export FROST_TEST_LOG="$BATS_TEST_TMPDIR/calls"
   export FROST_TEST_FAIL_COMMAND=
   unset RUSTDOCFLAGS
+  unset FROST_MIRI_SURVEY_CASE
   export FROST_TEST_METADATA='{"target_directory":"build area","packages":[{
     "name":"frost-collections","version":"0.4.0",
     "features":{"default":[],"alloc":[],"std":[],"advanced":[],
@@ -22,6 +23,9 @@ setup() {
 set -euo pipefail
 {
   printf 'CALL'
+  if [[ -n ${FROST_MIRI_SURVEY_CASE:-} ]]; then
+    printf ' SHARD=%s' "$FROST_MIRI_SURVEY_CASE"
+  fi
   printf ' <%s>' "$@"
   printf '\n'
 } >>"$FROST_TEST_LOG"
@@ -175,4 +179,17 @@ STUB
   [ "$status" -eq 0 ]
   [ "$output" = $'case,old_min_ns,new_min_ns,old_over_new,old_repr,new_repr\nfixture,2,1,2,Sorted,Sorted' ]
   [[ "$stderr" == *'prepared baseline fixture'* ]]
+}
+
+@test "miri-survey executes all 88 shape width policy combinations" {
+  run_make miri-survey MIRI_SURVEY_JOBS=1
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 88 ]
+  for shape in 0 1 2 3 4 5 6 7 8 9 10; do
+    for width in 32 64; do
+      for policy in 0 1 2 3; do
+        [[ "$(<"$FROST_TEST_LOG")" == *"CALL SHARD=$shape-$width-$policy <+nightly-2026-11-08> <miri> <test>"* ]]
+      done
+    done
+  done
 }

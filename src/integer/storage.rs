@@ -2065,6 +2065,29 @@ mod tests {
         }
     }
 
+    fn survey_shape(index: usize) -> Vec<u64> {
+        match index {
+            0 => Vec::new(),
+            1 => alloc::vec![9],
+            2 => (0..40).collect(),
+            3 => (0..40).map(|code| code * 3).collect(),
+            4 => (0..5_000).map(|code| code * 7).collect(),
+            5 => (0..200_000).collect(),
+            6 => (0..200_000).map(|code| code * 2).collect(),
+            7 => (0..3_000).map(|code| code * 1_000_003).collect(),
+            8 => (0..3_000).map(|code| code << 33).collect(),
+            9 => (0..64)
+                .flat_map(|run| (0..512).map(move |low| (run << 20) + low))
+                .collect(),
+            10 => {
+                let mut mixed: Vec<u64> = (0..70_000).collect();
+                mixed.extend((1..2_000).map(|code| 1_000_000 + code * 70_001));
+                mixed
+            }
+            _ => panic!("unknown survey shape"),
+        }
+    }
+
     /// Stopping the survey early must never change the planner's answer. The
     /// reference repeats `plan` with a complete survey for shapes on both
     /// sides of every candidate boundary and for both word widths.
@@ -2093,7 +2116,7 @@ mod tests {
             }
             backend
         }
-        fn check<W: super::Word>(codes: &[u64], seen: &mut [bool; 3]) {
+        fn check<W: super::Word>(codes: &[u64], seen: &mut [bool; 3], selected: Option<usize>) {
             let words: Vec<W> = codes
                 .iter()
                 .filter_map(|&code| W::try_from_u64(code))
@@ -2102,12 +2125,18 @@ mod tests {
                 .first()
                 .zip(words.last())
                 .map_or(0, |(low, high)| dense_bytes(low.to_u64(), high.to_u64()));
-            for policy in [
+            for (index, policy) in [
                 IntSetPolicy::auto(),
                 IntSetPolicy::auto().with_dense_budget(0),
                 IntSetPolicy::auto().with_roaring_partition_limit(1),
                 IntSetPolicy::auto().with_roaring_partition_limit(0),
-            ] {
+            ]
+            .into_iter()
+            .enumerate()
+            {
+                if selected.is_some_and(|selected| selected != index) {
+                    continue;
+                }
                 let budget = Budget::from_policy(policy);
                 let planned = plan(&words, dense, budget);
                 assert_eq!(
@@ -2123,33 +2152,47 @@ mod tests {
                 }] = true;
             }
         }
-        let mut shapes: Vec<Vec<u64>> = alloc::vec![
-            Vec::new(),
-            alloc::vec![9],
-            (0..40).collect(),                                 // tiny run
-            (0..40).map(|code| code * 3).collect(),            // tiny dense window
-            (0..5_000).map(|code| code * 7).collect(),         // one dense window
-            (0..200_000).collect(),                            // long run
-            (0..200_000).map(|code| code * 2).collect(),       // alternating
-            (0..3_000).map(|code| code * 1_000_003).collect(), // scattered containers
-            (0..3_000).map(|code| code << 33).collect(),       // one member per partition
-            (0..64)
-                .flat_map(|run| (0..512).map(move |low| (run << 20) + low))
-                .collect(), // far runs
-        ];
-        // A long run followed by scattered codes, and the reverse order of cost.
-        let mut mixed: Vec<u64> = (0..70_000).collect();
-        mixed.extend((1..2_000).map(|code| 1_000_000 + code * 70_001));
-        shapes.push(mixed);
+        // Miri does not reuse stack addresses. The full matrix exhausts its
+        // 32-bit address space in one process. `make miri-survey` executes
+        // every shape/width/policy tuple separately, with identical inputs.
+        // Native runs always execute the full matrix, regardless of the env.
+        #[cfg(miri)]
+        let shard = {
+            extern crate std;
+            std::env::var("FROST_MIRI_SURVEY_CASE").ok().map(|case| {
+                let indices: Vec<usize> = case
+                    .split('-')
+                    .map(|part| part.parse().expect("numeric survey shard"))
+                    .collect();
+                assert_eq!(indices.len(), 3, "shape-width-policy");
+                assert!(indices[0] < 11 && matches!(indices[1], 32 | 64) && indices[2] < 4);
+                (indices[0], indices[1], indices[2])
+            })
+        };
+        #[cfg(not(miri))]
+        let shard: Option<(usize, usize, usize)> = None;
         let mut seen = [false; 3];
-        for shape in &shapes {
-            check::<u64>(shape, &mut seen);
-            check::<u32>(shape, &mut seen);
+        for index in 0..11 {
+            if shard.is_some_and(|(selected, _, _)| selected != index) {
+                continue;
+            }
+            let codes = survey_shape(index);
+            let policy = shard.map(|(_, _, policy)| policy);
+            if shard.is_none_or(|(_, width, _)| width == 64) {
+                check::<u64>(&codes, &mut seen, policy);
+            }
+            if shard.is_none_or(|(_, width, _)| width == 32) {
+                check::<u32>(&codes, &mut seen, policy);
+            }
         }
-        assert_eq!(
-            seen, [true; 3],
-            "Sorted, Dense, and Roaring were all selected"
-        );
+        if shard.is_none() {
+            assert_eq!(
+                seen, [true; 3],
+                "Sorted, Dense, and Roaring were all selected"
+            );
+        } else {
+            assert!(seen.into_iter().any(|selected| selected), "shard executed");
+        }
     }
 
     #[test]
