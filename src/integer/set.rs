@@ -16,61 +16,6 @@ use crate::family::{FrozenOrderedSet, MutableOrderedSet};
 use crate::read::{Cardinality, ElementType, SetContains, ValueElements};
 use crate::{Rejected, TryFreezeWith};
 
-/// Validated codes in arrival order, with what the validation pass observed.
-struct Staging<K: IntKey> {
-    words: Vec<K::Word>,
-    /// The codes arrived strictly ascending: already sorted and unique.
-    ascending: bool,
-    /// The codes arrived strictly descending: unique, and sorted once reversed.
-    descending: bool,
-    /// First arrival index where decoded order did not follow ascending code
-    /// order. Meaningful only while `ascending` holds, where arrival index and
-    /// sorted index coincide.
-    nonmonotonic: Option<usize>,
-    bounds: Option<(K::Word, K::Word)>,
-    previous: Option<K>,
-}
-
-impl<K: IntKey> Staging<K> {
-    const fn new() -> Self {
-        Self {
-            words: Vec::new(),
-            ascending: true,
-            descending: true,
-            nonmonotonic: None,
-            bounds: None,
-            previous: None,
-        }
-    }
-
-    /// Record one code whose codec laws the caller has already checked.
-    fn push(&mut self, index: usize, word: K::Word, decoded: K) {
-        match self.bounds {
-            None => self.bounds = Some((word, word)),
-            Some((low, high)) => {
-                if self.ascending {
-                    if high < word {
-                        // The same comparison the sorted pass makes at this index.
-                        if self.nonmonotonic.is_none()
-                            && self
-                                .previous
-                                .is_some_and(|prior| prior.cmp(&decoded) != Ordering::Less)
-                        {
-                            self.nonmonotonic = Some(index);
-                        }
-                    } else {
-                        self.ascending = false;
-                    }
-                }
-                self.descending &= word < low;
-                self.bounds = Some((low.min(word), high.max(word)));
-            }
-        }
-        self.previous = Some(decoded);
-        self.words.push(word);
-    }
-}
-
 /// Smallest input for which a temporary bitmap replaces a comparison sort.
 const BITMAP_SORT_MIN: usize = 64;
 
@@ -160,10 +105,10 @@ impl<K: IntKey> FrozenIntSet<K> {
     /// Duplicates collapse according to the canonical integer code. This profile
     /// reconstructs full keys under the [`IntKey`] laws; it cannot retain metadata
     /// that a codec discards. Normalization needs O(n) staging storage. Input that
-    /// arrives strictly ascending is not sorted again; unsorted input whose span
-    /// fits a bitmap no larger than the staged codes is normalized in linear time
-    /// with that much additional temporary storage; other input is sorted once in
-    /// O(n log n) time. Checked validation adds linear codec work. Policy limits
+    /// arrives strictly ascending or strictly descending is not sorted by
+    /// comparison; other input whose span fits a bitmap no larger than the staged
+    /// codes is normalized in linear time with that much additional temporary
+    /// storage; the rest is sorted once in O(n log n) time. Checked validation adds linear codec work. Policy limits
     /// cover the documented candidate costs, not staging storage or the allocator.
     ///
     /// # Errors
@@ -175,7 +120,7 @@ impl<K: IntKey> FrozenIntSet<K> {
         input: I,
         policy: IntSetPolicy,
     ) -> Result<Self, IntSetError> {
-        let mut staging = Staging::new();
+        let mut words = Vec::new();
         for (index, key) in input.into_iter().enumerate() {
             let word = key.encode();
             let decoded = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
@@ -185,9 +130,9 @@ impl<K: IntKey> FrozenIntSet<K> {
             if decoded.encode() != word {
                 return Err(IntSetError::NonCanonicalCode { index });
             }
-            staging.push(index, word, decoded);
+            words.push(word);
         }
-        Self::normalize(staging, policy)
+        Self::normalize(words, policy)
     }
 
     /// Import encoded members with checked decoding and canonicality validation.
@@ -204,61 +149,53 @@ impl<K: IntKey> FrozenIntSet<K> {
         input: I,
         policy: IntSetPolicy,
     ) -> Result<Self, IntSetError> {
-        let mut staging = Staging::new();
+        let mut words = Vec::new();
         for (index, word) in input.into_iter().enumerate() {
             let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
             if key.encode() != word {
                 return Err(IntSetError::NonCanonicalCode { index });
             }
-            staging.push(index, word, key);
+            words.push(word);
         }
-        Self::normalize(staging, policy)
+        Self::normalize(words, policy)
     }
 
     /// Sort, deduplicate, and check that decoded order follows code order.
     ///
-    /// Input that arrived strictly ascending is already sorted and unique, and
-    /// the first pass compared its decoded keys in that same order, so no
-    /// second pass is needed. Strictly descending input is reversed. Other
-    /// unsorted input whose span is no larger than the staged codes is
-    /// normalized through a temporary bitmap in linear time; the rest is
-    /// sorted by comparison.
-    fn normalize(staging: Staging<K>, policy: IntSetPolicy) -> Result<Self, IntSetError> {
-        let Staging {
-            mut words,
-            ascending,
-            descending,
-            nonmonotonic,
-            bounds,
-            ..
-        } = staging;
-        if ascending {
-            if let Some(index) = nonmonotonic {
-                return Err(IntSetError::NonMonotonicEncoding { index });
-            }
-        } else {
-            match bounds {
-                // Strictly descending codes are unique; reversing sorts them.
-                _ if descending => words.reverse(),
-                Some((low, high)) if bitmap_sort_pays(&words, low, high) => {
+    /// The staged codes are classified by scans that stop at the first
+    /// counterexample. Strictly ascending codes are already sorted and unique.
+    /// Strictly descending codes are reversed. Other codes whose span is no
+    /// larger than the staged codes are normalized through a temporary bitmap
+    /// in linear time; the rest are sorted by comparison. Every path then runs
+    /// the same validation pass over the sorted codes.
+    fn normalize(mut words: Vec<K::Word>, policy: IntSetPolicy) -> Result<Self, IntSetError> {
+        if !words.windows(2).all(|pair| pair[0] < pair[1]) {
+            if words.windows(2).all(|pair| pair[0] > pair[1]) {
+                words.reverse();
+            } else {
+                let (low, high) = words
+                    .iter()
+                    .fold((words[0], words[0]), |(low, high), &word| {
+                        (low.min(word), high.max(word))
+                    });
+                if bitmap_sort_pays(&words, low, high) {
                     bitmap_sort(&mut words, low, high);
-                }
-                _ => {
+                } else {
                     words.sort_unstable();
                     words.dedup();
                 }
             }
-            let mut previous = None;
-            for (index, &word) in words.iter().enumerate() {
-                let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
-                if key.encode() != word {
-                    return Err(IntSetError::NonCanonicalCode { index });
-                }
-                if previous.is_some_and(|prior: K| prior.cmp(&key) != Ordering::Less) {
-                    return Err(IntSetError::NonMonotonicEncoding { index });
-                }
-                previous = Some(key);
+        }
+        let mut previous = None;
+        for (index, &word) in words.iter().enumerate() {
+            let key = K::decode(word).ok_or(IntSetError::InvalidCode { index })?;
+            if key.encode() != word {
+                return Err(IntSetError::NonCanonicalCode { index });
             }
+            if previous.is_some_and(|prior: K| prior.cmp(&key) != Ordering::Less) {
+                return Err(IntSetError::NonMonotonicEncoding { index });
+            }
+            previous = Some(key);
         }
         Storage::from_sorted(words, policy)
             .map(|storage| Self::from_storage(storage, policy.limits()))
