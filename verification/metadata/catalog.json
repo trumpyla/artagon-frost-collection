@@ -7442,6 +7442,27 @@
       "target": "verification/catalog/src/main.rs",
       "cfg": "cfg (test)",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-032",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:public_iterator_folds_resume_after_partial_consumption",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: public iterator folds resume after partial consumption",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (feature = \"int-set\")",
+      "cost": "unreviewed"
     }
   ]
 }

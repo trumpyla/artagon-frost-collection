@@ -39,6 +39,12 @@ fn assert_cursor<T: Copy + Debug + Eq, I: Iterator<Item = T> + Clone + FusedIter
         assert!(lower <= remaining.len());
         assert!(upper.is_none_or(|upper| upper >= remaining.len()));
         assert_eq!(tail.clone().count(), remaining.len());
+        // `fold` selects the representation once; it must agree with `next`.
+        let folded = tail.clone().fold(Vec::new(), |mut seen, value| {
+            seen.push(value);
+            seen
+        });
+        assert_eq!(folded, remaining);
         assert_eq!(tail.by_ref().collect::<Vec<_>>(), remaining);
         assert_eq!(tail.next(), None);
         assert_eq!(tail.next(), None);
@@ -189,6 +195,61 @@ fn forced_backends_and_iterators_preserve_typed_value_order() {
         assert_eq!((&set).into_iter().collect::<Vec<_>>(), values);
         assert_eq!(set.clone(), set);
     }
+}
+
+/// The public iterators forward `fold` to the storage traversal. A partially
+/// consumed iterator must fold exactly its remaining members in every
+/// representation, including Chunked Array, Bitmap, and Full containers and
+/// positions on both sides of a container boundary.
+#[test]
+fn public_iterator_folds_resume_after_partial_consumption() {
+    let mut values: Vec<u32> = (0..40).map(|value| value * 1_000).collect(); // Array
+    values.extend((65_536..75_536).step_by(2)); // Bitmap (5,000 members)
+    values.extend(131_072..196_608); // Full
+    values.extend([196_608, 262_143, u32::MAX]); // Array, isolated maximum
+    values.sort_unstable();
+    let boundaries = [
+        0, 1, 39, 40, 41, 5_039, 5_040, 5_041, 70_575, 70_576, 70_577,
+    ];
+    let mut covered = BTreeSet::new();
+    // The complete span exceeds the Dense budget; the shorter one fits it.
+    let spans = [&values[..], &values[..values.len() - 1]];
+    for (values, policy) in spans.into_iter().flat_map(|values| {
+        POLICIES
+            .into_iter()
+            .chain([IntSetPolicy::auto()])
+            .map(move |policy| (values, policy))
+    }) {
+        let Some(set) = eligible(values, policy) else {
+            continue;
+        };
+        covered.insert(format!("{:?}", set.representation()));
+        for consumed in boundaries
+            .into_iter()
+            .chain([values.len() - 1, values.len()])
+        {
+            let mut keys = set.iter();
+            let mut codes = set.encoded_values();
+            for expected in &values[..consumed] {
+                assert_eq!(keys.next(), Some(*expected));
+                assert_eq!(codes.next(), Some(*expected));
+            }
+            let remaining = &values[consumed..];
+            let sum: u64 = remaining.iter().map(|&value| u64::from(value)).sum();
+            assert_eq!(keys.clone().map(u64::from).sum::<u64>(), sum);
+            assert_eq!(
+                codes.clone().fold(0, |total, code| total + u64::from(code)),
+                sum
+            );
+            let mut visited = 0;
+            keys.clone().for_each(|_| visited += 1);
+            assert_eq!(visited, remaining.len());
+            assert_eq!(keys.clone().last(), remaining.last().copied());
+            assert!(keys.eq(remaining.iter().copied()));
+            assert!(codes.eq(remaining.iter().copied()));
+        }
+    }
+    assert_eq!(covered.len(), 4, "every representation was traversed");
 }
 
 #[test]

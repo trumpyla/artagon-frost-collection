@@ -564,6 +564,13 @@ impl<K: IntKey> Iterator for IntSetIter<'_, K> {
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.words.size_hint()
     }
+    /// Select the representation once for the whole traversal. `for_each`,
+    /// `sum`, and other adapters built on `fold` take this path; `for` loops
+    /// and `collect` still call `next`.
+    fn fold<B, F: FnMut(B, K) -> B>(self, init: B, mut f: F) -> B {
+        self.words
+            .fold(init, |accumulator, word| f(accumulator, decode::<K>(word)))
+    }
 }
 impl<K: IntKey> FusedIterator for IntSetIter<'_, K> {}
 impl<K: IntKey> fmt::Debug for IntSetIter<'_, K> {
@@ -592,6 +599,10 @@ impl<W: IntWord> Iterator for EncodedValues<'_, W> {
     }
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.words.size_hint()
+    }
+    /// Select the representation once for the whole traversal.
+    fn fold<B, F: FnMut(B, W) -> B>(self, init: B, f: F) -> B {
+        self.words.fold(init, f)
     }
 }
 impl<W: IntWord> FusedIterator for EncodedValues<'_, W> {}

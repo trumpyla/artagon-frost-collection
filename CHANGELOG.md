@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — integer profile optimizations
+
+No public API, feature, representation candidate, policy limit, or Hash event
+stream changes. Measurements and their limits are in
+[the optimization record](docs/integer-optimization-validation.md).
+
+- Forward `fold` from `IntSetIter` and `EncodedValues` to the storage traversal,
+  which selects the representation once. `for_each`, `sum`, and other `fold`
+  adapters gain; `for` loops and `collect` still call `next`.
+
 ## Unreleased — research corpus and rationale
 
 Documentation only. Source, features, dependencies, CI, and the Rust 1.99.1 /
