@@ -1339,8 +1339,59 @@ const MERGE_UNION: u8 = 0;
 const MERGE_DIFFERENCE: u8 = 1;
 const MERGE_SYMMETRIC: u8 = 2;
 
+/// Size ratio from which the larger operand is copied in bulk between the
+/// smaller operand's codes. It matches the ordered family's seek ratio; it is
+/// a structural allowance, not a measured machine crossover.
+const SKEW_RATIO: usize = 32;
+
+/// Merge when one operand is much smaller: for each of its codes, find the
+/// split point in the larger operand by binary search and copy the codes
+/// below it as one slice. A single-member update costs one copy of the large
+/// operand instead of a compare and push per code.
+fn merge_skewed<W: Word, const OP: u8>(left: &[W], right: &[W]) -> Vec<W> {
+    let small_is_right = right.len() <= left.len();
+    let (mut large, small) = if small_is_right {
+        (left, right)
+    } else {
+        (right, left)
+    };
+    // The large operand's codes survive unless it is the subtrahend.
+    let keep_large = OP != MERGE_DIFFERENCE || small_is_right;
+    // The small operand's codes survive unless it is the subtrahend.
+    let keep_small = OP != MERGE_DIFFERENCE || !small_is_right;
+    let mut out = Vec::with_capacity(
+        if keep_large { large.len() } else { 0 } + if keep_small { small.len() } else { 0 },
+    );
+    for &code in small {
+        let split = large.partition_point(|&other| other < code);
+        if keep_large {
+            out.extend_from_slice(&large[..split]);
+        }
+        large = &large[split..];
+        let common = large.first() == Some(&code);
+        if common {
+            large = &large[1..];
+        }
+        // A common code appears once in a union and never otherwise.
+        if if common {
+            OP == MERGE_UNION
+        } else {
+            keep_small
+        } {
+            out.push(code);
+        }
+    }
+    if keep_large {
+        out.extend_from_slice(large);
+    }
+    out
+}
+
 /// Merge two sorted slices for one compile-time-selected operation.
 fn merge_sorted<W: Word, const OP: u8>(left: &[W], right: &[W]) -> Vec<W> {
+    if left.len().min(right.len()).saturating_mul(SKEW_RATIO) <= left.len().max(right.len()) {
+        return merge_skewed::<W, OP>(left, right);
+    }
     let mut out = Vec::with_capacity(if OP == MERGE_DIFFERENCE {
         left.len()
     } else {
@@ -1931,7 +1982,7 @@ mod tests {
     #[test]
     fn sorted_kernel_matches_member_algebra_across_shapes() {
         use alloc::collections::BTreeSet;
-        let shapes: [Vec<u64>; 8] = [
+        let shapes: [Vec<u64>; 10] = [
             Vec::new(),
             alloc::vec![5],
             (0..64).collect(),
@@ -1940,6 +1991,8 @@ mod tests {
             [7, 4000, 9000].into(),
             (100_000..100_010).collect(),
             [0, u64::MAX - 1, u64::MAX].into(),
+            [0, 3, 4095, 5000].into(),
+            (0..200).map(|code| code * 31).collect(),
         ];
         for left in &shapes {
             for right in &shapes {

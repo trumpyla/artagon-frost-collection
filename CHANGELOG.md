@@ -10,7 +10,8 @@ stream changes. Measurements and their limits are in
   which selects the representation once. `for_each`, `sum`, and other `fold`
   adapters gain; `for` loops and `collect` still call `next`.
 - Shorten the Sorted result path. Sorted/Sorted results use operation-specific
-  merges that reserve the output and copy both tails in bulk; intersection keeps
+  merges that reserve the output and copy both tails in bulk, and copy the larger
+  operand in whole segments when the other is at most 1/32 of its size; intersection keeps
   the galloping cursor but selects its kernel once. The Roaring partition
   pre-check and forced-Roaring construction scan members only when the cached
   bounds span more partitions than the limit. The planner survey stops once the
