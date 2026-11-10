@@ -28,6 +28,11 @@ stream changes. Measurements and their limits are in
   immutable native value. Policy eligibility checks on identity, empty, and
   equal-result shortcuts, result planning, and the copy heuristic no longer
   rescan every container.
+- Add `fold` to the ordered family's `SetUnion`, `SetDifference`, and
+  `SetSymmetricDifference` cursors: one merge loop, then each remaining tail as
+  a slice traversal. `for_each`, `sum`, and other `fold` adapters gain when one
+  operand ends early; `collect` and `for` loops still call `next`. Comparisons
+  and yielded references are unchanged.
 - Detect runs in sorted Roaring construction with one comparison per 32 codes
   instead of one per code. Runs of 63 or more codes are always inserted as
   ranges; the built value is identical for every input.

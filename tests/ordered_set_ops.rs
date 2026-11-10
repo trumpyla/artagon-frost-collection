@@ -234,6 +234,13 @@ where
         );
         assert!(upper.is_none_or(|upper| actual.len() <= upper));
         assert_eq!(cursor.clone().count(), actual.len());
+        // `fold` must yield the same references in the same order as `next`.
+        let stepped: Vec<*const i32> = cursor.clone().map(core::ptr::from_ref).collect();
+        let folded = cursor.clone().fold(Vec::new(), |mut seen, item| {
+            seen.push(core::ptr::from_ref(item));
+            seen
+        });
+        assert_eq!(folded, stepped, "{cursor:?}");
 
         match cursor.next() {
             Some(next) => assert_eq!(Some(next), actual.first()),
@@ -258,6 +265,43 @@ fn hints_clones_counts_and_fused_exhaustion_track_partial_consumption() {
             check_cursor(left.symmetric_difference(&right));
         }
     }
+}
+
+/// `fold` selects its kernel once. It must agree with stepwise traversal from
+/// every partially consumed state, for balanced merges, both seek directions
+/// (size ratios beyond the seek threshold), identical and separated operands.
+#[test]
+fn folds_match_stepwise_traversal_for_merge_and_seek_kernels() {
+    let dense: Vec<i32> = (0..400).collect();
+    let fixtures = [
+        vec![],
+        vec![7],
+        vec![0, 199, 399],
+        (0..400).step_by(2).collect::<Vec<_>>(),
+        (1..400).step_by(3).collect(),
+        dense.clone(),
+        (1_000..1_010).collect(),
+        vec![-5, 150, 151, 152, 900],
+    ];
+    for left in &fixtures {
+        for right in &fixtures {
+            let left: FrozenOrderedSet<_> = left.iter().copied().collect();
+            let right: FrozenOrderedSet<_> = right.iter().copied().collect();
+            check_cursor(left.union(&right));
+            check_cursor(left.intersection(&right));
+            check_cursor(left.difference(&right));
+            check_cursor(left.symmetric_difference(&right));
+        }
+    }
+    let same: FrozenOrderedSet<_> = dense.into_iter().collect();
+    check_cursor(same.union(&same));
+    check_cursor(same.difference(&same));
+    check_cursor(same.symmetric_difference(&same));
+    assert_eq!(
+        same.union(&same).map(|item| i64::from(*item)).sum::<i64>(),
+        79_800
+    );
+    assert_eq!(same.difference(&same).fold(0, |count, _| count + 1), 0);
 }
 
 #[test]

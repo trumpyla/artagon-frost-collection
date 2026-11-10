@@ -7652,6 +7652,27 @@
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-009",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:folds_match_stepwise_traversal_for_merge_and_seek_kernels",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: folds match stepwise traversal for merge and seek kernels",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
     }
   ]
 }

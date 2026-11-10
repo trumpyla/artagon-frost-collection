@@ -243,6 +243,35 @@ impl<'a, T: Ord> Iterator for SetUnion<'a, T> {
     fn count(self) -> usize {
         union_len(self.left, self.right)
     }
+
+    // One merge loop, then each remaining tail as a plain slice traversal.
+    // Comparisons and yielded references are those of repeated `next`.
+    fn fold<B, F>(self, init: B, mut f: F) -> B
+    where
+        F: FnMut(B, Self::Item) -> B,
+    {
+        let (mut left, mut right) = (self.left, self.right);
+        let mut accum = init;
+        while let (Some(a), Some(b)) = (left.first(), right.first()) {
+            match a.cmp(b) {
+                Ordering::Less => {
+                    accum = f(accum, a);
+                    left = &left[1..];
+                }
+                Ordering::Greater => {
+                    accum = f(accum, b);
+                    right = &right[1..];
+                }
+                Ordering::Equal => {
+                    accum = f(accum, a);
+                    left = &left[1..];
+                    right = &right[1..];
+                }
+            }
+        }
+        let accum = left.iter().fold(accum, &mut f);
+        right.iter().fold(accum, f)
+    }
 }
 
 impl<'a, T: Ord> Iterator for SetIntersection<'a, T> {
@@ -379,6 +408,47 @@ impl<'a, T: Ord> Iterator for SetDifference<'a, T> {
     fn count(self) -> usize {
         difference_len(self.left, self.right)
     }
+
+    // Select the kernel once, as `next` does on its first call, then yield the
+    // left tail as a plain slice traversal.
+    fn fold<B, F>(self, init: B, mut f: F) -> B
+    where
+        F: FnMut(B, Self::Item) -> B,
+    {
+        let (mut left, mut right) = (self.left, self.right);
+        let mut strategy = self.strategy;
+        if matches!(strategy, Strategy::Start) {
+            if core::ptr::eq(left, right) {
+                return init;
+            }
+            if separated(left, right) {
+                right = &[];
+            }
+            strategy = seek_strategy(left.len(), right.len());
+        }
+        let seek = matches!(strategy, Strategy::SeekRight);
+        let mut accum = init;
+        while let (Some(a), Some(b)) = (left.first(), right.first()) {
+            match a.cmp(b) {
+                Ordering::Less => {
+                    accum = f(accum, a);
+                    left = &left[1..];
+                }
+                Ordering::Greater => {
+                    right = if seek {
+                        skip_below(right, a)
+                    } else {
+                        &right[1..]
+                    };
+                }
+                Ordering::Equal => {
+                    left = &left[1..];
+                    right = &right[1..];
+                }
+            }
+        }
+        left.iter().fold(accum, f)
+    }
 }
 
 impl<'a, T: Ord> Iterator for SetSymmetricDifference<'a, T> {
@@ -407,6 +477,33 @@ impl<'a, T: Ord> Iterator for SetSymmetricDifference<'a, T> {
 
     fn count(self) -> usize {
         symmetric_difference_len(self.left, self.right)
+    }
+
+    // One merge loop, then each remaining tail as a plain slice traversal.
+    fn fold<B, F>(self, init: B, mut f: F) -> B
+    where
+        F: FnMut(B, Self::Item) -> B,
+    {
+        let (mut left, mut right) = (self.left, self.right);
+        let mut accum = init;
+        while let (Some(a), Some(b)) = (left.first(), right.first()) {
+            match a.cmp(b) {
+                Ordering::Less => {
+                    accum = f(accum, a);
+                    left = &left[1..];
+                }
+                Ordering::Greater => {
+                    accum = f(accum, b);
+                    right = &right[1..];
+                }
+                Ordering::Equal => {
+                    left = &left[1..];
+                    right = &right[1..];
+                }
+            }
+        }
+        let accum = left.iter().fold(accum, &mut f);
+        right.iter().fold(accum, f)
     }
 }
 
