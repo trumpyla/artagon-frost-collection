@@ -11,8 +11,11 @@ commit="$(git -C "$root" rev-parse "$rev^{commit}")"
 
 rm -rf baseline
 mkdir -p baseline
+# `-m` gives the extracted files the current time. Archive times are the commit
+# time, and Cargo treats sources older than its last build as unchanged, so a
+# switch to an older baseline would silently keep the previous one.
 git -C "$root" archive --format=tar "$commit" Cargo.toml Cargo.lock src README.md \
-  | tar -x -C baseline
+  | tar -x -m -C baseline
 
 manifest=baseline/Cargo.toml
 # Rename the package and library. Bench, example, and test targets are not

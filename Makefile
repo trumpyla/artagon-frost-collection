@@ -31,12 +31,15 @@ FUZZ_RUNS ?= 64
 FUZZ_MAX_TIME ?= 10
 CATALOG_TARGET_DIR ?= target/catalog
 CATALOG_INVENTORY_DIR ?= target/catalog-inventory
+AB_BASELINE ?= origin/main
+AB_ROUNDS ?= 3
+AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
 	test-examples profiles features integers examples package embedded miri \
 	bounded loom kani nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
-	tools-check search-index clean
+	tools-check search-index integer-ab clean
 
 all: build
 
@@ -68,6 +71,7 @@ help:
 	  'make catalog-inventory Verify benchmark FROST_BENCH_LIST inventory (requires jq)' \
 	  'make shell-check  ShellCheck, shfmt, and shell/Make behavior tests' \
 	  'make tools-check  Test and scan the optional ast-grep rules' \
+	  'make integer-ab   Time AB_BASELINE against the working tree in one executable' \
 	  'make search-index Refresh the local tgrep index' \
 	  'make fmt|clean    Format Rust sources or remove Cargo build artifacts'
 
@@ -348,6 +352,16 @@ shell-check:
 
 shell-test:
 	FROST_TEST_BASH="$(SHELL)" FROST_TEST_MAKE="$(MAKE)" "$(BATS)" verification/shell
+
+# Same-executable timing comparison; see verification/integer-optimizations.
+# Run it alone on a quiet host. The output is CSV on stdout.
+integer-ab:
+	"$(CARGO)" --version
+	git --version
+	tar --version
+	bash "$(AB_HARNESS_DIR)/prepare-baseline.sh" "$(AB_BASELINE)"
+	"$(CARGO)" build --release --locked --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml"
+	"$(AB_HARNESS_DIR)/target/release/frost-integer-optimizations-ab" "$(AB_ROUNDS)"
 
 tools-check:
 	"$(AST_GREP)" test --config sgconfig.yml
