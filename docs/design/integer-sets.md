@@ -131,7 +131,10 @@ compressed storage cannot lend a stored `&K`. `encoded_values()` provides typed
 canonical words without revealing a backend object. The profile implements
 `ValueElements`, `SetContains`, and `Cardinality`, with `try_len()` for explicit
 conversion to usize. It deliberately does not implement the address-sized `Len`
-trait or promise `ExactSizeIterator` for every cardinality.
+trait or promise `ExactSizeIterator` for every cardinality. Both iterators
+override `fold`, which selects the representation once for the traversal, so
+`for_each`, `sum`, and other `fold` adapters avoid a dispatch per member. A `for`
+loop and `collect` call `next` and do not take that path.
 
 Counts are u64. Inclusive encoded spans are u128, because the inclusive span
 from zero to u64::MAX is 2^64. Set cardinality itself remains limited to u64::MAX;
@@ -174,6 +177,30 @@ more complicated representation, including for `0..1000`. It is not a measured
 CPU crossover or a universal throughput claim. Explicit sorted/dense policies avoid the
 Roaring statistics pass; explicit Roaring checks its partition cap. The dense
 payload must also fit the target's allocation-size bound before allocation.
+
+The Roaring score only grows as codes are surveyed, so the survey stops at the
+container boundary where it reaches the score of the candidate already selected.
+That shortens planning for sets Roaring cannot win; it never changes the
+selected backend, which a unit test checks against a complete survey. A
+partition limit is checked from the cached bounds first: the bounds cap the
+partition count, exactly for 32-bit words, and members are scanned only when the
+span itself exceeds the limit. A stored Roaring value keeps its partition count,
+container count, and score beside it, computed once when the value is created,
+so eligibility checks on shared, empty, and equal-result shortcuts do not rescan
+its containers. These are derived values and take no part in equality, ordering,
+or hashing.
+
+Construction normalizes validated codes in one of four ways, chosen from what
+the validation pass observes. Codes that arrive strictly ascending are already
+sorted and unique; that pass also compares decoded keys in arrival order, which
+is the comparison the sorted validation pass would make at the same index, so
+no sort and no second pass run. Strictly descending codes are reversed. Other
+input of at least 64 codes whose aligned span needs a bitmap no larger than the
+staged codes is sorted and deduplicated through that temporary bitmap in linear
+time; staging at most doubles and is released before planning. All remaining
+input is sorted by comparison. The reported error variant and index are the
+same on every path: the first pass completes before any order violation is
+reported, and indices in the second pass are positions in sorted order.
 This integration retains the reviewed score instead of revision 2's unconditional
 4 KiB Dense floor, so a tiny sparse set is not promoted solely because its window
 fits that floor. The score does not include the shared-root allocation or predict
@@ -215,14 +242,14 @@ Decoding happens when a caller requests values.
 
 | Operands / shape | Materialized result path |
 | --- | --- |
-| Sorted / Sorted | Encoded sorted operation, followed by result planning |
+| Sorted / Sorted | Operation-specific merge into a reserved buffer with bulk tail copies; whole-segment copies of the larger operand when the other is at most 1/32 of its size; galloping intersection with its kernel selected once; then result planning |
 | Dense / Dense with a legal result window | Aligned word operation; trim empty edge words and retain a competitive Dense result |
 | Dense with a small update operand | Clone or extend the bitmap and update bits; derive cardinality from changed bits |
 | Distant Dense windows | Convert through bounded little-endian byte chunks and combine native Roaring values |
 | Roaring with Sorted additions/removals | Small updates can modify a native clone; bulk or scattered shapes select native algebra or encoded merging |
 | Intersection involving Sorted | Choose which side to traverse using the skew-aware work estimate, then filter with a typed membership loop |
 | Dense / Roaring intersection | Select encoded probing or bounded Dense promotion using the structural work estimate |
-| Chunked / Chunked | Merge prefix directories; share untouched or identical containers; combine changed containers |
+| Chunked / Chunked | Merge prefix directories; share untouched or identical containers; combine changed containers (Array pairs by direct merge, or by probing when one array is much smaller) |
 | Chunked / Sorted | Promote a proportionate Sorted side to chunks; probe or merge when Sorted dominates |
 | Chunked / Dense | Convert bitmap words directly into chunk containers, then merge |
 | Chunked / Roaring | Promote Roaring into chunks when proportionate; otherwise promote the chunked side to native Roaring |
