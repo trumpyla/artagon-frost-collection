@@ -1817,6 +1817,10 @@ impl<W: Word> Iterator for Words<'_, W> {
             Err(_) => (usize::MAX, None),
         }
     }
+    /// The remaining count is cached; no member is visited.
+    fn count(self) -> usize {
+        usize::try_from(self.remaining).expect("remaining members exceed usize")
+    }
     /// Dispatch once per traversal rather than once per element.
     fn fold<B, F: FnMut(B, W) -> B>(self, init: B, f: F) -> B {
         if self.remaining == 0 {

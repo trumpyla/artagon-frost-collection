@@ -8,7 +8,8 @@ stream changes. Measurements and their limits are in
 
 - Forward `fold` from `IntSetIter` and `EncodedValues` to the storage traversal,
   which selects the representation once. `for_each`, `sum`, and other `fold`
-  adapters gain; `for` loops and `collect` still call `next`.
+  adapters gain; `for` loops and `collect` still call `next`. `count` returns the
+  cached remaining count without visiting or decoding members.
 - Shorten the Sorted result path. Sorted/Sorted results use operation-specific
   merges that reserve the output and copy both tails in bulk, and copy the larger
   operand in whole segments when the other is at most 1/32 of its size; intersection keeps
