@@ -43,10 +43,27 @@ decision that also updates the maintainer policy. See
 The reports disagree on package names: Frost1 uses `frost-bags`,
 `frost-multimaps`, and `frost-bimaps`; Frost2 uses `frost-bag`,
 `frost-multimap`, and `frost-bimap`. Both lists are preserved as alternatives.
-No naming policy is adopted and no package is created. A future proposal should
+No package naming policy is adopted and no package is created. A future proposal should
 pick one rule (for example, singular names for collection domains) and apply it
 to every domain at once. Suggested names are responsibility boundaries, not
 public namespaces.
+
+## Naming dispositions
+
+These decisions preserve the current API and name distinct proposed contracts;
+they do not implement any future collection or expression API. The report
+spellings below are historical alternatives, not additional public names.
+
+| Area | Disposition | Contract and limit |
+| --- | --- | --- |
+| Map lookup | Retain `LookupRef<Q>` instead of report names `MapGet<Q>` or `Get<Q>` | Returns the stored key and value; each implementation defines its query relation. |
+| Set lookup | Retain `SetContains<Q>` and `SetGet<Q>` instead of historical `Contains<Q>` and set `Get<Q>`, respectively | Membership does not promise a reference; retrieval returns the stored representative. |
+| Ordered map traversal | Retain `Entries` plus `OrderedEntries` instead of `SortedMapEntries` | Together they promise ascending key traversal; `OrderedEntries` also provides both endpoints. |
+| Multimap fibers | Propose distinct `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`; reject the historical `ListMultiMap` alternative | `SeqMultiMap` names ordered values with duplicates without implying linked-list storage. Detailed fiber semantics remain open. |
+| Bimap lifecycle | Propose insertion on `MutableBiMap` or a builder; keep `FrozenBiMap` structurally immutable | Frozen algebra may produce a new value; conflict and failure contracts remain open. |
+| Integer sets | Retain implemented `FrozenIntSet`; keep proposed `IntSetExpr`, `FrozenIntSetView`, and `PersistentIntSet` distinct | Respectively: owned eager set, borrowed algebra query, validated borrowed storage view, and owned persistent set. The last three remain unimplemented. |
+
+Package naming and map-difference spelling remain separate open decisions.
 
 ## Distinct logical contracts
 
@@ -105,7 +122,7 @@ traits in [`read`](../../src/read.rs) rather than silently renaming public APIs:
 | `MapGet` (Frost1), `Get` (Frost2) | `LookupRef<Q>` with `MapTypes`, or `SetGet<Q>` for sets | `LookupRef` already returns the stored key and value |
 | `Contains` (Frost2) | `SetContains<Q>` | Promises no stored reference |
 | `MapEntries`, `Entries` | `Entries` | Already shares `MapTypes` with lookup and mutation |
-| `SortedMapEntries` | `Entries` plus `OrderedEntries` | Ascending order is a separate promise |
+| `SortedMapEntries` | `Entries` plus `OrderedEntries` | Together promise ascending traversal; `OrderedEntries` provides endpoints |
 | `Len` | `Len`; `Cardinality` for `u64` counts | Counts are never truncated to `usize` |
 | `BagCount`, `PrefixIndex` | None | New capabilities; need their own proposal |
 | `difference_by_key` (Frost1), `difference_keys` (Frost2) | None | Pick one name in a map-algebra proposal |
@@ -138,7 +155,7 @@ not copy them.
 
 | Supplied sketch | Problem | Disposition |
 | --- | --- | --- |
-| Frost1 `FrozenBiMap::try_insert(&mut self, ...)` | Mutation on a frozen type contradicts frozen semantics | Put insertion on a mutable bimap or builder; frozen algebra consumes or borrows and returns a new value. See the [Frozen API guide](frozen-api.md#11-proposals-not-current-api). |
+| Frost1 `FrozenBiMap::try_insert(&mut self, ...)` | Mutation on a frozen type contradicts frozen semantics | Put insertion on `MutableBiMap` or a builder; frozen algebra consumes or borrows and returns a new value. See the [Frozen API guide](frozen-api.md#11-proposals-not-current-api). |
 | Frost1 `#[derive(Hash, Eq, PartialEq)]` key whose equality "depends only on `logical_id`" | Derived traits compare and hash every field, including `display` | Write `PartialEq`, `Eq`, and `Hash` by hand over the same fields. The README's [representative example](../../README.md#contracts-that-matter) is a compiled doctest. |
 | Lookup traits over unconstrained `Q` (`MapGet<Q>`, `get_by_left<Q>`, `get_left<Q: ?Sized>`) | No relation ties `Q` to the stored key, so an implementation cannot look anything up correctly | Keep the relation on each implementation, as `LookupRef` does. Do not add a blanket `Borrow` bound that excludes `Equivalent`-style backends. |
 | Frost1 `model_inner_join(a: &BTreeMap, b: &BTreeMap) -> Vec<(&K, &A, &B)>` | Two reference inputs and no `self`: lifetime elision fails, so the sketch does not compile | Name the lifetimes explicitly. Treat every report snippet as a sketch until compiled. |
@@ -225,7 +242,8 @@ representation, hasher, public bounds, or frozen partner.
    tests and relevant Miri or scheduler-model checks. State bounds and the exact
    production code each model executes.
 
-The reports' proposed names and signatures remain open design questions. The
+The selected names above are settled; other proposed signatures and semantics
+remain open design questions. The
 [research synthesis](../research/synthesis/foundations-and-engine-roadmap.md)
 orders the follow-up questions. This integration preserves the reports' full
 content and records a compatible roadmap; it does not advertise those APIs as

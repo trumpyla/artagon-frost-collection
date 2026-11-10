@@ -261,9 +261,9 @@ raw file retains the originals; the corrections are noted inline.
 Frost already has this capability as `LookupRef<Q>` (returns the stored
 representative key) and separate `Entries` traversal; the query relation is a
 per-implementation bound, not a trait bound (`SRC-FROST-SRC-READ`). The
-proposal maps onto existing names; nothing is renamed. An `OrderedEntries`
-endpoint trait exists; a sorted-traversal promise for merges is a separate
-capability the set-algebra design also requires.
+proposal maps onto existing names; nothing is renamed. `Entries` together
+with `OrderedEntries` promises ascending key traversal, and `OrderedEntries`
+provides endpoints. A merge still needs compatible key ordering across inputs.
 
 **Map algebra.** `merge_with(self, rhs, resolve)`, `inner_join`,
 `left_join`, `full_join`, `difference_by_key`, `symmetric_difference_by_key`
@@ -279,8 +279,9 @@ order, panic behaviour, and owned output are open (`Q-MAP-1`).
 `difference`, `symmetric_difference`; checked `try_sum` or terminal-deferred
 `try_count`/`try_cardinality` for overflow (`Q-BAG-1`).
 
-**Multimaps.** Separate types `SeqMultiMap`, `SetMultiMap`, `BagMultiMap`
-(Frost2 spells the first `ListMultiMap`); relation algebra on `SetMultiMap`
+**Multimaps.** The selected proposed types are `SeqMultiMap`, `SetMultiMap`,
+and `BagMultiMap` (Frost2's `ListMultiMap` is a historical alternative);
+relation algebra on `SetMultiMap`
 (`pairs_union`, …); projections `distinct_keys`, `key_occurrences`, `pairs`,
 `values_for` (`Q-MM-1`).
 
@@ -294,8 +295,8 @@ impl<L, R> FrozenBiMap<L, R> {
 
 is rejected as written: a frozen type has no `&mut self` structural
 mutation (`SRC-FROST-SRC-FROZEN`, `SRC-FROST-DOC-PHILOSOPHY`). The corrected
-shape keeps the conflict model and moves mutation to a mutable family or a
-consuming operation:
+shape keeps the conflict model and puts insertion on a mutable family or
+builder; frozen algebra can return a new frozen value:
 
 ```text
 impl<L, R> MutableBiMap<L, R> {
@@ -419,7 +420,7 @@ verification document is the authority for what each tool does here.
 | S1-3 | Frost keeps left representatives on set overlap | implemented and inspected | `SRC-FROST-DOC-SET-OPERATIONS`, `SRC-FROST-TESTS` | Current behaviour |
 | S1-4 | Bag sum and max-union are distinct; literature warns against copying set laws | unverified (literature); derived (definitions) | `SRC-INPUT-ALBERT-1991` not read | Definitions accepted; attribution open (`Q-BAG-1`) |
 | S1-5 | Bimap union is not closed | derived reasoning | Counterexample in section 2 | Accepted |
-| S1-6 | `FrozenBiMap::try_insert(&mut self)` | proposal, rejected as written | `SRC-FROST-SRC-FROZEN` | Corrected to mutable builder or consuming operation |
+| S1-6 | `FrozenBiMap::try_insert(&mut self)` | proposal, rejected as written | `SRC-FROST-SRC-FROZEN` | Insertion on `MutableBiMap` or a builder; frozen algebra returns a new value |
 | S1-7 | FST n-ary operations are total-input-linear with `O(k)` memory | documented upstream, qualified | `SRC-FST-0_4_7-OPBUILDER-DOCS`, `SRC-FST-0_4_7-RAW-OPS` | Qualified: heap-based; conservative derived bound with key length, decoding, and workspace stated separately; not measured; not transferable |
 | S1-8 | Roaring exposes count kernels and rank/select | documented upstream (source) | `SRC-ROARING-0_12_0-SRC` | Verified at 0.12.0 |
 | S1-9 | `crates/frost-*` workspace exists and should be finished | historical assumption, false at baseline | `SRC-FROST-CARGO` | One package; crate names are proposals |

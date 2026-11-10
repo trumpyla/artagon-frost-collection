@@ -11,7 +11,19 @@ mod support;
 use frost::family::FrozenOrderedSet;
 use std::collections::BTreeSet;
 use std::hint::black_box;
+use support::workload::{Class, Emit, Layout, Order, Partition, SetPairSpec, WorkloadSpec};
 use support::{as_u64, measure};
+
+/// Factory names include the complete reproducible spec and seed. Construction
+/// and the `BTreeSet` oracle stay outside timing as for hand-written cases.
+fn factory_case(label: &str, spec: &SetPairSpec) {
+    let pair = spec
+        .build()
+        .and_then(|pair| pair.to_u32())
+        .unwrap_or_else(|error| panic!("ordered.{label}: {error}"));
+    eprintln!("ordered.{label} := {}", pair.id);
+    case(&format!("{label}_{}", pair.id), pair.left, pair.right);
+}
 
 fn case(name: &str, left: Vec<u32>, right: Vec<u32>) {
     let left_std: BTreeSet<_> = left.iter().copied().collect();
@@ -113,8 +125,67 @@ fn main() {
     case("balanced_then_long_gap", left, right);
 
     case("separated", (0..4096).collect(), (8192..12_288).collect());
+    factory_cases();
     let same: FrozenOrderedSet<_> = (0..65_536_u32).collect();
     measure("ordered.same_storage.frost_count", 65_536, || {
         as_u64(black_box(&same).intersection_len(black_box(&same)))
     });
+}
+
+/// Seeded shapes the hand-written cases cannot express: sparse uniform skew,
+/// run/gap blocks, and shuffled duplicate-bearing input.
+fn factory_cases() {
+    factory_case(
+        "factory_uniform_skew",
+        &SetPairSpec::new(
+            1,
+            65_536,
+            64,
+            32,
+            Layout::Uniform {
+                base: 0,
+                span: 1 << 18,
+            },
+        ),
+    );
+    factory_case(
+        "factory_runs_blocks",
+        &SetPairSpec::new(
+            2,
+            4096,
+            4096,
+            1024,
+            Layout::Runs {
+                base: 0,
+                run: 256,
+                gap: 768,
+            },
+        )
+        .with_partition(Partition::Blocks([
+            Class::LeftOnly,
+            Class::Shared,
+            Class::RightOnly,
+        ])),
+    );
+    factory_case(
+        "factory_shuffled_duplicates",
+        &SetPairSpec::new(
+            3,
+            8192,
+            8192,
+            4096,
+            Layout::Uniform {
+                base: 0,
+                span: 1 << 20,
+            },
+        )
+        .with_partition(Partition::Shuffled)
+        .with_emit(
+            Emit {
+                order: Order::Shuffled,
+                duplicates: 1024,
+            },
+            Emit::ASCENDING,
+        ),
+    );
 }

@@ -134,8 +134,8 @@ must be chosen when a map-algebra design is accepted (`Q-MAP-1`); neither is
 an established public API, so nothing is renamed.
 
 The `BiMap<L, R>` trait with `try_insert(&mut self, …)` (hazard H14) is
-pseudocode on an unspecified receiver. The corrected shape (mutation on a
-mutable family or a consuming operation; frozen type read-only) is in the
+pseudocode on an unspecified receiver. The corrected shape (insertion on
+`MutableBiMap` or a builder; frozen type structurally immutable) is in the
 survey. The `BiInsertError::{LeftOccupied, RightOccupied, BothOccupied}` with
 the attempted pair returned is a reasonable conflict model; "transactional"
 must mean that a rejected insert leaves both indexes unchanged, which needs a
@@ -249,7 +249,7 @@ and join planning** is adopted as `Q-MAP-1`'s priority after `Q-ALG-1`.
 | S2-3 | No target restrictions were given | historical assumption, false here | `SRC-FROST-CARGO` | Corrected |
 | S2-4 | FST n-ary `O(Σ n_i)` with `O(k)` memory | documented upstream, qualified | `SRC-FST-0_4_7-OPBUILDER-DOCS`, `SRC-FST-0_4_7-RAW-OPS` | Qualified (`Q-NARY-1`) |
 | S2-5 | Ecosystem versions and licenses | unverified, dated | Catalog input rows | Snapshot of unknown date; roaring drift noted |
-| S2-6 | `BiMap::try_insert(&mut self)` trait | pseudocode | `SRC-FROST-SRC-FROZEN` | Receiver must be mutable family or consuming op |
+| S2-6 | `BiMap::try_insert(&mut self)` trait | pseudocode | `SRC-FROST-SRC-FROZEN` | Insertion on `MutableBiMap` or a builder; frozen algebra returns a new value |
 | S2-7 | Verification commands and CI skeleton | historical proposal | `SRC-FROST-CARGO`, `SRC-FROST-DOC-VERIFICATION` | Replaced by Make targets; not copied |
 | S2-8 | Next deep dive: map algebra and join planning | proposal | — | Adopted as `Q-MAP-1` priority |
 | S2-9 | Rank/select succinct dictionaries motivate dense integer maps | unverified attribution; rank/select verified in Roaring | `SRC-ROARING-0_12_0-SRC`, `SRC-INPUT-RRR-2002` | Open |

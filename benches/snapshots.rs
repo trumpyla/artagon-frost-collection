@@ -18,6 +18,19 @@ fn readers(name: &str, reader_count: usize, read: impl Fn() -> u64 + Sync) {
     const PER_READER: u32 = 200_000;
     let operations = PER_READER * u32::try_from(reader_count).expect("reader count fits u32");
     let expected = u64::from(operations) * 3;
+    let case = format!("snapshot.{name}.{reader_count}_readers.aggregate_ns_per_read");
+    // Inventory mode: validate one read per reader on this thread and skip
+    // worker creation, barriers, and the timed batches entirely.
+    if support::listing() {
+        let checksum: u64 = (0..reader_count).map(|_| read()).sum();
+        assert_eq!(
+            checksum,
+            3 * u64::try_from(reader_count).expect("reader count fits u64"),
+            "benchmark answer: {name}"
+        );
+        support::list_case(&case, "aggregate-readers");
+        return;
+    }
     let start = Barrier::new(reader_count + 1);
     let (send, receive) = mpsc::sync_channel(reader_count);
     let mut samples = [0.0; support::SAMPLE_COUNT];
@@ -53,17 +66,17 @@ fn readers(name: &str, reader_count: usize, read: impl Fn() -> u64 + Sync) {
             }
         }
     });
-    support::report(
-        &format!("snapshot.{name}.{reader_count}_readers.aggregate_ns_per_read"),
-        operations,
-        samples,
-    );
+    support::report(&case, operations, samples);
 }
 
 fn main() {
     support::header();
     let available = std::thread::available_parallelism().map_or(1, std::num::NonZero::get);
-    let mut reader_counts = vec![1, available.min(4)];
+    let mut reader_counts = if support::listing() {
+        (1..=4).collect()
+    } else {
+        vec![1, available.min(4)]
+    };
     reader_counts.dedup();
     eprintln!("available_parallelism={available}; readers={reader_counts:?}; writer=none");
     let store = SnapshotStore::new(FrozenVec::from((0..64_u64).collect::<Vec<_>>()));

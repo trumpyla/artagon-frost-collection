@@ -62,6 +62,32 @@ help assess them but do not establish cross-platform superiority. Do not add
 wall-clock speed assertions to CI. Comparison-count bounds belong in regression
 tests when they express the intended algorithmic complexity.
 
+## Isolation from coverage, sanitizers, and policy thresholds
+
+- Frost benchmarks use custom `harness = false` executables backed by
+  [`benches/support/mod.rs`](../../benches/support/mod.rs) (not Criterion).
+  Setting `FROST_BENCH_LIST=1` lists registered benchmark cases without timing
+  loops so `make catalog-inventory` can verify every benchmark executable against
+  [`verification/metadata/bench-inventory.json`](../../verification/metadata/bench-inventory.json)
+  via [`verification/catalog`](../../verification/catalog/Cargo.toml).
+- Never collect timing samples from binaries built with `-C instrument-coverage`
+  (`cargo-llvm-cov`), sanitizer instrumentation (`cargo-fuzz` / AddressSanitizer),
+  Miri, or Loom, and never run benchmarks concurrently with `make check`,
+  `make coverage`, `make mutants`, or `make fuzz-smoke`.
+- Keep answer validation outside the timed loop using `measure` and
+  `measure_with_setup` in [`benches/support/mod.rs`](../../benches/support/mod.rs).
+  State explicitly whether input construction, clone/thaw staging, result
+  destruction, and worker-thread lifecycle are inside or outside the timed
+  region.
+- Do not change adaptive crossover defaults (`8` entries for `AdaptiveHashMap`,
+  `32` entries for `AdaptiveOrderedMap`) or `IntSetPolicy` planner constants
+  (`128`-byte Dense preference, `8 MiB` dense budget, `4,096` Roaring partitions)
+  from a single host's timings alone. Threshold changes require cross-architecture
+  evidence, counterworkloads (including oscillation and skewed distributions),
+  and updates to the [verification guide](../verification.md),
+  [testing standards](testing.md), and the
+  [verification strategy report](../research/reports/rust-verification-strategy.md).
+
 Historical results and their environment are under `verification/history/` and
 [the previous review](../reviews/performance-review.md). The prior production
 candidate's results are under `verification/results/`; integer-profile results

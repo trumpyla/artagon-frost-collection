@@ -1,0 +1,73 @@
+{
+  "schema": "frost-coverage-policy/v1",
+  "epic": "frost-wou",
+  "dependent_reorg_epic": "frost-wlt",
+  "baseline_reference": "verification/crate-standards-validation/baseline-coverage.json",
+  "baseline_commit": "6ab0918dbbf655894d8d3176b81091bd28899c5f",
+  "baseline_scope": {
+    "host_target": "aarch64-apple-darwin",
+    "toolchain_version": "1.99.1",
+    "cargo_llvm_cov_version": "0.9.1",
+    "features": "all-features",
+    "denominator_kind": "file_scoped_library_source_including_inline_cfg_test_modules",
+    "doctests_instrumented": false,
+    "benchmarks_executed": false,
+    "ignore_filename_regex": "(^|/)(tests|benches|examples|verification)/"
+  },
+  "observed_baseline": {
+    "lines": { "covered": 7089, "count": 9183, "percent": 77.1969944462594 },
+    "functions": { "covered": 1343, "count": 1894, "percent": 70.90813093980992 },
+    "regions": { "covered": 11067, "count": 14230, "percent": 77.77231201686578 },
+    "instantiations": { "covered": 5434, "count": 8602, "percent": 63.171355498721226, "gate_status": "report_only_not_gated" },
+    "branches": { "status": "unmeasured_on_stable", "target": "provisional_set_after_first_measurement" },
+    "doctests": { "status": "unmeasured_on_stable" },
+    "linux_x86_64_baseline": { "status": "unmeasured_not_proven_by_macos" }
+  },
+  "post_api_contracts_observation_note": {
+    "approximate_lines_percent": 79.16,
+    "approximate_functions_percent": 73.76,
+    "approximate_regions_percent": 79.43,
+    "status": "below_high_coverage_targets",
+    "evidence": "verification/crate-standards-validation/after-coverage.json"
+  },
+  "enforcement_modes": {
+    "portable_adoption_floor": {
+      "fail_under_lines": 77,
+      "fail_under_functions": 70,
+      "fail_under_regions": 77,
+      "below_macos_baseline": true,
+      "rationale": "Coarse integer adoption floor (77/70/77) below the aarch64-apple-darwin 6ab0918 baseline (77.197/70.908/77.772). Used across targets (including ubuntu-latest CI) where macOS numbers cannot be assumed identical."
+    },
+    "scoped_exact_ratchet": {
+      "matching_host_target": "aarch64-apple-darwin",
+      "matching_toolchain": "1.99.1",
+      "matching_tool": "cargo-llvm-cov 0.9.1",
+      "matching_ignore_regex": "(^|/)(tests|benches|examples|verification)/",
+      "baseline_file": "verification/crate-standards-validation/baseline-coverage.json",
+      "comparison": "source-summary.json data[0].totals.{lines,functions,regions}.percent >= baseline totals.{lines,functions,regions}.percent",
+      "scope_metadata_output": "target/coverage/scope-metadata.json"
+    }
+  },
+  "followup_beads_tasks": {
+    "frost-wou.6": "Curate the complete public API obligation inventory",
+    "frost-wou.7": "Measure branch and isolated-profile coverage and establish a separate Linux CI baseline",
+    "frost-wou.8": "Establish mutation baseline and triage survivors",
+    "frost-wou.9": "Reach high coverage targets (lines >= 90%, regions >= 90%, functions >= 85%) with meaningful API tests",
+    "frost-wou.10": "Automate verification dependency isolation checks",
+    "frost-wlt.1_to_6": "Future flat crates/frost-* reorganization tasks gated on frost-wou completion"
+  },
+  "crates_md_high_coverage_target": {
+    "fail_under_lines": 90,
+    "fail_under_functions": 85,
+    "fail_under_regions": 90,
+    "instantiations": "report_only",
+    "branches": "provisional_set_after_first_measurement",
+    "achieved": false
+  },
+  "unsafe_module_policy": {
+    "allowed_paths": ["src/adaptive/seq/buf.rs"],
+    "baseline_lines_percent": 88.42975206611571,
+    "target_lines_percent": 95.0,
+    "mandatory_companion_gates": ["make miri", "make bounded", "make tools-check"]
+  }
+}

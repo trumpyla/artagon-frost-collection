@@ -1,0 +1,20 @@
+{
+  "schema": "frost-mutation-triage/v1",
+  "epic": "frost-wou",
+  "config_path": ".config/mutants.toml",
+  "baseline_commit": "6ab0918dbbf655894d8d3176b81091bd28899c5f",
+  "status": "unmeasured_tool_unavailable_on_host",
+  "tool": {
+    "name": "cargo-mutants",
+    "host_observed": false,
+    "command": "cargo mutants --config .config/mutants.toml --output target/mutants"
+  },
+  "allowed_dispositions": [
+    "test-gap",
+    "equivalent-mutant",
+    "performance-fast-path",
+    "defensive-overflow-guard",
+    "diagnostic-only"
+  ],
+  "triaged_survivors": []
+}

@@ -326,8 +326,8 @@ current crate, and nothing here is a usage example.
 | Map merge and join, bags, multimaps, bimaps, sequence algebra, prefix indexes | [Collection algebra](collection-algebra.md) |
 | Computed sets over durable or revisioned sources | [Research synthesis](../research/synthesis/foundations-and-engine-roadmap.md) |
 
-Any new frozen type must follow the rules above: mutation belongs to a mutable
-family or builder, or to a consuming operation that returns a new frozen value.
+Any new frozen type must follow the rules above: structural mutation belongs to
+a mutable family or builder. A consuming operation may return a new frozen value.
 The supplied research placed `try_insert(&mut self, ...)` on a frozen bimap;
 that contradicts frozen semantics. The corrected shape, as pseudocode:
 

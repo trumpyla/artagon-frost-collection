@@ -1,0 +1,27 @@
+[package]
+name = "frost-catalog"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Discovery and validation of the Frost test/benchmark metadata catalog"
+
+# Isolated from the library dependency graph.
+[workspace]
+
+[dependencies]
+syn = { version = "2", features = ["full", "parsing"] }
+proc-macro2 = "1"
+quote = "1"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+# Style-only pedantic lints relaxed for this standalone tool; correctness
+# lints stay at their defaults.
+too_many_lines = "allow"
+collapsible_if = "allow"
+match_same_arms = "allow"
+naive_bytecount = "allow"
+assert_is_empty = "allow"

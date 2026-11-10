@@ -1,13 +1,18 @@
 # frost-collections
 
-Mutable and frozen collection families with stable public names, small
-capability traits, and optional adapters for native Rust collections. Families
-own their mutation and freeze contracts; native backends retain their specialized
-APIs. Concurrent collections use a separate access model.
+Frost gives Rust applications dependable collection semantics as their storage
+and execution needs change. Build mutable values, freeze their structure,
+combine sets, and publish snapshots with explicit rules for representatives,
+traversal, ownership, and cost.
+
+The library provides mutable/frozen families, small capability traits, typed
+integer sets, adaptive storage, and optional native collection adapters.
+Families own their mutation and freeze contracts; native backends retain their
+specialized APIs. Concurrent collections use a separate access model.
 
 **Target:** **Rust 1.99.1, edition 2024**. `rust-toolchain.toml` pins 1.99.1;
 Cargo declares `rust-version = "1.99.1"`, and required CI jobs use that exact
-release. Version **0.4.0** adds fast frozen set algebra to the reviewed family,
+release. Version **0.4.0** adds frozen set algebra to the reviewed family,
 adaptive-storage, framework and concurrency design. The library is
 `no_std`; `alloc` and `std` add capabilities. The default enables only `std`.
 
@@ -197,8 +202,25 @@ in-memory index alone does not prove that an authorization answer is fresh.
 | Map merge and join, bags, multimaps, bimaps, sequence algebra, prefix indexes | Proposal | [Collection algebra](docs/design/collection-algebra.md) |
 | Persistent tree directories; a separate persistent integer family | Proposal | [Persistent storage](docs/design/persistent-integer-storage.md) |
 | Computed sets over durable or indexed relations | Research | [Research synthesis](docs/research/synthesis/foundations-and-engine-roadmap.md) |
-| A `frost-api` facade over a `crates/frost-*` workspace | Unadopted proposal; current policy keeps one package | [Design decisions](docs/design/decisions.md) |
+| A `frost-api` facade over a `crates/frost-*` workspace | Reorganization target (epic `frost-wlt`); boundaries not approved; current policy keeps one package | [Crate layout](docs/design/crate-layout.md), [design decisions](docs/design/decisions.md) |
 | Authorization or policy engine, solver, identity server, durable store, distributed consistency protocol | Outside scope | — |
+
+### Naming and compatibility
+
+Research terminology maps to the existing API: `LookupRef<Q>` returns stored
+map keys and values; `SetContains<Q>` tests membership; `SetGet<Q>` retrieves a
+stored representative. `Entries` together with `OrderedEntries` promises
+ascending map traversal. These public names are retained.
+
+The proposed multimap contracts are `SeqMultiMap`, `SetMultiMap`, and
+`BagMultiMap`, with different order and duplicate laws. Proposed bimap insertion
+belongs on `MutableBiMap` or a builder; `FrozenBiMap` stays structurally
+immutable. `FrozenIntSet` remains the implemented owned integer set;
+`IntSetExpr`, `FrozenIntSetView`, and `PersistentIntSet` describe distinct future
+query, storage-view, and persistent-version contracts. None of these future
+types is implemented by the naming decision. The
+[naming table](docs/design/collection-algebra.md#naming-dispositions) records
+every selected spelling and its rationale.
 
 This unreleased revision integrates shared integer storage and explicit Chunked
 sets while retaining the main project's checked output policies and generic
@@ -218,13 +240,15 @@ selective merge; earlier reviews and benchmarks remain historical evidence.
 | Index | [Documentation index](docs/README.md) | Complete inventory of design, research, review, and maintenance documents | Navigation |
 | Frozen API | [Frozen API guide](docs/design/frozen-api.md) | Families, exact wrappers, plans, recovery, access models, costs, snapshots | Current contracts; proposals marked |
 | Principles | [Philosophy](docs/design/philosophy.md), [architecture](docs/design/architecture.md), [decisions](docs/design/decisions.md) | Durable principles, current architecture, and recorded choices | Current design |
+| Naming | [Naming dispositions](docs/design/collection-algebra.md#naming-dispositions) | Stable public capabilities and distinct proposed collection names | Current decision; future types marked |
 | Algebra | [Set operations](docs/set-operations.md), [collection algebra](docs/design/collection-algebra.md), [general set algebra](docs/design/set-algebra.md) | Implemented set contracts; proposed algebra for other collections | Implemented and proposal |
 | Integers | [Integer design](docs/design/integer-sets.md), [integer views](docs/design/integer-views.md), [roadmap](docs/design/integer-roadmap.md) | Codecs, storage, policies; deferred expressions | Implemented and proposal |
 | Versions | [Snapshots](docs/design/snapshots.md), [persistent storage](docs/design/persistent-integer-storage.md) | Publication, retries, sharing, and retention | Implemented and proposal |
 | Research | [Research index](docs/research/README.md), [synthesis](docs/research/synthesis/foundations-and-engine-roadmap.md), [sources](docs/research/SOURCES.md), [integration audit](docs/research/integration-audit.md) | Curated reports, decision map, source evidence, corrections and gaps | Research; not accepted design |
 | Templates | [Research prompt](docs/research/templates/research-prompt.md) | Start a landscape, deep-dive, or validation study | Template |
 | Examples | [examples/](examples/) | Executable scenarios run as tests | Implemented; see feature requirements |
-| Verification | [Verification scope](docs/verification.md), [benchmark method](docs/maintainers/benchmarks.md) | Model assumptions, bounds, and measurement rules | Current guidance |
+| Verification | [Verification scope](docs/verification.md), [testing standard](docs/maintainers/testing.md), [benchmark method](docs/maintainers/benchmarks.md) | Model assumptions, bounds, gate tiers, and measurement rules | Current guidance |
+| Standards | [Crate standard](CRATES.md), [crate layout](docs/design/crate-layout.md) | Package layout, dependency placement, API obligations, coverage accounting, test and benchmark metadata; reorganization target | Current standard; target marked |
 | Evidence | [Supplied inputs](docs/reviews/supplied/README.md), [integration validation](docs/revision2-integration-validation.md) | Unmodified inputs and dated results | Historical evidence |
 | Contributing | [Contributor guide](CONTRIBUTING.md), [maintainer guide](docs/maintainers/guide.md), [release procedure](docs/maintainers/releasing.md) | How to change, verify, and release | Current process |
 
@@ -713,11 +737,28 @@ make check
 make verify
 ```
 
+`make check` runs formatting, Clippy, rustdoc, tests and examples, plus the API
+obligation catalog and live benchmark inventory. The isolated fuzz, coverage,
+mutation, and model-checking tools have separate targets and stay outside the
+library dependency graph. The [testing standard](docs/maintainers/testing.md)
+defines the pull-request, nightly, and release gates; the
+[standards evidence](verification/crate-standards-validation/README.md) records
+executed checks and the coverage scopes still to measure. Coverage targets are
+goals, not claims of measured coverage.
+
+Use the [issue forms](.github/ISSUE_TEMPLATE/) for bug reports, proposals, and
+research or verification requests, and the
+[PR template](.github/pull_request_template.md) to describe a change and its
+evidence. [GitHub intake and Beads](docs/maintainers/github-workflow.md) explains
+how reports connect to the standards epic `frost-wou` and its dependent crate
+reorganization epic `frost-wlt`.
+
 See [the documentation index](docs/README.md),
 [design philosophy](docs/design/philosophy.md),
 [contributor guide](CONTRIBUTING.md), and
 [maintainer notes](docs/maintainers/guide.md). [AGENTS.md](AGENTS.md) records the
-same invariants and verification expectations for automated changes.
+same invariants and verification expectations for automated changes, and
+[CRATES.md](CRATES.md) defines the layout, coverage, and metadata standard.
 [Integration validation](docs/revision2-integration-validation.md) records the
 reviewed source's executed results;
 [GitHub import checks](verification/revision2-integration/github-import-ci/README.md)

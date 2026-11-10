@@ -1,0 +1,27 @@
+name: Research or verification
+description: Propose an investigation or verification task and its evidence.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For suspected vulnerabilities, follow SECURITY.md instead of opening a
+        public issue. Do not include secrets or private data.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question and scope
+      description: State the question, affected public APIs or contracts, and the scenario or domain to investigate.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance and evidence
+      description: Describe the result needed, evidence already observed, planned checks, assumptions, and known gaps. Do not treat planned checks as results.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment and related work
+      description: Include relevant revision, toolchain, feature or target profiles, metadata or catalog IDs, scenarios, tags, issues, Beads items, or epics when known.

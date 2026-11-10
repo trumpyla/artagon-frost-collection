@@ -1,0 +1,34 @@
+name: Bug report
+description: Report behavior that violates a documented or expected contract.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suspected vulnerabilities should not be reported in a public issue. Follow
+        the repository's SECURITY.md. Do not include secrets or private data.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Name the affected public APIs and expected contract, then describe what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproducer
+      description: Include the smallest public example and commands or steps needed to reproduce it. Redact sensitive data.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include Frost version or revision, Rust toolchain, affected target or OS, and feature profile.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and related work
+      description: Include observed output, checks and gaps, and related metadata or catalog IDs, issues, Beads items, epics, tags, or scenarios if known.

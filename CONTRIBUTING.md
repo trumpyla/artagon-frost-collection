@@ -12,7 +12,10 @@ make check
 
 Read [the design philosophy](docs/design/philosophy.md) before changing a public
 family or feature. Use [the maintainer guide](docs/maintainers/guide.md) to find
-the relevant implementation, invariants, and tests.
+the relevant implementation, invariants, and tests. [CRATES.md](CRATES.md)
+states where code, tests, benchmarks, and verification harnesses go, which
+dependencies may reach which build, the public API obligations a change must
+cover, and the metadata every test and benchmark needs.
 
 ## Changes that are easy to review
 
@@ -25,7 +28,11 @@ edits or tests that only repeat an implementation.
 Use the existing naming and capability traits. Prefer a private kernel over a
 new public abstraction when only an implementation changes. New public methods
 need rustdoc with ownership, panic, complexity, feature, and concurrency details
-where relevant. Compile-fail examples are part of the API contract.
+where relevant. Compile-fail examples are part of the API contract. List the
+public obligations the change adds or alters and the tests that assert them.
+Quote a coverage number only with its revision, toolchain, target, features,
+and exclusions; the measured baseline and targets are in
+[CRATES.md](CRATES.md#measured-baseline-and-targets).
 
 For a performance change, provide correct answers and a fair native baseline,
 then raw measurements with the compiler, CPU, flags, workload shape, and what is
@@ -36,7 +43,7 @@ timed. Preserve regressions. See [benchmark guidance](docs/maintainers/benchmark
 | Command | Purpose |
 | --- | --- |
 | `make` or `make build` | Build the default library profile |
-| `make check` | Formatting, lints, docs, all-feature tests and examples |
+| `make check` | Formatting, lints, docs, all-feature tests and examples, catalog and benchmark-inventory validation |
 | `make verify` | Complete host checks, profiles, features, integers, examples, and package |
 | `make profiles` | Core-only, alloc-only, and default profiles |
 | `make features` | Each optional integration independently |
@@ -48,11 +55,22 @@ timed. Preserve regressions. See [benchmark guidance](docs/maintainers/benchmark
 | `make bounded` | Exhaustive finite collections and retry model |
 | `make loom` | Instrumented publication protocol model using its committed lockfile |
 | `make kani` | Bounded symbolic proof harnesses; requires Kani |
+| `make catalog` | Catalog tool tests and structural metadata check |
+| `make catalog-inventory` | Exact benchmark case names against the inventory, without timing |
+| `make nextest` | Tests through cargo-nextest; requires cargo-nextest |
+| `make coverage` | Source coverage summary and scope record; requires cargo-llvm-cov |
+| `make coverage-gate` | Portable adoption floor plus the exact-scope ratchet ([CRATES.md](CRATES.md#measured-baseline-and-targets)) |
+| `make coverage-branch` | Nightly branch-coverage diagnostic |
+| `make fuzz-check` | Deterministic replay of the fuzz seed corpus on stable |
+| `make fuzz-smoke` | Bounded libFuzzer run; requires cargo-fuzz and `FUZZ_TOOLCHAIN` |
+| `make mutants` | Mutation testing; requires cargo-mutants |
 | `make shell-check` | ShellCheck, shfmt, and Bats behavior tests for shell/Make changes |
 | `make tools-check` | Optional ast-grep rule tests and production scan |
 | `make search-index` | Refresh the ignored local tgrep index |
 
-`make help` is read-only and runs no Cargo commands. `all` is the default build
+The [testing standard](docs/maintainers/testing.md) assigns these targets to
+pull-request, nightly, and release tiers. `make help` is read-only and runs no
+Cargo commands. `all` is the default build
 target; the broader release-review entry point is `verify`. Miri, embedded,
 and formal tools are explicit targets and fail when prerequisites are absent.
 `make -j check` may run independent checks concurrently; Cargo manages its

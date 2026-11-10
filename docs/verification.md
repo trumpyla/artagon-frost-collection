@@ -8,9 +8,16 @@ arc-swap's implementation.
 
 Use the root [Makefile](../Makefile) for current execution: `make check` is the
 normal gate, `make verify` runs the broader host matrix, and `make embedded`,
-`make miri`, `make bounded`, `make loom`, and `make kani` are explicit additional
-scopes. `make help` lists the smaller targets. The contributor guide describes
-[tool prerequisites and shell checks](../CONTRIBUTING.md).
+`make miri`, `make bounded`, `make loom`, `make kani`, `make nextest`,
+`make coverage`, `make coverage-gate`, `make coverage-branch`, `make mutants`,
+`make fuzz-check`, `make fuzz-smoke`, `make catalog`, and
+`make catalog-inventory` are explicit additional scopes. `make help` lists the
+targets. The contributor guide describes
+[tool prerequisites and shell checks](../CONTRIBUTING.md), while
+[maintainer testing standards](maintainers/testing.md) and the
+[Rust verification strategy report](research/reports/rust-verification-strategy.md)
+define the coverage denominators, mutation triage rules, and gate tiers for
+epic `frost-wou`.
 Older reports retain the exact historical `scripts/verify*.sh` commands; those
 dispatchers have been replaced by Make recipes. The current documentation-link
 check uses Bash and the metadata recipes use `jq`, with no Python dependency.
@@ -58,6 +65,8 @@ checkout; record any fresh execution separately.
 | Three-operation inline test under Miri | Actual inline transitions and per-element ownership counters | All 7^3 traces at capacities 0 and 2; 686 traces total | The larger native five-operation domain, arbitrary capacities, or every unwind path |
 | `verification/loom` | The same production retry loop with Loom-instrumented synchronization | Two and three one-shot incrementing writers; no preemption, permutation, or duration truncation | arc-swap's pointer publication, reference counting, reclamation, or lock-free progress |
 | `verification/kani` | Actual public collection APIs and the exact private `InlineBuf` source | Six bounded harnesses, described below | Unbounded collection correctness, arbitrary callbacks/destructors, or concurrent memory ordering |
+| `tests/api_contracts.rs` | Public `MutableVec`, `MutableOrderedMap` entries/ranges/iterators, and generic `MapInsert`/`MapRemove`/`LookupRef` capabilities | Five initial vectors across all 16^3 three-step traces (20,480 traces); deterministic `usize::MAX` reservation overflow; 8-element non-`Clone` partial drain drop counters; explicit key-representative tags and lazy callback counters ([obligations](../verification/crate-standards-validation/api-contracts.md)) | Arbitrary trace lengths, allocator OOM behavior, panic unwinding, or unexercised families |
+| `verification/fuzz` (`make fuzz-check`, `make fuzz-smoke`) | Public `MutableOrderedSet`, `FrozenOrderedSet`, `MutableOrderedMap`, `FrozenOrderedMap`, and `FrozenIntSet<i32>` across all five `IntSetPolicy` modes | Deterministic seed-corpus and boundary replay on stable 1.99.1 plus coverage-guided `libFuzzer` runs on `nightly-2026-11-08` against `BTreeMap`/`BTreeSet` and `Hasher` event-stream oracles | Exhaustive proof over unbounded inputs or non-instrumented target architectures |
 
 The ordinary tests and the standalone Kani property helpers are executable
 without installing Loom or Kani. The two optional packages are isolated from
@@ -300,6 +309,71 @@ bound. Keep unwinding assertions enabled. If a bound fails, inspect why, increas
 it only to cover the intended finite execution, and rerun. Never disable
 unwinding assertions to turn an incomplete analysis into a green result. See
 [Kani's bounded-proof and loop-unwinding explanation][kani-unwind].
+
+## Source coverage, mutation testing, and gate tiers
+
+Source coverage and mutation score complement finite models and property tests;
+neither metric replaces public API semantic obligations. See
+[`verification/coverage/README.md`](../verification/coverage/README.md),
+[`verification/mutation/README.md`](../verification/mutation/README.md), and
+[maintainer testing standards](maintainers/testing.md) for the complete rules.
+
+### Observed coverage baseline, portable floor, and scoped ratchet
+
+The baseline observation at commit `6ab0918dbbf655894d8d3176b81091bd28899c5f` on
+`aarch64-apple-darwin` (Rust `1.99.1`, `cargo-llvm-cov 0.9.1`, `--all-features`,
+excluding `tests/`, `benches/`, `examples/`, and `verification/` from the
+denominator) is recorded in
+[`verification/crate-standards-validation/baseline-coverage.json`](../verification/crate-standards-validation/baseline-coverage.json).
+Because `--ignore-filename-regex '(^|/)(tests|benches|examples|verification)/'`
+filters by file path, the `src/**/*.rs` denominator is a **file-scoped
+library-source denominator** that includes inline `#[cfg(test)]` modules inside
+`src/` (such as unit tests in `src/integer/**`), not test-free production code.
+Custom `harness = false` benchmark targets in `benches/` do not run during
+default `cargo llvm-cov` execution.
+
+- **Lines (`6ab0918` baseline)**: `7,089 / 9,183` (`77.197%`)
+- **Functions (`6ab0918` baseline)**: `1,343 / 1,894` (`70.908%`)
+- **Regions (`6ab0918` baseline)**: `11,067 / 14,230` (`77.772%`)
+- **Instantiations (`6ab0918` baseline)**: `5,434 / 8,602` (`63.171%`, report-only; not gated)
+- **Same-scope observation with `tests/api_contracts.rs`**: ~`79.15%` lines
+  (`7,268 / 9,183`), ~`73.76%` functions (`1,397 / 1,894`), and ~`79.42%`
+  regions (`11,302 / 14,230`) on `aarch64-apple-darwin` (still below the
+  `90% / 85% / 90%` target; final raw coverage evidence is Root-owned).
+- **Unmeasured in baseline**: `x86_64-unknown-linux-gnu` Linux baseline (not
+  proven by macOS), branch coverage (`0 / 0` on stable `1.99.1`; requires
+  `make coverage-branch` with `+nightly-2026-11-08 --branch`; target provisional
+  until first measurement), MC/DC, doctest coverage, isolated feature-profile
+  coverage, mutation score, and complete public API obligation coverage.
+
+`make coverage-gate` enforces two distinct checks and always writes both
+`target/coverage/source-summary.json` and `target/coverage/scope-metadata.json`:
+1. A **portable integer adoption floor** (`--fail-under-lines 77`,
+   `--fail-under-functions 70`, `--fail-under-regions 77`), which is below the
+   `aarch64-apple-darwin` baseline (`77.197% / 70.908% / 77.772%`) and runs
+   across host targets including `ubuntu-latest` in
+   [`.github/workflows/verification.yml`](../.github/workflows/verification.yml).
+2. A **scoped exact non-regression ratchet** when the host target
+   (`aarch64-apple-darwin`), compiler (`rustc 1.99.1`), coverage tool
+   (`cargo-llvm-cov 0.9.1`), and exclusion regex all match
+   [`verification/crate-standards-validation/baseline-coverage.json`](../verification/crate-standards-validation/baseline-coverage.json).
+
+Follow-up Beads tasks (`frost-wou.6` through `frost-wou.10`, preceding the
+multi-crate migration in `frost-wlt.1` through `frost-wlt.6`) own raising the
+adoption floor toward the [`CRATES.md`](../CRATES.md) §5 high-coverage targets
+(`>= 90%` lines, `>= 85%` functions, `>= 90%` regions). High coverage is **not**
+claimed as achieved at the baseline.
+
+### Tool availability and fail-closed recipes
+
+Every optional verification target in [`Makefile`](../Makefile) checks the
+required tool binary first (`cargo nextest --version`, `cargo llvm-cov --version`,
+`cargo mutants --version`, `cargo fuzz --version`, `cargo kani --version`) and
+exits non-zero if the tool is absent. On the `aarch64-apple-darwin` validation
+host, `cargo-llvm-cov 0.9.1`, `cargo-nextest 0.9.151`, `cargo-fuzz 0.13.2`,
+`llvm-tools-preview`, and `nightly-2026-11-08` are installed and verified;
+`cargo-mutants` and `kani-verifier` are not installed locally and fail closed
+when invoked.
 
 ## Recording and maintaining evidence
 

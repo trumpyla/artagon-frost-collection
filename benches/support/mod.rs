@@ -5,6 +5,10 @@
 
 #![allow(dead_code)] // Each standalone benchmark uses a different subset.
 
+/// Deterministic workload factories; one source shared with the tests.
+#[path = "../../tests/support/workload.rs"]
+pub(crate) mod workload;
+
 use std::hint::black_box;
 use std::time::{Duration, Instant};
 
@@ -44,9 +48,32 @@ fn elapsed(iterations: u32, kernel: &mut impl FnMut() -> u64) -> Duration {
     started.elapsed()
 }
 
+/// Inventory mode: with `FROST_BENCH_LIST` set, every registered case prints
+/// one `case<TAB>name<TAB>timing` line to stdout and timing is skipped, so a
+/// validator can compare the executed inventory with the catalog. Answers are
+/// still checked, inputs are still constructed, and nothing else changes, so
+/// timed runs remain comparable with earlier revisions.
+pub(crate) fn listing() -> bool {
+    std::env::var_os("FROST_BENCH_LIST").is_some()
+}
+
+/// Print the inventory line for `name` when listing; returns whether timing
+/// must be skipped. Benchmarks that call `report` directly must consult this
+/// before their own timing loops.
+pub(crate) fn list_case(name: &str, timing: &str) -> bool {
+    if listing() {
+        println!("case\t{name}\t{timing}");
+        return true;
+    }
+    false
+}
+
 /// Measure a reusable operation with inputs prepared by the caller.
 pub(crate) fn measure(name: &str, expected: u64, mut kernel: impl FnMut() -> u64) {
     assert_eq!(kernel(), expected, "benchmark answer: {name}");
+    if list_case(name, "operation") {
+        return;
+    }
     let mut iterations = 1_u32;
     while elapsed(iterations, &mut kernel) < MIN_BATCH && iterations < 1 << 24 {
         iterations *= 2;
@@ -88,6 +115,9 @@ pub(crate) fn measure_with_setup<T>(
     mut kernel: impl FnMut(&mut T) -> u64,
 ) {
     assert_eq!(kernel(&mut setup()), expected, "benchmark answer: {name}");
+    if list_case(name, "destructive-with-setup") {
+        return;
+    }
     let mut iterations = 1_u32;
     while elapsed_with_setup(iterations, &mut setup, &mut kernel) < MIN_BATCH && iterations < 256 {
         iterations *= 2;

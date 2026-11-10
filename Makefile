@@ -12,12 +12,31 @@ SHELLCHECK ?= shellcheck
 SHFMT ?= shfmt
 AST_GREP ?= ast-grep
 MIRI_TOOLCHAIN ?= nightly-2026-11-08
+FUZZ_TOOLCHAIN ?= $(MIRI_TOOLCHAIN)
 EMBEDDED_TARGET ?= thumbv7em-none-eabihf
 EMBEDDED_NO_ATOMICS_TARGET ?= thumbv6m-none-eabi
+NEXTEST_PROFILE ?= default
+COVERAGE_TARGET_DIR ?= target/coverage
+COVERAGE_OUTPUT_DIR ?= target/coverage
+COVERAGE_IGNORE_REGEX ?= (^|/)(tests|benches|examples|verification)/
+COVERAGE_MIN_LINES ?= 77
+COVERAGE_MIN_FUNCTIONS ?= 70
+COVERAGE_MIN_REGIONS ?= 77
+MUTANTS_CONFIG ?= .config/mutants.toml
+MUTANTS_OUTPUT_DIR ?= target/mutants
+FUZZ_TARGET ?= ordered_set_algebra
+FUZZ_TARGET_DIR ?= target/fuzz
+FUZZ_WORK_CORPUS_DIR ?= target/fuzz-corpus
+FUZZ_RUNS ?= 64
+FUZZ_MAX_TIME ?= 10
+CATALOG_TARGET_DIR ?= target/catalog
+CATALOG_INVENTORY_DIR ?= target/catalog-inventory
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
 	test-examples profiles features integers examples package embedded miri \
-	bounded loom kani shell-check shell-test tools-check search-index clean
+	bounded loom kani nextest coverage coverage-gate coverage-branch mutants \
+	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
+	tools-check search-index clean
 
 all: build
 
@@ -27,7 +46,7 @@ build:
 help:
 	@printf '%s\n' \
 	  'make [all|build]  Build the default library profile' \
-	  'make check        Formatting, links, Clippy, rustdoc, tests, examples' \
+	  'make check        Formatting, links, Clippy, rustdoc, tests, examples, catalog' \
 	  'make verify       All host verification scopes (no Miri/proof solver)' \
 	  'make profiles     Core-only, alloc-only, and default profiles' \
 	  'make features     Check each optional feature independently (requires jq)' \
@@ -38,12 +57,21 @@ help:
 	  'make miri         Ownership diagnostics with MIRI_TOOLCHAIN' \
 	  'make bounded      Finite collection/retry models and native Kani helpers' \
 	  'make loom|kani    Optional protocol model or symbolic proofs' \
+	  'make nextest      Run test suite with cargo-nextest (.config/nextest.toml)' \
+	  'make coverage     Export source-only cargo-llvm-cov JSON summary and scope' \
+	  'make coverage-gate Enforce portable floor (77/70/77) and scoped ratchet' \
+	  'make coverage-branch Export nightly branch-coverage JSON summary' \
+	  'make mutants      Run cargo-mutants with .config/mutants.toml' \
+	  'make fuzz-check   Run deterministic fuzz-oracle regressions on stable' \
+	  'make fuzz-smoke   Run bounded libFuzzer smoke with FUZZ_TOOLCHAIN' \
+	  'make catalog      Run verification/catalog obligation inventory checks' \
+	  'make catalog-inventory Verify benchmark FROST_BENCH_LIST inventory (requires jq)' \
 	  'make shell-check  ShellCheck, shfmt, and shell/Make behavior tests' \
 	  'make tools-check  Test and scan the optional ast-grep rules' \
 	  'make search-index Refresh the local tgrep index' \
 	  'make fmt|clean    Format Rust sources or remove Cargo build artifacts'
 
-check: fmt-check doc-links clippy docs test test-examples
+check: fmt-check doc-links clippy docs test test-examples catalog catalog-inventory
 
 # Independent prerequisites may run with -j; Cargo coordinates its build locks.
 verify: check profiles features integers examples package
@@ -194,6 +222,123 @@ loom:
 kani:
 	"$(CARGO)" kani --version
 	cd verification/kani && "$(CARGO)" kani --lib
+
+nextest:
+	"$(CARGO)" nextest --version
+	"$(CARGO)" nextest run --config-file .config/nextest.toml --profile "$(NEXTEST_PROFILE)" --all-features --locked
+
+coverage:
+	"$(CARGO)" llvm-cov --version
+	mkdir -p "$(COVERAGE_OUTPUT_DIR)"
+	set -euo pipefail; \
+	rustc_info=$$("$${RUSTC:-rustc}" -vV); \
+	  host_line=$$(printf '%s\n' "$$rustc_info" | "$(JQ)" -rR 'select(startswith("host: ")) | sub("^host: "; "")'); \
+	  toolchain_ver=$$(printf '%s\n' "$$rustc_info" | "$(JQ)" -rR 'select(startswith("release: ")) | sub("^release: "; "")'); \
+	  rustc_env="$${RUSTC:-}"; \
+	  rustup_tc="$${RUSTUP_TOOLCHAIN:-}"; \
+	  effective_target="$${CARGO_BUILD_TARGET:-$$host_line}"; \
+	  llvm_ver=$$("$(CARGO)" llvm-cov --version); \
+	  "$(JQ)" -n \
+	    --arg host "$$effective_target" \
+	    --arg toolchain "$$toolchain_ver" \
+	    --arg rustc_override "$$rustc_env" \
+	    --arg rustup_toolchain "$$rustup_tc" \
+	    --arg llvm_cov "$$llvm_ver" \
+	    --arg ignore "$(COVERAGE_IGNORE_REGEX)" \
+	    '{schema:"frost-coverage-scope/v1",host_target:$$host,toolchain_version:$$toolchain,rustc_override:$$rustc_override,rustup_toolchain_override:$$rustup_toolchain,tool_version:$$llvm_cov,features:"all-features",ignore_filename_regex:$$ignore,baseline_reference:"verification/crate-standards-validation/baseline-coverage.json",baseline_target:"aarch64-apple-darwin"}' \
+	    >"$(COVERAGE_OUTPUT_DIR)/scope-metadata.json"
+	CARGO_TARGET_DIR="$(COVERAGE_TARGET_DIR)" \
+	  "$(CARGO)" llvm-cov --all-features --locked --json --summary-only \
+	    --ignore-filename-regex "$(COVERAGE_IGNORE_REGEX)" \
+	    --output-path "$(COVERAGE_OUTPUT_DIR)/source-summary.json"
+
+coverage-gate:
+	"$(CARGO)" llvm-cov --version
+	mkdir -p "$(COVERAGE_OUTPUT_DIR)"
+	set -euo pipefail; \
+	rustc_info=$$("$${RUSTC:-rustc}" -vV); \
+	  host_line=$$(printf '%s\n' "$$rustc_info" | "$(JQ)" -rR 'select(startswith("host: ")) | sub("^host: "; "")'); \
+	  toolchain_ver=$$(printf '%s\n' "$$rustc_info" | "$(JQ)" -rR 'select(startswith("release: ")) | sub("^release: "; "")'); \
+	  rustc_env="$${RUSTC:-}"; \
+	  rustup_tc="$${RUSTUP_TOOLCHAIN:-}"; \
+	  rustflags_env="$${RUSTFLAGS:-}$${CARGO_ENCODED_RUSTFLAGS:-}"; \
+	  effective_target="$${CARGO_BUILD_TARGET:-$$host_line}"; \
+	  llvm_ver=$$("$(CARGO)" llvm-cov --version); \
+	  if [[ $$effective_target == aarch64-apple-darwin && $$toolchain_ver == 1.99.1 && ( -z "$$rustup_tc" || $$rustup_tc == 1.99.1 ) && -z "$$rustflags_env" && $$llvm_ver == "cargo-llvm-cov 0.9.1" && "$(COVERAGE_IGNORE_REGEX)" == "(^|/)(tests|benches|examples|verification)/" ]]; then \
+	    ratchet_mode="scoped_exact_ratchet_enforced"; \
+	  else \
+	    ratchet_mode="portable_adoption_floor_only_cross_target"; \
+	  fi; \
+	  "$(JQ)" -n \
+	    --arg host "$$effective_target" \
+	    --arg toolchain "$$toolchain_ver" \
+	    --arg rustc_override "$$rustc_env" \
+	    --arg rustup_toolchain "$$rustup_tc" \
+	    --arg llvm_cov "$$llvm_ver" \
+	    --arg ignore "$(COVERAGE_IGNORE_REGEX)" \
+	    --arg mode "$$ratchet_mode" \
+	    '{schema:"frost-coverage-scope/v1",host_target:$$host,toolchain_version:$$toolchain,rustc_override:$$rustc_override,rustup_toolchain_override:$$rustup_toolchain,tool_version:$$llvm_cov,features:"all-features",ignore_filename_regex:$$ignore,portable_floor:{lines:$(COVERAGE_MIN_LINES),functions:$(COVERAGE_MIN_FUNCTIONS),regions:$(COVERAGE_MIN_REGIONS)},ratchet_mode:$$mode,baseline_reference:"verification/crate-standards-validation/baseline-coverage.json",baseline_target:"aarch64-apple-darwin"}' \
+	    >"$(COVERAGE_OUTPUT_DIR)/scope-metadata.json"; \
+	  CARGO_TARGET_DIR="$(COVERAGE_TARGET_DIR)" \
+	    "$(CARGO)" llvm-cov --all-features --locked --json --summary-only \
+	      --ignore-filename-regex "$(COVERAGE_IGNORE_REGEX)" \
+	      --fail-under-lines "$(COVERAGE_MIN_LINES)" \
+	      --fail-under-functions "$(COVERAGE_MIN_FUNCTIONS)" \
+	      --fail-under-regions "$(COVERAGE_MIN_REGIONS)" \
+	      --output-path "$(COVERAGE_OUTPUT_DIR)/source-summary.json"; \
+	  if [[ $$ratchet_mode == scoped_exact_ratchet_enforced ]]; then \
+	    "$(JQ)" -e --slurpfile base verification/crate-standards-validation/baseline-coverage.json \
+	      '($$base[0].totals.lines.percent | type == "number") and ($$base[0].totals.functions.percent | type == "number") and ($$base[0].totals.regions.percent | type == "number") and (.data[0].totals.lines.percent | type == "number") and (.data[0].totals.functions.percent | type == "number") and (.data[0].totals.regions.percent | type == "number") and (.data[0].totals.lines.percent >= $$base[0].totals.lines.percent) and (.data[0].totals.functions.percent >= $$base[0].totals.functions.percent) and (.data[0].totals.regions.percent >= $$base[0].totals.regions.percent)' \
+	      "$(COVERAGE_OUTPUT_DIR)/source-summary.json" >/dev/null; \
+	  fi
+
+coverage-branch:
+	"$(CARGO)" llvm-cov --version
+	mkdir -p "$(COVERAGE_OUTPUT_DIR)"
+	CARGO_TARGET_DIR="$(COVERAGE_TARGET_DIR)" \
+	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" llvm-cov --branch --all-features --locked --json --summary-only \
+	    --ignore-filename-regex "$(COVERAGE_IGNORE_REGEX)" \
+	    --output-path "$(COVERAGE_OUTPUT_DIR)/branch-summary.json"
+
+mutants:
+	"$(CARGO)" mutants --version
+	"$(CARGO)" mutants --config "$(MUTANTS_CONFIG)" --output "$(MUTANTS_OUTPUT_DIR)"
+
+fuzz-check:
+	"$(CARGO)" test --manifest-path verification/fuzz/Cargo.toml \
+	  --target-dir "$(FUZZ_TARGET_DIR)" --lib --locked
+
+fuzz-smoke: fuzz-check
+	"$(CARGO)" fuzz --version
+	mkdir -p "$(FUZZ_WORK_CORPUS_DIR)/$(FUZZ_TARGET)"
+	"$(CARGO)" "+$(FUZZ_TOOLCHAIN)" fuzz run --fuzz-dir verification/fuzz \
+	  --target-dir "$(FUZZ_TARGET_DIR)" "$(FUZZ_TARGET)" \
+	  "$(FUZZ_WORK_CORPUS_DIR)/$(FUZZ_TARGET)" \
+	  "verification/fuzz/corpus/$(FUZZ_TARGET)" -- \
+	  -runs="$(FUZZ_RUNS)" -max_total_time="$(FUZZ_MAX_TIME)"
+
+catalog:
+	"$(CARGO)" test --locked --manifest-path verification/catalog/Cargo.toml \
+	  --target-dir "$(CATALOG_TARGET_DIR)"
+	"$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
+	  --target-dir "$(CATALOG_TARGET_DIR)" -- check --root .
+
+catalog-inventory:
+	@set -euo pipefail; \
+	mkdir -p "$(CATALOG_INVENTORY_DIR)"; \
+	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
+	benches=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
+	  '[.packages[] | select(.name == "frost-collections")] | \
+	   if length != 1 then error("expected one Frost package") else .[0] end | \
+	   [.targets[] | select(.kind | index("bench")) | .name] | \
+	   if length == 0 then error("no bench targets found") else .[] end'); \
+	while IFS= read -r bench; do \
+	  bench=$${bench%$$'\r'}; \
+	  list_file="$(CATALOG_INVENTORY_DIR)/$$bench.list"; \
+	  FROST_BENCH_LIST=1 "$(CARGO)" bench --locked --all-features --bench "$$bench" >"$$list_file"; \
+	  "$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
+	    --target-dir "$(CATALOG_TARGET_DIR)" -- inventory "benches/$$bench.rs" "$$list_file" --root .; \
+	done <<< "$$benches"
 
 shell-check:
 	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh verification/shell/*.bats

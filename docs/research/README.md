@@ -9,6 +9,9 @@ says so. The [documentation index](../README.md) lists every design,
 verification, and review document; the [crate README](../../README.md)
 explains the rationale and the implemented library.
 
+The current [naming dispositions](../design/collection-algebra.md#naming-dispositions)
+resolve selected research spellings without implementing the proposed types.
+
 Baseline for every artifact: commit `82becb998af5627cc1e58118ae01515d8a3559ca`,
 imported or written on 2026-11-09. The [machine manifest](manifest.json)
 (validated against [its schema](manifest.schema.json)) records ids, hashes,

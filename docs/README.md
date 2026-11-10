@@ -18,13 +18,15 @@ does not validate later changes.
 | [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes | Current |
 | [Snapshot publication](design/snapshots.md) | Ownership, identity, retries, and linearization | Current |
 | [Typed integer profile](design/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra | Current |
+| [Crate standard](../CRATES.md) | Package layout, dependency placement, feature/target matrix, API obligations, coverage accounting, test and benchmark metadata | Current standard |
+| [Crate layout](design/crate-layout.md) | Current package, the `crates/frost-*` reorganization target, split constraints, and required decisions | Current and proposal |
 
 ## Proposals
 
 | Document | Purpose | Status |
 | --- | --- | --- |
 | [General set algebra](design/set-algebra.md) | Typed views for all set categories, representative semantics, execution, and ownership | Proposal |
-| [Collection algebra](design/collection-algebra.md) | Maps, sequences, bags, multimaps, bimaps, and prefix indexes within the single library; corrections to the supplied sketches | Proposal |
+| [Collection algebra](design/collection-algebra.md) | Maps, sequences, bags, multimaps, bimaps, and prefix indexes; [naming dispositions](design/collection-algebra.md#naming-dispositions) and corrections | Proposal |
 | [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
 | [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
 | [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
@@ -78,6 +80,7 @@ change.
 
 | Document | Purpose | Status |
 | --- | --- | --- |
+| [Standards implementation evidence](../verification/crate-standards-validation/README.md) | Same-scope coverage before and after the standards change, local gate results, and adoption limits | Dated record |
 | [Integration validation](revision2-integration-validation.md) | Commands and results for the merged source before GitHub import, with remaining evidence limits | Dated record |
 | [GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md) | Later PR checkout and build-tool adaptation, recorded separately from original integration evidence | Dated record |
 | [Attachment integration](../verification/attachment-integration-2026-11-09/README.md) | Input digests, conflict resolutions, and checks run on that checkout | Dated record |
@@ -96,16 +99,28 @@ change.
 | [Maintainer guide](maintainers/guide.md) | Code map, invariants, and change-specific checks | Current |
 | [Benchmarks](maintainers/benchmarks.md) | Fair measurement and reproduction | Current |
 | [Verification](verification.md) | Executable models, proof bounds, and limitations | Current |
+| [Testing standard](maintainers/testing.md) | Semantic obligations, coverage denominators, mutation triage, seeds, and gate tiers | Current |
 | [Release procedure](maintainers/releasing.md) | Concrete gates before publishing | Current |
+| [Crate standard](../CRATES.md) | Layout, dependency, API obligation, coverage, and metadata rules | Current |
+| [Verification catalog](../verification/catalog/README.md) | Catalog and benchmark-inventory schemas, structural discovery, and its limits | Current |
+| [Coverage policy](../verification/coverage/README.md), [mutation policy](../verification/mutation/README.md), [fuzz harness](../verification/fuzz/README.md) | Denominators and gates, survivor triage, and isolated fuzz targets | Current |
+| [Rust verification strategy](research/reports/rust-verification-strategy.md) | Source-backed rationale for the tool choices | Research |
+| [GitHub workflow](maintainers/github-workflow.md) | Issue forms and pull requests as intake; tracker records as the work plan | Current |
 | [Contributor guide](../CONTRIBUTING.md) | How to make and verify changes | Current |
 
-No task tracker is initialized in this repository; open questions are tracked
-in the research synthesis and integration audit.
+Planned work is tracked with the Beads issue tracker: the standards epic
+`frost-wou` (remaining adoption tasks `frost-wou.6`–`.10`) and the
+reorganization epic `frost-wlt` (`frost-wlt.1`–`.6`), which depends on it. Its
+state lives under `.beads/`. The configuration and JSONL export are the
+portable records; the SQLite database files there are local and ignored by Git.
+Open research questions remain in the research synthesis and integration audit.
 
 ## Reading paths
 
 - **New contributor:** crate README, Frozen API guide, `examples/`, design
-  philosophy, contributor guide.
+  philosophy, contributor guide, crate standard.
+- **Test, benchmark, or verification author:** crate standard, testing
+  standard, verification catalog, verification, benchmarks, maintainer guide.
 - **Frozen API implementer:** architecture, Frozen API guide, the linked source
   and tests, snapshot publication, verification.
 - **Algebra or planner implementer:** set operations, collection algebra,

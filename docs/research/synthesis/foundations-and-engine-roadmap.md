@@ -137,8 +137,8 @@ derived reasoning; **P** proposal; **H** historical; **X** unverified.
 | --- | --- | --- | --- | --- | --- |
 | Crate names | `frost-bags`, `frost-multimaps`, `frost-bimaps`, `frost-sequences`, `frost-integer-maps`, `frost-prefix-index` | `frost-bag`, `frost-multimap`, `frost-bimap` | `frost-set-algebra`, `frost-set-kernels`, `frost-integer-sets`, `frost-core`, `frost-concurrent` | One package | Record all; propose one policy (singular domain names, `frost-` prefix) for a future decision; create nothing |
 | Map difference spelling | `difference_by_key` | `difference_keys` | — | Neither exists | Decide in `Q-MAP-1` |
-| List-valued multimap name | `SeqMultiMap` | `ListMultiMap` | — | Neither exists | Decide in `Q-MM-1` |
-| Bimap mutation | `try_insert(&mut self)` on `FrozenBiMap` | `try_insert(&mut self)` on a `BiMap` trait | — | Frozen types have no `&mut` structure | Mutable family or consuming operation (`Q-FROZEN-1`, `Q-BIMAP-1`) |
+| Sequence-valued multimap name | `SeqMultiMap` | `ListMultiMap` (historical alternative) | — | Neither exists | Select `SeqMultiMap`; fiber semantics remain open in `Q-MM-1` |
+| Bimap mutation | `try_insert(&mut self)` on `FrozenBiMap` | `try_insert(&mut self)` on a `BiMap` trait | — | Frozen types have no `&mut` structure | Insertion on `MutableBiMap` or a builder; frozen algebra returns a new value (`Q-FROZEN-1`, `Q-BIMAP-1`) |
 | Target restrictions | assumes workspace split | "none given" | — | Rust 1.99.1, edition 2024, `no_std` core, embedded builds | Repository constraints bind |
 | Verification tooling | proptest/Kani/Loom per crate | workspace commands and CI matrix | finite oracle, Miri, Loom, Kani | Make targets, isolated packages, pinned nightly | Make targets bind; historical commands not runnable |
 | Roaring version | unversioned | 0.11.5 | unversioned | 0.12.0 locked | Lockfile binds |
@@ -229,7 +229,7 @@ Ordered so that no question needs an answer a later one would produce.
 | `Q-AUTHZ-1` | Data contracts at the engine boundary | Influences unaudited; correlation and outcome lattice undefined | `Q-CSET-1` | [authorization-engine-integration](../prompts/authorization-engine-integration.md) | Boundary contract with each obligation attributed |
 | `Q-MAP-1` | Map merge/join planning: resolver contract, representatives, sorted/hash plans, spellings | Two inputs differ on names; no compile-tested shape | `Q-ALG-1`, `Q-FROZEN-1` | [seed block](#q-map-1-map-merge-and-join-planning) | Compile-tested proposal with reference model |
 | `Q-BAG-1` | Bag arithmetic, overflow contract, storage | Literature unread; overflow policy unspecified | `Q-ALG-1` | [seed block](#q-bag-1-bag-arithmetic-overflow-contract-and-storage) | Laws under sum and max-union; error contract |
-| `Q-MM-1` | Multimap fiber semantics and naming | Fiber policies only sketched | `Q-ALG-1`, `Q-BAG-1` | [seed block](#q-mm-1-multimap-fiber-semantics-and-naming) | Per-fiber law table |
+| `Q-MM-1` | Multimap fiber semantics | Fiber policies only sketched; type names selected | `Q-ALG-1`, `Q-BAG-1` | [seed block](#q-mm-1-multimap-fiber-semantics-and-naming) | Per-fiber law table |
 | `Q-BIMAP-1` | Two-index integrity, checked merge, composition | Transactional contract and panic behaviour unspecified | `Q-FROZEN-1` | [seed block](#q-bimap-1-two-index-integrity-checked-merge-and-composition) | Inverse-consistency model; conflict classes |
 | `Q-PREFIX-1` | Prefix and rank indexes: domains, FST versus ART | Attributions unverified; domain policies only named | `Q-FROZEN-1` | [seed block](#q-prefix-1-prefix-and-rank-indexes) | Relation definitions; representation comparison plan |
 
@@ -304,13 +304,13 @@ proposal; tests; `Q-MM-1` input.
 #### Q-MM-1: multimap fiber semantics and naming
 
 Parent: survey section 5;
-implementation notes section 4. Decision: whether fiber policy lives in the
-type (`SetMultiMap`, `BagMultiMap`, and `SeqMultiMap` or `ListMultiMap`), the
-relation-level operations on set-valued multimaps, and the projections.
-Inherited assumptions to revalidate: fiber policy in the type (both inputs);
-Guava and `multimap` crate behaviours (unverified). Alternatives: one type
-with a policy parameter; three types sharing machinery; relation-only model
-(`BTreeSet<(K, V)>`) with views. Required primary evidence: `Q-BAG-1`
+implementation notes section 4. The selected proposed contracts are distinct
+`SeqMultiMap`, `SetMultiMap`, and `BagMultiMap` types; none is implemented.
+Decision: the fiber laws, relation-level operations on set-valued multimaps,
+and projections. Guava and `multimap` crate behaviours remain unverified.
+Implementation alternatives include shared machinery or a relation index
+(`BTreeSet<(K, V)>`) with views, while preserving the distinct contracts.
+Required primary evidence: `Q-BAG-1`
 results for bag fibers; Rust std documentation for the fiber containers.
 Experiments: `BTreeSet<(K, V)>` and `BTreeMap<K, Vec<V>>` reference models;
 projection and join tests against a nested-loop oracle; order tests for
@@ -321,8 +321,9 @@ representatives); projection names fixed. Owning module: a future
 #### Q-BIMAP-1: two-index integrity, checked merge, and composition
 
 Parent: survey sections 2 and 5; implementation notes section 4; the Frozen API guide
-proposal section. Decision: the mutable/frozen bimap pair, the conflict
-classes a checked insert and merge report, transactional behaviour under
+proposal section. The proposed pair is `MutableBiMap` and `FrozenBiMap`, with
+insertion on the mutable type or a builder. Decision: the conflict classes a
+checked insert and merge report, transactional behaviour under
 panic and allocation failure, and composition. Inherited assumptions to
 revalidate: `try_insert` belongs on a mutable family (corrected, accepted);
 `bimap` crate conflict classes (unverified); composition of aligned partial

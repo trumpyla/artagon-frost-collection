@@ -1,0 +1,27 @@
+name: Feature or design proposal
+description: Propose a change to Frost's behavior or design.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For suspected vulnerabilities, follow SECURITY.md instead of opening a
+        public issue. Do not include secrets or private data.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and use case
+      description: Describe the need, affected public APIs or contracts, and a concrete example.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and acceptance
+      description: Describe the proposed behavior, how to tell when it is complete, and relevant alternatives or compatibility concerns.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Evidence and related work
+      description: Distinguish observations from proposals. Include relevant metadata or catalog IDs, tests, scenarios, Beads items, epics, and affected feature or target profiles when known.

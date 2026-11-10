@@ -9,7 +9,14 @@ module. `docs/maintainers/guide.md` is the maintainer entry point.
 
 - Normal builds use **Rust 1.99.1**, **edition 2024**. Keep Cargo's rust-version,
   the toolchain file, and CI aligned. Nightly is for diagnostics only.
-- Keep one library package. `src/family` owns ordinary mutable/frozen pairs;
+- [CRATES.md](CRATES.md) is the canonical standard for package layout,
+  dependency placement, the feature/target matrix, public API obligations,
+  coverage accounting, and test/benchmark metadata. Follow it for every new
+  test, benchmark, feature, or verification package.
+- Keep one library package. The flat `crates/frost-*` layout is the target of
+  reorganization epic `frost-wlt` ([crate layout](docs/design/crate-layout.md));
+  do not create packages, a workspace, or `crates/` outside that epic.
+  `src/family` owns ordinary mutable/frozen pairs;
   `src/adaptive` owns explicit policies; `src/backends` and `src/adapters` supply
   optional integrations. `src/concurrent` separates live guarded access from
   whole-value snapshot publication.
@@ -89,7 +96,10 @@ Run `make check` for changes before review. Use the smallest
 relevant target while developing; run `make verify` for release
 candidates. Feature or dependency changes also require the isolated feature
 matrix and embedded build. Ownership changes require `make miri`.
-The exact commands and evidence limits are in `docs/verification.md`.
+The exact commands and evidence limits are in `docs/verification.md`; gate
+tiers are in `docs/maintainers/testing.md`. `make check` includes `make catalog`
+and `make catalog-inventory`, so a new test or benchmark needs its catalog or
+inventory record in the same change.
 
 Use the root Makefile for build and verification tasks; `make help` lists
 targets. Do not restore verification dispatcher scripts or add Python to the
@@ -101,7 +111,12 @@ host. Keep Cargo metadata parsing in recipes with `jq`, not Make expansion.
 Add regression tests for changed semantics or a demonstrated risk. Prefer
 standard-library differential tests, exhaustive small domains, comparison/drop
 counts, deterministic barriers, and recorded failing property-test seeds.
-Do not add timing assertions or sleeps to correctness tests. A model must state
+Do not add timing assertions or sleeps to correctness tests. Map each changed
+public obligation to asserting tests, as CRATES.md requires. Scaffolded catalog
+records are `unreviewed`; mark a record `curated` only after reviewing its
+contract, oracle, and scenario. Keep existing catalog IDs. Report coverage only
+with its scope; never present a target, waiver, or catalog count as measured
+coverage. A model must state
 its domain, scheduler bound, dependency assumptions, and the production code it
 executes; a passing model is not proof of unmodeled dependency internals.
 

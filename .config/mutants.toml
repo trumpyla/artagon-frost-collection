@@ -1,0 +1,28 @@
+# cargo-mutants configuration for frost-collections.
+# Reference: https://mutants.rs/config.html
+#
+# Invoke with: cargo mutants --config .config/mutants.toml
+# (or `make mutants`).
+
+examine_globs = [
+    "src/**/*.rs",
+]
+
+exclude_globs = [
+    "tests/**",
+    "benches/**",
+    "examples/**",
+    "verification/**",
+]
+
+# Run the complete feature set against the committed lockfile so feature-gated
+# adapters, integer storage, and concurrent primitives are compiled and tested.
+additional_cargo_args = [
+    "--all-features",
+    "--locked",
+]
+
+# Bound mutant execution relative to the unmutated baseline while avoiding
+# false timeouts on exhaustive finite-domain tests.
+timeout_multiplier = 3.0
+minimum_test_timeout = 30.0

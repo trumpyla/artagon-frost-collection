@@ -14,6 +14,7 @@ use frost::integer::{FrozenIntSet, IntKey, IntSetBackend, IntSetError, IntSetPol
 use std::collections::BTreeSet;
 use std::fmt::Debug;
 use std::hint::black_box;
+use support::workload::{Layout, Partition, SetPairSpec, WorkloadSpec};
 use support::{as_u64, measure};
 
 const POLICIES: [(&str, IntSetPolicy); 5] = [
@@ -379,6 +380,46 @@ fn main() {
     snapshot("u64.large_base", &clustered_left, &additions);
     let window_additions: Vec<u32> = (0..64).map(|v| 2_000_000 + v * 97).collect();
     snapshot("u32.window", &large, &window_additions);
+
+    // Factory names retain their complete reproducible specs and seeds.
+    // Oracles are computed by `compare` outside timing.
+    let chunked = SetPairSpec::new(
+        31,
+        16_384,
+        16_384,
+        4096,
+        Layout::Chunks {
+            first_chunk: 2,
+            chunk_bits: 16,
+            per_chunk: 512,
+        },
+    )
+    .with_partition(Partition::Shuffled)
+    .build()
+    .and_then(|pair| pair.to_u32())
+    .expect("u32 chunk-boundary dataset");
+    eprintln!("u32.factory_chunks := {}", chunked.id);
+    let chunked_name = format!("u32.factory_chunks_{}", chunked.id);
+    compare(&chunked_name, &chunked.left, &chunked.right, true);
+    native32(&chunked_name, &chunked.left, &chunked.right);
+
+    let sparse64 = SetPairSpec::new(
+        32,
+        8192,
+        8192,
+        2048,
+        Layout::Uniform {
+            base: 1 << 40,
+            span: 1 << 24,
+        },
+    )
+    .build()
+    .expect("u64 sparse uniform dataset");
+    eprintln!("u64.factory_uniform := {}", sparse64.id);
+    let sparse_name = format!("u64.factory_uniform_{}", sparse64.id);
+    compare(&sparse_name, &sparse64.left, &sparse64.right, false);
+    construction(&sparse_name, &sparse64.left);
+    native64(&sparse_name, &sparse64.left, &sparse64.right);
 
     let signed_left: Vec<i64> = (-8192..8192).step_by(2).collect();
     let signed_right: Vec<i64> = (-8161..8223).step_by(3).collect();

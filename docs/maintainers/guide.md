@@ -8,6 +8,19 @@ before adding a new profile or changing a feature boundary.
 [Code search tools](../../TOOLS.md) documents project search scopes, tgrep
 index refresh, and the optional ast-grep rule checks.
 
+[CRATES.md](../../CRATES.md) is the layout and evidence standard. Check it
+before adding a test target, benchmark, feature, or verification package: it
+defines where each belongs, which dependency section it may use, which public
+API obligations it must cover, and the catalog record it needs. The
+[testing standard](testing.md) assigns gate tiers. `make catalog` and
+`make catalog-inventory` run in `make check`; the
+[catalog README](../../verification/catalog/README.md) explains `scaffold`,
+`inventory-scaffold`, and the difference between `unreviewed` and `curated`
+records. The package
+stays single until reorganization epic `frost-wlt` lands; the
+[crate layout design](../design/crate-layout.md) lists the coherence, seal, and
+feature constraints that epic must resolve.
+
 ## Code and invariant map
 
 | Area | Files | Invariants to review |
@@ -100,6 +113,8 @@ wire formats, safety, and minimal supported Rust versions may change. Do not
 add a weak hasher globally. Avoid changing optimizer flags for the library to
 make one benchmark win. Default Cargo profiles remain the baseline.
 
+Verification and coverage tools never become library dependencies; see the
+dependency rules in [CRATES.md](../../CRATES.md#3-dependency-placement-and-leakage).
 `verification/loom` and `verification/kani` are isolated tooling packages.
 Resolve and record their tool/dependency versions before claiming their results.
 The package archive excludes verification artifacts; the source distribution

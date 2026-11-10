@@ -1,0 +1,189 @@
+name: Tiered verification and coverage
+# Implements the PR, nightly, and release-candidate verification tiers for
+# epic frost-wou without replacing .github/workflows/ci.yml or claiming
+# unattained high-coverage targets.
+on:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: Verification tier to execute (pr, nightly, or release)
+        required: false
+        default: pr
+        type: choice
+        options:
+          - pr
+          - nightly
+          - release
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verification-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # Tier 1 (PR Gate): Catalog and benchmark-inventory validation, deterministic
+  # nextest execution, and fuzz-oracle replay.
+  pr-nextest-and-fuzz-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust 1.99.1
+        run: rustup toolchain install 1.99.1 --profile minimal
+      - name: Install cargo-nextest
+        run: cargo install cargo-nextest --locked --version 0.9.151
+      - name: Validate test and benchmark catalog and FROST_BENCH_LIST inventory
+        run: |
+          make catalog
+          make catalog-inventory
+      - name: Run deterministic test suite under CI nextest profile
+        run: make nextest NEXTEST_PROFILE=ci
+      - name: Replay deterministic fuzz-oracle seed corpus
+        run: make fuzz-check
+      - name: Upload nextest JUnit report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pr-nextest-junit
+          path: target/nextest/ci/junit.xml
+          if-no-files-found: warn
+
+  # Tier 1 (PR Gate): Portable integer source-coverage adoption floor (77/70/77).
+  # Note: the 6ab0918 baseline (77.197% lines, 70.908% functions, 77.772% regions)
+  # was measured on aarch64-apple-darwin. On ubuntu-latest (x86_64-unknown-linux-gnu),
+  # 77/70/77 acts as a coarse portable integer adoption floor; make coverage-gate
+  # records exact host/tool scope metadata in target/coverage/scope-metadata.json
+  # and enforces the exact baseline ratchet when run on aarch64-apple-darwin.
+  pr-coverage-ratchet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust 1.99.1 with llvm-tools
+        run: rustup toolchain install 1.99.1 --profile minimal --component llvm-tools-preview
+      - name: Install cargo-llvm-cov
+        run: cargo install cargo-llvm-cov --locked --version 0.9.1
+      - name: Enforce portable coverage adoption floor (lines >= 77%, functions >= 70%, regions >= 77%)
+        run: make coverage-gate
+      - name: Upload source coverage summary and scope metadata
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pr-source-coverage
+          path: |
+            target/coverage/source-summary.json
+            target/coverage/scope-metadata.json
+          if-no-files-found: warn
+
+  # Tier 2 (Nightly / Scheduled Gate): Branch coverage, bounded libFuzzer smoke,
+  # and deep property-test cases.
+  nightly-deep-verification:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.tier == 'nightly' || inputs.tier == 'release'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust 1.99.1 and diagnostic nightly
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --component llvm-tools-preview
+          rustup toolchain install nightly-2026-11-08 --profile minimal --component llvm-tools-preview,miri,rust-src
+      - name: Install coverage and fuzz tools
+        run: |
+          cargo install cargo-llvm-cov --locked --version 0.9.1
+          cargo install cargo-fuzz --locked --version 0.13.2
+      - name: Measure nightly branch coverage
+        run: make coverage-branch
+      - name: Run bounded libFuzzer smoke targets
+        run: |
+          make fuzz-smoke FUZZ_TARGET=ordered_set_algebra FUZZ_RUNS=256 FUZZ_MAX_TIME=20
+          make fuzz-smoke FUZZ_TARGET=integer_set_algebra FUZZ_RUNS=256 FUZZ_MAX_TIME=20
+      - name: Deep property-test and finite-model exploration
+        run: |
+          PROPTEST_CASES=1024 make test
+          make bounded
+          make loom
+      - name: Upload nightly branch coverage summary
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: nightly-branch-coverage
+          path: target/coverage/branch-summary.json
+          if-no-files-found: warn
+
+  nightly-mutation:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.tier == 'nightly' || inputs.tier == 'release'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust 1.99.1
+        run: rustup toolchain install 1.99.1 --profile minimal
+      - name: Install cargo-mutants
+        run: cargo install cargo-mutants --locked --version 25.3.1
+      - name: Run mutation suite over priority algorithmic modules
+        run: |
+          cargo mutants --config .config/mutants.toml \
+            --file src/adaptive/seq/buf.rs \
+            --file src/concurrent/publication.rs \
+            --file src/family/ordered/set_ops.rs \
+            --output target/mutants
+      - name: Upload cargo-mutants results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: nightly-mutation-results
+          path: target/mutants/
+          if-no-files-found: warn
+
+  # Tier 3 (Release Candidate Gate): Full host matrix (including catalog and
+  # catalog-inventory), embedded targets, Miri, bounded/Loom models, fuzz-check,
+  # and coverage floor.
+  release-gate:
+    if: github.event_name == 'workflow_dispatch' && inputs.tier == 'release'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust 1.99.1, embedded targets, and Miri toolchain
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --component clippy,rustfmt,llvm-tools-preview --target thumbv7em-none-eabihf,thumbv6m-none-eabi
+          rustup toolchain install nightly-2026-11-08 --profile minimal --component miri,rust-src --target i686-unknown-linux-gnu
+      - name: Install cargo-llvm-cov
+        run: cargo install cargo-llvm-cov --locked --version 0.9.1
+      - name: Run complete host, embedded, Miri, and coverage verification gates
+        run: |
+          make verify
+          make embedded
+          make miri
+          make bounded
+          make loom
+          make fuzz-check
+          make coverage-gate
+      - name: Upload release coverage summary and scope metadata
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-source-coverage
+          path: |
+            target/coverage/source-summary.json
+            target/coverage/scope-metadata.json
+          if-no-files-found: warn
