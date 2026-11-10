@@ -433,6 +433,101 @@ fn empty_ordered_range_never_panics_like_btree() {
     assert_eq!(empty_s.range(5..1).count(), 0);
 }
 
+/// Bulk extension must keep the contracts of entry-by-entry insertion.
+#[test]
+fn bulk_extension_keeps_representatives_policies_and_partial_progress() {
+    use frost::adaptive::{AdaptiveHash, AdaptiveHashMap, InlineVec};
+    use std::panic::{AssertUnwindSafe, catch_unwind};
+
+    // Hash set: the first representative stays, with or without earlier
+    // members, and the reservation is only a lower bound on capacity.
+    let mut set: MutableHashSet<Tagged> = MutableHashSet::default();
+    set.extend([t(1, 10), t(2, 20), t(1, 11)]);
+    set.extend((0..200).map(|id| t(id, 99)));
+    assert_eq!(set.len(), 200);
+    assert_eq!(set.get(&1_u8).map(|key| key.tag), Some(10));
+    assert_eq!(set.get(&2_u8).map(|key| key.tag), Some(20));
+    assert_eq!(set.get(&3_u8).map(|key| key.tag), Some(99));
+    assert!(set.capacity() >= set.len());
+    let collected: MutableHashSet<Tagged> = [t(5, 1), t(5, 2)].into_iter().collect();
+    assert_eq!(collected.get(&5_u8).map(|key| key.tag), Some(1));
+
+    // Adaptive hash map: promotion depends on distinct keys. A long input of
+    // duplicate keys must stay linear; one key more than the policy promotes.
+    let tagged = |index: u32, keys: u32| {
+        t(
+            u8::try_from(index % keys).unwrap(),
+            u8::try_from(index % 251).unwrap(),
+        )
+    };
+    let policy = AdaptiveHash::linear_up_to(4);
+    let mut linear = AdaptiveHashMap::with_policy(policy);
+    linear.extend((0..1_000_u32).map(|index| (tagged(index, 4), index)));
+    assert_eq!(linear.representation(), HashRepr::Linear);
+    assert_eq!(linear.len(), 4);
+    assert_eq!(
+        linear
+            .get_key_value(&1_u8)
+            .map(|(key, value)| (key.tag, *value)),
+        Some((1, 997))
+    );
+    let mut table = AdaptiveHashMap::with_policy(policy);
+    table.extend((0..1_000_u32).map(|index| (tagged(index, 5), index)));
+    assert_eq!(table.representation(), HashRepr::Table);
+    assert_eq!(table.len(), 5);
+    assert_eq!(
+        table
+            .get_key_value(&4_u8)
+            .map(|(key, value)| (key.tag, *value)),
+        Some((4, 999))
+    );
+    let mut grown = AdaptiveHashMap::with_policy(policy);
+    grown.extend((0..5_000_u32).map(|index| (index, index + 1)));
+    grown.extend((0..5_000_u32).map(|index| (index, index + 2)));
+    assert_eq!(grown.len(), 5_000);
+    assert!((0..5_000).all(|index| grown.get(&index) == Some(&(index + 2))));
+
+    // Inline sequence: inline, crossing the inline limit, and spilled appends
+    // all match `Vec`, including the elements kept when a clone panics.
+    for start in [0_u32, 2, 4, 9] {
+        let mut inline: InlineVec<u32, 4> = InlineVec::new();
+        let mut expected = Vec::new();
+        for value in 0..start {
+            inline.push(value);
+            expected.push(value);
+        }
+        for chunk in [&[][..], &[7], &[8, 9, 10], &[11; 40]] {
+            inline.extend_from_slice(chunk);
+            expected.extend_from_slice(chunk);
+            assert_eq!(inline.as_slice(), expected.as_slice());
+        }
+    }
+    #[derive(Debug, PartialEq)]
+    struct Fragile(u32);
+    impl Clone for Fragile {
+        fn clone(&self) -> Self {
+            assert!(self.0 != 3, "clone refused");
+            Self(self.0)
+        }
+    }
+    let source: Vec<Fragile> = (0..6).map(Fragile).collect();
+    for start in [0_u32, 10] {
+        let mut inline: InlineVec<Fragile, 4> = InlineVec::new();
+        let mut expected = Vec::new();
+        for value in 100..100 + start {
+            inline.push(Fragile(value));
+            expected.push(Fragile(value));
+        }
+        assert!(catch_unwind(AssertUnwindSafe(|| inline.extend_from_slice(&source))).is_err());
+        assert!(catch_unwind(AssertUnwindSafe(|| expected.extend_from_slice(&source))).is_err());
+        assert_eq!(
+            inline.as_slice(),
+            expected.as_slice(),
+            "clones before the panic are kept"
+        );
+    }
+}
+
 /// A std tree emptied by removal keeps its root and validates range bounds,
 /// unlike `BTreeMap::new()`. The adaptive map documents that an empty map
 /// never panics, so its Tree form must not expose that difference: both

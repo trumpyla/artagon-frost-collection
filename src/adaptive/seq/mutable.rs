@@ -306,8 +306,14 @@ impl<T: Clone, const N: usize> InlineVec<T, N> {
     /// Append clones of `other`.
     pub fn extend_from_slice(&mut self, other: &[T]) {
         self.reserve(other.len());
-        for x in other {
-            self.push(x.clone());
+        match &mut self.repr {
+            // Spilled storage is a `Vec`: one bulk append, not a push per element.
+            Repr::Heap(v) => v.extend_from_slice(other),
+            Repr::Inline(_) => {
+                for x in other {
+                    self.push(x.clone());
+                }
+            }
         }
     }
 }

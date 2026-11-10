@@ -581,6 +581,10 @@ mod hashed {
     }
     impl<T: Eq + Hash, S: BuildHasher> Extend<T> for MutableHashSet<T, S> {
         fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+            let iter = iter.into_iter();
+            // Reserve from the lower size hint, as the paired map does, so a
+            // large input does not rehash at every doubling.
+            self.inner.reserve(iter.size_hint().0);
             for value in iter {
                 self.insert(value);
             }

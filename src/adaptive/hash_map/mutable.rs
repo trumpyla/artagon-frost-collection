@@ -371,6 +371,20 @@ impl<K: Eq + Hash, V, S: BuildHasher + Clone + Default> FromIterator<(K, V)>
 }
 impl<K: Eq + Hash, V, S: BuildHasher + Clone> Extend<(K, V)> for AdaptiveHashMap<K, V, S> {
     fn extend<I: IntoIterator<Item = (K, V)>>(&mut self, iter: I) {
+        let mut iter = iter.into_iter();
+        // The linear form promotes on distinct keys, not on input length, so
+        // it is filled entry by entry. Reserving up front would promote a
+        // small map that receives many duplicate keys.
+        while matches!(self.repr, Repr::Linear { .. }) {
+            let Some((k, v)) = iter.next() else {
+                return;
+            };
+            self.insert(k, v);
+        }
+        // Once a table exists, size it for the rest of the input.
+        if let Repr::Table(m) = &mut self.repr {
+            m.reserve(iter.size_hint().0);
+        }
         for (k, v) in iter {
             self.insert(k, v);
         }

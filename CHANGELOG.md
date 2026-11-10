@@ -9,6 +9,19 @@
   contract do not. Both forms now return an empty range. `MutableOrderedMap` and
   `MutableOrderedSet` keep std's behavior, as documented.
 
+## Unreleased — family construction and iterator costs
+
+Found by an independent review of the non-integer modules. No public API or
+semantic contract changes.
+
+- `InlineVec::extend_from_slice` appends to spilled storage with one bulk
+  `Vec::extend_from_slice` instead of a push per element.
+- `MutableHashSet::extend` (and `from_iter`) reserves from the lower size hint,
+  as `MutableHashMap::extend` already does.
+- `AdaptiveHashMap::extend` (and `from_iter`) fills the linear form entry by
+  entry, so promotion still depends on distinct keys, and sizes the table for
+  the rest of the input once it exists.
+
 ## Unreleased — integer profile optimizations
 
 No public API, feature, representation candidate, policy limit, or Hash event
