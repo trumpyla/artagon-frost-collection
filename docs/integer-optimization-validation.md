@@ -23,6 +23,7 @@ change the Hash event stream.
 | Result sharing on the scattered and empty result paths | Delivered (defect) | 247 deviations before, none after |
 | `AdaptiveOrderedMap::range` on an emptied tree | Delivered (defect) | Failing test before the change |
 | Bulk extension, bulk ordered collection, iterator end queries | Delivered | 1.6x to 24x; `last` and `max`: 0.5 ms to 4 ns |
+| Hash extension on a nonempty table (follow-up) | Delivered (defect) | Hash calls and capacity equal the standard collections; 2x hash calls before |
 | Direct merge for Chunked Array pairs | Withdrawn | 17% to 35% slower than the baseline for union, difference, and symmetric difference on three datasets |
 | Order tracking while staging (first construction design) | Replaced | 7% to 24% slower than the baseline on ascending input |
 | Hash event stream | Not changed | A faster stream changes a recorded contract |
@@ -30,7 +31,7 @@ change the Hash event stream.
 
 ## Tests added
 
-Sixteen tests, each with an `unreviewed` catalog record:
+Seventeen tests, each with an `unreviewed` catalog record:
 
 - `tests/integer_sets.rs`: `public_iterator_folds_resume_after_partial_consumption`,
   `construction_normalizes_every_arrival_order_identically`,
@@ -51,11 +52,13 @@ Sixteen tests, each with an `unreviewed` catalog record:
   `adaptive_ordered_range_on_an_emptied_tree_matches_the_sorted_form`,
   `bulk_extension_keeps_representatives_policies_and_partial_progress`,
   `collected_ordered_families_match_entry_by_entry_insertion`,
-  `iterator_end_queries_match_a_complete_traversal`.
+  `iterator_end_queries_match_a_complete_traversal`,
+  `hash_extension_reserves_like_the_standard_collections`.
 
 The construction tests compare every arrival order, including a codec that
 violates the order law, with a reference that implements the two-pass contract.
-The range test and the two sharing tests failed before their fixes.
+The range test, the two sharing tests, and the hash extension test failed
+before their fixes.
 
 ## Independent differential review
 
@@ -257,6 +260,17 @@ Not run, because the tool is not available on this host:
 
 `make verify` is `check`, `profiles`, `features`, `integers`, `examples`, and
 `package`. Each ran as its own command.
+
+## Follow-up after delivery
+
+A later review of the map and set modules found that `MutableHashMap::extend`
+reserved the whole size hint on a nonempty table, and that this series had
+copied that rule into `MutableHashSet::extend` and `AdaptiveHashMap::extend`.
+Extending with keys already present doubled the table. The three paths now
+reserve as the standard collections do. The comparison results above predate
+this change; the `from_iter` cases start from an empty table and take the same
+path as before. `make check` passed again after the change. The other gates
+were not repeated for it.
 
 ## Findings not changed
 

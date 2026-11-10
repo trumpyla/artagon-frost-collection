@@ -778,3 +778,79 @@ fn rejected_input_and_slice_equality() {
     let i: InlineFrozenVec<i32, 2> = vec![1, 2].freeze_with(Inline::<2>);
     assert_eq!(i, vec![1, 2]);
 }
+
+thread_local! {
+    static HASH_CALLS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+/// A key that counts how often it is hashed. A table that grows hashes every
+/// stored key again, so the count shows a rehash without a timing assertion.
+#[derive(Clone, Copy, PartialEq, Eq)]
+struct CountedKey(u32);
+
+impl Hash for CountedKey {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        HASH_CALLS.with(|calls| calls.set(calls.get() + 1));
+        self.0.hash(state);
+    }
+}
+
+fn hash_calls_during(run: impl FnOnce()) -> usize {
+    HASH_CALLS.with(|calls| calls.set(0));
+    run();
+    HASH_CALLS.with(std::cell::Cell::get)
+}
+
+/// Extending a nonempty hash family with keys it already holds must not
+/// reserve for all of them: that doubles the table and hashes every stored key
+/// again. The standard collections reserve half the hint for a nonempty table.
+#[test]
+fn hash_extension_reserves_like_the_standard_collections() {
+    for len in [100_u32, 1000, 1500, 5000, 40_000] {
+        let keys = || (0..len).map(CountedKey);
+        let entries = || keys().map(|key| (key, key.0));
+
+        let mut native: HashMap<CountedKey, u32> = entries().collect();
+        let mut map: MutableHashMap<CountedKey, u32> = entries().collect();
+        assert_eq!(map.capacity(), native.capacity(), "{len}");
+        let expected = hash_calls_during(|| native.extend(entries()));
+        let actual = hash_calls_during(|| map.extend(entries()));
+        assert_eq!(actual, expected, "map hash calls, {len}");
+        assert_eq!(map.capacity(), native.capacity(), "map capacity, {len}");
+
+        let mut native: HashSet<CountedKey> = keys().collect();
+        let mut set: MutableHashSet<CountedKey> = keys().collect();
+        assert_eq!(set.capacity(), native.capacity(), "{len}");
+        let expected = hash_calls_during(|| native.extend(keys()));
+        let actual = hash_calls_during(|| set.extend(keys()));
+        assert_eq!(actual, expected, "set hash calls, {len}");
+        assert_eq!(set.capacity(), native.capacity(), "set capacity, {len}");
+
+        // Fresh keys still get the whole hint when the family starts empty.
+        let mut native: HashMap<CountedKey, u32> = HashMap::new();
+        let mut map: MutableHashMap<CountedKey, u32> = MutableHashMap::new();
+        let expected = hash_calls_during(|| native.extend(entries()));
+        let actual = hash_calls_during(|| map.extend(entries()));
+        assert_eq!(actual, expected, "empty map hash calls, {len}");
+    }
+
+    // 1000 keys leave room for half as many again, so re-inserting them hashes
+    // each key once in every hash family, including the adaptive table.
+    let len = 1000_u32;
+    let entries = || (0..len).map(|id| (CountedKey(id), id));
+    let mut map: MutableHashMap<CountedKey, u32> = entries().collect();
+    assert_eq!(hash_calls_during(|| map.extend(entries())), len as usize);
+    let mut set: MutableHashSet<CountedKey> = (0..len).map(CountedKey).collect();
+    assert_eq!(
+        hash_calls_during(|| set.extend((0..len).map(CountedKey))),
+        len as usize
+    );
+    let mut adaptive: AdaptiveHashMap<CountedKey, u32> = entries().collect();
+    assert_eq!(adaptive.representation(), HashRepr::Table);
+    assert_eq!(
+        hash_calls_during(|| adaptive.extend(entries())),
+        len as usize
+    );
+    assert_eq!(adaptive.len(), len as usize);
+    assert!(entries().all(|(key, value)| adaptive.get(&key) == Some(&value)));
+}

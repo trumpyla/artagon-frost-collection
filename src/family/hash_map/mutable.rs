@@ -442,7 +442,10 @@ impl<K: Eq + Hash, V, S: BuildHasher + Default> FromIterator<(K, V)> for Mutable
 impl<K: Eq + Hash, V, S: BuildHasher> Extend<(K, V)> for MutableHashMap<K, V, S> {
     fn extend<I: IntoIterator<Item = (K, V)>>(&mut self, iter: I) {
         let iter = iter.into_iter();
-        self.m.reserve(iter.size_hint().0);
+        self.m.reserve(crate::family::extend_reservation(
+            self.m.is_empty(),
+            iter.size_hint().0,
+        ));
         for (key, value) in iter {
             self.m.insert(key, value);
         }

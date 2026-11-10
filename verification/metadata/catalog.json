@@ -7778,6 +7778,27 @@
       "target": "tests/integer_sets.rs",
       "cfg": "cfg (feature = \"int-set\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-028",
+      "file": "tests/contracts.rs",
+      "selector": "test:hash_extension_reserves_like_the_standard_collections",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash extension reserves like the standard collections",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
     }
   ]
 }

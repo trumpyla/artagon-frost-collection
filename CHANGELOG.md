@@ -21,6 +21,14 @@ semantic contract changes.
 - `AdaptiveHashMap::extend` (and `from_iter`) fills the linear form entry by
   entry, so promotion still depends on distinct keys, and sizes the table for
   the rest of the input once it exists.
+- Fix `MutableHashMap::extend`, `MutableHashSet::extend`, and the table phase of
+  `AdaptiveHashMap::extend` reserving the whole size hint on a nonempty table.
+  Extending with keys already present doubled the table and hashed every
+  stored key again: capacity 1,835,008 to 3,670,016 for one million keys, where
+  `std::collections::HashMap::extend` keeps 1,835,008. A nonempty table now
+  receives half the hint, as the standard collections do; an empty one still
+  receives all of it. The map had this behavior before this series; the first
+  version of the set and adaptive changes above copied it.
 
 - `MutableOrderedMap` and `MutableOrderedSet` `from_iter` stage, sort stably,
   and reduce through the frozen builder, then build the tree in bulk, as

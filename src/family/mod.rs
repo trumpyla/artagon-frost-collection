@@ -36,6 +36,18 @@ pub use vec::{FrozenVec, MutableVec};
 #[cfg(feature = "std")]
 pub use hash_map::{FrozenHashMap, MutableHashMap};
 
+/// Entries to reserve before extending a hash table from an iterator with the
+/// lower size hint `hint`.
+///
+/// An empty table receives the whole hint. A nonempty table may already hold
+/// the incoming keys, so it receives half, as the standard collections do:
+/// reserving for all of them would double the table, and hash every stored
+/// key again, when the input only replaces values.
+#[cfg(feature = "std")]
+pub(crate) const fn extend_reservation(is_empty: bool, hint: usize) -> usize {
+    if is_empty { hint } else { hint.div_ceil(2) }
+}
+
 /// A duplicate key found by a strict (`try_from_unique`) builder.
 ///
 /// Carries only the rejected entry. Other consumed entries are dropped with

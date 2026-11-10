@@ -372,6 +372,7 @@ impl<K: Eq + Hash, V, S: BuildHasher + Clone + Default> FromIterator<(K, V)>
 impl<K: Eq + Hash, V, S: BuildHasher + Clone> Extend<(K, V)> for AdaptiveHashMap<K, V, S> {
     fn extend<I: IntoIterator<Item = (K, V)>>(&mut self, iter: I) {
         let mut iter = iter.into_iter();
+        let started_empty = self.is_empty();
         // The linear form promotes on distinct keys, not on input length, so
         // it is filled entry by entry. Reserving up front would promote a
         // small map that receives many duplicate keys.
@@ -381,9 +382,13 @@ impl<K: Eq + Hash, V, S: BuildHasher + Clone> Extend<(K, V)> for AdaptiveHashMap
             };
             self.insert(k, v);
         }
-        // Once a table exists, size it for the rest of the input.
+        // Once a table exists, size it for the rest of the input. A map that
+        // was empty holds only keys from this input, so the rest is new.
         if let Repr::Table(m) = &mut self.repr {
-            m.reserve(iter.size_hint().0);
+            m.reserve(crate::family::extend_reservation(
+                started_empty,
+                iter.size_hint().0,
+            ));
         }
         for (k, v) in iter {
             self.insert(k, v);
