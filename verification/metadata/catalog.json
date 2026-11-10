@@ -7736,6 +7736,27 @@
       "target": "tests/contracts.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-027",
+      "file": "tests/contracts.rs",
+      "selector": "test:iterator_end_queries_match_a_complete_traversal",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: iterator end queries match a complete traversal",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
     }
   ]
 }

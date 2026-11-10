@@ -27,6 +27,10 @@ semantic contract changes.
   `AdaptiveOrderedMap::from_iter` already does. First-key and last-value
   retention are unchanged. Collection now needs O(n) temporary staging.
 
+- Crate-owned iterator wrappers forward `last`, `nth`, `min`, `max`, and
+  `count` to the backend iterator, which answers them from one end for ordered
+  trees and slices. `Keys` and `Values` forward `last`, `nth`, and `count`.
+
 ## Unreleased — integer profile optimizations
 
 No public API, feature, representation candidate, policy limit, or Hash event

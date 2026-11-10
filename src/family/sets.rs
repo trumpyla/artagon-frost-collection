@@ -49,6 +49,29 @@ macro_rules! borrowed_iter {
             fn count(self) -> usize {
                 self.inner.count()
             }
+            // The backend answers these from one end when it can.
+            #[inline]
+            fn last(self) -> Option<Self::Item> {
+                self.inner.last()
+            }
+            #[inline]
+            fn nth(&mut self, n: usize) -> Option<Self::Item> {
+                self.inner.nth(n)
+            }
+            #[inline]
+            fn min(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.inner.min()
+            }
+            #[inline]
+            fn max(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.inner.max()
+            }
         }
         impl<T> core::iter::FusedIterator for $name<'_, T> {}
     };
@@ -85,6 +108,29 @@ macro_rules! owned_iter {
             #[inline]
             fn count(self) -> usize {
                 self.inner.count()
+            }
+            // The backend answers these from one end when it can.
+            #[inline]
+            fn last(self) -> Option<Self::Item> {
+                self.inner.last()
+            }
+            #[inline]
+            fn nth(&mut self, n: usize) -> Option<Self::Item> {
+                self.inner.nth(n)
+            }
+            #[inline]
+            fn min(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.inner.min()
+            }
+            #[inline]
+            fn max(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.inner.max()
             }
         }
         impl<T> ExactSizeIterator for $name<T> {}

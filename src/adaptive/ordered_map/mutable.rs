@@ -537,6 +537,36 @@ macro_rules! ordered_iter {
                     IterRepr::TreeRange(it) => it.fold(init, f),
                 }
             }
+            // Both representations answer these from one end; the default
+            // implementations would traverse every entry.
+            #[inline]
+            fn count(self) -> usize {
+                dispatch!(self.0, it => it.count(), |n| n)
+            }
+            #[inline]
+            fn last(self) -> Option<Self::Item> {
+                dispatch!(self.0, it => it.last(), |o: Option<&'a (K, V)>| o.map(pair))
+            }
+            #[inline]
+            fn nth(&mut self, n: usize) -> Option<Self::Item> {
+                dispatch!(&mut self.0, it => it.nth(n), |o: Option<&'a (K, V)>| o.map(pair))
+            }
+            // Keys are strictly ascending, so the least and greatest entries
+            // are the first and last, as for `BTreeMap` iterators.
+            #[inline]
+            fn min(mut self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.next()
+            }
+            #[inline]
+            fn max(mut self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.next_back()
+            }
         }
         impl<'a, K, V> DoubleEndedIterator for $name<'a, K, V> {
             #[inline]

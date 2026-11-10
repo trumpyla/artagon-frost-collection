@@ -39,6 +39,30 @@ macro_rules! wrap_iter {
             fn count(self) -> usize {
                 self.0.count()
             }
+            // The backend answers these from one end when it can; the default
+            // implementations would traverse every element.
+            #[inline]
+            fn last(self) -> Option<Self::Item> {
+                self.0.last()
+            }
+            #[inline]
+            fn nth(&mut self, n: usize) -> Option<Self::Item> {
+                self.0.nth(n)
+            }
+            #[inline]
+            fn min(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.0.min()
+            }
+            #[inline]
+            fn max(self) -> Option<Self::Item>
+            where
+                Self::Item: Ord,
+            {
+                self.0.max()
+            }
         }
 
         impl<$($p),*> core::iter::FusedIterator for $name<$($p),*> {}
@@ -121,6 +145,18 @@ impl<'a, K: 'a, V, I: Iterator<Item = (&'a K, V)>> Iterator for Keys<I> {
     fn fold<B, F: FnMut(B, &'a K) -> B>(self, init: B, mut f: F) -> B {
         self.0.fold(init, |acc, (k, _)| f(acc, k))
     }
+    #[inline]
+    fn count(self) -> usize {
+        self.0.count()
+    }
+    #[inline]
+    fn last(self) -> Option<&'a K> {
+        self.0.last().map(|(k, _)| k)
+    }
+    #[inline]
+    fn nth(&mut self, n: usize) -> Option<&'a K> {
+        self.0.nth(n).map(|(k, _)| k)
+    }
 }
 impl<'a, K: 'a, V, I: DoubleEndedIterator<Item = (&'a K, V)>> DoubleEndedIterator for Keys<I> {
     #[inline]
@@ -147,6 +183,18 @@ impl<A, V, I: Iterator<Item = (A, V)>> Iterator for Values<I> {
     #[inline]
     fn fold<B, F: FnMut(B, V) -> B>(self, init: B, mut f: F) -> B {
         self.0.fold(init, |acc, (_, v)| f(acc, v))
+    }
+    #[inline]
+    fn count(self) -> usize {
+        self.0.count()
+    }
+    #[inline]
+    fn last(self) -> Option<V> {
+        self.0.last().map(|(_, v)| v)
+    }
+    #[inline]
+    fn nth(&mut self, n: usize) -> Option<V> {
+        self.0.nth(n).map(|(_, v)| v)
     }
 }
 impl<A, V, I: DoubleEndedIterator<Item = (A, V)>> DoubleEndedIterator for Values<I> {

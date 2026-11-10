@@ -433,6 +433,89 @@ fn empty_ordered_range_never_panics_like_btree() {
     assert_eq!(empty_s.range(5..1).count(), 0);
 }
 
+/// `last`, `nth`, `min`, `max`, and `count` are forwarded to the backend, which
+/// answers them from one end. They must agree with a complete traversal for
+/// every wrapper, from the start and after partial consumption.
+#[test]
+fn iterator_end_queries_match_a_complete_traversal() {
+    use frost::adaptive::{AdaptiveOrdered, AdaptiveOrderedMap, OrderedRepr};
+    fn check<I>(iterator: &I, context: &str)
+    where
+        I: Iterator + Clone,
+        I::Item: Ord + Clone + core::fmt::Debug,
+    {
+        for skipped in [0_usize, 1, 3] {
+            let mut iterator = iterator.clone();
+            for _ in 0..skipped {
+                iterator.next();
+            }
+            let all: Vec<I::Item> = iterator.clone().collect();
+            assert_eq!(iterator.clone().count(), all.len(), "{context}: count");
+            assert_eq!(
+                iterator.clone().last(),
+                all.last().cloned(),
+                "{context}: last"
+            );
+            assert_eq!(
+                iterator.clone().min(),
+                all.iter().cloned().min(),
+                "{context}: min"
+            );
+            assert_eq!(
+                iterator.clone().max(),
+                all.iter().cloned().max(),
+                "{context}: max"
+            );
+            for n in [0, 1, all.len().saturating_sub(1), all.len(), all.len() + 3] {
+                let mut cursor = iterator.clone();
+                assert_eq!(cursor.nth(n), all.get(n).cloned(), "{context}: nth({n})");
+                let rest: Vec<I::Item> = cursor.collect();
+                assert_eq!(
+                    rest,
+                    all[(n + 1).min(all.len())..],
+                    "{context}: after nth({n})"
+                );
+            }
+        }
+    }
+    for size in [0_u32, 1, 2, 7, 40] {
+        let entries: Vec<(u32, u32)> = (0..size).map(|key| (key * 3, 1_000 - key)).collect();
+        let ordered: MutableOrderedMap<u32, u32> = entries.iter().copied().collect();
+        check(&ordered.iter(), "MutableOrderedMap::iter");
+        check(&ordered.keys(), "MutableOrderedMap::keys");
+        check(&ordered.values(), "MutableOrderedMap::values");
+        check(&ordered.range(3..90), "MutableOrderedMap::range");
+        let ordered_set: MutableOrderedSet<u32> = entries.iter().map(|(key, _)| *key).collect();
+        check(&ordered_set.iter(), "MutableOrderedSet::iter");
+        let frozen = ordered.clone().freeze();
+        check(&frozen.iter(), "FrozenOrderedMap::iter");
+        check(&frozen.keys(), "FrozenOrderedMap::keys");
+        check(&frozen.values(), "FrozenOrderedMap::values");
+        check(&frozen.range(3..90), "FrozenOrderedMap::range");
+        for (policy, repr) in [
+            (AdaptiveOrdered::sorted_up_to(64), OrderedRepr::Sorted),
+            (AdaptiveOrdered::sorted_up_to(0), OrderedRepr::Tree),
+        ] {
+            let mut adaptive = AdaptiveOrderedMap::with_policy(policy);
+            adaptive.extend(entries.iter().copied());
+            if size > 0 {
+                assert_eq!(adaptive.representation(), repr);
+            }
+            check(&adaptive.iter(), "AdaptiveOrderedMap::iter");
+            check(&adaptive.keys(), "AdaptiveOrderedMap::keys");
+            check(&adaptive.values(), "AdaptiveOrderedMap::values");
+            check(&adaptive.range(3..90), "AdaptiveOrderedMap::range");
+            check(&adaptive.range(..), "AdaptiveOrderedMap::range(..)");
+        }
+        let hashed: MutableHashMap<u32, u32> = entries.iter().copied().collect();
+        check(&hashed.iter(), "MutableHashMap::iter");
+        check(&hashed.keys(), "MutableHashMap::keys");
+        check(&hashed.values(), "MutableHashMap::values");
+        let hashed_set: MutableHashSet<u32> = entries.iter().map(|(key, _)| *key).collect();
+        check(&hashed_set.iter(), "MutableHashSet::iter");
+    }
+}
+
 /// Collecting into the mutable ordered families stages and sorts the input.
 /// The result must equal entry-by-entry insertion: the first key
 /// representative, the last value, ascending order, and the same members,
