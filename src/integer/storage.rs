@@ -81,7 +81,10 @@ struct Native<W: Word> {
     bitmap: W::Roaring,
     partitions: u64,
     containers: u64,
-    score: u128,
+    /// Saturated to `u64`. A wider field would raise the alignment of every
+    /// storage root to 16 bytes; a score this large cannot belong to a value
+    /// that fits in memory, and a saturated score still loses every comparison.
+    score: u64,
 }
 
 impl<W: Word> Native<W> {
@@ -91,7 +94,7 @@ impl<W: Word> Native<W> {
             bitmap,
             partitions,
             containers,
-            score,
+            score: u64::try_from(score).unwrap_or(u64::MAX),
         }
     }
 }
@@ -323,7 +326,7 @@ impl<W: Word> Storage<W> {
         match &self.repr {
             Repr::Sorted(words) => words.len() as u64 * size_of::<W>() as u64,
             Repr::Dense(dense) => dense.payload_bytes() as u64,
-            Repr::Roaring(value) => u64::try_from(value.score).unwrap_or(u64::MAX),
+            Repr::Roaring(value) => value.score,
             Repr::Chunked(chunked) => chunked.payload_bytes(),
         }
     }
@@ -973,7 +976,8 @@ impl<W: Word> Storage<W> {
                     return Self::roaring(self.as_roaring().into_owned()).finish(policy);
                 }
                 Repr::Roaring(roaring) => {
-                    let (partitions, roaring_score) = (roaring.partitions, roaring.score);
+                    let (partitions, roaring_score) =
+                        (roaring.partitions, u128::from(roaring.score));
                     // As with Dense, preserve a legal native result competitive
                     // with Sorted. Rebuilding alternating Roaring members into
                     // Dense can cost much more than the container operation.
@@ -2153,7 +2157,11 @@ mod tests {
                 return false;
             };
             assert_eq!(
-                (native.partitions, native.containers, native.score),
+                (
+                    native.partitions,
+                    native.containers,
+                    u128::from(native.score)
+                ),
                 W::roaring_summary(&native.bitmap),
                 "{context}"
             );
