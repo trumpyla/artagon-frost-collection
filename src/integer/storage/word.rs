@@ -28,7 +28,6 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
     }
     fn roaring_from_sorted(words: &[Self]) -> Self::Roaring;
     fn roaring_from_ascending(codes: impl Iterator<Item = Self>) -> Self::Roaring;
-    fn roaring_containers(value: &Self::Roaring) -> u64;
     fn roaring_from_dense(base: u64, words: &[u64]) -> Self::Roaring;
     fn roaring_iter(value: &Self::Roaring) -> Self::RoaringIter<'_>;
     fn roaring_visit_runs(value: &Self::Roaring, visit: impl FnMut(u64, u64));
@@ -36,7 +35,8 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
         value: &Self::Roaring,
         visit: impl FnMut(u64, u64) -> ControlFlow<B>,
     ) -> ControlFlow<B>;
-    fn roaring_estimate(value: &Self::Roaring) -> (u64, u128);
+    /// One scan: occupied upper-32-bit partitions, containers, memory score.
+    fn roaring_summary(value: &Self::Roaring) -> (u64, u64, u128);
     fn roaring_len(value: &Self::Roaring) -> u64;
     fn roaring_bounds(value: &Self::Roaring) -> Option<(Self, Self)>;
     fn roaring_contains(value: &Self::Roaring, member: Self) -> bool;
@@ -49,7 +49,7 @@ pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
 }
 
 macro_rules! word {
-    ($word:ty, $backend:ty, $iterator:ty, $dense:ident, $runs:ident, $try_runs:ident, $estimate:ident, $containers:ident) => {
+    ($word:ty, $backend:ty, $iterator:ty, $dense:ident, $runs:ident, $try_runs:ident, $estimate:ident) => {
         impl Word for $word {
             type Roaring = $backend;
             type RoaringIter<'a> = $iterator;
@@ -107,9 +107,6 @@ macro_rules! word {
                 result.optimize();
                 result
             }
-            fn roaring_containers(value: &Self::Roaring) -> u64 {
-                $containers(value)
-            }
             fn roaring_from_dense(base: u64, words: &[u64]) -> Self::Roaring {
                 $dense(base, words)
             }
@@ -125,7 +122,7 @@ macro_rules! word {
             ) -> ControlFlow<B> {
                 $try_runs(value, visit)
             }
-            fn roaring_estimate(value: &Self::Roaring) -> (u64, u128) {
+            fn roaring_summary(value: &Self::Roaring) -> (u64, u64, u128) {
                 $estimate(value)
             }
             fn roaring_len(value: &Self::Roaring) -> u64 {
@@ -180,8 +177,7 @@ word!(
     dense32,
     runs32,
     try_runs32,
-    estimate32,
-    containers32
+    estimate32
 );
 word!(
     u64,
@@ -190,20 +186,8 @@ word!(
     dense64,
     runs64,
     try_runs64,
-    estimate64,
-    containers64
+    estimate64
 );
-
-fn containers32(value: &roaring::RoaringBitmap) -> u64 {
-    u64::from(value.statistics().n_containers)
-}
-
-fn containers64(value: &roaring::RoaringTreemap) -> u64 {
-    value
-        .bitmaps()
-        .map(|(_, bitmap)| containers32(bitmap))
-        .sum()
-}
 
 fn runs32(value: &roaring::RoaringBitmap, mut visit: impl FnMut(u64, u64)) {
     let mut iter = value.iter();
@@ -251,26 +235,31 @@ fn try_runs64<B>(
     ControlFlow::Continue(())
 }
 
-fn bitmap_payload(value: &roaring::RoaringBitmap) -> u128 {
+/// Containers and payload score of one 32-bit bitmap, from one statistics pass.
+fn bitmap_payload(value: &roaring::RoaringBitmap) -> (u64, u128) {
     let stats = value.statistics();
     // This is the same deterministic container proxy used by the planner, not
     // a claim about allocator metadata or retained Vec capacity.
-    u128::from(stats.n_containers) * 32
+    let score = u128::from(stats.n_containers) * 32
         + u128::from(stats.n_values_array_containers) * 2
         + u128::from(stats.n_bitset_containers) * 8192
-        + u128::from(stats.n_bytes_run_containers)
+        + u128::from(stats.n_bytes_run_containers);
+    (u64::from(stats.n_containers), score)
 }
 
-fn estimate32(value: &roaring::RoaringBitmap) -> (u64, u128) {
-    (u64::from(!value.is_empty()), 32 + bitmap_payload(value))
+fn estimate32(value: &roaring::RoaringBitmap) -> (u64, u64, u128) {
+    let (containers, payload) = bitmap_payload(value);
+    (u64::from(!value.is_empty()), containers, 32 + payload)
 }
 
-fn estimate64(value: &roaring::RoaringTreemap) -> (u64, u128) {
-    value
-        .bitmaps()
-        .fold((0, 32), |(partitions, score), (_, bitmap)| {
-            (partitions + 1, score + 80 + bitmap_payload(bitmap))
-        })
+fn estimate64(value: &roaring::RoaringTreemap) -> (u64, u64, u128) {
+    value.bitmaps().fold(
+        (0, 0, 32),
+        |(partitions, containers, score), (_, bitmap)| {
+            let (count, payload) = bitmap_payload(bitmap);
+            (partitions + 1, containers + count, score + 80 + payload)
+        },
+    )
 }
 
 fn dense32(base: u64, words: &[u64]) -> roaring::RoaringBitmap {

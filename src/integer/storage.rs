@@ -65,8 +65,42 @@ pub(crate) use word::Word;
 enum Repr<W: Word> {
     Sorted(Box<[W]>),
     Dense(Dense<W>),
-    Roaring(W::Roaring),
+    Roaring(Native<W>),
     Chunked(Chunked<W>),
+}
+
+/// An immutable native Roaring value with its planning statistics.
+///
+/// Result planning, policy eligibility, and the copy heuristics all need the
+/// partition count, container count, and memory score. Each is an
+/// O(containers) scan of the native value, and storage is immutable, so the
+/// scan runs once here instead of on every eligibility check. The statistics
+/// are derived data: they never take part in equality, ordering, or hashing.
+#[derive(Clone)]
+struct Native<W: Word> {
+    bitmap: W::Roaring,
+    partitions: u64,
+    containers: u64,
+    score: u128,
+}
+
+impl<W: Word> Native<W> {
+    fn new(bitmap: W::Roaring) -> Self {
+        let (partitions, containers, score) = W::roaring_summary(&bitmap);
+        Self {
+            bitmap,
+            partitions,
+            containers,
+            score,
+        }
+    }
+}
+
+impl<W: Word> core::ops::Deref for Native<W> {
+    type Target = W::Roaring;
+    fn deref(&self) -> &W::Roaring {
+        &self.bitmap
+    }
 }
 
 /// Immutable cardinality and bounds are cached for every representation.
@@ -205,7 +239,7 @@ impl<W: Word> Storage<W> {
                         max_partitions: policy.max_roaring_partitions,
                     });
                 }
-                Repr::Roaring(W::roaring_from_sorted(&words))
+                Repr::Roaring(Native::new(W::roaring_from_sorted(&words)))
             }
             IntSetBackend::Chunked => Repr::Chunked(Chunked::from_sorted(&words)),
             IntSetBackend::Auto => unreachable!("automatic planning chooses a concrete backend"),
@@ -234,7 +268,7 @@ impl<W: Word> Storage<W> {
         let cardinality = W::roaring_len(&value);
         let bounds = W::roaring_bounds(&value);
         Self {
-            repr: Repr::Roaring(value),
+            repr: Repr::Roaring(Native::new(value)),
             cardinality,
             bounds,
         }
@@ -289,7 +323,7 @@ impl<W: Word> Storage<W> {
         match &self.repr {
             Repr::Sorted(words) => words.len() as u64 * size_of::<W>() as u64,
             Repr::Dense(dense) => dense.payload_bytes() as u64,
-            Repr::Roaring(value) => u64::try_from(W::roaring_estimate(value).1).unwrap_or(u64::MAX),
+            Repr::Roaring(value) => u64::try_from(value.score).unwrap_or(u64::MAX),
             Repr::Chunked(chunked) => chunked.payload_bytes(),
         }
     }
@@ -337,7 +371,7 @@ impl<W: Word> Storage<W> {
         match (&self.repr, &other.repr) {
             (Repr::Sorted(left), Repr::Sorted(right)) => left == right,
             (Repr::Dense(left), Repr::Dense(right)) => left == right,
-            (Repr::Roaring(left), Repr::Roaring(right)) => left == right,
+            (Repr::Roaring(left), Repr::Roaring(right)) => left.bitmap == right.bitmap,
             (Repr::Chunked(left), Repr::Chunked(right)) => left == right,
             _ => self.iter().eq(other.iter()),
         }
@@ -884,7 +918,7 @@ impl<W: Word> Storage<W> {
         match &self.repr {
             Repr::Sorted(words) => partition_count(words),
             Repr::Dense(dense) => dense.partition_count(),
-            Repr::Roaring(roaring) => W::roaring_estimate(roaring).0,
+            Repr::Roaring(roaring) => roaring.partitions,
             Repr::Chunked(chunks) => chunks.partition_count(),
         }
     }
@@ -923,7 +957,7 @@ impl<W: Word> Storage<W> {
                     return Self::roaring(self.as_roaring().into_owned()).finish(policy);
                 }
                 Repr::Roaring(roaring) => {
-                    let (partitions, roaring_score) = W::roaring_estimate(roaring);
+                    let (partitions, roaring_score) = (roaring.partitions, roaring.score);
                     // As with Dense, preserve a legal native result competitive
                     // with Sorted. Rebuilding alternating Roaring members into
                     // Dense can cost much more than the container operation.
@@ -1530,17 +1564,17 @@ fn dense_roaring<W: Word>(
 
 fn sorted_roaring<W: Word>(
     sorted: &[W],
-    roaring: &W::Roaring,
+    native: &Native<W>,
     op: Operation,
     sorted_left: bool,
 ) -> Combined<W> {
+    let roaring: &W::Roaring = native;
     let sorted_len = sorted.len() as u64;
     let roaring_len = W::roaring_len(roaring);
     // Copying a scattered container tree costs more than merging its codes,
-    // and the planner would not keep such a set in Roaring either. Counting
-    // containers is O(containers), so only the paths that copy ask.
-    let well_filled =
-        || roaring_len >= W::roaring_containers(roaring).saturating_mul(WELL_FILLED_MEMBERS);
+    // and the planner would not keep such a set in Roaring either. The
+    // container count is cached with the immutable native value.
+    let well_filled = || roaring_len >= native.containers.saturating_mul(WELL_FILLED_MEMBERS);
     let small_sorted = sorted_len <= SMALL_SORTED_UPDATES;
     let roaring_dominant = sorted_len <= roaring_len.saturating_mul(4);
     let native = |op: Operation| {
@@ -2033,5 +2067,69 @@ mod tests {
         let narrow = Storage::<u32>::from_sorted(alloc::vec![0, u32::MAX], IntSetPolicy::sorted());
         assert_eq!(narrow.unwrap().partition_span(), 1);
         assert_eq!(Storage::<u32>::empty().partition_span(), 0);
+    }
+
+    /// The cached native statistics are derived data. After construction,
+    /// native algebra, a small cloned update, and promotion from other
+    /// representations they must equal a fresh summary of the stored value.
+    #[test]
+    fn cached_native_statistics_match_a_fresh_summary() {
+        use super::{Arc, Repr, Word};
+        fn assert_fresh<W: Word>(storage: &Storage<W>, context: &str) -> bool {
+            let Repr::Roaring(native) = &storage.repr else {
+                return false;
+            };
+            assert_eq!(
+                (native.partitions, native.containers, native.score),
+                W::roaring_summary(&native.bitmap),
+                "{context}"
+            );
+            assert_eq!(storage.partitions(), native.partitions, "{context}");
+            true
+        }
+        let roaring = IntSetPolicy::roaring();
+        let build =
+            |codes: Vec<u64>, policy| Arc::new(Storage::from_sorted(codes, policy).unwrap());
+        let runs: Vec<u64> = (0..3_u64)
+            .flat_map(|partition| (0..1_500).map(move |low| (partition << 32) + low * 3))
+            .collect();
+        let left = build(runs.clone(), roaring);
+        assert!(assert_fresh(&left, "sorted construction"));
+        let shifted = build(runs.iter().map(|code| code + 700).collect(), roaring);
+        let single = build(alloc::vec![9 << 32], IntSetPolicy::sorted());
+        let dense = build((1_000..3_000).collect(), IntSetPolicy::dense());
+        let chunked = build((60_000..70_000).collect(), IntSetPolicy::chunked());
+        let mut native_results = 0;
+        for other in [&shifted, &single, &dense, &chunked] {
+            for op in [
+                Operation::Union,
+                Operation::Intersection,
+                Operation::Difference,
+                Operation::SymmetricDifference,
+            ] {
+                for (a, b) in [(&left, other), (other, &left)] {
+                    for policy in [IntSetPolicy::auto(), roaring] {
+                        let result = a.binary(b, op, policy).unwrap();
+                        native_results += usize::from(assert_fresh(&result, "algebra result"));
+                    }
+                }
+            }
+        }
+        assert!(
+            native_results >= 32,
+            "{native_results} native results checked"
+        );
+        // Identity and empty shortcuts reuse the allocation and its statistics.
+        let same = left
+            .binary(&left, Operation::Union, IntSetPolicy::auto())
+            .unwrap();
+        assert!(Arc::ptr_eq(&same, &left));
+        let limited = IntSetPolicy::auto().with_roaring_partition_limit(2);
+        let rebuilt = left.binary(&left, Operation::Union, limited).unwrap();
+        assert!(
+            !Arc::ptr_eq(&rebuilt, &left),
+            "three partitions exceed the limit"
+        );
+        assert_eq!(rebuilt.cardinality(), left.cardinality());
     }
 }

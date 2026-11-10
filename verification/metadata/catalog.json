@@ -7568,6 +7568,27 @@
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-037",
+      "file": "src/integer/storage.rs",
+      "selector": "test:integer::storage::tests::cached_native_statistics_match_a_fresh_summary",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::tests::cached native statistics match a fresh summary",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
     }
   ]
 }
