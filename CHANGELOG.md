@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — emptied adaptive tree ranges
+
+- Fix `AdaptiveOrderedMap::range` and `range_mut` panicking on inverted or
+  equal-excluded bounds when the map is in Tree form and was emptied by
+  `remove`, `pop_first`, `pop_last`, or `retain`. A std tree emptied by removal
+  keeps its root and validates bounds; the Sorted form and the documented
+  contract do not. Both forms now return an empty range. `MutableOrderedMap` and
+  `MutableOrderedSet` keep std's behavior, as documented.
+
 ## Unreleased — integer profile optimizations
 
 No public API, feature, representation candidate, policy limit, or Hash event

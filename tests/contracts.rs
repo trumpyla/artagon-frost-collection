@@ -433,6 +433,52 @@ fn empty_ordered_range_never_panics_like_btree() {
     assert_eq!(empty_s.range(5..1).count(), 0);
 }
 
+/// A std tree emptied by removal keeps its root and validates range bounds,
+/// unlike `BTreeMap::new()`. The adaptive map documents that an empty map
+/// never panics, so its Tree form must not expose that difference: both
+/// representations answer an inverted or empty-excluded range with nothing.
+#[test]
+fn adaptive_ordered_range_on_an_emptied_tree_matches_the_sorted_form() {
+    use frost::adaptive::{AdaptiveOrdered, AdaptiveOrderedMap, OrderedRepr};
+    use std::ops::Bound::Excluded;
+    let emptied = |policy: AdaptiveOrdered, how: usize| {
+        let mut map = AdaptiveOrderedMap::with_policy(policy);
+        map.insert(1, 10);
+        map.insert(2, 20);
+        match how {
+            0 => {
+                map.remove(&1);
+                map.remove(&2);
+            }
+            1 => {
+                map.pop_first();
+                map.pop_last();
+            }
+            _ => map.retain(|_, _| false),
+        }
+        assert!(map.is_empty());
+        map
+    };
+    for how in 0..3 {
+        let mut sorted = emptied(AdaptiveOrdered::sorted_up_to(4), how);
+        let mut tree = emptied(AdaptiveOrdered::sorted_up_to(0), how);
+        assert_eq!(sorted.representation(), OrderedRepr::Sorted);
+        assert_eq!(tree.representation(), OrderedRepr::Tree);
+        for map in [&mut sorted, &mut tree] {
+            assert_eq!(map.range(5..1).count(), 0);
+            assert_eq!(map.range((Excluded(3), Excluded(3))).count(), 0);
+            assert_eq!(map.range_mut(5..1).count(), 0);
+            assert_eq!(map.range_mut((Excluded(3), Excluded(3))).count(), 0);
+            assert_eq!(map.range(..).next_back(), None);
+            // The map is still usable, and a nonempty map validates bounds.
+            map.insert(7, 70);
+            assert_eq!(map.range(..).collect::<Vec<_>>(), [(&7, &70)]);
+            assert_eq!(map.range_mut(7..=7).count(), 1);
+        }
+        assert_eq!(sorted, tree);
+    }
+}
+
 /// `Ord` sees only `id`; `PartialEq` sees `id` and `tag` (inconsistent on
 /// purpose). Families must dedup by `Ord`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

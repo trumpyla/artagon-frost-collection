@@ -303,7 +303,10 @@ impl<K: Ord, V> AdaptiveOrderedMap<K, V> {
     /// Entries with keys in `range`, ascending.
     ///
     /// # Panics
-    /// Exactly when `BTreeMap::range` panics (never on an empty map).
+    /// On inverted bounds, or equal excluded bounds, when the map is nonempty:
+    /// the bounds `BTreeMap::range` rejects. An empty map never panics in
+    /// either representation. (A std tree emptied by removal still validates
+    /// its bounds; this map does not expose that difference.)
     pub fn range<Q, R>(&self, range: R) -> Range<'_, K, V>
     where
         K: Borrow<Q>,
@@ -315,6 +318,9 @@ impl<K: Ord, V> AdaptiveOrderedMap<K, V> {
                 let (s, e) = range_indices(v, |(k, _)| k.borrow(), &range);
                 IterRepr::Sorted(v[s..e].iter())
             }
+            // A tree emptied by removal keeps its root and would validate
+            // the bounds; the sorted form and a new tree do not.
+            Repr::Tree(t) if t.is_empty() => IterRepr::Sorted([].iter()),
             Repr::Tree(t) => IterRepr::TreeRange(t.range(range)),
         })
     }
@@ -353,7 +359,7 @@ impl<K: Ord, V> AdaptiveOrderedMap<K, V> {
     /// Entries in `range` with mutable values.
     ///
     /// # Panics
-    /// Exactly when `BTreeMap::range_mut` panics (never on an empty map).
+    /// As [`range`](Self::range): only on rejected bounds of a nonempty map.
     pub fn range_mut<Q, R>(&mut self, range: R) -> RangeMut<'_, K, V>
     where
         K: Borrow<Q>,
@@ -365,6 +371,7 @@ impl<K: Ord, V> AdaptiveOrderedMap<K, V> {
                 let (s, e) = range_indices(v, |(k, _)| k.borrow(), &range);
                 RangeMutRepr::Sorted(v[s..e].iter_mut())
             }
+            Repr::Tree(t) if t.is_empty() => RangeMutRepr::Sorted([].iter_mut()),
             Repr::Tree(t) => RangeMutRepr::Tree(t.range_mut(range)),
         })
     }

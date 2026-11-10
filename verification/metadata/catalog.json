@@ -7673,6 +7673,27 @@
       "target": "tests/ordered_set_ops.rs",
       "cfg": "cfg (feature = \"alloc\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-024",
+      "file": "tests/contracts.rs",
+      "selector": "test:adaptive_ordered_range_on_an_emptied_tree_matches_the_sorted_form",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive ordered range on an emptied tree matches the sorted form",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
     }
   ]
 }

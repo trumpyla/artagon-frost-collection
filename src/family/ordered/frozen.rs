@@ -43,8 +43,9 @@ where
     Q: Ord + ?Sized,
     R: RangeBounds<Q> + ?Sized,
 {
-    // `BTreeMap::range` on an empty map returns an empty iterator without
-    // validating bounds; match that exactly.
+    // `BTreeMap::range` on a new or cleared map returns an empty iterator
+    // without validating bounds (a tree emptied by removal still validates
+    // them). An empty slice never validates.
     if items.is_empty() {
         return (0, 0);
     }
@@ -89,7 +90,8 @@ fn first_unsorted<T>(items: &[T], cmp: impl Fn(&T, &T) -> Ordering) -> Option<us
 /// Contract (identical to `BTreeMap` where both define it)
 /// * Lookup: `K: Borrow<Q> + Ord`, `Q: Ord`.
 /// * Traversal and `range`: ascending key order; `range` panics on the same
-///   bounds `BTreeMap::range` rejects (and, like it, never on an empty map).
+///   bounds `BTreeMap::range` rejects, and never on an empty map. (A std tree
+///   emptied by removal still validates its bounds.)
 /// * Lookup and construction use `Ord` equivalence only. Whole-map
 ///   equality, ordering and hashing compare stored keys with
 ///   `K: PartialEq`/`Ord`/`Hash`, exactly as `BTreeMap` does.
