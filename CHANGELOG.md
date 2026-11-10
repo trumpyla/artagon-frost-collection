@@ -57,6 +57,8 @@ stream changes. Measurements and their limits are in
   bounds span more partitions than the limit. The planner survey stops once the
   Roaring score can no longer beat the selected candidate; the selected backend
   is unchanged.
+- Keep the Sorted difference cost comparison overflow-free for large slice
+  lengths, including 32-bit targets.
 - Classify staged codes before sorting. Input that arrived strictly ascending
   skips the sort and deduplication. Input that arrived strictly descending is
   reversed. Other unsorted input is sorted through a temporary bitmap when its

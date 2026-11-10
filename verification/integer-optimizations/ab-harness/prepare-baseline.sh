@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Bash 3.2+ executable for macOS/Linux; requires Git, tar, and sed.
 # Archive a baseline revision of this repository into ./baseline and rename its
 # package to `frost-baseline`, so the harness links baseline and working tree
 # into one executable. Usage: ./prepare-baseline.sh <git-rev>
@@ -35,4 +36,4 @@ else
 fi
 
 printf '%s\n' "$commit" >baseline/BASELINE_REV
-printf 'prepared baseline %s\n' "$commit"
+printf 'prepared baseline %s\n' "$commit" >&2

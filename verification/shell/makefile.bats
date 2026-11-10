@@ -158,3 +158,21 @@ STUB
   [[ "$(<"$FROST_TEST_LOG")" != *$'\r'* ]]
   [[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.toml>'* ]]
 }
+
+@test "integer-ab keeps setup diagnostics out of its CSV stream" {
+  bats_require_minimum_version 1.5.0
+  frost_harness="$frost_fixture/verification/integer-optimizations/ab-harness"
+  mkdir -p "$frost_harness/target/release"
+  printf 'printf "prepared baseline fixture\\n"\n' >"$frost_harness/prepare-baseline.sh"
+  cat >"$frost_harness/target/release/frost-integer-optimizations-ab" <<'STUB'
+#!/usr/bin/env bash
+printf 'case,old_min_ns,new_min_ns,old_over_new,old_repr,new_repr\n'
+printf 'fixture,2,1,2,Sorted,Sorted\n'
+STUB
+  chmod +x "$frost_harness/target/release/frost-integer-optimizations-ab"
+  run --separate-stderr "$frost_make" --no-print-directory -C "$frost_fixture" \
+    "SHELL=$frost_bash" "CARGO=$frost_cargo" integer-ab
+  [ "$status" -eq 0 ]
+  [ "$output" = $'case,old_min_ns,new_min_ns,old_over_new,old_repr,new_repr\nfixture,2,1,2,Sorted,Sorted' ]
+  [[ "$stderr" == *'prepared baseline fixture'* ]]
+}

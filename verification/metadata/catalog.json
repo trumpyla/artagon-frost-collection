@@ -7570,6 +7570,24 @@
       "cost": "unreviewed"
     },
     {
+      "id": "T-LIB-038",
+      "file": "src/integer/storage.rs",
+      "selector": "test:integer::storage::tests::sorted_difference_cost_comparison_handles_large_lengths",
+      "status": "curated",
+      "tags": ["integer", "set-algebra"],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "docs/integer-optimization-validation.md merge review",
+      "kind": "regression",
+      "contracts": ["C-INT-SET-ALGEBRA"],
+      "oracle": "Exact u128 probe and merge costs, independent of usize overflow",
+      "scenario": "Zero, small, and maximum addressable u32 slice lengths; compare kernel selection without allocating the slices",
+      "seed": "none",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "fast"
+    },
+    {
       "id": "T-LIB-037",
       "file": "src/integer/storage.rs",
       "selector": "test:integer::storage::tests::cached_native_statistics_match_a_fresh_summary",

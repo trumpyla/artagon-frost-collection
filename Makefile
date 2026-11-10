@@ -345,8 +345,8 @@ catalog-inventory:
 	done <<< "$$benches"
 
 shell-check:
-	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh verification/shell/*.bats
-	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh
+	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh" verification/shell/*.bats
+	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh"
 	"$(SHFMT)" -ln bats -d -i 2 -ci -bn verification/shell/*.bats
 	+$(MAKE) shell-test
 
@@ -356,12 +356,12 @@ shell-test:
 # Same-executable timing comparison; see verification/integer-optimizations.
 # Run it alone on a quiet host. The output is CSV on stdout.
 integer-ab:
-	"$(CARGO)" --version
-	git --version
-	tar --version
-	bash "$(AB_HARNESS_DIR)/prepare-baseline.sh" "$(AB_BASELINE)"
-	"$(CARGO)" build --release --locked --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml"
-	"$(AB_HARNESS_DIR)/target/release/frost-integer-optimizations-ab" "$(AB_ROUNDS)"
+	@"$(CARGO)" --version >&2
+	@git --version >&2
+	@tar --version >&2
+	@"$(SHELL)" "$(AB_HARNESS_DIR)/prepare-baseline.sh" "$(AB_BASELINE)" >&2
+	@"$(CARGO)" build --release --locked --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml" >&2
+	@"$(AB_HARNESS_DIR)/target/release/frost-integer-optimizations-ab" "$(AB_ROUNDS)"
 
 tools-check:
 	"$(AST_GREP)" test --config sgconfig.yml

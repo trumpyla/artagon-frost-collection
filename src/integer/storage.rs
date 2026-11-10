@@ -1449,7 +1449,11 @@ fn merge_sorted<W: Word, const OP: u8>(left: &[W], right: &[W]) -> Vec<W> {
 
 /// `small` binary searches into `large` against one merge pass over both.
 fn probing_pays(small: usize, large: usize) -> bool {
-    small * (large.bit_width() as usize + 1) < small + large
+    // Cancel the common `small` term before comparing. If the remaining
+    // product overflows, it is necessarily greater than `large`.
+    small
+        .checked_mul(large.bit_width() as usize)
+        .is_some_and(|probes| probes < large)
 }
 
 fn merge<W: Word>(
@@ -2038,6 +2042,25 @@ mod tests {
                         right.len()
                     );
                 }
+            }
+        }
+    }
+
+    /// Kernel selection must not overflow for valid slice lengths, including
+    /// large 32-bit inputs. Check the cost comparison without allocating them.
+    #[test]
+    fn sorted_difference_cost_comparison_handles_large_lengths() {
+        let max_words = isize::MAX as usize / size_of::<u32>();
+        let lengths = [0, 1, 31, 32, 1_000, max_words / 2, max_words];
+        for small in lengths {
+            for large in lengths {
+                let probe_cost = small as u128 * (u128::from(large.bit_width()) + 1);
+                let merge_cost = small as u128 + large as u128;
+                assert_eq!(
+                    super::probing_pays(small, large),
+                    probe_cost < merge_cost,
+                    "{small} left codes against {large} right codes"
+                );
             }
         }
     }
