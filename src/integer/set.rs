@@ -21,6 +21,8 @@ struct Staging<K: IntKey> {
     words: Vec<K::Word>,
     /// The codes arrived strictly ascending: already sorted and unique.
     ascending: bool,
+    /// The codes arrived strictly descending: unique, and sorted once reversed.
+    descending: bool,
     /// First arrival index where decoded order did not follow ascending code
     /// order. Meaningful only while `ascending` holds, where arrival index and
     /// sorted index coincide.
@@ -34,6 +36,7 @@ impl<K: IntKey> Staging<K> {
         Self {
             words: Vec::new(),
             ascending: true,
+            descending: true,
             nonmonotonic: None,
             bounds: None,
             previous: None,
@@ -59,6 +62,7 @@ impl<K: IntKey> Staging<K> {
                         self.ascending = false;
                     }
                 }
+                self.descending &= word < low;
                 self.bounds = Some((low.min(word), high.max(word)));
             }
         }
@@ -215,13 +219,15 @@ impl<K: IntKey> FrozenIntSet<K> {
     ///
     /// Input that arrived strictly ascending is already sorted and unique, and
     /// the first pass compared its decoded keys in that same order, so no
-    /// second pass is needed. Unsorted input whose span is no larger than the
-    /// staged codes is normalized through a temporary bitmap in linear time;
-    /// other input is sorted by comparison.
+    /// second pass is needed. Strictly descending input is reversed. Other
+    /// unsorted input whose span is no larger than the staged codes is
+    /// normalized through a temporary bitmap in linear time; the rest is
+    /// sorted by comparison.
     fn normalize(staging: Staging<K>, policy: IntSetPolicy) -> Result<Self, IntSetError> {
         let Staging {
             mut words,
             ascending,
+            descending,
             nonmonotonic,
             bounds,
             ..
@@ -232,6 +238,8 @@ impl<K: IntKey> FrozenIntSet<K> {
             }
         } else {
             match bounds {
+                // Strictly descending codes are unique; reversing sorts them.
+                _ if descending => words.reverse(),
                 Some((low, high)) if bitmap_sort_pays(&words, low, high) => {
                     bitmap_sort(&mut words, low, high);
                 }

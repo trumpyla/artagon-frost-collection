@@ -18,8 +18,9 @@ stream changes. Measurements and their limits are in
   is unchanged.
 - Skip the sort, deduplication, and second validation pass for input that
   arrives strictly ascending; the first pass makes the same order comparison at
-  the same index. Sort unsorted input through a temporary bitmap when its span
-  is no larger than the staged codes. Error variants and indices are unchanged
+  the same index. Reverse input that arrives strictly descending. Sort other
+  unsorted input through a temporary bitmap when its span is no larger than the
+  staged codes. Error variants and indices are unchanged
   on every path.
 - Combine Chunked Array containers with a direct merge into a reserved buffer,
   or by probing when one array is much smaller, instead of collecting from the
