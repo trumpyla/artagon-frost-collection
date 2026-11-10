@@ -1264,6 +1264,83 @@ fn cloning_and_identity_results_share_storage() {
     }
 }
 
+/// A sorted operand with more occupied partitions than the native budget takes
+/// the direct merge path. That path must still share an equal eligible operand.
+#[test]
+fn scattered_sorted_results_share_an_equal_operand() {
+    let codes: Vec<u64> = (0..4097_u64).map(|index| (index << 32) | 7).collect();
+    let set = checked(&codes, IntSetPolicy::auto());
+    assert_eq!(set.representation(), IntSetRepr::Sorted);
+    let equal = checked(&codes, IntSetPolicy::auto());
+    assert!(!equal.shares_storage_with(&set));
+    let half: Vec<u64> = codes.iter().copied().step_by(2).collect();
+    let subsets = [
+        vec![codes[0]],
+        vec![codes[codes.len() - 1]],
+        half,
+        codes.clone(),
+    ];
+    for subset in &subsets {
+        for policy in POLICIES {
+            let Ok(other) = FrozenIntSet::<u64>::try_from_iter(subset.iter().copied(), policy)
+            else {
+                continue;
+            };
+            let left = set.union(&other);
+            assert!(
+                left.shares_storage_with(&set),
+                "{policy:?} {}",
+                subset.len()
+            );
+            let right = other.union(&set);
+            assert!(
+                right.shares_storage_with(&set) || right.shares_storage_with(&other),
+                "{policy:?} {}",
+                subset.len()
+            );
+            assert_eq!(left, set);
+            assert_eq!(right, set);
+        }
+    }
+    assert!(set.union(&equal).shares_storage_with(&set));
+    assert!(equal.union(&set).shares_storage_with(&equal));
+    let grown = set.union(&checked(&[9_u64], IntSetPolicy::auto()));
+    assert!(!grown.shares_storage_with(&set));
+    assert_eq!(grown.cardinality(), 4098);
+}
+
+/// An empty result shares an empty operand that satisfies the result policy,
+/// so the operation allocates no new storage header.
+#[test]
+fn empty_results_share_an_eligible_empty_operand() {
+    let empty = FrozenIntSet::<u32>::new();
+    for policy in POLICIES {
+        let set = checked(&[1_u32, 70, 300, 70_000], policy);
+        assert!(set.intersection(&empty).shares_storage_with(&empty));
+        assert!(empty.intersection(&set).shares_storage_with(&empty));
+        assert!(empty.difference(&set).shares_storage_with(&empty));
+        assert!(empty.difference(&empty).shares_storage_with(&empty));
+        assert!(
+            empty
+                .symmetric_difference(&empty)
+                .shares_storage_with(&empty)
+        );
+        let other_empty = FrozenIntSet::<u32>::new();
+        assert!(empty.intersection(&other_empty).shares_storage_with(&empty));
+        assert!(empty.difference(&other_empty).shares_storage_with(&empty));
+        // No operand is empty: the result needs its own header.
+        let vanished = set.difference(&set);
+        assert!(vanished.is_empty());
+        assert!(!vanished.shares_storage_with(&empty));
+        // The forced policy still controls the result representation.
+        let forced = set.intersection_with_policy(&empty, policy).unwrap();
+        assert!(forced.is_empty());
+        let built = checked::<u32>(&[], policy);
+        assert_eq!(forced.representation(), built.representation());
+        assert_eq!(forced.limits(), built.limits());
+    }
+}
+
 #[test]
 fn chunked_results_share_untouched_containers() {
     let values: Vec<u32> = (0..8)

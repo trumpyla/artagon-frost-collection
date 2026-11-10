@@ -7757,6 +7757,48 @@
       "target": "tests/contracts.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-035",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:empty_results_share_an_eligible_empty_operand",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty results share an eligible empty operand",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (feature = \"int-set\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-036",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:scattered_sorted_results_share_an_equal_operand",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: scattered sorted results share an equal operand",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (feature = \"int-set\")",
+      "cost": "unreviewed"
     }
   ]
 }

@@ -70,6 +70,12 @@ stream changes. Measurements and their limits are in
 - Detect runs in sorted Roaring construction with one comparison per 32 codes
   instead of one per code. Runs of 63 or more codes are always inserted as
   ranges; the built value is identical for every input.
+- Fix two paths that returned a new storage root for a result equal to an
+  eligible operand, against the documented sharing rule. A union that adds no
+  member to a Sorted operand with more occupied partitions than the native
+  limit now shares that operand. An empty intersection or difference shares an
+  empty eligible operand instead of allocating a header. Results were equal
+  before and after; only allocation identity and cost change.
 
 ## Unreleased — research corpus and rationale
 

@@ -815,18 +815,24 @@ impl<W: Word> Storage<W> {
         if Arc::ptr_eq(self, other) {
             return match op {
                 Operation::Union | Operation::Intersection => self.share_or_replan(policy),
+                // An empty operand is its own empty result.
+                Operation::Difference | Operation::SymmetricDifference if self.cardinality == 0 => {
+                    self.share_or_replan(policy)
+                }
                 Operation::Difference | Operation::SymmetricDifference => empty(),
             };
         }
         if self.cardinality == 0 {
             return match op {
                 Operation::Union | Operation::SymmetricDifference => other.share_or_replan(policy),
-                Operation::Intersection | Operation::Difference => empty(),
+                // The empty left operand equals the empty result.
+                Operation::Intersection | Operation::Difference => self.share_or_replan(policy),
             };
         }
         if other.cardinality == 0 {
             return match op {
-                Operation::Intersection => empty(),
+                // The empty right operand equals the empty result.
+                Operation::Intersection => other.share_or_replan(policy),
                 _ => self.share_or_replan(policy),
             };
         }
@@ -848,7 +854,17 @@ impl<W: Word> Storage<W> {
                     && matches!(&operand.repr, Repr::Sorted(words) if partition_count(words) > policy.max_roaring_partitions as u64)
             })
         {
-            return Self::from_sorted(merge(self.iter(), other.iter(), op, 0), policy).map(Arc::new);
+            let codes = merge(self.iter(), other.iter(), op, 0);
+            // A union that adds no member equals the larger operand. Symmetric
+            // difference of two nonempty operands never equals either operand.
+            if op == Operation::Union {
+                for operand in [self, other] {
+                    if codes.len() as u64 == operand.cardinality && operand.accepts(policy) {
+                        return Ok(Arc::clone(operand));
+                    }
+                }
+            }
+            return Self::from_sorted(codes, policy).map(Arc::new);
         }
         let combined = if policy.backend != IntSetBackend::Roaring
             && policy.backend != IntSetBackend::Chunked
