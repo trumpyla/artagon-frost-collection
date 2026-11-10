@@ -278,11 +278,12 @@ impl<T> From<BTreeSet<T>> for MutableOrderedSet<T> {
         Self::from_set(value)
     }
 }
+/// First representative. The elements are staged, sorted stably, and reduced
+/// by the frozen builder; the tree is then built in bulk from strictly
+/// ascending elements, at the cost of O(n) temporary staging.
 impl<T: Ord> FromIterator<T> for MutableOrderedSet<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        let mut output = Self::new();
-        output.extend(iter);
-        output
+        crate::family::FrozenOrderedSet::from_iter(iter).thaw()
     }
 }
 impl<T: Ord> Extend<T> for MutableOrderedSet<T> {

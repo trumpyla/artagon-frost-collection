@@ -22,6 +22,11 @@ semantic contract changes.
   entry, so promotion still depends on distinct keys, and sizes the table for
   the rest of the input once it exists.
 
+- `MutableOrderedMap` and `MutableOrderedSet` `from_iter` stage, sort stably,
+  and reduce through the frozen builder, then build the tree in bulk, as
+  `AdaptiveOrderedMap::from_iter` already does. First-key and last-value
+  retention are unchanged. Collection now needs O(n) temporary staging.
+
 ## Unreleased — integer profile optimizations
 
 No public API, feature, representation candidate, policy limit, or Hash event

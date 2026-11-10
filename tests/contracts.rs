@@ -433,6 +433,64 @@ fn empty_ordered_range_never_panics_like_btree() {
     assert_eq!(empty_s.range(5..1).count(), 0);
 }
 
+/// Collecting into the mutable ordered families stages and sorts the input.
+/// The result must equal entry-by-entry insertion: the first key
+/// representative, the last value, ascending order, and the same members,
+/// for sorted, reversed, and random arrival with many duplicate keys.
+#[test]
+fn collected_ordered_families_match_entry_by_entry_insertion() {
+    let mut state = 0x9E37_79B9_7F4A_7C15_u64;
+    let mut next = move || {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        state
+    };
+    for case in 0..300 {
+        let length = usize::try_from(next() % 400).unwrap();
+        let keys = 1 + next() % 60;
+        let mut input: Vec<(Tagged, u32)> = (0..length)
+            .map(|index| {
+                let id = u8::try_from(next() % keys).unwrap();
+                let tag = u8::try_from(index % 251).unwrap();
+                (t(id, tag), u32::try_from(index).unwrap())
+            })
+            .collect();
+        match case % 3 {
+            0 => input.sort_by_key(|(key, _)| key.id), // stable: arrival order kept
+            1 => input.sort_by_key(|(key, _)| core::cmp::Reverse(key.id)),
+            _ => {}
+        }
+        let mut reference: MutableOrderedMap<Tagged, u32> = MutableOrderedMap::new();
+        let mut reference_set: MutableOrderedSet<Tagged> = MutableOrderedSet::new();
+        for &(key, value) in &input {
+            reference.insert(key, value);
+            reference_set.insert(key);
+        }
+        let collected: MutableOrderedMap<Tagged, u32> = input.iter().copied().collect();
+        let collected_set: MutableOrderedSet<Tagged> = input.iter().map(|(key, _)| *key).collect();
+        let entries = |map: &MutableOrderedMap<Tagged, u32>| {
+            map.iter()
+                .map(|(key, value)| (key.id, key.tag, *value))
+                .collect::<Vec<_>>()
+        };
+        let members = |set: &MutableOrderedSet<Tagged>| {
+            set.iter().map(|key| (key.id, key.tag)).collect::<Vec<_>>()
+        };
+        assert_eq!(entries(&collected), entries(&reference), "case {case}");
+        assert_eq!(
+            members(&collected_set),
+            members(&reference_set),
+            "case {case}"
+        );
+        // The collected tree is an ordinary tree afterwards.
+        let mut grown = collected;
+        grown.insert(t(200, 1), 7);
+        assert_eq!(grown.len(), reference.len() + 1);
+        assert_eq!(grown.last_key_value().map(|(key, _)| key.id), Some(200));
+    }
+}
+
 /// Bulk extension must keep the contracts of entry-by-entry insertion.
 #[test]
 fn bulk_extension_keeps_representatives_policies_and_partial_progress() {

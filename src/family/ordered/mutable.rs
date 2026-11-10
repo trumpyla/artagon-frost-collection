@@ -415,15 +415,14 @@ impl<K: Ord, V, const N: usize> From<[(K, V); N]> for MutableOrderedMap<K, V> {
     }
 }
 
-/// First key representative, last value: `insert` per entry, never
-/// `BTreeMap::from_iter`.
+/// First key representative, last value. The entries are staged, sorted
+/// stably, and reduced by the frozen builder, which applies this rule itself;
+/// the tree is then built in bulk from strictly ascending entries. This never
+/// relies on `BTreeMap::from_iter`'s own duplicate handling, and it costs one
+/// sort and O(n) temporary staging instead of a tree insertion per entry.
 impl<K: Ord, V> FromIterator<(K, V)> for MutableOrderedMap<K, V> {
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
-        let mut m = BTreeMap::new();
-        for (k, v) in iter {
-            m.insert(k, v);
-        }
-        Self { m }
+        super::FrozenOrderedMap::from_iter(iter).thaw()
     }
 }
 impl<K: Ord, V> Extend<(K, V)> for MutableOrderedMap<K, V> {
