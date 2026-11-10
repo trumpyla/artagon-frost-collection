@@ -7463,6 +7463,69 @@
       "target": "tests/integer_sets.rs",
       "cfg": "cfg (feature = \"int-set\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-032",
+      "file": "src/integer/storage.rs",
+      "selector": "test:integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::tests::early survey exit selects the same backend as a complete survey",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-033",
+      "file": "src/integer/storage.rs",
+      "selector": "test:integer::storage::tests::partition_span_bounds_the_occupied_partitions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::tests::partition span bounds the occupied partitions",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-034",
+      "file": "src/integer/storage.rs",
+      "selector": "test:integer::storage::tests::sorted_kernel_matches_member_algebra_across_shapes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::tests::sorted kernel matches member algebra across shapes",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
     }
   ]
 }

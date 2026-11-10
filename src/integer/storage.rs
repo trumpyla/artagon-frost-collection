@@ -85,7 +85,12 @@ struct Survey {
 
 /// Deterministic planning proxy, not an allocator or resident-memory
 /// measurement. It includes conservative container and treemap-entry overhead.
-fn survey<W: Word>(words: &[W]) -> Survey {
+///
+/// The score only grows as codes are visited. Once it reaches `stop`, the
+/// caller's competing candidate has already won, so the scan ends at that
+/// container boundary; the returned partition count is then a lower bound.
+/// Pass `u128::MAX` for a complete survey.
+fn survey<W: Word>(words: &[W], stop: u128) -> Survey {
     if words.is_empty() {
         return Survey {
             partitions: 0,
@@ -109,6 +114,12 @@ fn survey<W: Word>(words: &[W]) -> Survey {
             score += close(container_members, container_runs);
             container_members = 0;
             container_runs = 0;
+            if score >= stop {
+                return Survey {
+                    partitions,
+                    roaring_score: score,
+                };
+            }
         }
         if previous.and_then(|previous| previous.checked_add(1)) != Some(value)
             || container_members == 0
@@ -178,7 +189,16 @@ impl<W: Word> Storage<W> {
                 Repr::Dense(Dense::from_sorted(&words))
             }
             IntSetBackend::Roaring => {
-                let partitions = partition_count(&words);
+                // The bounds cap the partition count; scan only when the span
+                // itself could exceed the limit.
+                let span = bounds.map_or(0, |(low, high)| {
+                    (high.to_u64() >> 32) - (low.to_u64() >> 32) + 1
+                });
+                let partitions = if span > policy.max_roaring_partitions as u64 {
+                    partition_count(&words)
+                } else {
+                    span
+                };
                 if partitions > policy.max_roaring_partitions as u64 {
                     return Err(IntSetError::RoaringPartitionLimit {
                         partitions,
@@ -789,8 +809,9 @@ impl<W: Word> Storage<W> {
             && matches!(op, Operation::Union | Operation::SymmetricDifference)
             && !matches!(&self.repr, Repr::Chunked(_))
             && !matches!(&other.repr, Repr::Chunked(_))
-            && [&self.repr, &other.repr].into_iter().any(|repr| {
-                matches!(repr, Repr::Sorted(words) if partition_count(words) > policy.max_roaring_partitions as u64)
+            && [self, other].into_iter().any(|operand| {
+                operand.partition_span() > policy.max_roaring_partitions as u64
+                    && matches!(&operand.repr, Repr::Sorted(words) if partition_count(words) > policy.max_roaring_partitions as u64)
             })
         {
             return Self::from_sorted(merge(self.iter(), other.iter(), op, 0), policy).map(Arc::new);
@@ -848,6 +869,15 @@ impl<W: Word> Storage<W> {
             Repr::Roaring(roaring) => Cow::Borrowed(roaring),
             Repr::Chunked(chunks) => Cow::Owned(W::roaring_from_ascending(chunks.iter())),
         }
+    }
+
+    /// Upper bound on occupied upper-32-bit partitions, from the cached
+    /// bounds alone. It is exact for 32-bit words and lets callers skip a
+    /// member scan when the span itself fits a partition limit.
+    fn partition_span(&self) -> u64 {
+        self.bounds.map_or(0, |(low, high)| {
+            (high.to_u64() >> 32) - (low.to_u64() >> 32) + 1
+        })
     }
 
     fn partitions(&self) -> u64 {
@@ -1057,21 +1087,7 @@ impl<W: Word> Storage<W> {
                 }
             }
             (Repr::Sorted(left), Repr::Sorted(right)) => {
-                let result = match op {
-                    Operation::Union => set_ops::SetUnion::new(left, right).copied().collect(),
-                    Operation::Intersection => set_ops::SetIntersection::new(left, right)
-                        .copied()
-                        .collect(),
-                    Operation::Difference => {
-                        set_ops::SetDifference::new(left, right).copied().collect()
-                    }
-                    Operation::SymmetricDifference => {
-                        set_ops::SetSymmetricDifference::new(left, right)
-                            .copied()
-                            .collect()
-                    }
-                };
-                Self::sorted(result)
+                Self::sorted(sorted_binary(left, right, op))
             }
             (Repr::Dense(dense), Repr::Sorted(sorted)) => {
                 return dense_sorted(dense, self.cardinality, sorted, op, true, budget);
@@ -1166,12 +1182,13 @@ fn plan<W: Word>(words: &[W], dense_bytes: u128, budget: Budget) -> IntSetBacken
         backend = IntSetBackend::Dense;
         score = dense_bytes + 24;
     }
-    let survey = survey(words);
     let allowance = if backend == IntSetBackend::Dense {
         DENSE_PREFERENCE_BYTES
     } else {
         0
     };
+    // Roaring wins only when `roaring_score + allowance < score`.
+    let survey = survey(words, score.saturating_sub(allowance));
     if survey.partitions <= budget.roaring_partitions as u64
         && survey.roaring_score + allowance < score
     {
@@ -1251,6 +1268,83 @@ fn probe_count<W>(words: impl Iterator<Item = W>, mut contains: impl FnMut(W) ->
 fn accept_dense_result<W: Word>(window_bytes: u128, members: u64, limit: usize) -> bool {
     window_bytes <= limit as u128
         && window_bytes + 24 <= u128::from(members) * size_of::<W>() as u128 + 16
+}
+
+/// Materialize an operation on two sorted code slices.
+///
+/// Intersection keeps the ordered-set cursor's kernel selection (galloping for
+/// skewed inputs) but drives it through `fold`, which selects the kernel once
+/// instead of redispatching in every `next`. Difference with a much smaller
+/// left operand probes the right one. Every other shape is a merge
+/// specialized per operation at compile time, into an output reserved from
+/// the operation's bound, with both tails copied in bulk rather than pulled
+/// one element at a time through a lazy cursor.
+fn sorted_binary<W: Word>(left: &[W], right: &[W], op: Operation) -> Vec<W> {
+    match op {
+        Operation::Intersection => set_ops::SetIntersection::new(left, right).fold(
+            Vec::with_capacity(left.len().min(right.len())),
+            |mut out, &word| {
+                out.push(word);
+                out
+            },
+        ),
+        Operation::Difference if probing_pays(left.len(), right.len()) => {
+            // Few left codes against many right codes: search instead of merge.
+            left.iter()
+                .copied()
+                .filter(|word| right.binary_search(word).is_err())
+                .collect()
+        }
+        Operation::Union => merge_sorted::<W, MERGE_UNION>(left, right),
+        Operation::Difference => merge_sorted::<W, MERGE_DIFFERENCE>(left, right),
+        Operation::SymmetricDifference => merge_sorted::<W, MERGE_SYMMETRIC>(left, right),
+    }
+}
+
+const MERGE_UNION: u8 = 0;
+const MERGE_DIFFERENCE: u8 = 1;
+const MERGE_SYMMETRIC: u8 = 2;
+
+/// Merge two sorted slices for one compile-time-selected operation.
+fn merge_sorted<W: Word, const OP: u8>(left: &[W], right: &[W]) -> Vec<W> {
+    let mut out = Vec::with_capacity(if OP == MERGE_DIFFERENCE {
+        left.len()
+    } else {
+        left.len() + right.len()
+    });
+    let (mut at_left, mut at_right) = (0, 0);
+    while at_left < left.len() && at_right < right.len() {
+        let (a, b) = (left[at_left], right[at_right]);
+        match a.cmp(&b) {
+            Ordering::Less => {
+                out.push(a);
+                at_left += 1;
+            }
+            Ordering::Greater => {
+                if OP != MERGE_DIFFERENCE {
+                    out.push(b);
+                }
+                at_right += 1;
+            }
+            Ordering::Equal => {
+                if OP == MERGE_UNION {
+                    out.push(a);
+                }
+                at_left += 1;
+                at_right += 1;
+            }
+        }
+    }
+    out.extend_from_slice(&left[at_left..]);
+    if OP != MERGE_DIFFERENCE {
+        out.extend_from_slice(&right[at_right..]);
+    }
+    out
+}
+
+/// `small` binary searches into `large` against one merge pass over both.
+fn probing_pays(small: usize, large: usize) -> bool {
+    small * (large.bit_width() as usize + 1) < small + large
 }
 
 fn merge<W: Word>(
@@ -1655,8 +1749,12 @@ impl<W: Word> FusedIterator for Words<'_, W> {}
 
 #[cfg(test)]
 mod tests {
-    use super::{Storage, sorted_compressed_intersection};
-    use crate::integer::IntSetPolicy;
+    use super::{
+        Budget, DENSE_PREFERENCE_BYTES, Operation, Storage, plan, sorted_binary,
+        sorted_compressed_intersection, survey,
+    };
+    use crate::integer::dense::dense_bytes;
+    use crate::integer::{IntSetBackend, IntSetPolicy};
     use alloc::vec::Vec;
     use core::cell::Cell;
     use core::hash::Hasher;
@@ -1791,5 +1889,149 @@ mod tests {
             0,
             "a tiny sorted input must probe compressed membership"
         );
+    }
+
+    /// The sorted materialization kernel against the standard library for
+    /// balanced, skewed (probe and gallop paths), disjoint, nested, and
+    /// identical inputs, including empty operands.
+    #[test]
+    fn sorted_kernel_matches_member_algebra_across_shapes() {
+        use alloc::collections::BTreeSet;
+        let shapes: [Vec<u64>; 8] = [
+            Vec::new(),
+            alloc::vec![5],
+            (0..64).collect(),
+            (0..4096).step_by(3).collect(),
+            (1..4096).step_by(5).collect(),
+            [7, 4000, 9000].into(),
+            (100_000..100_010).collect(),
+            [0, u64::MAX - 1, u64::MAX].into(),
+        ];
+        for left in &shapes {
+            for right in &shapes {
+                let (ls, rs): (BTreeSet<u64>, BTreeSet<u64>) = (
+                    left.iter().copied().collect(),
+                    right.iter().copied().collect(),
+                );
+                for (op, expected) in [
+                    (Operation::Union, &ls | &rs),
+                    (Operation::Intersection, &ls & &rs),
+                    (Operation::Difference, &ls - &rs),
+                    (Operation::SymmetricDifference, &ls ^ &rs),
+                ] {
+                    assert_eq!(
+                        sorted_binary(left, right, op),
+                        expected.into_iter().collect::<Vec<_>>(),
+                        "{op:?} of {} and {} codes",
+                        left.len(),
+                        right.len()
+                    );
+                }
+            }
+        }
+    }
+
+    /// Stopping the survey early must never change the planner's answer. The
+    /// reference repeats `plan` with a complete survey for shapes on both
+    /// sides of every candidate boundary and for both word widths.
+    #[test]
+    fn early_survey_exit_selects_the_same_backend_as_a_complete_survey() {
+        fn reference<W: super::Word>(words: &[W], dense: u128, budget: Budget) -> IntSetBackend {
+            if words.is_empty() {
+                return IntSetBackend::Sorted;
+            }
+            let mut backend = IntSetBackend::Sorted;
+            let mut score = words.len() as u128 * size_of::<W>() as u128 + 16;
+            if dense <= budget.dense_limit() as u128 && dense + 24 < score {
+                backend = IntSetBackend::Dense;
+                score = dense + 24;
+            }
+            let allowance = if backend == IntSetBackend::Dense {
+                DENSE_PREFERENCE_BYTES
+            } else {
+                0
+            };
+            let complete = survey(words, u128::MAX);
+            if complete.partitions <= budget.roaring_partitions as u64
+                && complete.roaring_score + allowance < score
+            {
+                backend = IntSetBackend::Roaring;
+            }
+            backend
+        }
+        fn check<W: super::Word>(codes: &[u64], seen: &mut [bool; 3]) {
+            let words: Vec<W> = codes
+                .iter()
+                .filter_map(|&code| W::try_from_u64(code))
+                .collect();
+            let dense = words
+                .first()
+                .zip(words.last())
+                .map_or(0, |(low, high)| dense_bytes(low.to_u64(), high.to_u64()));
+            for policy in [
+                IntSetPolicy::auto(),
+                IntSetPolicy::auto().with_dense_budget(0),
+                IntSetPolicy::auto().with_roaring_partition_limit(1),
+                IntSetPolicy::auto().with_roaring_partition_limit(0),
+            ] {
+                let budget = Budget::from_policy(policy);
+                let planned = plan(&words, dense, budget);
+                assert_eq!(
+                    planned,
+                    reference(&words, dense, budget),
+                    "{} codes",
+                    words.len()
+                );
+                seen[match planned {
+                    IntSetBackend::Sorted => 0,
+                    IntSetBackend::Dense => 1,
+                    _ => 2,
+                }] = true;
+            }
+        }
+        let mut shapes: Vec<Vec<u64>> = alloc::vec![
+            Vec::new(),
+            alloc::vec![9],
+            (0..40).collect(),                                 // tiny run
+            (0..40).map(|code| code * 3).collect(),            // tiny dense window
+            (0..5_000).map(|code| code * 7).collect(),         // one dense window
+            (0..200_000).collect(),                            // long run
+            (0..200_000).map(|code| code * 2).collect(),       // alternating
+            (0..3_000).map(|code| code * 1_000_003).collect(), // scattered containers
+            (0..3_000).map(|code| code << 33).collect(),       // one member per partition
+            (0..64)
+                .flat_map(|run| (0..512).map(move |low| (run << 20) + low))
+                .collect(), // far runs
+        ];
+        // A long run followed by scattered codes, and the reverse order of cost.
+        let mut mixed: Vec<u64> = (0..70_000).collect();
+        mixed.extend((1..2_000).map(|code| 1_000_000 + code * 70_001));
+        shapes.push(mixed);
+        let mut seen = [false; 3];
+        for shape in &shapes {
+            check::<u64>(shape, &mut seen);
+            check::<u32>(shape, &mut seen);
+        }
+        assert_eq!(
+            seen, [true; 3],
+            "Sorted, Dense, and Roaring were all selected"
+        );
+    }
+
+    #[test]
+    fn partition_span_bounds_the_occupied_partitions() {
+        for codes in [
+            alloc::vec![],
+            alloc::vec![7_u64],
+            alloc::vec![0, u64::MAX],
+            alloc::vec![1 << 32, (1 << 32) + 5, 3 << 32],
+            alloc::vec![u64::from(u32::MAX), 1 << 32],
+        ] {
+            let storage = Storage::<u64>::from_sorted(codes, IntSetPolicy::sorted()).unwrap();
+            assert!(storage.partition_span() >= storage.partitions());
+        }
+        let narrow = Storage::<u32>::from_sorted(alloc::vec![0, u32::MAX], IntSetPolicy::sorted());
+        assert_eq!(narrow.unwrap().partition_span(), 1);
+        assert_eq!(Storage::<u32>::empty().partition_span(), 0);
     }
 }
