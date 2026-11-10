@@ -97,7 +97,7 @@ Sources: [vector](../../src/family/vec/frozen.rs), [hash map](../../src/family/h
 | Fixed length | `try_freeze_with(ExactLen::<N>)` | `Frozen<[T; N]>` | Fallible; returns the input on length mismatch |
 | Inline profile | `freeze_with(Inline::<N>)` | `InlineFrozenVec<T, N>` | Moves up to `N` elements inline, otherwise boxes |
 | Adaptive hash | `freeze_with(AdaptiveHash)` | `AdaptiveFrozenHashMap` | Linear entries below a threshold, otherwise a shrunk table |
-| Integer profile | `try_freeze_with(IntSetPolicy)` | `FrozenIntSet<K>` | Validates codes, normalizes with O(n) staging (no sort for ascending input; a temporary bitmap for dense unsorted input; otherwise one comparison sort), selects bounded storage |
+| Integer profile | `try_freeze_with(IntSetPolicy)` | `FrozenIntSet<K>` | Validates codes, normalizes with O(n) staging (no comparison sort for ascending or descending input; a temporary bitmap for dense unsorted input; otherwise one comparison sort), selects bounded storage |
 
 `FreezeWith<P>` gives each source and plan pair one associated `Output`.
 `TryFreezeWith<P>` adds an associated `Error`. A missing plan is a compile-time

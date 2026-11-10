@@ -49,19 +49,16 @@ stream changes. Measurements and their limits are in
   bounds span more partitions than the limit. The planner survey stops once the
   Roaring score can no longer beat the selected candidate; the selected backend
   is unchanged.
-- Skip the sort, deduplication, and second validation pass for input that
-  arrives strictly ascending; the first pass makes the same order comparison at
-  the same index. Reverse input that arrives strictly descending. Sort other
-  unsorted input through a temporary bitmap when its span is no larger than the
-  staged codes. Error variants and indices are unchanged
-  on every path.
-- Combine Chunked Array containers with a direct merge into a reserved buffer,
-  or by probing when one array is much smaller, instead of collecting from the
-  ordered family's lazy cursors.
+- Classify staged codes before sorting. Input that arrived strictly ascending
+  skips the sort and deduplication. Input that arrived strictly descending is
+  reversed. Other unsorted input is sorted through a temporary bitmap when its
+  span is no larger than the staged codes. The validation pass over the sorted
+  codes is unchanged, so error variants and indices are unchanged on every path.
 - Cache the Roaring partition count, container count, and memory score with the
   immutable native value. Policy eligibility checks on identity, empty, and
   equal-result shortcuts, result planning, and the copy heuristic no longer
-  rescan every container.
+  rescan every container. Every storage root grows by 8 bytes for 32-bit words
+  and 16 bytes for 64-bit words.
 - Add `fold` to the ordered family's `SetUnion`, `SetDifference`, and
   `SetSymmetricDifference` cursors: one merge loop, then each remaining tail as
   a slice traversal. `for_each`, `sum`, and other `fold` adapters gain when one

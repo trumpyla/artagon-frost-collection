@@ -1,0 +1,52 @@
+{
+  "schema": "frost-integer-optimizations-environment/1",
+  "date": "2026-11-10",
+  "baseline_revision": "22697a844f4a352bef12ca12139db82a138a0ba5",
+  "measured_revisions": {
+    "final": "90f2a4f",
+    "control": "82f4d5c",
+    "superseded": "ce24b6c"
+  },
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+  "llvm": "23.1.1",
+  "host_triple": "x86_64-unknown-linux-gnu",
+  "kernel": "Linux 6.18.44-fc-v338",
+  "cpu_model": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "logical_cpus": 2,
+  "cpu_features_reported": [
+    "sse4.2",
+    "popcnt",
+    "avx2",
+    "bmi2",
+    "avx512f"
+  ],
+  "memory_mib": 8022,
+  "virtualized": true,
+  "profile": {
+    "opt_level": 3,
+    "lto": "thin",
+    "codegen_units": 1,
+    "debug": false,
+    "target_cpu": "default (x86-64)"
+  },
+  "features": [
+    "int-set",
+    "std"
+  ],
+  "pinning": "taskset -c 1",
+  "rounds": {
+    "final": 9,
+    "control": 9,
+    "superseded_full": 5,
+    "superseded_filtered": 15
+  },
+  "samples_per_round": 5,
+  "statistic": "minimum over rounds of the per-round median",
+  "unavailable_tools": [
+    "miri (component not available for 1.99.1)",
+    "shellcheck",
+    "shfmt",
+    "bats"
+  ]
+}

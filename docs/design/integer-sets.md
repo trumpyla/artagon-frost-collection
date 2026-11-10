@@ -188,19 +188,22 @@ span itself exceeds the limit. A stored Roaring value keeps its partition count,
 container count, and score beside it, computed once when the value is created,
 so eligibility checks on shared, empty, and equal-result shortcuts do not rescan
 its containers. These are derived values and take no part in equality, ordering,
-or hashing.
+or hashing. They enlarge every storage root, for every representation, by 8
+bytes for 32-bit words and 16 bytes for 64-bit words; the score is stored
+saturated to 64 bits to keep 8-byte alignment.
 
-Construction normalizes validated codes in one of four ways, chosen from what
-the validation pass observes. Codes that arrive strictly ascending are already
-sorted and unique; that pass also compares decoded keys in arrival order, which
-is the comparison the sorted validation pass would make at the same index, so
-no sort and no second pass run. Strictly descending codes are reversed. Other
-input of at least 64 codes whose aligned span needs a bitmap no larger than the
-staged codes is sorted and deduplicated through that temporary bitmap in linear
-time; staging at most doubles and is released before planning. All remaining
-input is sorted by comparison. The reported error variant and index are the
-same on every path: the first pass completes before any order violation is
-reported, and indices in the second pass are positions in sorted order.
+Construction normalizes validated codes in one of four ways. Two scans over
+the staged codes, each stopping at its first counterexample, classify them.
+Codes that arrived strictly ascending are already sorted and unique. Strictly
+descending codes are reversed. Other input of at least 64 codes whose aligned
+span needs a bitmap no larger than the staged codes is sorted and deduplicated
+through that temporary bitmap in linear time; staging at most doubles and is
+released before planning. All remaining input is sorted by comparison. Every
+path then runs the same validation pass over the sorted codes, so the reported
+error variant and index do not depend on the path. An earlier design tracked
+order while staging each code and skipped that pass for ascending input; the
+same-executable comparison measured it 7% to 24% slower than the two-pass
+baseline on ascending input, so it was replaced.
 This integration retains the reviewed score instead of revision 2's unconditional
 4 KiB Dense floor, so a tiny sparse set is not promoted solely because its window
 fits that floor. The score does not include the shared-root allocation or predict
@@ -249,7 +252,7 @@ Decoding happens when a caller requests values.
 | Roaring with Sorted additions/removals | Small updates can modify a native clone; bulk or scattered shapes select native algebra or encoded merging |
 | Intersection involving Sorted | Choose which side to traverse using the skew-aware work estimate, then filter with a typed membership loop |
 | Dense / Roaring intersection | Select encoded probing or bounded Dense promotion using the structural work estimate |
-| Chunked / Chunked | Merge prefix directories; share untouched or identical containers; combine changed containers (Array pairs by direct merge, or by probing when one array is much smaller) |
+| Chunked / Chunked | Merge prefix directories; share untouched or identical containers; combine changed containers |
 | Chunked / Sorted | Promote a proportionate Sorted side to chunks; probe or merge when Sorted dominates |
 | Chunked / Dense | Convert bitmap words directly into chunk containers, then merge |
 | Chunked / Roaring | Promote Roaring into chunks when proportionate; otherwise promote the chunked side to native Roaring |

@@ -1,0 +1,1318 @@
+
+running 15 tests
+test zz_directed_chunk_sharing ... ok
+SHARING REPORT: 0 deviations
+SHARING REPORT classes: {}
+test zz_directed_equal_result_sharing_report ... ok
+test zz_directed_container_classes has been running for over 60 seconds
+test zz_directed_extremes has been running for over 60 seconds
+test zz_directed_extremes ... ok
+test zz_directed_large_dense_windows has been running for over 60 seconds
+test zz_directed_large_dense_windows ... ok
+test zz_directed_no_codec_calls_in_bulk_paths ... ok
+test zz_directed_container_classes ... ok
+test zz_directed_scale_runs has been running for over 60 seconds
+test zz_pairs_i32 has been running for over 60 seconds
+COVERAGE i32:
+    default-result repr Chunked = 25084
+    default-result repr Dense = 2484
+    default-result repr Roaring = 9012
+    default-result repr Sorted = 14896
+    equal-content pair ChunkedxChunked = 20
+    equal-content pair ChunkedxDense = 5
+    equal-content pair ChunkedxRoaring = 25
+    equal-content pair ChunkedxSorted = 26
+    equal-content pair DensexChunked = 5
+    equal-content pair DensexDense = 7
+    equal-content pair DensexRoaring = 10
+    equal-content pair DensexSorted = 8
+    equal-content pair RoaringxChunked = 27
+    equal-content pair RoaringxDense = 10
+    equal-content pair RoaringxRoaring = 42
+    equal-content pair RoaringxSorted = 38
+    equal-content pair SortedxChunked = 27
+    equal-content pair SortedxDense = 8
+    equal-content pair SortedxRoaring = 36
+    equal-content pair SortedxSorted = 51
+    iter-check Chunked = 27649
+    iter-check Chunked with Array container = 21043
+    iter-check Chunked with Bitmap container = 10174
+    iter-check Chunked with Full container = 2153
+    iter-check Dense = 12308
+    iter-check Roaring = 16485
+    iter-check Sorted = 28907
+    pair ChunkedxChunked = 1136
+    pair ChunkedxChunked (same root) = 606
+    pair ChunkedxDense = 968
+    pair ChunkedxRoaring = 1396
+    pair ChunkedxSorted = 1093
+    pair DensexChunked = 796
+    pair DensexDense = 154
+    pair DensexDense (same root) = 442
+    pair DensexRoaring = 144
+    pair DensexSorted = 184
+    pair RoaringxChunked = 1000
+    pair RoaringxDense = 142
+    pair RoaringxRoaring = 530
+    pair RoaringxRoaring (same root) = 788
+    pair RoaringxSorted = 453
+    pair SortedxChunked = 985
+    pair SortedxDense = 166
+    pair SortedxRoaring = 428
+    pair SortedxSorted = 522
+    pair SortedxSorted (same root) = 936
+    policy op expected error Dense = 16927
+    policy op expected error Roaring = 580
+    policy op ok Auto -> Chunked = 29567
+    policy op ok Auto -> Dense = 3039
+    policy op ok Auto -> Roaring = 11372
+    policy op ok Auto -> Sorted = 20166
+    policy op ok Chunked -> Chunked = 65361
+    policy op ok Dense -> Dense = 49996
+    policy op ok Roaring -> Roaring = 61325
+    policy op ok Sorted -> Sorted = 75259
+    sizes <65536 x <65536 = 3228
+    sizes <65536 x <=4096 = 216
+    sizes <65536 x <=64 = 735
+    sizes <65536 x >=65536 = 616
+    sizes <=4096 x <65536 = 293
+    sizes <=4096 x <=4096 = 1136
+    sizes <=4096 x <=64 = 211
+    sizes <=4096 x >=65536 = 147
+    sizes <=4096 x empty = 36
+    sizes <=64 x <65536 = 586
+    sizes <=64 x <=4096 = 158
+    sizes <=64 x <=64 = 3419
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 66
+    sizes >=65536 x <65536 = 674
+    sizes >=65536 x <=4096 = 249
+    sizes >=65536 x <=64 = 272
+    sizes >=65536 x >=65536 = 517
+    strict nonempty subset pair = 765
+i32 seed 3001 DONE: 100 cases, 12869 pairs, 385068 ops, 85349 heavy checks, 0 share misses, 79.640645024s
+test zz_pairs_i32 ... ok
+test zz_pairs_i64 has been running for over 60 seconds
+COVERAGE i64:
+    default-result repr Chunked = 29375
+    default-result repr Dense = 4866
+    default-result repr Roaring = 12688
+    default-result repr Sorted = 26555
+    equal-content pair ChunkedxChunked = 39
+    equal-content pair ChunkedxDense = 11
+    equal-content pair ChunkedxRoaring = 47
+    equal-content pair ChunkedxSorted = 57
+    equal-content pair DensexChunked = 12
+    equal-content pair DensexDense = 17
+    equal-content pair DensexRoaring = 21
+    equal-content pair DensexSorted = 18
+    equal-content pair RoaringxChunked = 49
+    equal-content pair RoaringxDense = 22
+    equal-content pair RoaringxRoaring = 81
+    equal-content pair RoaringxSorted = 71
+    equal-content pair SortedxChunked = 59
+    equal-content pair SortedxDense = 18
+    equal-content pair SortedxRoaring = 69
+    equal-content pair SortedxSorted = 115
+    iter-check Chunked = 38402
+    iter-check Chunked with Array container = 28640
+    iter-check Chunked with Bitmap container = 10573
+    iter-check Chunked with Full container = 2180
+    iter-check Dense = 19614
+    iter-check Roaring = 26529
+    iter-check Sorted = 44222
+    pair ChunkedxChunked = 1275
+    pair ChunkedxChunked (same root) = 1192
+    pair ChunkedxDense = 1051
+    pair ChunkedxRoaring = 1549
+    pair ChunkedxSorted = 1304
+    pair DensexChunked = 892
+    pair DensexDense = 267
+    pair DensexDense (same root) = 944
+    pair DensexRoaring = 279
+    pair DensexSorted = 342
+    pair RoaringxChunked = 1151
+    pair RoaringxDense = 254
+    pair RoaringxRoaring = 764
+    pair RoaringxRoaring (same root) = 1521
+    pair RoaringxSorted = 689
+    pair SortedxChunked = 1185
+    pair SortedxDense = 303
+    pair SortedxRoaring = 659
+    pair SortedxSorted = 884
+    pair SortedxSorted (same root) = 1866
+    policy op expected error Dense = 24951
+    policy op expected error Roaring = 1745
+    policy op ok Auto -> Chunked = 35382
+    policy op ok Auto -> Dense = 6160
+    policy op ok Auto -> Roaring = 16175
+    policy op ok Auto -> Sorted = 36212
+    policy op ok Chunked -> Chunked = 95625
+    policy op ok Dense -> Dense = 71948
+    policy op ok Roaring -> Roaring = 90182
+    policy op ok Sorted -> Sorted = 105108
+    sizes <65536 x <65536 = 3726
+    sizes <65536 x <=4096 = 252
+    sizes <65536 x <=64 = 775
+    sizes <65536 x >=65536 = 616
+    sizes <=4096 x <65536 = 293
+    sizes <=4096 x <=4096 = 2269
+    sizes <=4096 x <=64 = 434
+    sizes <=4096 x >=65536 = 157
+    sizes <=4096 x empty = 72
+    sizes <=64 x <65536 = 656
+    sizes <=64 x <=4096 = 290
+    sizes <=64 x <=64 = 6419
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 270
+    sizes >=65536 x <65536 = 674
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 282
+    sizes >=65536 x >=65536 = 617
+    strict nonempty subset pair = 950
+i64 seed 1001 DONE: 100 cases, 18371 pairs, 556972 ops, 128767 heavy checks, 0 share misses, 78.795455531s
+test zz_pairs_i64 ... ok
+COVERAGE u16:
+    default-result repr Chunked = 32413
+    default-result repr Dense = 7063
+    default-result repr Roaring = 15594
+    default-result repr Sorted = 33718
+    equal-content pair ChunkedxChunked = 53
+    equal-content pair ChunkedxDense = 22
+    equal-content pair ChunkedxRoaring = 64
+    equal-content pair ChunkedxSorted = 73
+    equal-content pair DensexChunked = 23
+    equal-content pair DensexDense = 28
+    equal-content pair DensexRoaring = 36
+    equal-content pair DensexSorted = 32
+    equal-content pair RoaringxChunked = 66
+    equal-content pair RoaringxDense = 37
+    equal-content pair RoaringxRoaring = 109
+    equal-content pair RoaringxSorted = 92
+    equal-content pair SortedxChunked = 75
+    equal-content pair SortedxDense = 32
+    equal-content pair SortedxRoaring = 90
+    equal-content pair SortedxSorted = 140
+    iter-check Chunked = 45966
+    iter-check Chunked with Array container = 33427
+    iter-check Chunked with Bitmap container = 11273
+    iter-check Chunked with Full container = 2200
+    iter-check Dense = 26163
+    iter-check Roaring = 33689
+    iter-check Sorted = 54501
+    pair ChunkedxChunked = 1379
+    pair ChunkedxChunked (same root) = 1611
+    pair ChunkedxDense = 1148
+    pair ChunkedxRoaring = 1647
+    pair ChunkedxSorted = 1424
+    pair DensexChunked = 998
+    pair DensexDense = 394
+    pair DensexDense (same root) = 1435
+    pair DensexRoaring = 392
+    pair DensexSorted = 487
+    pair RoaringxChunked = 1259
+    pair RoaringxDense = 364
+    pair RoaringxRoaring = 890
+    pair RoaringxRoaring (same root) = 2016
+    pair RoaringxSorted = 840
+    pair SortedxChunked = 1290
+    pair SortedxDense = 414
+    pair SortedxRoaring = 774
+    pair SortedxSorted = 1061
+    pair SortedxSorted (same root) = 2374
+    policy op expected error Dense = 25943
+    policy op expected error Roaring = 2045
+    policy op ok Auto -> Chunked = 39468
+    policy op ok Auto -> Dense = 8967
+    policy op ok Auto -> Roaring = 20081
+    policy op ok Auto -> Sorted = 46126
+    policy op ok Chunked -> Chunked = 116691
+    policy op ok Dense -> Dense = 91646
+    policy op ok Roaring -> Roaring = 110630
+    policy op ok Sorted -> Sorted = 126459
+    sizes <65536 x <65536 = 4166
+    sizes <65536 x <=4096 = 288
+    sizes <65536 x <=64 = 857
+    sizes <65536 x >=65536 = 626
+    sizes <65536 x empty = 36
+    sizes <=4096 x <65536 = 293
+    sizes <=4096 x <=4096 = 3039
+    sizes <=4096 x <=64 = 614
+    sizes <=4096 x >=65536 = 157
+    sizes <=4096 x empty = 108
+    sizes <=64 x <65536 = 666
+    sizes <=64 x <=4096 = 326
+    sizes <=64 x <=64 = 8281
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 486
+    sizes >=65536 x <65536 = 684
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 292
+    sizes >=65536 x >=65536 = 637
+    sizes empty x <=64 = 36
+    sizes empty x empty = 36
+    strict nonempty subset pair = 1032
+u16 seed 4001 DONE: 60 cases, 22197 pairs, 676844 ops, 160319 heavy checks, 0 share misses, 31.180464007s
+test zz_pairs_narrow_and_restricted_keys has been running for over 60 seconds
+COVERAGE i16:
+    default-result repr Chunked = 35153
+    default-result repr Dense = 9039
+    default-result repr Roaring = 18150
+    default-result repr Sorted = 40958
+    equal-content pair ChunkedxChunked = 70
+    equal-content pair ChunkedxDense = 38
+    equal-content pair ChunkedxRoaring = 84
+    equal-content pair ChunkedxSorted = 97
+    equal-content pair DensexChunked = 38
+    equal-content pair DensexDense = 47
+    equal-content pair DensexRoaring = 55
+    equal-content pair DensexSorted = 58
+    equal-content pair RoaringxChunked = 86
+    equal-content pair RoaringxDense = 57
+    equal-content pair RoaringxRoaring = 142
+    equal-content pair RoaringxSorted = 118
+    equal-content pair SortedxChunked = 99
+    equal-content pair SortedxDense = 58
+    equal-content pair SortedxRoaring = 118
+    equal-content pair SortedxSorted = 187
+    iter-check Chunked = 52879
+    iter-check Chunked with Array container = 37659
+    iter-check Chunked with Bitmap container = 11767
+    iter-check Chunked with Full container = 2230
+    iter-check Dense = 32212
+    iter-check Roaring = 40263
+    iter-check Sorted = 64320
+    pair ChunkedxChunked = 1469
+    pair ChunkedxChunked (same root) = 1991
+    pair ChunkedxDense = 1236
+    pair ChunkedxRoaring = 1734
+    pair ChunkedxSorted = 1539
+    pair DensexChunked = 1090
+    pair DensexDense = 513
+    pair DensexDense (same root) = 1893
+    pair DensexRoaring = 504
+    pair DensexSorted = 622
+    pair RoaringxChunked = 1354
+    pair RoaringxDense = 468
+    pair RoaringxRoaring = 1011
+    pair RoaringxRoaring (same root) = 2471
+    pair RoaringxSorted = 975
+    pair SortedxChunked = 1395
+    pair SortedxDense = 532
+    pair SortedxRoaring = 894
+    pair SortedxSorted = 1239
+    pair SortedxSorted (same root) = 2895
+    policy op expected error Dense = 26805
+    policy op expected error Roaring = 2327
+    policy op ok Auto -> Chunked = 43132
+    policy op ok Auto -> Dense = 11512
+    policy op ok Auto -> Roaring = 23424
+    policy op ok Auto -> Sorted = 56050
+    policy op ok Chunked -> Chunked = 136362
+    policy op ok Dense -> Dense = 110169
+    policy op ok Roaring -> Roaring = 129757
+    policy op ok Sorted -> Sorted = 146262
+    sizes <65536 x <65536 = 4456
+    sizes <65536 x <=4096 = 298
+    sizes <65536 x <=64 = 903
+    sizes <65536 x >=65536 = 626
+    sizes <65536 x empty = 36
+    sizes <=4096 x <65536 = 359
+    sizes <=4096 x <=4096 = 3525
+    sizes <=4096 x <=64 = 686
+    sizes <=4096 x >=65536 = 157
+    sizes <=4096 x empty = 108
+    sizes <=64 x <65536 = 712
+    sizes <=64 x <=4096 = 356
+    sizes <=64 x <=64 = 10603
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 594
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 697
+    sizes empty x <=64 = 72
+    sizes empty x empty = 72
+    strict nonempty subset pair = 1195
+i16 seed 4002 DONE: 60 cases, 25825 pairs, 789100 ops, 189674 heavy checks, 0 share misses, 29.135305606s
+COVERAGE u8:
+    default-result repr Chunked = 38351
+    default-result repr Dense = 12607
+    default-result repr Roaring = 20259
+    default-result repr Sorted = 48963
+    equal-content pair ChunkedxChunked = 115
+    equal-content pair ChunkedxDense = 89
+    equal-content pair ChunkedxRoaring = 117
+    equal-content pair ChunkedxSorted = 141
+    equal-content pair DensexChunked = 89
+    equal-content pair DensexDense = 116
+    equal-content pair DensexRoaring = 99
+    equal-content pair DensexSorted = 114
+    equal-content pair RoaringxChunked = 119
+    equal-content pair RoaringxDense = 101
+    equal-content pair RoaringxRoaring = 175
+    equal-content pair RoaringxSorted = 157
+    equal-content pair SortedxChunked = 143
+    equal-content pair SortedxDense = 114
+    equal-content pair SortedxRoaring = 157
+    equal-content pair SortedxSorted = 251
+    iter-check Chunked = 61395
+    iter-check Chunked with Array container = 42937
+    iter-check Chunked with Bitmap container = 11767
+    iter-check Chunked with Full container = 2230
+    iter-check Dense = 40715
+    iter-check Roaring = 47525
+    iter-check Sorted = 76014
+    pair ChunkedxChunked = 1568
+    pair ChunkedxChunked (same root) = 2425
+    pair ChunkedxDense = 1357
+    pair ChunkedxRoaring = 1819
+    pair ChunkedxSorted = 1668
+    pair DensexChunked = 1224
+    pair DensexDense = 711
+    pair DensexDense (same root) = 2557
+    pair DensexRoaring = 638
+    pair DensexSorted = 820
+    pair RoaringxChunked = 1438
+    pair RoaringxDense = 587
+    pair RoaringxRoaring = 1105
+    pair RoaringxRoaring (same root) = 2893
+    pair RoaringxSorted = 1100
+    pair SortedxChunked = 1511
+    pair SortedxDense = 697
+    pair SortedxRoaring = 1008
+    pair SortedxSorted = 1434
+    pair SortedxSorted (same root) = 3485
+    policy op expected error Dense = 27428
+    policy op expected error Roaring = 2640
+    policy op ok Auto -> Chunked = 47568
+    policy op ok Auto -> Dense = 16468
+    policy op ok Auto -> Roaring = 26348
+    policy op ok Auto -> Sorted = 67290
+    policy op ok Chunked -> Chunked = 160231
+    policy op ok Dense -> Dense = 132842
+    policy op ok Roaring -> Roaring = 152759
+    policy op ok Sorted -> Sorted = 170386
+    sizes <65536 x <65536 = 4456
+    sizes <65536 x <=4096 = 298
+    sizes <65536 x <=64 = 903
+    sizes <65536 x >=65536 = 626
+    sizes <65536 x empty = 36
+    sizes <=4096 x <65536 = 359
+    sizes <=4096 x <=4096 = 4334
+    sizes <=4096 x <=64 = 927
+    sizes <=4096 x >=65536 = 157
+    sizes <=4096 x empty = 144
+    sizes <=64 x <65536 = 712
+    sizes <=64 x <=4096 = 428
+    sizes <=64 x <=64 = 13059
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 768
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 697
+    sizes empty x <=64 = 144
+    sizes empty x empty = 432
+    strict nonempty subset pair = 1339
+u8 seed 4003 DONE: 60 cases, 30045 pairs, 924140 ops, 225649 heavy checks, 0 share misses, 1.898149308s
+COVERAGE i8:
+    default-result repr Chunked = 41362
+    default-result repr Dense = 16570
+    default-result repr Roaring = 22477
+    default-result repr Sorted = 56691
+    equal-content pair ChunkedxChunked = 140
+    equal-content pair ChunkedxDense = 125
+    equal-content pair ChunkedxRoaring = 143
+    equal-content pair ChunkedxSorted = 168
+    equal-content pair DensexChunked = 125
+    equal-content pair DensexDense = 188
+    equal-content pair DensexRoaring = 144
+    equal-content pair DensexSorted = 153
+    equal-content pair RoaringxChunked = 145
+    equal-content pair RoaringxDense = 146
+    equal-content pair RoaringxRoaring = 212
+    equal-content pair RoaringxSorted = 187
+    equal-content pair SortedxChunked = 170
+    equal-content pair SortedxDense = 153
+    equal-content pair SortedxRoaring = 187
+    equal-content pair SortedxSorted = 287
+    iter-check Chunked = 69800
+    iter-check Chunked with Array container = 48513
+    iter-check Chunked with Bitmap container = 11767
+    iter-check Chunked with Full container = 2230
+    iter-check Dense = 49461
+    iter-check Roaring = 54881
+    iter-check Sorted = 87511
+    pair ChunkedxChunked = 1649
+    pair ChunkedxChunked (same root) = 2823
+    pair ChunkedxDense = 1484
+    pair ChunkedxRoaring = 1902
+    pair ChunkedxSorted = 1775
+    pair DensexChunked = 1356
+    pair DensexDense = 963
+    pair DensexDense (same root) = 3275
+    pair DensexRoaring = 788
+    pair DensexSorted = 1004
+    pair RoaringxChunked = 1522
+    pair RoaringxDense = 730
+    pair RoaringxRoaring = 1214
+    pair RoaringxRoaring (same root) = 3351
+    pair RoaringxSorted = 1222
+    pair SortedxChunked = 1612
+    pair SortedxDense = 862
+    pair SortedxRoaring = 1118
+    pair SortedxSorted = 1599
+    pair SortedxSorted (same root) = 4026
+    policy op expected error Dense = 28049
+    policy op expected error Roaring = 2992
+    policy op ok Auto -> Chunked = 51762
+    policy op ok Auto -> Dense = 21862
+    policy op ok Auto -> Roaring = 29499
+    policy op ok Auto -> Sorted = 78127
+    policy op ok Chunked -> Chunked = 184061
+    policy op ok Dense -> Dense = 155629
+    policy op ok Roaring -> Roaring = 175945
+    policy op ok Sorted -> Sorted = 194474
+    sizes <65536 x <65536 = 4456
+    sizes <65536 x <=4096 = 298
+    sizes <65536 x <=64 = 903
+    sizes <65536 x >=65536 = 626
+    sizes <65536 x empty = 36
+    sizes <=4096 x <65536 = 359
+    sizes <=4096 x <=4096 = 5386
+    sizes <=4096 x <=64 = 1209
+    sizes <=4096 x >=65536 = 157
+    sizes <=4096 x empty = 216
+    sizes <=64 x <65536 = 712
+    sizes <=64 x <=4096 = 525
+    sizes <=64 x <=64 = 15354
+    sizes <=64 x >=65536 = 310
+    sizes <=64 x empty = 912
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 697
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 144
+    sizes empty x empty = 576
+    strict nonempty subset pair = 1508
+i8 seed 4004 DONE: 60 cases, 34275 pairs, 1059500 ops, 261653 heavy checks, 0 share misses, 3.412816344s
+COVERAGE char:
+    default-result repr Chunked = 44424
+    default-result repr Dense = 19001
+    default-result repr Roaring = 25489
+    default-result repr Sorted = 64450
+    equal-content pair ChunkedxChunked = 167
+    equal-content pair ChunkedxDense = 158
+    equal-content pair ChunkedxRoaring = 172
+    equal-content pair ChunkedxSorted = 216
+    equal-content pair DensexChunked = 158
+    equal-content pair DensexDense = 239
+    equal-content pair DensexRoaring = 184
+    equal-content pair DensexSorted = 214
+    equal-content pair RoaringxChunked = 174
+    equal-content pair RoaringxDense = 186
+    equal-content pair RoaringxRoaring = 251
+    equal-content pair RoaringxSorted = 240
+    equal-content pair SortedxChunked = 218
+    equal-content pair SortedxDense = 214
+    equal-content pair SortedxRoaring = 240
+    equal-content pair SortedxSorted = 387
+    iter-check Chunked = 77884
+    iter-check Chunked with Array container = 52704
+    iter-check Chunked with Bitmap container = 12040
+    iter-check Chunked with Full container = 2244
+    iter-check Dense = 56640
+    iter-check Roaring = 62640
+    iter-check Sorted = 98707
+    pair ChunkedxChunked = 1742
+    pair ChunkedxChunked (same root) = 3230
+    pair ChunkedxDense = 1579
+    pair ChunkedxRoaring = 1999
+    pair ChunkedxSorted = 1897
+    pair DensexChunked = 1454
+    pair DensexDense = 1080
+    pair DensexDense (same root) = 3754
+    pair DensexRoaring = 905
+    pair DensexSorted = 1151
+    pair RoaringxChunked = 1626
+    pair RoaringxDense = 846
+    pair RoaringxRoaring = 1371
+    pair RoaringxRoaring (same root) = 3885
+    pair RoaringxSorted = 1379
+    pair SortedxChunked = 1730
+    pair SortedxDense = 996
+    pair SortedxRoaring = 1260
+    pair SortedxSorted = 1818
+    pair SortedxSorted (same root) = 4639
+    policy op expected error Dense = 28915
+    policy op expected error Roaring = 3259
+    policy op ok Auto -> Chunked = 55992
+    policy op ok Auto -> Dense = 25078
+    policy op ok Auto -> Roaring = 33692
+    policy op ok Auto -> Sorted = 88985
+    policy op ok Chunked -> Chunked = 206858
+    policy op ok Dense -> Dense = 176744
+    policy op ok Roaring -> Roaring = 198153
+    policy op ok Sorted -> Sorted = 217292
+    sizes <65536 x <65536 = 4600
+    sizes <65536 x <=4096 = 370
+    sizes <65536 x <=64 = 975
+    sizes <65536 x >=65536 = 626
+    sizes <65536 x empty = 36
+    sizes <=4096 x <65536 = 359
+    sizes <=4096 x <=4096 = 6044
+    sizes <=4096 x <=64 = 1281
+    sizes <=4096 x >=65536 = 167
+    sizes <=4096 x empty = 216
+    sizes <=64 x <65536 = 758
+    sizes <=64 x <=4096 = 525
+    sizes <=64 x <=64 = 17134
+    sizes <=64 x >=65536 = 320
+    sizes <=64 x empty = 942
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 717
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 288
+    sizes empty x empty = 1584
+    strict nonempty subset pair = 1652
+char seed 4005 DONE: 60 cases, 38341 pairs, 1188332 ops, 295871 heavy checks, 0 share misses, 33.244468077s
+COVERAGE NonZeroU32:
+    default-result repr Chunked = 47193
+    default-result repr Dense = 20188
+    default-result repr Roaring = 28050
+    default-result repr Sorted = 71461
+    equal-content pair ChunkedxChunked = 181
+    equal-content pair ChunkedxDense = 163
+    equal-content pair ChunkedxRoaring = 185
+    equal-content pair ChunkedxSorted = 238
+    equal-content pair DensexChunked = 163
+    equal-content pair DensexDense = 245
+    equal-content pair DensexRoaring = 192
+    equal-content pair DensexSorted = 219
+    equal-content pair RoaringxChunked = 187
+    equal-content pair RoaringxDense = 194
+    equal-content pair RoaringxRoaring = 270
+    equal-content pair RoaringxSorted = 261
+    equal-content pair SortedxChunked = 240
+    equal-content pair SortedxDense = 219
+    equal-content pair SortedxRoaring = 261
+    equal-content pair SortedxSorted = 433
+    iter-check Chunked = 84715
+    iter-check Chunked with Array container = 57423
+    iter-check Chunked with Bitmap container = 12425
+    iter-check Chunked with Full container = 2250
+    iter-check Dense = 60819
+    iter-check Roaring = 69076
+    iter-check Sorted = 108090
+    pair ChunkedxChunked = 1840
+    pair ChunkedxChunked (same root) = 3618
+    pair ChunkedxDense = 1634
+    pair ChunkedxRoaring = 2095
+    pair ChunkedxSorted = 2036
+    pair DensexChunked = 1510
+    pair DensexDense = 1145
+    pair DensexDense (same root) = 4026
+    pair DensexRoaring = 967
+    pair DensexSorted = 1240
+    pair RoaringxChunked = 1736
+    pair RoaringxDense = 926
+    pair RoaringxRoaring = 1517
+    pair RoaringxRoaring (same root) = 4386
+    pair RoaringxSorted = 1544
+    pair SortedxChunked = 1849
+    pair SortedxDense = 1057
+    pair SortedxRoaring = 1389
+    pair SortedxSorted = 2039
+    pair SortedxSorted (same root) = 5169
+    policy op expected error Dense = 34447
+    policy op expected error Roaring = 3541
+    policy op ok Auto -> Chunked = 59786
+    policy op ok Auto -> Dense = 26671
+    policy op ok Auto -> Roaring = 37140
+    policy op ok Auto -> Sorted = 98648
+    policy op ok Chunked -> Chunked = 225662
+    policy op ok Dense -> Dense = 189637
+    policy op ok Roaring -> Roaring = 216464
+    policy op ok Sorted -> Sorted = 236068
+    sizes <65536 x <65536 = 4901
+    sizes <65536 x <=4096 = 502
+    sizes <65536 x <=64 = 1000
+    sizes <65536 x >=65536 = 636
+    sizes <65536 x empty = 66
+    sizes <=4096 x <65536 = 369
+    sizes <=4096 x <=4096 = 6782
+    sizes <=4096 x <=64 = 1449
+    sizes <=4096 x >=65536 = 177
+    sizes <=4096 x empty = 246
+    sizes <=64 x <65536 = 824
+    sizes <=64 x <=4096 = 561
+    sizes <=64 x <=64 = 18870
+    sizes <=64 x >=65536 = 330
+    sizes <=64 x empty = 942
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 737
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 318
+    sizes empty x empty = 1614
+    strict nonempty subset pair = 1836
+NonZeroU32 seed 4006 DONE: 60 cases, 41723 pairs, 1294956 ops, 322700 heavy checks, 0 share misses, 48.287144778s
+COVERAGE NonZeroU16:
+    default-result repr Chunked = 49745
+    default-result repr Dense = 22406
+    default-result repr Roaring = 31401
+    default-result repr Sorted = 78780
+    equal-content pair ChunkedxChunked = 188
+    equal-content pair ChunkedxDense = 174
+    equal-content pair ChunkedxRoaring = 194
+    equal-content pair ChunkedxSorted = 251
+    equal-content pair DensexChunked = 174
+    equal-content pair DensexDense = 268
+    equal-content pair DensexRoaring = 205
+    equal-content pair DensexSorted = 236
+    equal-content pair RoaringxChunked = 196
+    equal-content pair RoaringxDense = 207
+    equal-content pair RoaringxRoaring = 283
+    equal-content pair RoaringxSorted = 278
+    equal-content pair SortedxChunked = 253
+    equal-content pair SortedxDense = 236
+    equal-content pair SortedxRoaring = 278
+    equal-content pair SortedxSorted = 460
+    iter-check Chunked = 92116
+    iter-check Chunked with Array container = 61943
+    iter-check Chunked with Bitmap container = 13095
+    iter-check Chunked with Full container = 2250
+    iter-check Dense = 67410
+    iter-check Roaring = 76644
+    iter-check Sorted = 118523
+    pair ChunkedxChunked = 1911
+    pair ChunkedxChunked (same root) = 3976
+    pair ChunkedxDense = 1712
+    pair ChunkedxRoaring = 2197
+    pair ChunkedxSorted = 2143
+    pair DensexChunked = 1599
+    pair DensexDense = 1262
+    pair DensexDense (same root) = 4501
+    pair DensexRoaring = 1099
+    pair DensexSorted = 1377
+    pair RoaringxChunked = 1838
+    pair RoaringxDense = 1044
+    pair RoaringxRoaring = 1692
+    pair RoaringxRoaring (same root) = 4933
+    pair RoaringxSorted = 1696
+    pair SortedxChunked = 1950
+    pair SortedxDense = 1178
+    pair SortedxRoaring = 1535
+    pair SortedxSorted = 2221
+    pair SortedxSorted (same root) = 5719
+    policy op expected error Dense = 35478
+    policy op expected error Roaring = 3842
+    policy op ok Auto -> Chunked = 63251
+    policy op ok Auto -> Dense = 29575
+    policy op ok Auto -> Roaring = 41626
+    policy op ok Auto -> Sorted = 108747
+    policy op ok Chunked -> Chunked = 247073
+    policy op ok Dense -> Dense = 209522
+    policy op ok Roaring -> Roaring = 237075
+    policy op ok Sorted -> Sorted = 257395
+    sizes <65536 x <65536 = 5197
+    sizes <65536 x <=4096 = 574
+    sizes <65536 x <=64 = 1046
+    sizes <65536 x >=65536 = 636
+    sizes <65536 x empty = 112
+    sizes <=4096 x <65536 = 441
+    sizes <=4096 x <=4096 = 7466
+    sizes <=4096 x <=64 = 1557
+    sizes <=4096 x >=65536 = 177
+    sizes <=4096 x empty = 318
+    sizes <=64 x <65536 = 890
+    sizes <=64 x <=4096 = 597
+    sizes <=64 x <=64 = 20908
+    sizes <=64 x >=65536 = 330
+    sizes <=64 x empty = 1194
+    sizes >=65536 x <65536 = 694
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 737
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 318
+    sizes empty x empty = 1686
+    strict nonempty subset pair = 2016
+NonZeroU16 seed 4007 DONE: 60 cases, 45583 pairs, 1415916 ops, 354693 heavy checks, 0 share misses, 32.59458785s
+COVERAGE isize:
+    default-result repr Chunked = 52551
+    default-result repr Dense = 23592
+    default-result repr Roaring = 33414
+    default-result repr Sorted = 85647
+    equal-content pair ChunkedxChunked = 209
+    equal-content pair ChunkedxDense = 185
+    equal-content pair ChunkedxRoaring = 209
+    equal-content pair ChunkedxSorted = 275
+    equal-content pair DensexChunked = 185
+    equal-content pair DensexDense = 278
+    equal-content pair DensexRoaring = 211
+    equal-content pair DensexSorted = 245
+    equal-content pair RoaringxChunked = 211
+    equal-content pair RoaringxDense = 213
+    equal-content pair RoaringxRoaring = 298
+    equal-content pair RoaringxSorted = 300
+    equal-content pair SortedxChunked = 277
+    equal-content pair SortedxDense = 245
+    equal-content pair SortedxRoaring = 300
+    equal-content pair SortedxSorted = 500
+    iter-check Chunked = 98338
+    iter-check Chunked with Array container = 66463
+    iter-check Chunked with Bitmap container = 13293
+    iter-check Chunked with Full container = 2288
+    iter-check Dense = 71401
+    iter-check Roaring = 82290
+    iter-check Sorted = 127425
+    pair ChunkedxChunked = 2007
+    pair ChunkedxChunked (same root) = 4353
+    pair ChunkedxDense = 1770
+    pair ChunkedxRoaring = 2285
+    pair ChunkedxSorted = 2278
+    pair DensexChunked = 1660
+    pair DensexDense = 1325
+    pair DensexDense (same root) = 4761
+    pair DensexRoaring = 1152
+    pair DensexSorted = 1460
+    pair RoaringxChunked = 1931
+    pair RoaringxDense = 1107
+    pair RoaringxRoaring = 1807
+    pair RoaringxRoaring (same root) = 5348
+    pair RoaringxSorted = 1840
+    pair SortedxChunked = 2074
+    pair SortedxDense = 1258
+    pair SortedxRoaring = 1659
+    pair SortedxSorted = 2450
+    pair SortedxSorted (same root) = 6276
+    policy op expected error Dense = 40396
+    policy op expected error Roaring = 4499
+    policy op ok Auto -> Chunked = 67016
+    policy op ok Auto -> Dense = 31167
+    policy op ok Auto -> Roaring = 44227
+    policy op ok Auto -> Sorted = 118134
+    policy op ok Chunked -> Chunked = 264554
+    policy op ok Dense -> Dense = 221756
+    policy op ok Roaring -> Roaring = 253718
+    policy op ok Sorted -> Sorted = 275021
+    sizes <65536 x <65536 = 5470
+    sizes <65536 x <=4096 = 599
+    sizes <65536 x <=64 = 1092
+    sizes <65536 x >=65536 = 646
+    sizes <65536 x empty = 112
+    sizes <=4096 x <65536 = 476
+    sizes <=4096 x <=4096 = 8059
+    sizes <=4096 x <=64 = 1641
+    sizes <=4096 x >=65536 = 187
+    sizes <=4096 x empty = 354
+    sizes <=64 x <65536 = 915
+    sizes <=64 x <=4096 = 613
+    sizes <=64 x <=64 = 22797
+    sizes <=64 x >=65536 = 340
+    sizes <=64 x empty = 1260
+    sizes >=65536 x <65536 = 714
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 302
+    sizes >=65536 x >=65536 = 817
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 318
+    sizes empty x empty = 1686
+    strict nonempty subset pair = 2087
+isize seed 4008 DONE: 60 cases, 48801 pairs, 1515692 ops, 379454 heavy checks, 0 share misses, 62.704731963s
+COVERAGE NonZeroU64:
+    default-result repr Chunked = 55137
+    default-result repr Dense = 24877
+    default-result repr Roaring = 35498
+    default-result repr Sorted = 92196
+    equal-content pair ChunkedxChunked = 224
+    equal-content pair ChunkedxDense = 196
+    equal-content pair ChunkedxRoaring = 220
+    equal-content pair ChunkedxSorted = 293
+    equal-content pair DensexChunked = 196
+    equal-content pair DensexDense = 292
+    equal-content pair DensexRoaring = 220
+    equal-content pair DensexSorted = 257
+    equal-content pair RoaringxChunked = 221
+    equal-content pair RoaringxDense = 225
+    equal-content pair RoaringxRoaring = 309
+    equal-content pair RoaringxSorted = 315
+    equal-content pair SortedxChunked = 293
+    equal-content pair SortedxDense = 255
+    equal-content pair SortedxRoaring = 314
+    equal-content pair SortedxSorted = 525
+    iter-check Chunked = 104370
+    iter-check Chunked with Array container = 70707
+    iter-check Chunked with Bitmap container = 13610
+    iter-check Chunked with Full container = 2324
+    iter-check Dense = 75394
+    iter-check Roaring = 87788
+    iter-check Sorted = 136203
+    pair ChunkedxChunked = 2095
+    pair ChunkedxChunked (same root) = 4704
+    pair ChunkedxDense = 1831
+    pair ChunkedxRoaring = 2370
+    pair ChunkedxSorted = 2395
+    pair DensexChunked = 1720
+    pair DensexDense = 1392
+    pair DensexDense (same root) = 5030
+    pair DensexRoaring = 1220
+    pair DensexSorted = 1534
+    pair RoaringxChunked = 2026
+    pair RoaringxDense = 1180
+    pair RoaringxRoaring = 1938
+    pair RoaringxRoaring (same root) = 5801
+    pair RoaringxSorted = 1994
+    pair SortedxChunked = 2182
+    pair SortedxDense = 1322
+    pair SortedxRoaring = 1779
+    pair SortedxSorted = 2648
+    pair SortedxSorted (same root) = 6766
+    policy op expected error Dense = 44671
+    policy op expected error Roaring = 5168
+    policy op ok Auto -> Chunked = 70496
+    policy op ok Auto -> Dense = 32837
+    policy op ok Auto -> Roaring = 46911
+    policy op ok Auto -> Sorted = 127139
+    policy op ok Chunked -> Chunked = 281549
+    policy op ok Dense -> Dense = 234065
+    policy op ok Roaring -> Roaring = 269899
+    policy op ok Sorted -> Sorted = 292081
+    sizes <65536 x <65536 = 5680
+    sizes <65536 x <=4096 = 609
+    sizes <65536 x <=64 = 1122
+    sizes <65536 x >=65536 = 656
+    sizes <65536 x empty = 112
+    sizes <=4096 x <65536 = 528
+    sizes <=4096 x <=4096 = 8613
+    sizes <=4096 x <=64 = 1711
+    sizes <=4096 x >=65536 = 187
+    sizes <=4096 x empty = 354
+    sizes <=64 x <65536 = 915
+    sizes <=64 x <=4096 = 613
+    sizes <=64 x <=64 = 24723
+    sizes <=64 x >=65536 = 340
+    sizes <=64 x empty = 1404
+    sizes >=65536 x <65536 = 734
+    sizes >=65536 x <=4096 = 259
+    sizes >=65536 x <=64 = 312
+    sizes >=65536 x >=65536 = 897
+    sizes >=65536 x empty = 10
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 318
+    sizes empty x empty = 1686
+    strict nonempty subset pair = 2340
+NonZeroU64 seed 4009 DONE: 60 cases, 51927 pairs, 1612524 ops, 403755 heavy checks, 0 share misses, 48.474506823s
+test zz_pairs_narrow_and_restricted_keys ... ok
+test zz_pairs_u32 has been running for over 60 seconds
+u32 seed 2001: 200 cases, 63003 pairs, 1959276 ops, 490756 heavy checks, 0 share misses, 171.024355222s
+COVERAGE u32:
+    default-result repr Chunked = 68784
+    default-result repr Dense = 30957
+    default-result repr Roaring = 47391
+    default-result repr Sorted = 127024
+    equal-content pair ChunkedxChunked = 285
+    equal-content pair ChunkedxDense = 233
+    equal-content pair ChunkedxRoaring = 283
+    equal-content pair ChunkedxSorted = 375
+    equal-content pair DensexChunked = 234
+    equal-content pair DensexDense = 337
+    equal-content pair DensexRoaring = 261
+    equal-content pair DensexSorted = 309
+    equal-content pair RoaringxChunked = 284
+    equal-content pair RoaringxDense = 266
+    equal-content pair RoaringxRoaring = 391
+    equal-content pair RoaringxSorted = 406
+    equal-content pair SortedxChunked = 375
+    equal-content pair SortedxDense = 306
+    equal-content pair SortedxRoaring = 402
+    equal-content pair SortedxSorted = 687
+    iter-check Chunked = 136256
+    iter-check Chunked with Array container = 93032
+    iter-check Chunked with Bitmap container = 15341
+    iter-check Chunked with Full container = 2380
+    iter-check Dense = 97144
+    iter-check Roaring = 118411
+    iter-check Sorted = 181815
+    pair ChunkedxChunked = 2562
+    pair ChunkedxChunked (same root) = 6571
+    pair ChunkedxDense = 2135
+    pair ChunkedxRoaring = 2861
+    pair ChunkedxSorted = 3000
+    pair DensexChunked = 2024
+    pair DensexDense = 1738
+    pair DensexDense (same root) = 6464
+    pair DensexRoaring = 1585
+    pair DensexSorted = 1953
+    pair RoaringxChunked = 2538
+    pair RoaringxDense = 1565
+    pair RoaringxRoaring = 2675
+    pair RoaringxRoaring (same root) = 8182
+    pair RoaringxSorted = 2741
+    pair SortedxChunked = 2745
+    pair SortedxDense = 1711
+    pair SortedxRoaring = 2439
+    pair SortedxSorted = 3660
+    pair SortedxSorted (same root) = 9390
+    policy op expected error Dense = 66646
+    policy op expected error Roaring = 6484
+    policy op ok Auto -> Chunked = 89172
+    policy op ok Auto -> Dense = 40752
+    policy op ok Auto -> Roaring = 62800
+    policy op ok Auto -> Sorted = 175133
+    policy op ok Chunked -> Chunked = 372338
+    policy op ok Dense -> Dense = 302415
+    policy op ok Roaring -> Roaring = 358824
+    policy op ok Sorted -> Sorted = 382588
+    sizes <65536 x <65536 = 7771
+    sizes <65536 x <=4096 = 918
+    sizes <65536 x <=64 = 1422
+    sizes <65536 x >=65536 = 676
+    sizes <65536 x empty = 148
+    sizes <=4096 x <65536 = 654
+    sizes <=4096 x <=4096 = 11819
+    sizes <=4096 x <=64 = 2485
+    sizes <=4096 x >=65536 = 217
+    sizes <=4096 x empty = 426
+    sizes <=64 x <65536 = 940
+    sizes <=64 x <=4096 = 805
+    sizes <=64 x <=64 = 33030
+    sizes <=64 x >=65536 = 390
+    sizes <=64 x empty = 1722
+    sizes >=65536 x <65536 = 794
+    sizes >=65536 x <=4096 = 289
+    sizes >=65536 x <=64 = 322
+    sizes >=65536 x >=65536 = 1157
+    sizes >=65536 x empty = 10
+    sizes empty x <=4096 = 144
+    sizes empty x <=64 = 444
+    sizes empty x empty = 1956
+    strict nonempty subset pair = 3148
+u32 seed 2001 DONE: 300 cases, 68539 pairs, 2131308 ops, 533626 heavy checks, 0 share misses, 230.38658723s
+test zz_pairs_u32 ... ok
+test zz_pairs_u64 has been running for over 60 seconds
+u64 seed 1: 200 cases, 79171 pairs, 2461964 ops, 615404 heavy checks, 0 share misses, 87.2418689s
+test zz_directed_scale_runs ... ok
+test zz_walk_i64 ... ok
+u32 walk seed 79: 2000 steps, 2519566 ops, 628174 heavy, 6.686172786s
+test zz_walk_u32 ... ok
+u64 walk seed 78: 2000 steps, 2545285 ops, 633040 heavy, 4.756072658s
+COVERAGE walk:
+    default-result repr Chunked = 82231
+    default-result repr Dense = 37025
+    default-result repr Roaring = 58149
+    default-result repr Sorted = 157389
+    equal-content pair ChunkedxChunked = 328
+    equal-content pair ChunkedxDense = 260
+    equal-content pair ChunkedxRoaring = 321
+    equal-content pair ChunkedxSorted = 420
+    equal-content pair DensexChunked = 259
+    equal-content pair DensexDense = 371
+    equal-content pair DensexRoaring = 292
+    equal-content pair DensexSorted = 329
+    equal-content pair RoaringxChunked = 319
+    equal-content pair RoaringxDense = 295
+    equal-content pair RoaringxRoaring = 442
+    equal-content pair RoaringxSorted = 447
+    equal-content pair SortedxChunked = 417
+    equal-content pair SortedxDense = 332
+    equal-content pair SortedxRoaring = 445
+    equal-content pair SortedxSorted = 761
+    iter-check Chunked = 162698
+    iter-check Chunked with Array container = 112531
+    iter-check Chunked with Bitmap container = 16524
+    iter-check Chunked with Full container = 2487
+    iter-check Dense = 114644
+    iter-check Roaring = 142541
+    iter-check Sorted = 218597
+    pair ChunkedxChunked = 3125
+    pair ChunkedxChunked (same root) = 8056
+    pair ChunkedxDense = 2433
+    pair ChunkedxRoaring = 3361
+    pair ChunkedxSorted = 3683
+    pair DensexChunked = 2311
+    pair DensexDense = 2072
+    pair DensexDense (same root) = 7635
+    pair DensexRoaring = 1910
+    pair DensexSorted = 2348
+    pair RoaringxChunked = 3060
+    pair RoaringxDense = 1928
+    pair RoaringxRoaring = 3342
+    pair RoaringxRoaring (same root) = 10056
+    pair RoaringxSorted = 3535
+    pair SortedxChunked = 3381
+    pair SortedxDense = 2081
+    pair SortedxRoaring = 3109
+    pair SortedxSorted = 4710
+    pair SortedxSorted (same root) = 11563
+    policy op expected error Dense = 87955
+    policy op expected error Roaring = 9275
+    policy op ok Auto -> Chunked = 104527
+    policy op ok Auto -> Dense = 48279
+    policy op ok Auto -> Roaring = 75202
+    policy op ok Auto -> Sorted = 213678
+    policy op ok Chunked -> Chunked = 446591
+    policy op ok Dense -> Dense = 355316
+    policy op ok Roaring -> Roaring = 429112
+    policy op ok Sorted -> Sorted = 456870
+    sizes <65536 x <65536 = 9052
+    sizes <65536 x <=4096 = 1137
+    sizes <65536 x <=64 = 1798
+    sizes <65536 x >=65536 = 709
+    sizes <65536 x empty = 190
+    sizes <=4096 x <65536 = 836
+    sizes <=4096 x <=4096 = 14700
+    sizes <=4096 x <=64 = 3237
+    sizes <=4096 x >=65536 = 241
+    sizes <=4096 x empty = 514
+    sizes <=64 x <65536 = 1072
+    sizes <=64 x <=4096 = 1096
+    sizes <=64 x <=64 = 40593
+    sizes <=64 x >=65536 = 459
+    sizes <=64 x empty = 2197
+    sizes >=65536 x <65536 = 800
+    sizes >=65536 x <=4096 = 319
+    sizes >=65536 x <=64 = 393
+    sizes >=65536 x >=65536 = 1422
+    sizes >=65536 x empty = 17
+    sizes empty x <65536 = 42
+    sizes empty x <=4096 = 223
+    sizes empty x <=64 = 564
+    sizes empty x >=65536 = 10
+    sizes empty x empty = 2078
+    strict nonempty subset pair = 3868
+    walk ChunkedxChunked -> Chunked = 653
+    walk ChunkedxChunked -> Dense = 49
+    walk ChunkedxChunked -> Roaring = 90
+    walk ChunkedxChunked -> Sorted = 162
+    walk ChunkedxDense -> Chunked = 132
+    walk ChunkedxDense -> Dense = 42
+    walk ChunkedxDense -> Roaring = 17
+    walk ChunkedxDense -> Sorted = 25
+    walk ChunkedxRoaring -> Chunked = 264
+    walk ChunkedxRoaring -> Dense = 26
+    walk ChunkedxRoaring -> Roaring = 120
+    walk ChunkedxRoaring -> Sorted = 56
+    walk ChunkedxSorted -> Chunked = 325
+    walk ChunkedxSorted -> Dense = 25
+    walk ChunkedxSorted -> Roaring = 77
+    walk ChunkedxSorted -> Sorted = 130
+    walk DensexChunked -> Chunked = 101
+    walk DensexChunked -> Dense = 41
+    walk DensexChunked -> Roaring = 27
+    walk DensexChunked -> Sorted = 20
+    walk DensexDense -> Chunked = 24
+    walk DensexDense -> Dense = 61
+    walk DensexDense -> Roaring = 19
+    walk DensexDense -> Sorted = 53
+    walk DensexRoaring -> Chunked = 27
+    walk DensexRoaring -> Dense = 42
+    walk DensexRoaring -> Roaring = 65
+    walk DensexRoaring -> Sorted = 46
+    walk DensexSorted -> Chunked = 20
+    walk DensexSorted -> Dense = 40
+    walk DensexSorted -> Roaring = 39
+    walk DensexSorted -> Sorted = 74
+    walk RoaringxChunked -> Chunked = 194
+    walk RoaringxChunked -> Dense = 13
+    walk RoaringxChunked -> Roaring = 141
+    walk RoaringxChunked -> Sorted = 71
+    walk RoaringxDense -> Chunked = 20
+    walk RoaringxDense -> Dense = 29
+    walk RoaringxDense -> Roaring = 68
+    walk RoaringxDense -> Sorted = 44
+    walk RoaringxRoaring -> Chunked = 62
+    walk RoaringxRoaring -> Dense = 38
+    walk RoaringxRoaring -> Roaring = 352
+    walk RoaringxRoaring -> Sorted = 177
+    walk RoaringxSorted -> Chunked = 62
+    walk RoaringxSorted -> Dense = 26
+    walk RoaringxSorted -> Roaring = 227
+    walk RoaringxSorted -> Sorted = 173
+    walk SortedxChunked -> Chunked = 287
+    walk SortedxChunked -> Dense = 37
+    walk SortedxChunked -> Roaring = 47
+    walk SortedxChunked -> Sorted = 177
+    walk SortedxDense -> Chunked = 19
+    walk SortedxDense -> Dense = 48
+    walk SortedxDense -> Roaring = 39
+    walk SortedxDense -> Sorted = 106
+    walk SortedxRoaring -> Chunked = 56
+    walk SortedxRoaring -> Dense = 33
+    walk SortedxRoaring -> Roaring = 199
+    walk SortedxRoaring -> Sorted = 216
+    walk SortedxSorted -> Chunked = 77
+    walk SortedxSorted -> Dense = 63
+    walk SortedxSorted -> Roaring = 130
+    walk SortedxSorted -> Sorted = 560
+    walk result size <65536 = 1038
+    walk result size <=4096 = 1720
+    walk result size <=64 = 2109
+    walk result size >=65536 = 275
+    walk result size empty = 1541
+test zz_walk_u64 ... ok
+COVERAGE u64:
+    default-result repr Chunked = 84701
+    default-result repr Dense = 38170
+    default-result repr Roaring = 60373
+    default-result repr Sorted = 163296
+    equal-content pair ChunkedxChunked = 334
+    equal-content pair ChunkedxDense = 263
+    equal-content pair ChunkedxRoaring = 325
+    equal-content pair ChunkedxSorted = 428
+    equal-content pair DensexChunked = 262
+    equal-content pair DensexDense = 373
+    equal-content pair DensexRoaring = 295
+    equal-content pair DensexSorted = 333
+    equal-content pair RoaringxChunked = 323
+    equal-content pair RoaringxDense = 298
+    equal-content pair RoaringxRoaring = 447
+    equal-content pair RoaringxSorted = 453
+    equal-content pair SortedxChunked = 425
+    equal-content pair SortedxDense = 336
+    equal-content pair SortedxRoaring = 451
+    equal-content pair SortedxSorted = 773
+    iter-check Chunked = 168326
+    iter-check Chunked with Array container = 116647
+    iter-check Chunked with Bitmap container = 16694
+    iter-check Chunked with Full container = 2502
+    iter-check Dense = 118277
+    iter-check Roaring = 147966
+    iter-check Sorted = 226336
+    pair ChunkedxChunked = 3212
+    pair ChunkedxChunked (same root) = 8396
+    pair ChunkedxDense = 2485
+    pair ChunkedxRoaring = 3452
+    pair ChunkedxSorted = 3793
+    pair DensexChunked = 2366
+    pair DensexDense = 2133
+    pair DensexDense (same root) = 7889
+    pair DensexRoaring = 1979
+    pair DensexSorted = 2417
+    pair RoaringxChunked = 3154
+    pair RoaringxDense = 1991
+    pair RoaringxRoaring = 3487
+    pair RoaringxRoaring (same root) = 10488
+    pair RoaringxSorted = 3665
+    pair SortedxChunked = 3480
+    pair SortedxDense = 2141
+    pair SortedxRoaring = 3227
+    pair SortedxSorted = 4875
+    pair SortedxSorted (same root) = 12005
+    policy op expected error Dense = 92645
+    policy op expected error Roaring = 9853
+    policy op ok Auto -> Chunked = 107843
+    policy op ok Auto -> Dense = 49772
+    policy op ok Auto -> Roaring = 78033
+    policy op ok Auto -> Sorted = 221814
+    policy op ok Chunked -> Chunked = 462586
+    policy op ok Dense -> Dense = 366566
+    policy op ok Roaring -> Roaring = 444629
+    policy op ok Sorted -> Sorted = 472763
+    sizes <65536 x <65536 = 9262
+    sizes <65536 x <=4096 = 1153
+    sizes <65536 x <=64 = 1880
+    sizes <65536 x >=65536 = 709
+    sizes <65536 x empty = 190
+    sizes <=4096 x <65536 = 846
+    sizes <=4096 x <=4096 = 15417
+    sizes <=4096 x <=64 = 3314
+    sizes <=4096 x >=65536 = 241
+    sizes <=4096 x empty = 514
+    sizes <=64 x <65536 = 1108
+    sizes <=64 x <=4096 = 1184
+    sizes <=64 x <=64 = 42089
+    sizes <=64 x >=65536 = 469
+    sizes <=64 x empty = 2221
+    sizes >=65536 x <65536 = 800
+    sizes >=65536 x <=4096 = 319
+    sizes >=65536 x <=64 = 403
+    sizes >=65536 x >=65536 = 1500
+    sizes >=65536 x empty = 27
+    sizes empty x <65536 = 42
+    sizes empty x <=4096 = 223
+    sizes empty x <=64 = 564
+    sizes empty x >=65536 = 10
+    sizes empty x empty = 2150
+    strict nonempty subset pair = 4067
+    walk ChunkedxChunked -> Chunked = 653
+    walk ChunkedxChunked -> Dense = 49
+    walk ChunkedxChunked -> Roaring = 90
+    walk ChunkedxChunked -> Sorted = 162
+    walk ChunkedxDense -> Chunked = 132
+    walk ChunkedxDense -> Dense = 42
+    walk ChunkedxDense -> Roaring = 17
+    walk ChunkedxDense -> Sorted = 25
+    walk ChunkedxRoaring -> Chunked = 264
+    walk ChunkedxRoaring -> Dense = 26
+    walk ChunkedxRoaring -> Roaring = 120
+    walk ChunkedxRoaring -> Sorted = 56
+    walk ChunkedxSorted -> Chunked = 325
+    walk ChunkedxSorted -> Dense = 25
+    walk ChunkedxSorted -> Roaring = 77
+    walk ChunkedxSorted -> Sorted = 130
+    walk DensexChunked -> Chunked = 101
+    walk DensexChunked -> Dense = 41
+    walk DensexChunked -> Roaring = 27
+    walk DensexChunked -> Sorted = 20
+    walk DensexDense -> Chunked = 24
+    walk DensexDense -> Dense = 61
+    walk DensexDense -> Roaring = 19
+    walk DensexDense -> Sorted = 53
+    walk DensexRoaring -> Chunked = 27
+    walk DensexRoaring -> Dense = 42
+    walk DensexRoaring -> Roaring = 65
+    walk DensexRoaring -> Sorted = 46
+    walk DensexSorted -> Chunked = 20
+    walk DensexSorted -> Dense = 40
+    walk DensexSorted -> Roaring = 39
+    walk DensexSorted -> Sorted = 74
+    walk RoaringxChunked -> Chunked = 194
+    walk RoaringxChunked -> Dense = 13
+    walk RoaringxChunked -> Roaring = 141
+    walk RoaringxChunked -> Sorted = 71
+    walk RoaringxDense -> Chunked = 20
+    walk RoaringxDense -> Dense = 29
+    walk RoaringxDense -> Roaring = 68
+    walk RoaringxDense -> Sorted = 44
+    walk RoaringxRoaring -> Chunked = 62
+    walk RoaringxRoaring -> Dense = 38
+    walk RoaringxRoaring -> Roaring = 352
+    walk RoaringxRoaring -> Sorted = 177
+    walk RoaringxSorted -> Chunked = 62
+    walk RoaringxSorted -> Dense = 26
+    walk RoaringxSorted -> Roaring = 227
+    walk RoaringxSorted -> Sorted = 173
+    walk SortedxChunked -> Chunked = 287
+    walk SortedxChunked -> Dense = 37
+    walk SortedxChunked -> Roaring = 47
+    walk SortedxChunked -> Sorted = 177
+    walk SortedxDense -> Chunked = 19
+    walk SortedxDense -> Dense = 48
+    walk SortedxDense -> Roaring = 39
+    walk SortedxDense -> Sorted = 106
+    walk SortedxRoaring -> Chunked = 56
+    walk SortedxRoaring -> Dense = 33
+    walk SortedxRoaring -> Roaring = 199
+    walk SortedxRoaring -> Sorted = 216
+    walk SortedxSorted -> Chunked = 77
+    walk SortedxSorted -> Dense = 63
+    walk SortedxSorted -> Roaring = 130
+    walk SortedxSorted -> Sorted = 560
+    walk result size <65536 = 1038
+    walk result size <=4096 = 1720
+    walk result size <=64 = 2109
+    walk result size >=65536 = 275
+    walk result size empty = 1541
+u64 seed 1 DONE: 300 cases, 86635 pairs, 2659727 ops, 660905 heavy checks, 0 share misses, 138.02178457s
+test zz_pairs_u64 ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1336.37s
+
+exit 0
