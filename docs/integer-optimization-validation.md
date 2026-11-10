@@ -288,6 +288,20 @@ except where noted.
 | The borsh adapter orders keys with `>=` where the family uses `Ord::cmp`. | Reported only. It matters for key types whose `PartialOrd` and `Ord` disagree. |
 | `Arbitrary::size_hint` bounds are loose. | Reported only. |
 
+From the later review of the map, set, and sequence modules. The figures come
+from a separate probe executable on the same host, with seven repetitions and
+the minimum reported. They were not taken with the comparison harness.
+
+| Finding | Reason it is not changed here |
+| --- | --- |
+| `FrozenOrderedMap::get` with `String` keys measured 1.1x to 1.7x slower than `BTreeMap::get`, for hits and misses, at 1,000 and 100,000 entries and three key shapes. A plain `binary_search_by` over the same vector measured the same. With `u64` keys the frozen map measured 0.43x to 0.79x of the tree's time. | The cost belongs to binary search over entries whose keys need a pointer dereference. A different layout is a representation decision, and `as_slice` exposes the current one. No benchmark in the repository covers this lookup. |
+| `MutableOrderedMap::try_from_unique` inserts entry by entry with two descents each. It measured 6.1x (random) and 14.3x (sorted) slower than `FrozenOrderedMap::try_from_unique` followed by `thaw`, at 200,000 entries. | The two builders report different duplicates: the first in input order, and the second occurrence of the smallest duplicated key. A bulk build must keep the documented one. |
+| `extend` into an empty `MutableOrderedMap`, `MutableOrderedSet`, or `AdaptiveOrderedMap` measured 3.3x to 8.8x slower than `from_iter` with the same input. `BTreeMap::extend` has the same cost. | An empty receiver could take the bulk path. It is an addition, not a correction. |
+| `AdaptiveFrozenHashMap::from_iter` builds a hash table before it selects the linear form. Up to 8 entries it measured 1.3x to 3.1x slower than building through `AdaptiveHashMap`. Above the threshold the order reverses: 2.1x at 9 entries. | A fix needs a builder that stages up to the threshold before it chooses. |
+| `nth_back` is not forwarded by the borrowed iterators of `FrozenOrderedMap`. `iter().rev().nth(100_000)` measured 47 us; `nth`, `last`, and `count` on the same iterator measured 1 ns to 3 ns. | Small. `SortedIter`, `Keys`, `Values`, and the `double` flag of `wrap_iter!` need the override. |
+| `InlineVec::truncate` and `clear` drop inline elements from the back, and spilled elements from the front, as `Vec` does. | The order is observable, but a forward drop needs new `unsafe` in the inline buffer and Miri. |
+| The strict hash builders hash each key twice: a membership test, then the insertion. | The standard collections return no rejected key from an occupied entry. The strict builder measured 0.92x of the lenient one's time, so the cost is small. |
+
 The Hash stream costs about 2.5 times a plain `write_u64` loop for a large
 scattered set with SipHash: 518 us against 204 us per 100,000 members in a
 separate probe. The one-byte tag before the members leaves each following
