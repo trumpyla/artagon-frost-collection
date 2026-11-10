@@ -10,3 +10,5 @@
 !verification/int-set/revision2/**/*.log
 !verification/revision2-integration/**/*.log
 !verification/attachment-integration-2026-11-09/*.log
+/verification/integer-optimizations/ab-harness/baseline/
+/verification/integer-optimizations/ab-harness/target/
