@@ -16,6 +16,9 @@ stream changes. Measurements and their limits are in
   bounds span more partitions than the limit. The planner survey stops once the
   Roaring score can no longer beat the selected candidate; the selected backend
   is unchanged.
+- Detect runs in sorted Roaring construction with one comparison per 32 codes
+  instead of one per code. Runs of 63 or more codes are always inserted as
+  ranges; the built value is identical for every input.
 
 ## Unreleased — research corpus and rationale
 

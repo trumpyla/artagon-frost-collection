@@ -5,6 +5,14 @@ use core::{fmt, hash::Hash, ops::ControlFlow};
 
 use super::Operation;
 
+/// Probe stride for run detection when a Roaring value is built from sorted
+/// codes: runs of at least `2 * RANGE_RUN - 1` consecutive codes are always
+/// inserted as one range, and shorter runs down to `RANGE_RUN` are when the
+/// probe lands inside them. The value is a structural allowance (two endpoints
+/// against `RANGE_RUN` pushes), not a measured machine crossover; see
+/// `docs/integer-benchmarks.md` for the workloads it was checked against.
+const RANGE_RUN: usize = 32;
+
 /// The only implementations are unsigned primitive widths. Codec laws never
 /// justify unchecked indexing, layout casts, or construction of Rust values.
 pub(crate) trait Word: Copy + Ord + Hash + fmt::Debug + 'static {
@@ -53,29 +61,43 @@ macro_rules! word {
                 Self::try_from(value).ok()
             }
             fn roaring_from_sorted(words: &[Self]) -> Self::Roaring {
-                // Keep sparse stretches in bulk append and insert long consecutive
-                // runs as ranges, avoiding one native insertion per run member.
+                // Sparse stretches are appended in bulk; long runs are inserted
+                // as ranges, so a run costs its endpoints rather than one push
+                // per member before `optimize` rediscovers the run container.
+                // Runs are detected with one comparison per `RANGE_RUN` codes:
+                // strictly ascending codes `RANGE_RUN - 1` apart are consecutive
+                // exactly when their difference is `RANGE_RUN - 1`. A run shorter
+                // than `2 * RANGE_RUN - 1` may be missed depending on alignment;
+                // that only changes how the identical value is built, never
+                // which value, and keeps run-free inputs at bulk-append speed.
                 let mut result = <$backend>::new();
                 let mut segment = 0;
-                let mut run = 0;
-                for index in 1..=words.len() {
-                    let continues = index < words.len()
-                        && words[index - 1].checked_add(1) == Some(words[index]);
-                    if continues {
+                let mut probe = 0;
+                while probe + RANGE_RUN <= words.len() {
+                    let last = probe + RANGE_RUN - 1;
+                    if (words[last] - words[probe]).to_u64() != RANGE_RUN as u64 - 1 {
+                        probe += RANGE_RUN;
                         continue;
                     }
-                    if index - run >= 32 {
-                        result
-                            .append(words[segment..run].iter().copied())
-                            .expect("internal codes are ascending");
-                        result.insert_range(words[run]..=words[index - 1]);
-                        segment = index;
+                    let mut start = probe;
+                    while start > segment && words[start - 1] + 1 == words[start] {
+                        start -= 1;
                     }
-                    run = index;
+                    let mut end = last;
+                    while end + 1 < words.len() && words[end].checked_add(1) == Some(words[end + 1])
+                    {
+                        end += 1;
+                    }
+                    result
+                        .append(words[segment..start].iter().copied())
+                        .expect("internal codes are strictly ascending and unique");
+                    result.insert_range(words[start]..=words[end]);
+                    segment = end + 1;
+                    probe = segment;
                 }
                 result
                     .append(words[segment..].iter().copied())
-                    .expect("internal codes are ascending");
+                    .expect("internal codes are strictly ascending and unique");
                 result.optimize();
                 result
             }
@@ -358,5 +380,67 @@ mod tests {
         );
         assert_eq!(result.bitmaps().count(), 2);
         assert_eq!(dense_bitmaps::<2>(base, &[0; 5]), []);
+    }
+
+    /// The run-aware builder must agree with the straightforward sorted import
+    /// for runs shorter and longer than the range threshold, runs touching
+    /// container and partition boundaries, and runs ending at the width maximum.
+    #[test]
+    fn sorted_roaring_builder_matches_sorted_import_across_run_shapes() {
+        let run = u32::try_from(RANGE_RUN).expect("small constant");
+        let mut codes64: Vec<u64> = Vec::new();
+        codes64.extend(0..u64::from(run) - 1); // one short of a range
+        codes64.extend(1_000..1_000 + u64::from(run)); // exactly a range
+        codes64.extend(5_003..5_003 + 2 * u64::from(run) - 1); // always detected, unaligned
+        codes64.extend((9_000..12_000).step_by(2)); // long run-free stretch between runs
+        codes64.extend(65_500..65_700); // crosses a container boundary
+        codes64.extend((1 << 32) - 40..(1 << 32) + 40); // crosses a partition
+        codes64.extend([1 << 40, (1 << 40) + 2, (1 << 40) + 4]);
+        codes64.extend(u64::MAX - 100..=u64::MAX); // inclusive run at the top
+        let built = <u64 as Word>::roaring_from_sorted(&codes64);
+        let imported = roaring::RoaringTreemap::from_sorted_iter(codes64.iter().copied()).unwrap();
+        assert_eq!(built, imported);
+        assert_eq!(built.len(), codes64.len() as u64);
+
+        let codes32: Vec<u32> = [0_u32, 1, 2]
+            .into_iter()
+            .chain(100..100 + run)
+            .chain(u32::MAX - run..=u32::MAX)
+            .collect();
+        let built = <u32 as Word>::roaring_from_sorted(&codes32);
+        let imported = roaring::RoaringBitmap::from_sorted_iter(codes32.iter().copied()).unwrap();
+        assert_eq!(built, imported);
+        assert_eq!(
+            <u32 as Word>::roaring_from_sorted(&[]),
+            roaring::RoaringBitmap::new()
+        );
+        assert_eq!(
+            <u32 as Word>::roaring_from_sorted(&[7])
+                .iter()
+                .collect::<Vec<_>>(),
+            [7]
+        );
+    }
+
+    /// Every run length around the probe stride at every alignment relative to
+    /// the probe grid, between sparse neighbours. A run the probe misses is
+    /// appended member by member; the built value must be the same.
+    #[test]
+    fn sorted_roaring_builder_is_independent_of_run_alignment() {
+        for length in [1_u32, 2, 31, 32, 33, 62, 63, 64, 65, 100] {
+            for lead in 0..2 * u32::try_from(RANGE_RUN).expect("small constant") {
+                // `lead` sparse codes, the run, then a sparse tail.
+                let mut codes: Vec<u32> = (0..lead).map(|index| index * 3).collect();
+                let start = lead * 3 + 10;
+                codes.extend(start..start + length);
+                codes.extend((0..40).map(|index| start + length + 5 + index * 2));
+                let built = <u32 as Word>::roaring_from_sorted(&codes);
+                assert!(
+                    built.iter().eq(codes.iter().copied()),
+                    "run of {length} after {lead} sparse codes"
+                );
+                assert_eq!(built.len(), codes.len() as u64);
+            }
+        }
     }
 }

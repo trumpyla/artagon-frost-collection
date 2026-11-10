@@ -7526,6 +7526,48 @@
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-035",
+      "file": "src/integer/storage/word.rs",
+      "selector": "test:integer::storage::word::tests::sorted_roaring_builder_is_independent_of_run_alignment",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::word::tests::sorted roaring builder is independent of run alignment",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-036",
+      "file": "src/integer/storage/word.rs",
+      "selector": "test:integer::storage::word::tests::sorted_roaring_builder_matches_sorted_import_across_run_shapes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer::storage::word::tests::sorted roaring builder matches sorted import across run shapes",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
+      "cost": "unreviewed"
     }
   ]
 }
