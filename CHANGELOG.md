@@ -21,6 +21,9 @@ stream changes. Measurements and their limits are in
   the same index. Sort unsorted input through a temporary bitmap when its span
   is no larger than the staged codes. Error variants and indices are unchanged
   on every path.
+- Combine Chunked Array containers with a direct merge into a reserved buffer,
+  or by probing when one array is much smaller, instead of collecting from the
+  ordered family's lazy cursors.
 - Cache the Roaring partition count, container count, and memory score with the
   immutable native value. Policy eligibility checks on identity, empty, and
   equal-result shortcuts, result planning, and the copy heuristic no longer
