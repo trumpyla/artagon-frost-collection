@@ -7633,27 +7633,6 @@
       "cost": "unreviewed"
     },
     {
-      "id": "T-LIB-038",
-      "file": "src/integer/chunked.rs",
-      "selector": "test:integer::chunked::tests::array_kernel_matches_member_algebra_for_balanced_and_skewed_arrays",
-      "status": "unreviewed",
-      "tags": [
-        "unreviewed",
-        "integration"
-      ],
-      "features": "inherit",
-      "area": "integer",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: integer::chunked::tests::array kernel matches member algebra for balanced and skewed arrays",
-      "seed": "unreviewed",
-      "target": "src/lib.rs",
-      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (feature = \"int-set\"); cfg (test)",
-      "cost": "unreviewed"
-    },
-    {
       "id": "T-ORDERED_SET_OPS-009",
       "file": "tests/ordered_set_ops.rs",
       "selector": "test:folds_match_stepwise_traversal_for_merge_and_seek_kernels",

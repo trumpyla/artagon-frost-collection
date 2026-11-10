@@ -158,7 +158,23 @@ impl Container {
             (Full, x, Operation::Difference | Operation::SymmetricDifference)
             | (x, Full, Operation::SymmetricDifference) => x.complement(),
             (_, Full, Operation::Difference) => None,
-            (Array(a), Array(b), op) => Self::from_lows(array_binary(a, b, op)),
+            (Array(a), Array(b), op) => {
+                let lows: Vec<u16> = match op {
+                    Operation::Union => set_ops::SetUnion::new(&a[..], &b[..]).copied().collect(),
+                    Operation::Intersection => set_ops::SetIntersection::new(&a[..], &b[..])
+                        .copied()
+                        .collect(),
+                    Operation::Difference => set_ops::SetDifference::new(&a[..], &b[..])
+                        .copied()
+                        .collect(),
+                    Operation::SymmetricDifference => {
+                        set_ops::SetSymmetricDifference::new(&a[..], &b[..])
+                            .copied()
+                            .collect()
+                    }
+                };
+                Self::from_lows(lows)
+            }
             (Array(a), Bitmap(words, _), Operation::Intersection)
             | (Bitmap(words, _), Array(a), Operation::Intersection) => {
                 let lows: Vec<u16> = a
@@ -312,78 +328,6 @@ impl<W: Word> PartialEq for Chunked<W> {
                 .zip(other.chunks.iter())
                 .all(|(a, b)| Arc::ptr_eq(a, b) || **a == **b)
     }
-}
-
-/// Combine two sorted low arrays. Arrays hold at most `ARRAY_MAX` entries, so
-/// a direct merge with a reserved output beats the generic ordered-set cursors;
-/// a much smaller operand probes the larger one by binary search instead.
-fn array_binary(left: &[u16], right: &[u16], op: Operation) -> Vec<u16> {
-    fn probing_pays(small: usize, large: usize) -> bool {
-        // `small` searches of `bit_width(large)` comparisons against a merge
-        // that touches every entry of both arrays.
-        small * (large.bit_width() as usize + 1) < small + large
-    }
-    match op {
-        Operation::Intersection if probing_pays(left.len(), right.len()) => {
-            return left
-                .iter()
-                .copied()
-                .filter(|low| right.binary_search(low).is_ok())
-                .collect();
-        }
-        Operation::Intersection if probing_pays(right.len(), left.len()) => {
-            return right
-                .iter()
-                .copied()
-                .filter(|low| left.binary_search(low).is_ok())
-                .collect();
-        }
-        Operation::Difference if probing_pays(left.len(), right.len()) => {
-            return left
-                .iter()
-                .copied()
-                .filter(|low| right.binary_search(low).is_err())
-                .collect();
-        }
-        _ => {}
-    }
-    let mut out = Vec::with_capacity(match op {
-        Operation::Union | Operation::SymmetricDifference => left.len() + right.len(),
-        Operation::Intersection => left.len().min(right.len()),
-        Operation::Difference => left.len(),
-    });
-    let (mut i, mut j) = (0, 0);
-    while i < left.len() && j < right.len() {
-        let (a, b) = (left[i], right[j]);
-        match a.cmp(&b) {
-            core::cmp::Ordering::Less => {
-                if !matches!(op, Operation::Intersection) {
-                    out.push(a);
-                }
-                i += 1;
-            }
-            core::cmp::Ordering::Greater => {
-                if matches!(op, Operation::Union | Operation::SymmetricDifference) {
-                    out.push(b);
-                }
-                j += 1;
-            }
-            core::cmp::Ordering::Equal => {
-                if matches!(op, Operation::Union | Operation::Intersection) {
-                    out.push(a);
-                }
-                i += 1;
-                j += 1;
-            }
-        }
-    }
-    if !matches!(op, Operation::Intersection) {
-        out.extend_from_slice(&left[i..]);
-    }
-    if matches!(op, Operation::Union | Operation::SymmetricDifference) {
-        out.extend_from_slice(&right[j..]);
-    }
-    out
 }
 
 struct Builder {
@@ -1088,53 +1032,5 @@ mod tests {
         });
         assert_eq!(stopped, ControlFlow::Break((0, 65_535)));
         assert_eq!(calls, 1);
-    }
-
-    /// The array kernel against the standard library: balanced merges, both
-    /// probing directions (a much smaller operand on either side), disjoint,
-    /// nested, identical, and boundary lows.
-    #[test]
-    fn array_kernel_matches_member_algebra_for_balanced_and_skewed_arrays() {
-        use alloc::collections::BTreeSet;
-        use alloc::vec;
-        let shapes: [Vec<u16>; 8] = [
-            vec![0],
-            vec![u16::MAX],
-            vec![0, 9, u16::MAX],
-            (0..40).map(|low| low * 1_500).collect(),
-            (0..40).map(|low| low * 1_500 + (low % 2)).collect(),
-            (0..4_096).collect(),
-            (0..4_096).map(|low| low * 16).collect(),
-            (60_000..60_300).collect(),
-        ];
-        for left in &shapes {
-            for right in &shapes {
-                let (ls, rs): (BTreeSet<u16>, BTreeSet<u16>) = (
-                    left.iter().copied().collect(),
-                    right.iter().copied().collect(),
-                );
-                for (op, expected) in [
-                    (Operation::Union, &ls | &rs),
-                    (Operation::Intersection, &ls & &rs),
-                    (Operation::Difference, &ls - &rs),
-                    (Operation::SymmetricDifference, &ls ^ &rs),
-                ] {
-                    let expected: Vec<u16> = expected.into_iter().collect();
-                    assert_eq!(
-                        array_binary(left, right, op),
-                        expected,
-                        "{op:?} of {} and {} lows",
-                        left.len(),
-                        right.len()
-                    );
-                    // The container result is canonical for its cardinality.
-                    let (a, b) = (
-                        Container::from_lows(left.clone()).unwrap(),
-                        Container::from_lows(right.clone()).unwrap(),
-                    );
-                    assert_eq!(a.binary(&b, op), Container::from_lows(expected));
-                }
-            }
-        }
     }
 }
