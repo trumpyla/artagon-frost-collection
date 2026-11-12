@@ -99,14 +99,6 @@ Runtime dictionaries must not be hidden inside the implemented IntKey codec,
 whose mapping is stable across calls, collections and time. Use raw typed codes
 plus a source-level dictionary binding/translation adapter for that profile.
 
-Runtime dictionaries must not be hidden inside the implemented IntKey codec,
-whose mapping is stable across calls, collections and time. Use raw typed codes
-plus a source-level dictionary binding/translation adapter for that profile.
-
-Runtime dictionaries must not be hidden inside the implemented IntKey codec,
-whose mapping is stable across calls, collections and time. Use raw typed codes
-plus a source-level dictionary binding/translation adapter for that profile.
-
 Independently assigned dictionary IDs require translation even if both tables
 use u32. A lossless semantic reindexing between dictionaries may still cost
 lookups, sorting, allocation, and collision checks; it is not a free cast.

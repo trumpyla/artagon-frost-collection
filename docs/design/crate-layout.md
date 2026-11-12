@@ -72,7 +72,10 @@ compatibility decision.
    the owning package's feature of the same name. Enabling a feature still never
    changes a type's representation, hasher, bounds, or freeze/thaw partner.
 5. **Public paths are API.** Every current `frost::` path, prelude item, and
-   `compile_fail` doctest path must resolve through the facade.
+   `compile_fail` doctest path must resolve through the facade. *Relaxed on
+   2026-11-12:* the [API compatibility decision](decisions.md#api-compatibility-is-not-a-constraint-2026-11-12)
+   permits paths to change. Constraint 1 still describes Rust's rule, but
+   existing set algebra may now become a trait or expression layer.
 6. **Unsafe stays confined.** `src/adaptive/seq/buf.rs` moves as a unit with its
    safety comments, Miri lanes, and the Kani harness that includes it by path.
 7. **Path-included harnesses keep linking production code.** The publication

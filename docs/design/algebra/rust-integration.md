@@ -43,8 +43,11 @@ A domain-bound computed source additionally needs immutable semantic and
 representation bindings plus a compatible evaluation snapshot handle.
 
 Do not retrofit Set<T,D>, Map<K,V,DK,DV> or a generic FrozenValue into current
-families. Such changes would alter type identities, feature matrices, impls and
-borrowed-query inference. A new view can wrap a source and a checked binding
+families by default. API compatibility no longer forbids it (see the
+[decision of 2026-11-12](../decisions.md#api-compatibility-is-not-a-constraint-2026-11-12)),
+but the design costs remain: every caller pays the extra bounds, feature matrix,
+impls and borrowed-query inference, including callers with no runtime-scoped
+domain. A new view can wrap a source and a checked binding
 without changing the source's published type. A compatibility witness checks
 that its source handles still refer to the admitted versions; it is not a free
 pass for a mutable registry to change meaning after construction.
@@ -98,9 +101,11 @@ qualifying local type in the impl is needed; a local associated output type is
 not itself such a qualifying trait/self type. Existing foreign backend impls,
 freeze plans and private transfers are reasons not to over-split core.
 
-Package names and boundaries remain design inputs to frost-wlt.1; this patch
-creates no crates and does not approve earlier 13-package catalogs. Plural
-family-package naming remains a recommendation until that decision is made.
+Package names and boundaries remain design inputs to frost-wlt.1; this document
+creates no crates and approves no earlier package catalog. No naming rule is
+adopted: [design decisions](../decisions.md#research-corpus-and-rationale-2026-11-09)
+record plural and singular spellings as alternatives, and the research synthesis
+proposes singular names.
 No frost-domains microcrate is needed before a concrete consumer justifies it.
 
 ## Implementation sequence
@@ -114,5 +119,4 @@ No frost-domains microcrate is needed before a concrete consumer justifies it.
    cleanup, and cold/warm I/O before choosing materialization thresholds.
 
 Current make check/feature/Miri/model gates are not replaced by this research
-model. The CI issues observed earlier in the session are separate work, not
-silently fixed by a documentation patch.
+model.

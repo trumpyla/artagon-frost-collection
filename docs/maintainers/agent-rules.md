@@ -24,9 +24,24 @@ Specify domains and observations before laws; distinguish source-backed behavior
 selected names, proposed contracts, and historical research. Start formal work at
 `docs/design/algebra/README.md`; use the existing research templates.
 
-Preserve current APIs and selected names. No production `ValueDomain` parameter
-or placeholder crate is authorized by these documents. Workspace extraction is
-tracked under `frost-wlt`, following `frost-wou` and `CRATES.md`.
+Public API compatibility is not a constraint (maintainer decision of 2026-11-12,
+recorded in `docs/design/decisions.md`): names, paths, signatures, bounds and
+type parameters may change in a refactor. That decision relaxes no semantic or
+safety contract, and approves no specific redesign. A breaking change needs its
+design record, changelog entry, rustdoc and catalog updates in the same change.
+No placeholder crate is authorized. Workspace extraction is tracked under
+`frost-wlt`, following `frost-wou` and `CRATES.md`.
+
+These rules hold for every change; the implementation contracts state them in
+full:
+
+- One library package until the `frost-wlt` migration lands.
+- Features are additive: enabling one never changes an existing type's
+  representation, hasher, bounds or freeze/thaw partner.
+- No new `unsafe` block or manual `Send`/`Sync` implementation without a written
+  invariant and an ownership review. Unsafe stays in `src/adaptive/seq/buf.rs`.
+- Run `make check` before review. A new test or benchmark needs its catalog or
+  inventory record in the same change. Keep existing catalog IDs.
 
 Use the root Makefile and pinned toolchain. Run required gates for the changed
 scope; report unavailable or failed checks honestly. Research mathematics is not

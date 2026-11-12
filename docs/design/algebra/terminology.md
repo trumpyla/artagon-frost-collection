@@ -33,7 +33,7 @@ and law IDs. It is metadata, not generated Rust declarations.
 | Frozen wrapper | Frozen<B> | Implemented exact-backend type; no universal FrozenValue |
 
 Lists are not a promise of linked-list storage. Do not invent FrozenList.
-Older MutableSeqMultiMap/FrozenSeqMultiMap spellings in session patches are not
+Older MutableSeqMultiMap/FrozenSeqMultiMap spellings in earlier unmerged patches are not
 substituted for the current main decision. Whether selected multimap names
 receive separate frozen partners is a future API design decision, not resolved
 by inserting prefixes in this corpus.

@@ -23,9 +23,10 @@ Parent: docs/design/algebra/README.md and docs/research/formal-models/README.md
 Question: choose one precisely stated child question below.
 
 Inspect AGENTS.md, CRATES.md, relevant code, and the naming dispositions first.
-Build on the formal-model/domain chapters. Preserve existing APIs and selected
-names; no mandatory domain generic parameter or new package without a separate
-accepted decision. Do not implement code unless the task explicitly asks for it.
+Build on the formal-model/domain chapters. Public API compatibility is not
+required (docs/design/decisions.md, 2026-11-12), but semantic and safety
+contracts are, and no new package is created without a separate accepted
+decision. Argue any new domain parameter on its design merits. Do not implement code unless the task explicitly asks for it.
 
 For the selected question, define carrier, validity, equivalence, representation
 invariant, input/output domains, preconditions and closure/partiality. Separate
@@ -48,14 +49,20 @@ performance or report recovery. Preserve raw inputs and unrelated work.
 
 ## Seeded child questions
 
-| ID | Question | Acceptance criterion |
-| --- | --- | --- |
-| Q-VDOM-1 | Minimal source-binding API for semantic domain, codec/dictionary, revision and universe | Compile nonstatic borrowed examples; no runtime dictionary hidden in IntKey; context mismatch and empty-source tests |
-| Q-MAPLIFT-1 | Resolver, alignment and error/recovery signatures for generic map views | Absence and present-None distinguished; lifted laws and deletion counterexample; real callback/drop tests |
-| Q-RELPROV-1 | Group/pair representatives and derivation witnesses across multimap composition | Preserve selected SeqMultiMap name; witness-count versus Boolean semantics and grouped-reference lifetimes explicit |
-| Q-PARTIALBI-1 | Checked BiMap operations with streaming and transactional returned-error policy | Both endpoint conflicts, intermediate definedness, minimal checked-XOR counterexample and actual ownership tests |
-| Q-CSETKNOW-1 | Fallible cursor protocol with certified negative evidence and budgets | Separate Pending, End, Incomplete and Failed; interval/epoch model; revisioned pagination and fault injection |
-| Q-OPTVALID-1 | Law certificates and provenance-preserving plan rewrites | No unsafe reliance on semantic traits; observer-specific rules, property tests and cost evidence |
+| ID | Refines corpus question | Question | Acceptance criterion |
+| --- | --- | --- | --- |
+| Q-VDOM-1 | `Q-CSET-1`, `Q-AUTHZ-1` | Minimal source-binding API for semantic domain, codec/dictionary, revision and universe | Compile nonstatic borrowed examples; no runtime dictionary hidden in IntKey; context mismatch and empty-source tests |
+| Q-MAPLIFT-1 | `Q-MAP-1` | Resolver, alignment and error/recovery signatures for generic map views | Absence and present-None distinguished; lifted laws and deletion counterexample; real callback/drop tests |
+| Q-RELPROV-1 | `Q-MM-1` | Group/pair representatives and derivation witnesses across multimap composition | Preserve selected SeqMultiMap name; witness-count versus Boolean semantics and grouped-reference lifetimes explicit |
+| Q-PARTIALBI-1 | `Q-BIMAP-1` | Checked BiMap operations with streaming and transactional returned-error policy | Both endpoint conflicts, intermediate definedness, minimal checked-XOR counterexample and actual ownership tests |
+| Q-CSETKNOW-1 | `Q-CSET-1` | Fallible cursor protocol with certified negative evidence and budgets | Separate Pending, End, Incomplete and Failed; interval/epoch model; revisioned pagination and fault injection |
+| Q-OPTVALID-1 | `Q-ALG-1` | Law certificates and provenance-preserving plan rewrites | No unsafe reliance on semantic traits; observer-specific rules, property tests and cost evidence |
+
+These IDs are local to this supplement. They are not registered in the corpus
+[manifest](../manifest.json), whose questions in the
+[research synthesis](../synthesis/foundations-and-engine-roadmap.md#8-prioritized-research-questions)
+remain the dependency-ordered list. Each seeded question narrows the corpus
+question named beside it and does not replace it.
 
 A child report must return its findings to the parent source map and law ledger.
 A report is not acceptance, an accepted contract is not implementation, and a

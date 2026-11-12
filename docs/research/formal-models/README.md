@@ -37,6 +37,16 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 
 ## Inputs and completeness
 
+"Session" in this supplement means the authoring conversation that produced the
+delivery `frost-value-domain-algebras.zip` (1,296,927 bytes, SHA-256
+`a4e4f7c8894f578932d3acc8de39077c59cdd53a412b3abde386c7137ee85559`). That
+archive is **not retained in this repository**. Each `delivery_copy` path in the
+[input inventory](input-inventory.json) names a member of that archive, not a
+repository file. When the inventory was checked against this repository on
+2026-11-12, 49 of its 199 documents were byte-identical to a tracked file at
+`27b1439`; the other 150 (older revisions and unmerged patches) can be verified
+only against the archive.
+
 All mounted original reports, handoff instructions, prior reconciled archives,
 formal patches, and relevant repository snapshots were inventoried. Identical
 bytes are deduplicated in the inventory. Source-control object databases and
@@ -77,8 +87,13 @@ or solver proof is claimed.
 ## Handoff to implementation
 
 Accept the formal contracts explicitly, then implement one small domain/view
-with a reference implementation and real Rust obligations under CRATES. Keep
-source-compatible existing methods and selected names. Treat runtime dictionary
+with a reference implementation and real Rust obligations under CRATES. Existing
+methods need not stay source-compatible (see the
+[decision of 2026-11-12](../../design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12));
+a breaking change records its reason. Treat runtime dictionary
 bindings and fallible durable cursors as separate adapter work. Measure terminal-
-specific workloads only after a correct semantic baseline exists. The current
-CI failures observed earlier in this session are separate remediation work.
+specific workloads only after a correct semantic baseline exists. On main at
+`27b1439` the push workflow passes and the scheduled "Tiered verification and
+coverage" workflow fails in its `nightly-deep-verification` and
+`nightly-mutation` jobs (runs of 2026-11-10 to 2026-11-12). That failure
+predates this supplement and is separate remediation work.

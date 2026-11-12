@@ -89,8 +89,8 @@ variant, but representation diagnostics remain observable where exposed.
 Auto construction and Auto output planning differ: the latter may reuse an
 eligible empty Chunked operand. Do not strengthen empty-set algebra into an
 unsupported Sorted-normalization requirement. Forced policies must still be
-honored. The formal model does not change production behavior to satisfy an
-outdated physical-representation oracle.
+honored. The formal model does not change production behavior to make every empty
+result Sorted.
 
 SnapshotStore has sealed payload admission. An arbitrary aggregate, query
 expression or new FrozenBag is not automatically eligible. Future new payload

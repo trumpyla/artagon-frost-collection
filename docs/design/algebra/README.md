@@ -8,12 +8,20 @@ implementation: unchanged
 
 # Value domains and collection algebra
 
-This is the formal-first refinement of the session's research and prior review
+This is a formal-first refinement of the research corpus and prior review
 artifacts, reconciled with main at the revision in this document's metadata.
-It specifies future contracts; it does not add production types or approve a
-workspace migration. Existing Rust APIs and their documented native-wrapper
-semantics are preserved. [CRATES.md](../../../CRATES.md) remains the standard
-for layout, dependency isolation, API obligations, tests, and benchmarks.
+The [research supplement](../../research/formal-models/README.md) lists its
+inputs. It specifies future contracts; it does not add production types or
+approve a workspace migration.
+
+These chapters were written under an API-compatibility constraint that no longer
+applies: the [decision of 2026-11-12](../decisions.md#api-compatibility-is-not-a-constraint-2026-11-12)
+permits names, signatures, bounds and type parameters to change. Statements
+here that an existing API is kept describe the text's baseline, not a
+requirement on a refactor. Semantic contracts, including documented
+native-wrapper semantics, are unaffected. [CRATES.md](../../../CRATES.md)
+remains the standard for layout, dependency isolation, API obligations, tests,
+and benchmarks.
 
 ## Read in this order
 
@@ -60,7 +68,7 @@ history and selected names; [general set algebra](../set-algebra.md) retains its
 more detailed expression proposal. Conflicts are recorded, not silently solved
 by renaming an implemented type.
 
-The session's earlier proposed `MutableSeqMultiMap` spelling is not imposed on
+An earlier proposed `MutableSeqMultiMap` spelling is not imposed on
 main: main already selects `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`.
 Lifecycle partners beyond those settled names remain design questions. Research
 originals, archived patches, and historical logs are evidence, not instructions.

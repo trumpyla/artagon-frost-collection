@@ -6,11 +6,20 @@ updated: 2026-11-12
 implementation: unchanged
 ---
 
-# Implementation contracts retained from current main
+# Implementation contracts
 
-This guide retains the full implementation, tooling, and verification rules
-from `AGENTS.md` at `27b1439`. Repository-root paths in code spans remain
-root-relative. [CRATES.md](../../CRATES.md) stays authoritative for its scope.
+This is the canonical location of the implementation, tooling, and verification
+rules. The text below the next paragraph was moved unchanged from the regular
+`AGENTS.md` at `27b1439`, which is now a symlink to the short
+[entry point](agent-rules.md). Repository-root paths in code spans remain
+root-relative.
+
+These are semantic, safety, and process contracts. They do not freeze the public
+API shape: by the maintainer decision of 2026-11-12 in
+[design decisions](../design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12),
+names, paths, signatures, bounds, and type parameters may change. Changing a
+contract listed here needs its own recorded decision.
+[CRATES.md](../../CRATES.md) stays authoritative for its scope.
 
 Frost is a Rust library, not an application. Make changes that preserve its
 semantic contracts and make their costs observable. Start with

@@ -326,3 +326,19 @@ measurements, their limits, and the gates that ran.
 | Mutable ordered collection | `from_iter` stages, sorts, and bulk-builds, as the adaptive ordered map already does. | Collection now needs O(n) temporary staging. The duplicate rule is applied by crate code before the tree is built. |
 | Emptied adaptive tree | `range` and `range_mut` return an empty range for an empty tree. | A std tree emptied by removal validates bounds; the Sorted form and the documented contract do not. `MutableOrderedMap` and `MutableOrderedSet` keep native behavior, as documented. |
 | Not changed | The inline buffer's clone, `from_vec`, and `retain` paths; `MutableOrderedMap::append`; the linear table kept by `thaw`. | The first three are in or beside the crate's only `unsafe` module and need Miri, which was unavailable. The others need a size-ratio gate or a policy decision. The validation record lists the measurements. |
+
+## API compatibility is not a constraint, 2026-11-12
+
+The maintainer stated on 2026-11-12 that the public API does not need to stay
+compatible and that the library is to be refactored. This record states what
+that changes. It approves no specific redesign, package boundary, or name.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Public API shape | Names, module paths, signatures, trait bounds, and type parameters of existing public items may change. | The crate is unpublished at 0.4.0 (`publish = false`), and the [release procedure](../maintainers/releasing.md) still gates publication. Compatibility was a self-imposed constraint, not a user commitment. |
+| Semantic contracts | Not relaxed. The representative rules, the structural meaning of frozen, snapshot publication semantics, the integer codec laws, and the other rules in the [implementation contracts](../maintainers/implementation-contracts.md) stay in force. | This is the integrator's reading of the maintainer's statement, which named API compatibility only. Changing one of these contracts needs its own record. |
+| Feature additivity | Not relaxed. Enabling a feature still never changes a type's representation, hasher, bounds, or freeze/thaw partner. | Additivity is a property of one build under Cargo feature unification, not of compatibility between versions. |
+| Safety | Not relaxed. Unsafe stays confined, with its written invariants and Miri coverage. | A refactor that moves `src/adaptive/seq/buf.rs` moves it as a unit. |
+| Crate layout | [Crate layout](crate-layout.md) constraint 5 (every current `frost::` path resolves through the facade) is no longer required, and constraint 1 no longer forces existing set algebra to stay as inherent methods: it can become a trait or an expression layer. Constraints 2, 3, 4, and 6 to 9 follow from Rust's rules or from contracts that remain. | The package list is still the output of `frost-wlt.1`. No package is approved or created by this record. |
+| Value domains | The [formal algebra](algebra/README.md) documents were written under the compatibility constraint. Their statements that no domain parameter or binding is added to existing types are now design positions to be argued on their merits, not requirements. | The merits still weigh against a mandatory parameter on every family: it would inflate bounds for callers that have no runtime-scoped domain. A redesign of `IntKey`, of source bindings, or of snapshot payload admission is now open. |
+| Process | A breaking change carries its design record, changelog entry, rustdoc, tests, and catalog updates in the same change. Existing catalog IDs are kept; a removed public item retires its records explicitly. | [CRATES.md](../../CRATES.md) accounts coverage per public obligation, so a silent removal would leave stale obligations. |
