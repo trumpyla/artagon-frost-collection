@@ -153,3 +153,11 @@ Open research questions remain in the research synthesis and integration audit.
 Historical review and verification documents preserve earlier findings. The
 inputs under `reviews/supplied/` are unmodified evidence; their claims are not
 automatically current project policy.
+
+## Compact maintenance entry points
+
+[Agent entry point](../AGENTS.md), [repository rules](maintainers/repository-rules.md),
+[documentation rules](maintainers/documentation-rules.md), and the
+[rules registry](maintainers/rules.json) refer to the existing authoritative
+[crate standard](../CRATES.md). They do not replace its layout, test catalog,
+coverage accounting, benchmark, or migration requirements.

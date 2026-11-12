@@ -133,8 +133,9 @@ The tracker tasks under `frost-wlt` are authoritative. In summary:
 
 1. `frost-wlt.1`: approve the outputs above.
 2. `frost-wlt.2`: move code, tests, examples, benchmarks, factories, and
-   catalog records to their owners, and update the one-package policy in
-   [AGENTS.md](../../AGENTS.md), [decisions](decisions.md), and
+   catalog records to their owners, and update the one-package policy in the
+   [implementation contracts](../maintainers/implementation-contracts.md),
+   [decisions](decisions.md), and
    [CRATES.md](../../CRATES.md) in the same change. Do not weaken tests or
    duplicate algorithms. Catalog IDs survive the move unchanged, even though
    their middle segment names the target where each case was first registered
