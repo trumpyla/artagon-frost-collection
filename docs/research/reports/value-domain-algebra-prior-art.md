@@ -88,7 +88,8 @@ complete rule tables.
 
 ## Context and current implementation
 
-Repository revision: branch `claude/frost-domain-algebra-w598vp` at
+Repository revision: branch `docs/value-domain-algebra` (named
+`claude/frost-domain-algebra-w598vp` until 2026-11-12) at
 `89a80b69269b93b96bb6cf6d2f30956074ab50bf`, based on main at
 `27b14399b0245df2a018fd5eb6f24f47ce7c2dbe`. Inspected: every file under
 `docs/design/algebra`, the
