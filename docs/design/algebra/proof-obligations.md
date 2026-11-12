@@ -18,31 +18,31 @@ performance advantage. A large assertion count is not a coverage percentage.
 | --- | --- | --- | --- |
 | `FM-REFINE` | [Representation refinement](formal-model.md) | Safety implication with typed preconditions; separate progress and error obligations | definition; no generic executable implementation |
 | `FM-OBS` | [Observable refinement](formal-model.md) | Allowed-trace sets model unspecified order; equality is stronger than refinement | definition; effect/representation counterexamples |
-| `FM-PREFIX` | [Stream prefix soundness](formal-model.md) | Every emitted item justified; completeness must be separately established | definition; knowledge-bound finite model |
-| `DOM-EQ` | [Stable key equivalence](domains.md) | Equivalence classes require reflexivity, symmetry, transitivity and stability | finite classifier-generated equivalences; Rust-law obligation remains |
+| `FM-PREFIX` | [Stream prefix soundness](formal-model.md) | Every emitted item justified; completeness must be separately established | definition; not exercised by the finite model |
+| `DOM-EQ` | [Stable key equivalence](domains.md) | Equivalence classes require reflexivity, symmetry, transitivity and stability | obligation; the model generates equivalences by construction and does not test this law |
 | `DOM-CONGRUENCE` | [Quotient congruence](domains.md) | Key-only operations constant on each equivalence class | finite functions/filters and representative counterexample |
-| `DOM-VALID` | [Validation soundness](domains.md) | Successful admission implies predicate; completeness/termination not inferred | finite percentage boundaries; general obligation |
+| `DOM-VALID` | [Validation soundness](domains.md) | Successful admission implies predicate; completeness/termination not inferred | table of percentage boundary cases; general obligation |
 | `DOM-NORMALIZE` | [Typed normalization](domains.md) | Separate raw meaning from valid-output equivalence; explicit embedding for idempotence | proof obligation; raw-to-integer example and constant-normalizer counterexample |
 | `DOM-CODE` | [Code injectivity](domains.md) | Key-code inverse on image; existing IntKey has stronger full-value laws | proof obligation; current source mapping, no codec implementation executed |
-| `DOM-IMAGE` | [Conversion homomorphisms](domains.md) | Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR | proof argument plus all functions on three keys |
+| `DOM-IMAGE` | [Conversion homomorphisms](domains.md) | Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR; inclusion directions otherwise | proof argument plus all functions on three keys, each operation separately; bag pushforward of sum |
 | `SET-BOOLEAN` | [Finite set laws](sets.md) | Membership laws, explicit universe and count formulas | bounded exhaustive equations and independent sorted merge |
-| `SET-REP` | [Representative refinement](sets.md) | Left union/intersection associate; commutation and XOR reassociation can fail | pointwise argument and metadata enumeration |
+| `SET-REP` | [Representative refinement](sets.md) | Left union/intersection associate; commutation, XOR reassociation, and two absorption/distribution orientations can fail | pointwise argument, metadata enumeration, pinned left rule |
 | `MAP-LIFT` | [Map merge lifting](maps.md) | Lift collision resolver through absence and check totality/definedness | pointwise proof argument; finite overrides/sum/deletion counterexample |
 | `BAG-LAWS` | [Count algebras](bags.md) | Natural sum versus max/min/monus/absolute difference | pointwise argument, exhaustive small counts and counterexamples |
-| `COUNT-PARTIAL` | [Bounded count addition](bags.md) | Either association succeeds iff total fits; errors/traces separate | nonnegative arithmetic argument and width-three model |
+| `COUNT-PARTIAL` | [Bounded count addition](bags.md) | Either association succeeds iff total fits; errors/traces separate | nonnegative arithmetic argument and a model with bound M=3 |
 | `BAG-SUPPORT` | [Support projection](bags.md) | Preserves sum/max as union and min as intersection; not monus/XOR | pointwise proof and finite model |
 | `SEQ-MONOID` | [Free monoid](sequences.md) | Concatenation identity/association, occurrence preservation | word argument and finite words |
 | `SEQ-EFFECT` | [Execution effects](sequences.md) | Pure equations do not establish callback/error/drop equivalence | design obligation; future Rust effect/drop tests required |
 | `MM-SUPPORT` | [Empty-fiber normalization](multimaps.md) | Canonical proposed multimap absent iff fiber empty; native maps may differ | definition and present-empty counterexample |
 | `REL-COMP` | [Boolean relation composition](multimaps.md) | Existential witnesses; associative and union-distributive | witness proof argument and finite Boolean matrices |
-| `BAGREL-COMP` | [Weighted composition](multimaps.md) | Sum of products counts derivations; no general cycle convergence | finite double-sum argument and small natural matrices |
+| `BAGREL-COMP` | [Weighted composition](multimaps.md) | Sum of products counts derivations; cycle convergence is a separate question in [computed sets](execution-and-computed-sets.md) | finite double-sum argument; 2×2 matrices with weights 0..2, cross-checked against Boolean composition |
 | `BIMAP-CLOSED` | [Partial-bijection closure](bimaps.md) | Subsets/inverse/composition preserve both uniqueness projections | proof argument and all small partial bijections |
 | `BIMAP-IDENTITY` | [Local inverse identities](bimaps.md) | Identities on domain/range; global finite identity requires finite universe | proof argument and finite model |
-| `BIMAP-PARTIAL` | [Checked operations](bimaps.md) | Union partial definedness associates; checked XOR does not | subset proof argument, enumeration and explicit conflict counterexample |
+| `BIMAP-PARTIAL` | [Checked operations](bimaps.md) | Union partial definedness associates; checked XOR does not | subset proof argument; enumeration against validity of the three-way union; explicit conflict counterexample |
 | `FROZEN-DENOTE` | [Phase transition](frozen.md) | Successful freeze of lawful family preserves denotation, not all representation details | typed contract; actual Rust transitions not executed |
 | `FROZEN-STABLE` | [Structural versus deep stability](frozen.md) | Fixed structure is not fixed heap payload or source revision | abstract heap counterexample; no Rust aliasing proof |
-| `KNOW-BOUNDS` | [Incomplete set knowledge](execution-and-computed-sets.md) | Sound lower/upper transfer; not correlation-complete or error absorption | inclusion proof and all interval realizations on three keys |
-| `DELTA-REPLAY` | [Revisioned overlays](execution-and-computed-sets.md) | Exact base plus ordered complete suffix; ordered compaction preserves result | fold decomposition argument and exhaustive short histories |
+| `KNOW-BOUNDS` | [Incomplete set knowledge](execution-and-computed-sets.md) | Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption | inclusion proof; soundness and tightness over all interval realizations on three keys |
+| `DELTA-REPLAY` | [Revisioned overlays](execution-and-computed-sets.md) | Exact base plus ordered complete suffix; ordered compaction preserves result | fold decomposition argument; short histories against a last-event-wins reference |
 
 ## Proof sketches beyond the tables
 
@@ -77,11 +77,19 @@ not cause memory unsafety, regardless of the mathematical assumption.
 ## Current executable evidence
 
 The [result file](../../research/formal-models/evidence/model-results.json)
-records **258,624 assertions**, **99,118 counted finite cases**,
-14 groups and 33 explicit counterexamples.
+records **415,592 assertions** over **145,463 counted cases** in 13 groups, with
+32 computed counterexamples and 5 illustrations.
 Counters count assertions/loop cases, not distinct Rust tests or exhaustive
-production states. The final group detects six deliberately wrong mathematical
-implementations; it is not cargo-mutants execution or a mutation score.
+production states; many are identities of native bit operators. An illustration
+is a pair of hand-written values and is not evidence about a model. A separate
+[mutant run](../../research/formal-models/evidence/model-mutants-results.json)
+applies 18 textual mutations to the model and all are caught. That is not
+cargo-mutants execution or a mutation score for Frost.
+
+Three obligations have no executable check: `FM-PREFIX` (no stream model
+exists), `DOM-EQ` (the model's relations are equivalences by construction),
+and `SEQ-EFFECT`. `FM-REFINE`, `FM-OBS`, `DOM-CODE`, `FROZEN-DENOTE` and
+`MM-SUPPORT` are definitions or contracts with at most one counterexample.
 
 ## Before implementing any public API
 

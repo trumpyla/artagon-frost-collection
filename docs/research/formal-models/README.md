@@ -26,11 +26,13 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 | --- | --- |
 | [Formal index](../../design/algebra/README.md) | Abstract model first, then each collection |
 | [Source-to-contract map](source-map.md) | Reconciliation of session inputs and current source |
-| [Input inventory](input-inventory.json) | 199 unique textual documents, 345 recorded occurrences, 8 distinct archive byte streams |
+| [Input inventory](input-inventory.json) | 199 unique textual documents, 345 recorded occurrences, 8 nested archives examined |
 | [Primary sources](SOURCES.md) | Checked primary contracts, definitions and limits |
 | [Adversarial review](../../reviews/value-domain-algebra-review.md) | Four same-author passes and concrete dispositions |
 | [Proof ledger](../../design/algebra/proof-obligations.md) | Proof arguments, finite checks and unexecuted implementation gates |
 | [Model source](evidence/model-checks.mjs) / [results](evidence/model-results.json) | Reproducible finite mathematical checks; no production Rust imported |
+| [Model mutants](evidence/model-mutants.mjs) / [results](evidence/model-mutants-results.json) | Which wrong definitions the model's checks catch |
+| [Destination review](../../reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, and the gates that ran |
 | [Validation](validation.md) | Commands, patch checks and unavailable gates |
 | [Research prompt](research-prompt.md) | Focused child investigations using the existing project templates |
 | [Supplement manifest](manifest.json) | This supplement's artifact/contract inventory, separate from historical corpus metadata |
@@ -45,7 +47,12 @@ archive is **not retained in this repository**. Each `delivery_copy` path in the
 repository file. When the inventory was checked against this repository on
 2026-11-12, 49 of its 199 documents were byte-identical to a tracked file at
 `27b1439`; the other 150 (older revisions and unmerged patches) can be verified
-only against the archive.
+only against the archive. The same holds for the delivery's
+`artifact-validation.json` and `patch-validation.json`, which the
+[validation record](validation.md) cites. The inventory also lists two
+`recovered-research` export files from which none of the 199 documents
+originates; they do not change the statement below that the full reports remain
+unrecovered.
 
 All mounted original reports, handoff instructions, prior reconciled archives,
 formal patches, and relevant repository snapshots were inventoried. Identical
@@ -71,11 +78,26 @@ node docs/research/formal-models/evidence/model-checks.mjs
 
 The script uses only Node's standard assertion library, no network/dependencies,
 no filesystem writes and no Rust imports. Node is optional research tooling,
-not a new Make/build/CI prerequisite. Current result: **258,624
-assertions**, **99,118 counted cases**, 14 groups,
-33 explicit counterexamples and six deliberately incorrect
-model variants detected. Small integer arithmetic stays exactly representable
-in JavaScript Number; it is not a simulation of every u64/usize overflow path.
+not a new Make/build/CI prerequisite. Current result: **415,592 assertions** over **145,463 counted cases** in 13 groups, with
+32 computed counterexamples and 5 illustrations.
+An illustration records two hand-written values that differ; it is not a model
+result. Many assertions are identities of JavaScript's native bit operators, so
+the count is not a coverage measure. Small integer arithmetic stays exactly
+representable in JavaScript Number; it is not a simulation of every u64/usize
+overflow path.
+
+A separate runner applies 18 textual mutations to the model and reports which
+checks catch them:
+
+```sh
+node docs/research/formal-models/evidence/model-mutants.mjs
+```
+
+All 18 are caught in the [recorded run](evidence/model-mutants-results.json).
+The delivered model had a section called "mutant detection" that compared
+constants and changed no model function; the destination review found seven real
+mutants that it accepted, replaced that section, and added the checks that now
+catch them. See the [destination review](../../reviews/value-domain-algebra-destination-review.md).
 
 The checks cover logical membership, representatives, conversion/closure,
 map presence and joins, bag counts, sequence occurrences, relation/BiMap
@@ -95,5 +117,6 @@ bindings and fallible durable cursors as separate adapter work. Measure terminal
 specific workloads only after a correct semantic baseline exists. On main at
 `27b1439` the push workflow passes and the scheduled "Tiered verification and
 coverage" workflow fails in its `nightly-deep-verification` and
-`nightly-mutation` jobs (runs of 2026-11-10 to 2026-11-12). That failure
+`nightly-mutation` jobs (runs of 2026-11-11 and 2026-11-12; the failing steps
+are the bounded libFuzzer smoke targets and the mutation suite). That failure
 predates this supplement and is separate remediation work.

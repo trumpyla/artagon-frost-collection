@@ -783,7 +783,9 @@ reorganization epic `frost-wlt`.
 See [the documentation index](docs/README.md),
 [design philosophy](docs/design/philosophy.md),
 [contributor guide](CONTRIBUTING.md), and
-[maintainer notes](docs/maintainers/guide.md). [AGENTS.md](AGENTS.md) records the
+[maintainer notes](docs/maintainers/guide.md). The
+[implementation contracts](docs/maintainers/implementation-contracts.md), reached
+through the [AGENTS.md](AGENTS.md) entry point, record the
 same invariants and verification expectations for automated changes, and
 [CRATES.md](CRATES.md) defines the layout, coverage, and metadata standard.
 [Integration validation](docs/revision2-integration-validation.md) records the

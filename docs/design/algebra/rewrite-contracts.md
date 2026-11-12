@@ -15,7 +15,9 @@ context + preconditions**, not an unqualified algebraic identity.
 | --- | --- | --- |
 | Set union/intersection commute | Valid membership | Left representatives/order/effects can change |
 | Set XOR reassociate | Valid membership | Fails representative observation with three equal differently labelled keys |
-| Noninjective key conversion through intersection/difference | Invalid in general | Two distinct keys can collapse |
+| Set absorption and distribution | Valid membership | Representatives survive only in the left-first orientations; (B∩A)∪A→A and (B∩C)∪A→(B∪A)∩(C∪A) change the selected object |
+| Noninjective key conversion through union | Valid membership | Representative and order rules of the conversion still apply |
+| Noninjective key conversion through intersection/difference/XOR | Invalid in general | Two distinct keys can collapse. Converting first can only add to an intersection and only remove from a difference or XOR |
 | Preimage through Boolean operations | Valid with compatible universes | May not be finite/enumerable; callback failures remain visible |
 | Bag sum reassociate | Valid in N; checked successful totals agree | Error order and emitted prefixes can differ |
 | Bag absolute difference reassociate | Invalid | Counts 1,1,2 |

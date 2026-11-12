@@ -114,6 +114,17 @@ A={a}, B={b}. Image(intersection) is empty but intersection(images) is not.
 The same example disproves difference/XOR preservation. For sufficiency, use
 injectivity to show a destination member has one source class.
 
+When f is not injective the error has a fixed direction, for every f:
+
+    f(A∩B) ⊆ f(A)∩f(B);   f(A)\f(B) ⊆ f(A\B);   f(A) XOR f(B) ⊆ f(A XOR B).
+
+Converting before an intersection can therefore only add members, and converting
+before a difference can only remove them. For a rule shaped like
+(Granted ∩ Scope) \ Denied, evaluating over collapsed keys can invent a grant at
+the intersection and can only widen the denial. An expression must name the key
+domain it is defined over; the other evaluation is an approximation with that
+known direction, not an equivalent plan.
+
 Direct-image complement requires an explicit universe and target f(U); even
 injectivity does not justify complement over a larger target universe.
 Preimage f⁻¹ preserves Boolean operations, including relative complement over

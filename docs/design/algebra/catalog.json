@@ -6,8 +6,9 @@
   "authority": {
     "implementation": "source/rustdoc/contracts at pinned revision",
     "layout": "CRATES.md",
-    "current_names": "docs/design/collection-algebra.md#naming-dispositions",
-    "this_proposal": "docs/design/algebra/README.md"
+    "current_names": "docs/design/collection-algebra.md#naming-dispositions (current selections; a recorded decision may change them)",
+    "this_proposal": "docs/design/algebra/README.md",
+    "api_compatibility": "docs/design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12"
   },
   "concepts": [
     {
@@ -137,14 +138,14 @@
       "document": "docs/design/algebra/formal-model.md",
       "name": "Stream prefix soundness",
       "statement": "Every emitted item justified; completeness must be separately established",
-      "evidence": "definition; knowledge-bound finite model"
+      "evidence": "definition; not exercised by the finite model"
     },
     {
       "id": "DOM-EQ",
       "document": "docs/design/algebra/domains.md",
       "name": "Stable key equivalence",
       "statement": "Equivalence classes require reflexivity, symmetry, transitivity and stability",
-      "evidence": "finite classifier-generated equivalences; Rust-law obligation remains"
+      "evidence": "obligation; the model generates equivalences by construction and does not test this law"
     },
     {
       "id": "DOM-CONGRUENCE",
@@ -158,7 +159,7 @@
       "document": "docs/design/algebra/domains.md",
       "name": "Validation soundness",
       "statement": "Successful admission implies predicate; completeness/termination not inferred",
-      "evidence": "finite percentage boundaries; general obligation"
+      "evidence": "table of percentage boundary cases; general obligation"
     },
     {
       "id": "DOM-NORMALIZE",
@@ -178,8 +179,8 @@
       "id": "DOM-IMAGE",
       "document": "docs/design/algebra/domains.md",
       "name": "Conversion homomorphisms",
-      "statement": "Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR",
-      "evidence": "proof argument plus all functions on three keys"
+      "statement": "Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR; inclusion directions otherwise",
+      "evidence": "proof argument plus all functions on three keys, each operation separately; bag pushforward of sum"
     },
     {
       "id": "SET-BOOLEAN",
@@ -192,8 +193,8 @@
       "id": "SET-REP",
       "document": "docs/design/algebra/sets.md",
       "name": "Representative refinement",
-      "statement": "Left union/intersection associate; commutation and XOR reassociation can fail",
-      "evidence": "pointwise argument and metadata enumeration"
+      "statement": "Left union/intersection associate; commutation, XOR reassociation, and two absorption/distribution orientations can fail",
+      "evidence": "pointwise argument, metadata enumeration, pinned left rule"
     },
     {
       "id": "MAP-LIFT",
@@ -214,7 +215,7 @@
       "document": "docs/design/algebra/bags.md",
       "name": "Bounded count addition",
       "statement": "Either association succeeds iff total fits; errors/traces separate",
-      "evidence": "nonnegative arithmetic argument and width-three model"
+      "evidence": "nonnegative arithmetic argument and a model with bound M=3"
     },
     {
       "id": "BAG-SUPPORT",
@@ -255,8 +256,8 @@
       "id": "BAGREL-COMP",
       "document": "docs/design/algebra/multimaps.md",
       "name": "Weighted composition",
-      "statement": "Sum of products counts derivations; no general cycle convergence",
-      "evidence": "finite double-sum argument and small natural matrices"
+      "statement": "Sum of products counts derivations; cycle convergence is a separate question in computed sets",
+      "evidence": "finite double-sum argument; 2×2 matrices with weights 0..2, cross-checked against Boolean composition"
     },
     {
       "id": "BIMAP-CLOSED",
@@ -277,7 +278,7 @@
       "document": "docs/design/algebra/bimaps.md",
       "name": "Checked operations",
       "statement": "Union partial definedness associates; checked XOR does not",
-      "evidence": "subset proof argument, enumeration and explicit conflict counterexample"
+      "evidence": "subset proof argument; enumeration against validity of the three-way union; explicit conflict counterexample"
     },
     {
       "id": "FROZEN-DENOTE",
@@ -297,22 +298,24 @@
       "id": "KNOW-BOUNDS",
       "document": "docs/design/algebra/execution-and-computed-sets.md",
       "name": "Incomplete set knowledge",
-      "statement": "Sound lower/upper transfer; not correlation-complete or error absorption",
-      "evidence": "inclusion proof and all interval realizations on three keys"
+      "statement": "Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption",
+      "evidence": "inclusion proof; soundness and tightness over all interval realizations on three keys"
     },
     {
       "id": "DELTA-REPLAY",
       "document": "docs/design/algebra/execution-and-computed-sets.md",
       "name": "Revisioned overlays",
       "statement": "Exact base plus ordered complete suffix; ordered compaction preserves result",
-      "evidence": "fold decomposition argument and exhaustive short histories"
+      "evidence": "fold decomposition argument; short histories against a last-event-wins reference"
     }
   ],
   "implementation_plan": "docs/design/algebra/rust-integration.md",
   "package_decision": "frost-wlt.1; no package list approved by this patch",
   "checks": {
     "model": "docs/research/formal-models/evidence/model-checks.mjs",
-    "results": "docs/research/formal-models/evidence/model-results.json"
+    "results": "docs/research/formal-models/evidence/model-results.json",
+    "mutants": "docs/research/formal-models/evidence/model-mutants.mjs",
+    "mutant_results": "docs/research/formal-models/evidence/model-mutants-results.json"
   },
   "historical_aliases": [
     {
@@ -339,6 +342,193 @@
       "old": "difference_keys",
       "current": "difference_by_key",
       "reason": "recommendation, not an implemented rename"
+    }
+  ],
+  "counterexamples": [
+    {
+      "id": "CX-REP-ABSORPTION",
+      "kind": "computed",
+      "why": "(B intersection A) union A returns B's representative, not A's"
+    },
+    {
+      "id": "CX-REP-DISTRIBUTE",
+      "kind": "computed",
+      "why": "(B intersection C) union A and (B union A) intersection (C union A) select different representatives"
+    },
+    {
+      "id": "CX-SET-XOR-REP",
+      "kind": "computed",
+      "why": "membership XOR association loses the selected representative"
+    },
+    {
+      "id": "CX-SET-UNION-COMMUTE",
+      "kind": "computed",
+      "why": "left representatives are not commutative"
+    },
+    {
+      "id": "CX-REP-FILTER",
+      "kind": "computed",
+      "why": "representative-sensitive filtering is not key-class filtering"
+    },
+    {
+      "id": "CX-COLLAPSED-INTERSECTION",
+      "kind": "computed",
+      "why": "a and b become the same target key"
+    },
+    {
+      "id": "CX-COLLAPSED-DIFFERENCE",
+      "kind": "computed",
+      "why": "projection changes exclusion"
+    },
+    {
+      "id": "CX-CANONICAL-IDEMPOTENCE",
+      "kind": "computed",
+      "why": "a constant normalizer is idempotent but not identity-preserving"
+    },
+    {
+      "id": "CX-BAG-ABS-ASSOC",
+      "kind": "computed",
+      "why": "absolute difference is not XOR"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-MONUS",
+      "kind": "computed",
+      "why": "positive residual multiplicity is lost by set subtraction"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MAX",
+      "kind": "computed",
+      "why": "coalescing keys changes maximum counts"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MIN",
+      "kind": "computed",
+      "why": "coalescing keys invents overlap"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MONUS",
+      "kind": "computed",
+      "why": "coalescing keys cancels a residue that the separate keys keep"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-ABS",
+      "kind": "computed",
+      "why": "absolute difference of unequal positive counts is positive; XOR of equal supports is empty"
+    },
+    {
+      "id": "CX-MAP-DELETE-ASSOC",
+      "kind": "computed",
+      "why": "a deleted binding can reappear differently after reassociation"
+    },
+    {
+      "id": "CX-MAP-SUBTRACT-ASSOC",
+      "kind": "computed",
+      "why": "closure does not imply associativity"
+    },
+    {
+      "id": "CX-MAP-PRESENT-NONE",
+      "kind": "illustration",
+      "why": "stored None is not missing"
+    },
+    {
+      "id": "CX-MAP-REP-PAYLOAD",
+      "kind": "illustration",
+      "why": "left key metadata plus right payload may violate a dependent invariant"
+    },
+    {
+      "id": "CX-JOIN-TUPLE-TYPE",
+      "kind": "computed",
+      "why": "join reassociation requires an explicit product isomorphism"
+    },
+    {
+      "id": "CX-NONEMPTY-CLOSURE",
+      "kind": "computed",
+      "why": "nonempty inputs can have empty intersection"
+    },
+    {
+      "id": "CX-CARDINALITY-CAP",
+      "kind": "computed",
+      "why": "a one-element collection bound is not closed under union"
+    },
+    {
+      "id": "CX-DERIVED-IDENTITY",
+      "kind": "illustration",
+      "why": "whole-record structural equality differs from selected-key identity"
+    },
+    {
+      "id": "CX-ZIP-CONCAT",
+      "kind": "computed",
+      "why": "length-misaligned concat changes pair positions"
+    },
+    {
+      "id": "CX-SEQ-INTERSECTION",
+      "kind": "computed",
+      "why": "membership-filter and bag-min intersection differ"
+    },
+    {
+      "id": "CX-REL-WITNESSES",
+      "kind": "computed",
+      "why": "two derivations become one Boolean pair"
+    },
+    {
+      "id": "CX-MM-PRESENT-EMPTY",
+      "kind": "computed",
+      "why": "native map empty fiber is not automatically normalized absence"
+    },
+    {
+      "id": "CX-MM-GROUP-REP",
+      "kind": "illustration",
+      "why": "group key and pair-origin contracts differ"
+    },
+    {
+      "id": "CX-MM-FLATTEN",
+      "kind": "computed",
+      "why": "grouping loses global interleaving"
+    },
+    {
+      "id": "CX-BIMAP-XOR-DEFINEDNESS",
+      "kind": "computed",
+      "why": "intermediate conflict changes success/failure"
+    },
+    {
+      "id": "CX-BIMAP-UNION-CLOSURE",
+      "kind": "computed",
+      "why": "two partners for one left key"
+    },
+    {
+      "id": "CX-BIMAP-RIGHT-UNIQUENESS",
+      "kind": "computed",
+      "why": "two left keys for one right key"
+    },
+    {
+      "id": "CX-BIMAP-PAIR-KEY-DIFF",
+      "kind": "computed",
+      "why": "equal left key but different pair"
+    },
+    {
+      "id": "CX-INCOMPLETE-DENY",
+      "kind": "computed",
+      "why": "using a deny lower bound as complete absence invents an allowed member"
+    },
+    {
+      "id": "CX-DELTA-ORDER",
+      "kind": "computed",
+      "why": "union of all inserts minus all deletes ignores last-write order"
+    },
+    {
+      "id": "CX-EMPTY-DOMAIN-SHORTCUT",
+      "kind": "computed",
+      "why": "an empty-operand shortcut hides a required compatibility error"
+    },
+    {
+      "id": "CX-FROZEN-DEEP-STABILITY",
+      "kind": "computed",
+      "why": "fixed membership does not freeze external payload state"
+    },
+    {
+      "id": "CX-OWNED-VS-BORROWED",
+      "kind": "illustration",
+      "why": "materialized references are not lifetime-independent"
     }
   ]
 }

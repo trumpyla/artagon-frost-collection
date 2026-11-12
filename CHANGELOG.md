@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased — value-domain algebra documents and rules entry
+
+Documentation only. No source, feature, or public API change.
+
+- Add proposed contracts for value domains and collection algebras under
+  `docs/design/algebra`, with a research supplement and a finite model under
+  `docs/research/formal-models`. Nothing in them is implemented.
+- `AGENTS.md` is now a symlink to `docs/maintainers/agent-rules.md`. Its
+  previous text is `docs/maintainers/implementation-contracts.md`.
+- Record that public API compatibility is not a constraint for the planned
+  refactor. Semantic contracts, feature additivity, and unsafe confinement are
+  unchanged.
+- Repoint seven verification-catalog contract sources to the implementation
+  contracts. No catalog ID changed.
+
 ## Unreleased — emptied adaptive tree ranges
 
 - Fix `AdaptiveOrderedMap::range` and `range_mut` panicking on inverted or

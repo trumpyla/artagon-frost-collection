@@ -8,6 +8,10 @@ implementation: unchanged
 
 # Adversarial review: value domains and collection algebras
 
+This is the delivery's own review. The
+[destination review](value-domain-algebra-destination-review.md) records an
+independent review at integration; where the two differ, that one is current.
+
 Reviewed against `27b14399b0245df2a018fd5eb6f24f47ce7c2dbe` on 2026-11-12.
 **Review method: four sequential passes by the same author/model, with executable
 finite counterexample searches and deliberately incorrect replacements. No
@@ -59,7 +63,7 @@ outside this documentation patch. Remaining implementation assurance is open.
 | R24 | medium | Materialized could imply lifetime-independent payload ownership | Correct root README; distinguish borrowed, shared and independently owned elements. | CX-OWNED-VS-BORROWED |
 | R25 | high | Old archives could overwrite names and rules selected on newer main | Retain SeqMultiMap/SetMultiMap/BagMultiMap and CRATES; preserve current AGENTS clauses behind the requested symlink. | exact-main byte checks; terminology catalog |
 | R26 | medium | An expression crate could be rejected because inherent methods cannot move | Existing methods stay with their types; a new view owner is a separate responsibility. | Rust coherence source; rust-integration.md |
-| R27 | high | Auto construction could be mistaken for Auto algebra normalization | Document current eligible empty Chunked sharing without editing the stale fuzz oracle or production code. | inspected current storage path from session; no Rust rerun |
+| R27 | high | Auto construction could be mistaken for Auto algebra normalization | Document current eligible empty Chunked sharing without editing the stale fuzz oracle or production code. | Confirmed at destination: `src/integer/storage.rs` can return an empty Chunked operand under an Auto output policy, while `verification/fuzz/src/lib.rs` asserts that empty non-forced outputs are Sorted |
 | R29 | high | Normalization preservation used output equivalence on inadmissible raw inputs | Define raw meaning and output meaning separately; type-check any normalization reapplication. | raw/output normalization example; domain proof obligation |
 | R28 | medium | Successful finite models could be presented as production proof or independent review | Record bounds, same-author passes, no Rust imports, unavailable gates and no measurements. | execution metadata; model limitations |
 
@@ -76,14 +80,14 @@ current IntKey implementations; they belong in source-level bindings/adapters.
 
 ## Executed evidence and limits
 
-The [finite models](../research/formal-models/evidence/model-checks.mjs) execute
-258,624 assertions over 99,118 counted cases and record
-33 counterexamples. Groups have independent reference forms where
-applicable: sorted cursor versus bitset membership, relation matrices versus
-composition formulas, and reachability iteration versus graph traversal.
-All code is authored here and is not an independently developed oracle.
-Six deliberate incorrect variants are rejected; this is model sensitivity,
-not a repository mutation baseline.
+As delivered, the [finite models](../research/formal-models/evidence/model-checks.mjs)
+executed 258,624 assertions over 99,118 counted cases and recorded 33
+counterexamples. The destination review found that statement overstated: the
+"six deliberate incorrect variants" compared constants, nine counterexamples
+were pairs of literals, and the relation-matrix cross-check named here did not
+exist. The revised model and its numbers are in the
+[validation record](../research/formal-models/validation.md#destination-results-2026-11-12).
+All model code is same-author work and is not an independently developed oracle.
 
 Missing Rust compilation, trait-coherence prototypes, Miri/ownership, Loom,
 Kani/solver proof, and production benchmarks remain required future gates.

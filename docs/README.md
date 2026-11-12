@@ -49,6 +49,7 @@ remain authoritative for implemented behavior.
 | [Rust integration](design/algebra/rust-integration.md), [terminology](design/algebra/terminology.md) | Existing capability names, selected proposals and future placement |
 | [Proof obligations](design/algebra/proof-obligations.md) | Arguments, finite checks and unexecuted implementation gates |
 | [Adversarial review](reviews/value-domain-algebra-review.md) | Same-author review passes, counterexamples and remaining risks |
+| [Destination review](reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, gate results and open items |
 | [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
 
 ## Research corpus
@@ -156,7 +157,8 @@ automatically current project policy.
 
 ## Compact maintenance entry points
 
-[Agent entry point](../AGENTS.md), [repository rules](maintainers/repository-rules.md),
+[Agent entry point](../AGENTS.md), [implementation contracts](maintainers/implementation-contracts.md),
+[repository rules](maintainers/repository-rules.md),
 [documentation rules](maintainers/documentation-rules.md), and the
 [rules registry](maintainers/rules.json) refer to the existing authoritative
 [crate standard](../CRATES.md). They do not replace its layout, test catalog,

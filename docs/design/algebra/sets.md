@@ -46,6 +46,12 @@ it (intersection). They are not commutative when equal keys have different
 metadata. These arguments do not fix unspecified iteration order or callback
 traces.
 
+Absorption and distribution hold for representatives only in the orientations
+that keep the left operand first: A∪(A∩B)=A, A∩(B∪C)=(A∩B)∪(A∩C) and
+A∪(B∩C)=(A∪B)∩(A∪C). Their mirror images can select a different object. With
+one key held by A (label a) and B (label b) and absent from C, (B∩A)∪A returns
+b where A returns a, and (B∩C)∪A returns a where (B∪A)∩(C∪A) returns b.
+
 XOR cannot be reassociated for representative-producing terminals. If A,B,C
 all contain the same key with labels a,b,c, then (A XOR B) XOR C returns c,
 while A XOR (B XOR C) returns a. Nor may (A XOR B) XOR A simplify to B at that

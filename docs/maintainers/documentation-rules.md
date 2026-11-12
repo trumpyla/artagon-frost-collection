@@ -9,8 +9,10 @@ implementation: unchanged
 # Documentation and research update rules
 
 [CRATES.md](../../CRATES.md) remains authoritative for layout, dependencies,
-API obligations, coverage and metadata. Existing published types and selected
-naming decisions are not superseded by an imported research report.
+API obligations, coverage and metadata. Existing public types and selected
+naming decisions are not superseded by an imported research report. They can be
+changed by a recorded decision: API compatibility is not a constraint (see
+[design decisions](../design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12)).
 
 ## Formal-first changes
 
@@ -34,8 +36,11 @@ rejected rewrites, including changes in definedness, errors or representatives.
   proposal must not pretend to have changed a production API.
 - Formal proposal: domain chapter, operation table, cross-domain conversions,
   law ledger and affected README/index entries. Keep the current source mapping.
-- Names: preserve main's `SeqMultiMap`, `SetMultiMap`, `BagMultiMap`, existing
-  capabilities, and distinct integer proposal names. Mark new candidates as such.
+- Names: `SeqMultiMap`, `SetMultiMap`, `BagMultiMap`, the existing capability
+  names, and the distinct integer proposal names are the current selections. A
+  rename is allowed, but only through a recorded decision that updates the
+  naming dispositions; a research import never renames by itself. Mark new
+  candidates as such.
 - Ownership: distinguish frozen, materialized, shared, persistent, borrowed and
   revision-bound. Do not claim materialized references are lifetime-independent.
 - Crate layout: update the decision under `frost-wlt.1` and authoritative standards

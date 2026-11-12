@@ -77,7 +77,7 @@ function preserves positions but subsequent deduplication changes multiplicity.
 ## Current Frost and acceptance
 
 Keep MutableVec/FrozenVec and InlineVec/InlineFrozenVec. Existing native
-VecDeque/LinkedList adapters retain their native capability contracts. Do not
+VecDeque/LinkedList backends retain their native capability contracts. Do not
 introduce FrozenList or rename SeqMultiMap to ListMultiMap. SequenceView is a
 prospective expression name, not an implemented container.
 

@@ -43,9 +43,11 @@ fits M; successful values agree. The first reported overflowing key, partial
 prefix, or callback trace can still depend on evaluation order. Saturating
 addition changes the algebra and must be a separately named operation.
 
-Max/min/monus/absolute difference do not exceed max(a,b) per key. Their total
-across distinct keys can still exceed the aggregate counter even if every
-multiplicity fits. Compressed bags must not expand occurrences merely to count
+Max/min/monus/absolute difference do not exceed max(a,b) per key. A total across
+distinct keys can still exceed an aggregate counter even if every multiplicity
+fits. For min and monus the result total is at most the left operand's total, so
+this is new only for max and absolute difference, whose totals are bounded by
+the sum of both input totals. Compressed bags must not expand occurrences merely to count
 or combine counts. A lazy sum can remain unevaluated, but its terminal must
 report overflow instead of claiming a representable materialized result.
 

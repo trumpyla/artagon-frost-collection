@@ -15,9 +15,12 @@ or the preserved [implementation contracts](implementation-contracts.md).
    remains current. The flat `crates/frost-*` target and `frost-api` facade are
    migration work under `frost-wlt`. Do not create empty packages or adopt a
    different proposed crate list by copying historical research.
-2. **Code.** Preserve additive features, public bounds, borrowed queries, fixed
-   freeze partners, representatives, iterator contracts, recovery and panic/drop
-   behavior. Follow the existing unsafe boundary and ownership review rules.
+2. **Code.** Keep features additive and preserve the semantic contracts:
+   representatives, borrowed queries, iterator contracts, recovery and panic/drop
+   behavior. Public API shape (names, paths, signatures, bounds, type parameters,
+   freeze partners) may change in a refactor when the change records its design
+   decision, changelog entry, tests and catalog updates. Follow the existing
+   unsafe boundary and ownership review rules.
 3. **Navigation.** Read [TOOLS.md](../../TOOLS.md); confirm approximate search
    evidence in live source. A failed/missing tool or empty search is not proof.
 4. **Tests.** Use independent semantic oracles and regression cases; preserve
