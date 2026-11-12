@@ -1,0 +1,491 @@
+{
+  "schema": "frost-independent-formal-model-results/v1",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "execution": "independent finite mathematics; no Frost source imported or executed",
+  "result": "passed",
+  "groups": [
+    {
+      "name": "SET-BOOLEAN and sorted-kernel reference",
+      "bounds": "all subsets of four keys; all pairs and triples",
+      "assertions": 30464,
+      "cases": 4352
+    },
+    {
+      "name": "SET-REP",
+      "bounds": "three keys; each absent or representative a/b; all triples",
+      "assertions": 98427,
+      "cases": 19683
+    },
+    {
+      "name": "DOM-IMAGE, preimage and canonicalization",
+      "bounds": "all 27 functions from three keys to three keys; all finite subset pairs",
+      "assertions": 33016,
+      "cases": 21411
+    },
+    {
+      "name": "BAG-LAWS, BAG-SUPPORT and count partiality",
+      "bounds": "two-key bags with counts 0..3; all triples; checked scalar width 0..3",
+      "assertions": 22503,
+      "cases": 4432
+    },
+    {
+      "name": "MAP-LIFT and join presence",
+      "bounds": "two keys, absence or values 0..2; all triples",
+      "assertions": 12290,
+      "cases": 4096
+    },
+    {
+      "name": "MAP-JOIN and tagged alignment",
+      "bounds": "all maps on two keys with absence or values 0..2; all pairs/triples",
+      "assertions": 4867,
+      "cases": 4352
+    },
+    {
+      "name": "DOM-VALID, DOM-EQ and subcarrier closure",
+      "bounds": "all functions/filters on three keys; percentage boundaries and explicit object metadata",
+      "assertions": 237,
+      "cases": 229
+    },
+    {
+      "name": "SEQ-MONOID and occurrence projection",
+      "bounds": "alphabet a/b, all words of length at most three, all triples",
+      "assertions": 4052,
+      "cases": 3600
+    },
+    {
+      "name": "REL-COMP and BAGREL-COMP",
+      "bounds": "all Boolean relations on two-by-two keys; all triples; natural weighted products",
+      "assertions": 37671,
+      "cases": 29476
+    },
+    {
+      "name": "BIMAP-CLOSED, BIMAP-IDENTITY, BIMAP-PARTIAL",
+      "bounds": "all 34 partial bijections over three keys; all pairs/triples",
+      "assertions": 122643,
+      "cases": 40460
+    },
+    {
+      "name": "KNOW-BOUNDS",
+      "bounds": "all sound lower/upper intervals and all compatible concrete realizations over three keys",
+      "assertions": 38602,
+      "cases": 4096
+    },
+    {
+      "name": "DELTA-REPLAY and fixed points",
+      "bounds": "two keys, all insert/delete histories up to length four and cuts; all three-node graphs",
+      "assertions": 10809,
+      "cases": 9272
+    },
+    {
+      "name": "Domain contexts and frozen observation",
+      "bounds": "explicit hostile descriptors, identity metadata, and abstract heap frames",
+      "assertions": 11,
+      "cases": 4
+    }
+  ],
+  "total_assertions": 415592,
+  "total_cases": 145463,
+  "computed_counterexamples": 32,
+  "illustrations": 5,
+  "counterexamples": [
+    {
+      "id": "CX-REP-ABSORPTION",
+      "kind": "computed",
+      "left": [
+        "b"
+      ],
+      "right": [
+        "a"
+      ],
+      "why": "(B intersection A) union A returns B's representative, not A's"
+    },
+    {
+      "id": "CX-REP-DISTRIBUTE",
+      "kind": "computed",
+      "left": [
+        "a"
+      ],
+      "right": [
+        "b"
+      ],
+      "why": "(B intersection C) union A and (B union A) intersection (C union A) select different representatives"
+    },
+    {
+      "id": "CX-SET-XOR-REP",
+      "kind": "computed",
+      "left": [
+        "c"
+      ],
+      "right": [
+        "a"
+      ],
+      "why": "membership XOR association loses the selected representative"
+    },
+    {
+      "id": "CX-SET-UNION-COMMUTE",
+      "kind": "computed",
+      "left": [
+        "a"
+      ],
+      "right": [
+        "b"
+      ],
+      "why": "left representatives are not commutative"
+    },
+    {
+      "id": "CX-REP-FILTER",
+      "kind": "computed",
+      "left": [],
+      "right": [
+        "b"
+      ],
+      "why": "representative-sensitive filtering is not key-class filtering"
+    },
+    {
+      "id": "CX-COLLAPSED-INTERSECTION",
+      "kind": "computed",
+      "left": 0,
+      "right": 1,
+      "why": "a and b become the same target key"
+    },
+    {
+      "id": "CX-COLLAPSED-DIFFERENCE",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "projection changes exclusion"
+    },
+    {
+      "id": "CX-CANONICAL-IDEMPOTENCE",
+      "kind": "computed",
+      "left": 1,
+      "right": 3,
+      "why": "a constant normalizer is idempotent but not identity-preserving"
+    },
+    {
+      "id": "CX-BAG-ABS-ASSOC",
+      "kind": "computed",
+      "left": 2,
+      "right": 0,
+      "why": "absolute difference is not XOR"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-MONUS",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "positive residual multiplicity is lost by set subtraction"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MAX",
+      "kind": "computed",
+      "left": [
+        2
+      ],
+      "right": [
+        1
+      ],
+      "why": "coalescing keys changes maximum counts"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MIN",
+      "kind": "computed",
+      "left": [
+        0
+      ],
+      "right": [
+        1
+      ],
+      "why": "coalescing keys invents overlap"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MONUS",
+      "kind": "computed",
+      "left": [
+        1
+      ],
+      "right": [
+        0
+      ],
+      "why": "coalescing keys cancels a residue that the separate keys keep"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-ABS",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "absolute difference of unequal positive counts is positive; XOR of equal supports is empty"
+    },
+    {
+      "id": "CX-MAP-DELETE-ASSOC",
+      "kind": "computed",
+      "left": [
+        2
+      ],
+      "right": [
+        null
+      ],
+      "why": "a deleted binding can reappear differently after reassociation"
+    },
+    {
+      "id": "CX-MAP-SUBTRACT-ASSOC",
+      "kind": "computed",
+      "left": 5,
+      "right": 9,
+      "why": "closure does not imply associativity"
+    },
+    {
+      "id": "CX-MAP-PRESENT-NONE",
+      "kind": "illustration",
+      "left": {
+        "present": true,
+        "value": null
+      },
+      "right": {
+        "present": false
+      },
+      "why": "stored None is not missing"
+    },
+    {
+      "id": "CX-MAP-REP-PAYLOAD",
+      "kind": "illustration",
+      "left": {
+        "keyTenant": "left",
+        "valueTenant": "right"
+      },
+      "right": {
+        "keyTenant": "right",
+        "valueTenant": "right"
+      },
+      "why": "left key metadata plus right payload may violate a dependent invariant"
+    },
+    {
+      "id": "CX-JOIN-TUPLE-TYPE",
+      "kind": "computed",
+      "left": [
+        [
+          [
+            1,
+            2
+          ],
+          3
+        ]
+      ],
+      "right": [
+        [
+          1,
+          [
+            2,
+            3
+          ]
+        ]
+      ],
+      "why": "join reassociation requires an explicit product isomorphism"
+    },
+    {
+      "id": "CX-NONEMPTY-CLOSURE",
+      "kind": "computed",
+      "left": [
+        true,
+        true,
+        false
+      ],
+      "right": [
+        true,
+        true,
+        true
+      ],
+      "why": "nonempty inputs can have empty intersection"
+    },
+    {
+      "id": "CX-CARDINALITY-CAP",
+      "kind": "computed",
+      "left": false,
+      "right": true,
+      "why": "a one-element collection bound is not closed under union"
+    },
+    {
+      "id": "CX-DERIVED-IDENTITY",
+      "kind": "illustration",
+      "left": "{\"id\":7,\"label\":\"a\"}",
+      "right": "{\"id\":7,\"label\":\"b\"}",
+      "why": "whole-record structural equality differs from selected-key identity"
+    },
+    {
+      "id": "CX-ZIP-CONCAT",
+      "kind": "computed",
+      "left": [
+        [
+          "a",
+          "c"
+        ]
+      ],
+      "right": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "why": "length-misaligned concat changes pair positions"
+    },
+    {
+      "id": "CX-SEQ-INTERSECTION",
+      "kind": "computed",
+      "left": [
+        "a",
+        "a"
+      ],
+      "right": [
+        "a"
+      ],
+      "why": "membership-filter and bag-min intersection differ"
+    },
+    {
+      "id": "CX-REL-WITNESSES",
+      "kind": "computed",
+      "left": 2,
+      "right": 1,
+      "why": "two derivations become one Boolean pair"
+    },
+    {
+      "id": "CX-MM-PRESENT-EMPTY",
+      "kind": "computed",
+      "left": {
+        "k": []
+      },
+      "right": {},
+      "why": "native map empty fiber is not automatically normalized absence"
+    },
+    {
+      "id": "CX-MM-GROUP-REP",
+      "kind": "illustration",
+      "left": [
+        "left-key",
+        "right-only-value"
+      ],
+      "right": [
+        "right-key",
+        "right-only-value"
+      ],
+      "why": "group key and pair-origin contracts differ"
+    },
+    {
+      "id": "CX-MM-FLATTEN",
+      "kind": "computed",
+      "left": [
+        [
+          "a",
+          1
+        ],
+        [
+          "a",
+          3
+        ],
+        [
+          "b",
+          2
+        ]
+      ],
+      "right": [
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          2
+        ],
+        [
+          "a",
+          3
+        ]
+      ],
+      "why": "grouping loses global interleaving"
+    },
+    {
+      "id": "CX-BIMAP-XOR-DEFINEDNESS",
+      "kind": "computed",
+      "left": null,
+      "right": 1,
+      "why": "intermediate conflict changes success/failure"
+    },
+    {
+      "id": "CX-BIMAP-UNION-CLOSURE",
+      "kind": "computed",
+      "left": false,
+      "right": true,
+      "why": "two partners for one left key"
+    },
+    {
+      "id": "CX-BIMAP-RIGHT-UNIQUENESS",
+      "kind": "computed",
+      "left": false,
+      "right": true,
+      "why": "two left keys for one right key"
+    },
+    {
+      "id": "CX-BIMAP-PAIR-KEY-DIFF",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "equal left key but different pair"
+    },
+    {
+      "id": "CX-INCOMPLETE-DENY",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "using a deny lower bound as complete absence invents an allowed member"
+    },
+    {
+      "id": "CX-DELTA-ORDER",
+      "kind": "computed",
+      "left": 1,
+      "right": 0,
+      "why": "union of all inserts minus all deletes ignores last-write order"
+    },
+    {
+      "id": "CX-EMPTY-DOMAIN-SHORTCUT",
+      "kind": "computed",
+      "left": {
+        "complete": 1
+      },
+      "right": "IncompatibleContext",
+      "why": "an empty-operand shortcut hides a required compatibility error"
+    },
+    {
+      "id": "CX-FROZEN-DEEP-STABILITY",
+      "kind": "computed",
+      "left": [
+        "before"
+      ],
+      "right": [
+        "after"
+      ],
+      "why": "fixed membership does not freeze external payload state"
+    },
+    {
+      "id": "CX-OWNED-VS-BORROWED",
+      "kind": "illustration",
+      "left": {
+        "containerOwned": true,
+        "sourceLifetimeRequired": true
+      },
+      "right": {
+        "containerOwned": true,
+        "sourceLifetimeRequired": false
+      },
+      "why": "materialized references are not lifetime-independent"
+    }
+  ],
+  "limitations": [
+    "finite domains only",
+    "no Rust compilation",
+    "no ownership/aliasing proof",
+    "no solver proof",
+    "no performance measurement",
+    "assertion counts are loop iterations, many over native bit operators; they are not a coverage measure",
+    "illustrations are differing literals, not model results",
+    "mutation sensitivity is reported separately by model-mutants.mjs"
+  ]
+}

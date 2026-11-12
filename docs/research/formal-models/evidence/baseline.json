@@ -1,0 +1,66 @@
+{
+  "schema": "frost-formal-baseline/v1",
+  "repository": "trumpyla/artagon-frost-collection",
+  "ref": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "baseline_scope": "verified existing-file subset, not a complete clone",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "expected": "b59e95c03f38db2a71e2d60882e9a8c17cc2bc77",
+      "actual": "b59e95c03f38db2a71e2d60882e9a8c17cc2bc77",
+      "match": true
+    },
+    {
+      "path": "README.md",
+      "expected": "82188e94356e502db4ddfe6d6fd437e8a669f2b0",
+      "actual": "82188e94356e502db4ddfe6d6fd437e8a669f2b0",
+      "match": true
+    },
+    {
+      "path": "docs/README.md",
+      "expected": "70de01991bf4898dd5bec4f05615b920b8674e8b",
+      "actual": "70de01991bf4898dd5bec4f05615b920b8674e8b",
+      "match": true
+    },
+    {
+      "path": "docs/design/collection-algebra.md",
+      "expected": "b747030364b7453e52dc86e4e7ff813e57e4b555",
+      "actual": "b747030364b7453e52dc86e4e7ff813e57e4b555",
+      "match": true
+    },
+    {
+      "path": "docs/design/set-algebra.md",
+      "expected": "a9136cb439c3ee1e17b50ab2a2826eae77defe4a",
+      "actual": "a9136cb439c3ee1e17b50ab2a2826eae77defe4a",
+      "match": true
+    },
+    {
+      "path": "docs/research/README.md",
+      "expected": "428f14dd836397cd74339f93baf6e932504bfa17",
+      "actual": "428f14dd836397cd74339f93baf6e932504bfa17",
+      "match": true
+    }
+  ],
+  "source_files": [
+    {
+      "path": "src/read.rs",
+      "git_blob": "bafaa60f300f007da4be32e4413d1749e1b81559",
+      "sha256": "2a67e8d0920752f87faaa43e7ea484418de2fca3419db64dc102f742d80a8f40",
+      "content_origin": "available source snapshot, byte-verified against current pinned GitHub file"
+    },
+    {
+      "path": "src/frozen.rs",
+      "git_blob": "c98387dcd4db1e7a2c2939c55f948f01c9fd2e0f",
+      "sha256": "44bd22691e5697afd42637d39163f6f10b92b44e0ba5846c6d71da0fbf08c66c",
+      "content_origin": "available source snapshot, byte-verified against current pinned GitHub file"
+    },
+    {
+      "path": "src/integer/key.rs",
+      "git_blob": "744cf02b25245c933b9b88dab7f2bad058b4f0c7",
+      "sha256": "087666d0d3a09ef7af314540d595db9e4a948eb642db0656e2e667401ace760a",
+      "content_origin": "available source snapshot, byte-verified against current pinned GitHub file"
+    }
+  ],
+  "source_access": "read-only GitHub connector; direct git clone unavailable in container",
+  "no_source_code_changes": true
+}

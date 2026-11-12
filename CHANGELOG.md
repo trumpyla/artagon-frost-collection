@@ -1,5 +1,34 @@
 # Changelog
 
+## Unreleased — prior-art survey of the value-domain algebra
+
+Documentation only. No source, feature, or public API change.
+
+- Add a curated prior-art survey of the proposed algebra as
+  `docs/research/reports/value-domain-algebra-prior-art.md`, with its input
+  under `docs/reviews/supplied` and its sources in the research catalog.
+- Add four proposed laws to `docs/design/algebra`: `BAG-MONUS`,
+  `BIMAP-COMPAT`, `CLOSURE-STABLE`, and `CTX-KEY`. Record established terms
+  as aliases; rename nothing.
+- Add a second finite-check script and a mutant runner for those laws under
+  `docs/research/formal-models/evidence`. They import no Frost code and are
+  not a build or CI step.
+
+## Unreleased — value-domain algebra documents and rules entry
+
+Documentation only. No source, feature, or public API change.
+
+- Add proposed contracts for value domains and collection algebras under
+  `docs/design/algebra`, with a research supplement and a finite model under
+  `docs/research/formal-models`. Nothing in them is implemented.
+- `AGENTS.md` is now a symlink to `docs/maintainers/agent-rules.md`. Its
+  previous text is `docs/maintainers/implementation-contracts.md`.
+- Record that public API compatibility is not a constraint for the planned
+  refactor. Semantic contracts, feature additivity, and unsafe confinement are
+  unchanged.
+- Repoint seven verification-catalog contract sources to the implementation
+  contracts. No catalog ID changed.
+
 ## Unreleased — emptied adaptive tree ranges
 
 - Fix `AdaptiveOrderedMap::range` and `range_mut` panicking on inverted or

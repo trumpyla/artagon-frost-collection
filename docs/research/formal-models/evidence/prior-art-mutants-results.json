@@ -1,0 +1,55 @@
+{
+  "schema": "frost-formal-model-mutants/v1",
+  "target": "docs/research/formal-models/evidence/prior-art-checks.mjs",
+  "mutants": 8,
+  "killed": 8,
+  "survived": 0,
+  "not_applied": 0,
+  "results": [
+    {
+      "name": "monus is absolute difference",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: iterated monus: a monus (b+c) = (a monus b) monus c"
+    },
+    {
+      "name": "chain monus is numeric subtraction",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: chain monus is the least z with a+z >= b"
+    },
+    {
+      "name": "partial-bijection validity checks the left side only",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: pair union is a partial bijection iff both mixed products are idempotent"
+    },
+    {
+      "name": "algebraic compatibility tests one mixed product",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: pair union is a partial bijection iff both mixed products are idempotent"
+    },
+    {
+      "name": "natural-number sum is bitwise or",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: a positive natural is not p-stable for any p up to 30"
+    },
+    {
+      "name": "capped product is not capped",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: capping commutes with product"
+    },
+    {
+      "name": "difference lower bound uses the deny lower bound",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: difference is the strong Kleene connective per key"
+    },
+    {
+      "name": "full memo key drops the request context",
+      "outcome": "killed",
+      "first_failure": "AssertionError [ERR_ASSERTION]: a key that includes the request context returns the direct answer"
+    }
+  ],
+  "limitations": [
+    "hand-chosen textual mutants of a JavaScript model",
+    "no Frost Rust code is mutated or executed",
+    "a killed mutant shows one definition is pinned, not that a law is proved"
+  ]
+}

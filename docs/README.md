@@ -30,6 +30,29 @@ does not validate later changes.
 | [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
 | [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
 | [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
+| [Crate split proposal](design/proposals/crate-split.md) | Measured module graph, stage-1 packages, feature map, and proposed changes to epic `frost-wlt` | Proposal |
+
+## Formal models and domain-specific algebra
+
+These are proposed contracts, not new production APIs. Read the abstract model
+before specializing it to a collection. Existing names and current standards
+remain authoritative for implemented behavior.
+
+| Document | Purpose |
+| --- | --- |
+| [Formal-algebra index](design/algebra/README.md) | Reading order, authority and scope |
+| [Abstract model](design/algebra/formal-model.md) | Denotations, representation invariants, partial operations and observable refinement |
+| [Value domains](design/algebra/domains.md) | Admissibility, key equivalence, encodings, conversions and contexts |
+| [Collection models](design/algebra/collection-models.md) | Set, sequence/list, map, bag, multimap and BiMap chapters |
+| [Frozen refinement](design/algebra/frozen.md) | Structural freezing, materialization, persistence and snapshots |
+| [Computed sets](design/algebra/execution-and-computed-sets.md) | Incomplete knowledge, streams, revisions, deltas and fixed points |
+| [Rewrite contracts](design/algebra/rewrite-contracts.md) | Preconditions for reassociation, projection and terminal-specific execution |
+| [Rust integration](design/algebra/rust-integration.md), [terminology](design/algebra/terminology.md) | Existing capability names, selected proposals and future placement |
+| [Proof obligations](design/algebra/proof-obligations.md) | Arguments, finite checks and unexecuted implementation gates |
+| [Adversarial review](reviews/value-domain-algebra-review.md) | Same-author review passes, counterexamples and remaining risks |
+| [Destination review](reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, gate results and open items |
+| [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
+| [Prior-art survey](research/reports/value-domain-algebra-prior-art.md) | Established theory and similar implementations per construct, what was reread, corrections, and the four laws added from it |
 
 ## Research corpus
 
@@ -43,6 +66,7 @@ does not validate later changes.
 | [Collection algebra survey](research/reports/collection-algebra-survey.md) | Curated survey derived from Frost1 | Research |
 | [Collection algebra implementation notes](research/reports/collection-algebra-implementation-notes.md) | Curated implementation notes derived from Frost2, with corrections | Research |
 | [Computed sets summary](research/reports/computed-sets-summary.md) | Curated summary of the computed-sets delivery note; the full report is missing | Research |
+| [Value-domain algebra prior art](research/reports/value-domain-algebra-prior-art.md) | Curated prior-art survey of the formal algebra, with per-source check levels | Research |
 | [Foundations and engine roadmap](research/synthesis/foundations-and-engine-roadmap.md) | Decision map, capability matrix, and prioritized questions | Research synthesis |
 
 Templates for new research:
@@ -133,3 +157,12 @@ Open research questions remain in the research synthesis and integration audit.
 Historical review and verification documents preserve earlier findings. The
 inputs under `reviews/supplied/` are unmodified evidence; their claims are not
 automatically current project policy.
+
+## Compact maintenance entry points
+
+[Agent entry point](../AGENTS.md), [implementation contracts](maintainers/implementation-contracts.md),
+[repository rules](maintainers/repository-rules.md),
+[documentation rules](maintainers/documentation-rules.md), and the
+[rules registry](maintainers/rules.json) refer to the existing authoritative
+[crate standard](../CRATES.md). They do not replace its layout, test catalog,
+coverage accounting, benchmark, or migration requirements.

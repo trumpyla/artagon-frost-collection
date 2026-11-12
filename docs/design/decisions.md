@@ -326,3 +326,58 @@ measurements, their limits, and the gates that ran.
 | Mutable ordered collection | `from_iter` stages, sorts, and bulk-builds, as the adaptive ordered map already does. | Collection now needs O(n) temporary staging. The duplicate rule is applied by crate code before the tree is built. |
 | Emptied adaptive tree | `range` and `range_mut` return an empty range for an empty tree. | A std tree emptied by removal validates bounds; the Sorted form and the documented contract do not. `MutableOrderedMap` and `MutableOrderedSet` keep native behavior, as documented. |
 | Not changed | The inline buffer's clone, `from_vec`, and `retain` paths; `MutableOrderedMap::append`; the linear table kept by `thaw`. | The first three are in or beside the crate's only `unsafe` module and need Miri, which was unavailable. The others need a size-ratio gate or a policy decision. The validation record lists the measurements. |
+
+## API compatibility is not a constraint, 2026-11-12
+
+The maintainer stated on 2026-11-12 that the public API does not need to stay
+compatible and that the library is to be refactored. This record states what
+that changes. It approves no specific redesign, package boundary, or name.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Public API shape | Names, module paths, signatures, trait bounds, and type parameters of existing public items may change. | The crate is unpublished at 0.4.0 (`publish = false`), and the [release procedure](../maintainers/releasing.md) still gates publication. Compatibility was a self-imposed constraint, not a user commitment. |
+| Semantic contracts | Not relaxed. The representative rules, the structural meaning of frozen, snapshot publication semantics, the integer codec laws, and the other rules in the [implementation contracts](../maintainers/implementation-contracts.md) stay in force. | This is the integrator's reading of the maintainer's statement, which named API compatibility only. Changing one of these contracts needs its own record. |
+| Feature additivity | Not relaxed. Enabling a feature still never changes a type's representation, hasher, bounds, or freeze/thaw partner. | Additivity is a property of one build under Cargo feature unification, not of compatibility between versions. |
+| Safety | Not relaxed. Unsafe stays confined, with its written invariants and Miri coverage. | A refactor that moves `src/adaptive/seq/buf.rs` moves it as a unit. |
+| Crate layout | [Crate layout](crate-layout.md) constraint 5 (every current `frost::` path resolves through the facade) is no longer required, and constraint 1 no longer forces existing set algebra to stay as inherent methods: it can become a trait or an expression layer. Constraints 2, 3, 4, and 6 to 9 follow from Rust's rules or from contracts that remain. | The package list is still the output of `frost-wlt.1`. No package is approved or created by this record. |
+| Value domains | The [formal algebra](algebra/README.md) documents were written under the compatibility constraint. Their statements that no domain parameter or binding is added to existing types are now design positions to be argued on their merits, not requirements. | The merits still weigh against a mandatory parameter on every family: it would inflate bounds for callers that have no runtime-scoped domain. A redesign of `IntKey`, of source bindings, or of snapshot payload admission is now open. |
+| Process | A breaking change carries its design record, changelog entry, rustdoc, tests, and catalog updates in the same change. Existing catalog IDs are kept; a removed public item retires its records explicitly. | [CRATES.md](../../CRATES.md) accounts coverage per public obligation, so a silent removal would leave stale obligations. |
+
+## Value-domain algebra integration and rules entry, 2026-11-12
+
+A supplied delivery added a formal specification of value domains and
+collection algebras, a research supplement with a finite model, and a
+restructure of the agent rules. This record states what the integration
+adopted. Source, features, manifests, CI, and the toolchain are unchanged.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Formal chapters | Add [docs/design/algebra](algebra/README.md) as **proposed contracts**. | They name value domains, key identity, collection carriers, operation partiality, and evaluation context separately. Nothing in them is implemented or accepted design; each chapter says so. |
+| Authority | Source, rustdoc, and tests remain authoritative for implemented behavior; [CRATES.md](../../CRATES.md) for layout, obligations, and metadata. | The chapters were written from three source files and the existing documents. The [destination review](../reviews/value-domain-algebra-destination-review.md) checked their statements about current source against a full checkout and found none wrong. |
+| Recommended spellings | Record `difference_by_key` for map restriction and `absolute_difference` for bag counts as recommendations. | Neither names an implemented item. `Q-MAP-1` and `Q-BAG-1` still own the decision. |
+| Evidence | Keep the finite model as research tooling under `docs/research/formal-models/evidence`, run with Node by hand. | It is not a Make, build, or CI step, imports no Frost code, and is not Rust test evidence. The delivered model overstated its strength; it was revised and is now accompanied by a mutant run. |
+| Research questions | Six seeded questions stay local to the supplement, each tied to the corpus question it refines. | The corpus manifest and its dependency order are unchanged. |
+| Provenance | Record the delivery archive by size and SHA-256 without committing it. | The archive is 1.3 MB, mostly earlier revisions of files already here. Its inventory therefore cannot be verified from this repository alone. |
+| Agent rules | `AGENTS.md` is a relative symlink to [the short entry](../maintainers/agent-rules.md). The previous text is [implementation contracts](../maintainers/implementation-contracts.md), unchanged apart from its header. The entry states inline the rules that hold for every change. | The delivery requested the symlink. A short auto-loaded file is easier to keep current, but an agent that does not follow its link sees fewer rules, so the inline list covers the package, feature, unsafe, and gate rules. A checkout without symlink support shows a one-line file holding the target path. |
+| Stale references | Repoint catalog contract sources, `CRATES.md`, the crate-layout design, the root README, and the research prompt template to the implementation contracts. | The catalog tool checks only that a source path is a file, so the stale paragraphs would not have been reported. No catalog ID changed. |
+
+## Prior-art survey integration, 2026-11-12
+
+A prior-art survey of the value-domain algebra was run on 2026-11-12 and
+integrated the same day as a
+[curated report](../research/reports/value-domain-algebra-prior-art.md). This
+record states what the integration adopted. It is the integrator's reading and
+is flagged for the maintainer; the chapters stay proposed contracts. Source,
+features, manifests, CI, and the toolchain are unchanged.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Names | No rename. Established terms ("monus", "compatible join", "Z-set", "certain answers", "well-formedness") are recorded as aliases in [terminology](algebra/terminology.md#established-terms-recorded-as-aliases). | The documentation rules let only a recorded decision rename. The survey recommended renames; they are listed as not adopted in the report. |
+| Citations | A chapter cites a source only when the integrator reread it on 2026-11-12, or says in the same sentence that it was not reread. | The survey marks about half of its rows as written from prior knowledge. Those rows are in the [source catalog](../research/SOURCES.md#prior-art-survey-sources-2026-11-12) as unread and support no chapter statement. |
+| `BAG-MONUS` | Add as a proposed contract in the [bag chapter](algebra/bags.md): ten identities of bag difference that hold, four set-difference identities that fail, and admission of bag rewrites from a recorded list only. | The chapter said only that difference is not an additive inverse. The survey said bag difference fails the product axiom (A5); the reread source says (A5) holds for natural numbers and fails in other weight algebras, and the law says that. |
+| `BIMAP-COMPAT` | Add in the [BiMap chapter](algebra/bimaps.md): the chapter's `compatible` is the inverse-semigroup compatibility relation; n-ary checked union needs every pair compatible. | The equivalence is proved in the chapter. The non-transitivity is a planning hazard the chapter did not state. `try_union` keeps its name and its recovery rules. |
+| `CLOSURE-STABLE` | Add in [computed sets](algebra/execution-and-computed-sets.md): a recursive weighted composition is admitted for Boolean support, an acyclic recursion, or checked counts with `Overflow` as a declared outcome. | The chapter already denied a termination argument for bags. The cited theorem gives the exact condition. The choice among the three cases, and any capped-count profile, stays open. |
+| `CTX-KEY` | Add in [computed sets](algebra/execution-and-computed-sets.md): a cached, prepared or resumed result is keyed by every context component it depends on. | The rewrite chapter already bound cached values to their context in prose. The law gives that rule an ID, and one reported defect in a production engine shows the failure. It specifies no cache. |
+| Not adopted | Equality of empty multimaps across fiber kinds; all-or-nothing as a law for every checked operation; restricting weighted closure to Boolean weights. | The first contradicts fiber-in-the-type. The second is `Q-PARTIALBI-1`. The third is one of three admitted cases. |
+| Evidence | Add `prior-art-checks.mjs` and a mutant runner beside the finite model, with recorded results. | The four laws are not in `model-checks.mjs`, whose recorded totals are unchanged. Node stays optional research tooling. |
+| Research questions | Five seeded questions are added to the supplement's prompt and stay local to it. | The corpus manifest's question list and dependency order are unchanged. |

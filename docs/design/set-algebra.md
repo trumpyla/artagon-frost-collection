@@ -10,6 +10,19 @@ categories. It is grounded in the uploaded repository, the
 [review ledger](../reviews/generic-set-algebra-review.md) records findings,
 executed checks, and the distinction between current behavior and this proposal.
 
+## Formal-domain companion
+
+This detailed expression proposal is complemented by the
+[abstract refinement model](algebra/formal-model.md),
+[value and key domains](algebra/domains.md), and [set laws](algebra/sets.md).
+For runtime-bound sources, compatible dictionaries and revision contexts are
+additional preconditions, not consequences of a common Rust element type.
+Left-representative semantics are retained. The companion implements none of
+these views and adds no domain parameter; whether a refactor should is open
+under the [API compatibility decision](decisions.md#api-compatibility-is-not-a-constraint-2026-11-12).
+Its [rewrite rules](algebra/rewrite-contracts.md) separate membership from
+representatives, order, effects, error behavior and completeness.
+
 ## 1. Recommended decision
 
 Make algebra a capability of sets and set expressions, independent of whether

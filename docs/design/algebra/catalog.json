@@ -1,0 +1,682 @@
+{
+  "schema": "frost-formal-algebra-catalog/v1",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "status": "proposed-contract",
+  "production_api_changed": false,
+  "authority": {
+    "implementation": "source/rustdoc/contracts at pinned revision",
+    "layout": "CRATES.md",
+    "current_names": "docs/design/collection-algebra.md#naming-dispositions (current selections; a recorded decision may change them)",
+    "this_proposal": "docs/design/algebra/README.md",
+    "api_compatibility": "docs/design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12"
+  },
+  "concepts": [
+    {
+      "name": "Value domain",
+      "model": "D=(T,P)",
+      "role": "admissibility; equality and enumeration are separate"
+    },
+    {
+      "name": "Key domain",
+      "model": "(D, equivalence)",
+      "role": "logical identity with observable representatives"
+    },
+    {
+      "name": "Set",
+      "model": "finite subsets of quotient keys",
+      "implemented": [
+        "MutableOrderedSet",
+        "FrozenOrderedSet",
+        "MutableHashSet",
+        "FrozenHashSet"
+      ],
+      "proposed": [
+        "SetView"
+      ]
+    },
+    {
+      "name": "Encoded set",
+      "implemented": [
+        "FrozenIntSet"
+      ],
+      "distinct_proposals": [
+        "IntSetExpr",
+        "FrozenIntSetView",
+        "PersistentIntSet"
+      ]
+    },
+    {
+      "name": "Map",
+      "model": "finite partial function",
+      "implemented": [
+        "MutableOrderedMap",
+        "FrozenOrderedMap",
+        "MutableHashMap",
+        "FrozenHashMap"
+      ],
+      "proposed": [
+        "MapView"
+      ]
+    },
+    {
+      "name": "Sequence",
+      "aliases": [
+        "mathematical list"
+      ],
+      "model": "finite words",
+      "implemented": [
+        "MutableVec",
+        "FrozenVec",
+        "InlineVec",
+        "InlineFrozenVec"
+      ],
+      "candidate": [
+        "SequenceView"
+      ]
+    },
+    {
+      "name": "Bag",
+      "aliases": [
+        "multiset"
+      ],
+      "model": "finite-support natural counts",
+      "candidate": [
+        "MutableBag",
+        "FrozenBag",
+        "BagView"
+      ]
+    },
+    {
+      "name": "Multimap",
+      "model": "finite-support fiber map",
+      "selected_proposed_names": [
+        "SeqMultiMap",
+        "SetMultiMap",
+        "BagMultiMap"
+      ],
+      "lifecycle_partners": "not decided by this refinement"
+    },
+    {
+      "name": "BiMap",
+      "model": "finite partial bijection",
+      "selected_proposed_names": [
+        "MutableBiMap",
+        "FrozenBiMap"
+      ]
+    },
+    {
+      "name": "Frozen",
+      "model": "structural access/lifecycle refinement, not separate collection carrier",
+      "implemented": [
+        "Frozen"
+      ],
+      "not_introduced": [
+        "FrozenValue",
+        "FrozenCollection",
+        "FrozenList",
+        "FrozenValueDomain"
+      ]
+    }
+  ],
+  "laws": [
+    {
+      "id": "FM-REFINE",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Representation refinement",
+      "statement": "Safety implication with typed preconditions; separate progress and error obligations",
+      "evidence": "definition; no generic executable implementation"
+    },
+    {
+      "id": "FM-OBS",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Observable refinement",
+      "statement": "Allowed-trace sets model unspecified order; equality is stronger than refinement",
+      "evidence": "definition; effect/representation counterexamples"
+    },
+    {
+      "id": "FM-PREFIX",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Stream prefix soundness",
+      "statement": "Every emitted item justified; completeness must be separately established",
+      "evidence": "definition; not exercised by the finite model"
+    },
+    {
+      "id": "DOM-EQ",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Stable key equivalence",
+      "statement": "Equivalence classes require reflexivity, symmetry, transitivity and stability",
+      "evidence": "obligation; the model generates equivalences by construction and does not test this law"
+    },
+    {
+      "id": "DOM-CONGRUENCE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Quotient congruence",
+      "statement": "Key-only operations constant on each equivalence class",
+      "evidence": "finite functions/filters and representative counterexample"
+    },
+    {
+      "id": "DOM-VALID",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Validation soundness",
+      "statement": "Successful admission implies predicate; completeness/termination not inferred",
+      "evidence": "table of percentage boundary cases; general obligation"
+    },
+    {
+      "id": "DOM-NORMALIZE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Typed normalization",
+      "statement": "Separate raw meaning from valid-output equivalence; explicit embedding for idempotence",
+      "evidence": "proof obligation; raw-to-integer example and constant-normalizer counterexample"
+    },
+    {
+      "id": "DOM-CODE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Code injectivity",
+      "statement": "Key-code inverse on image; existing IntKey has stronger full-value laws",
+      "evidence": "proof obligation; current source mapping, no codec implementation executed"
+    },
+    {
+      "id": "DOM-IMAGE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Conversion homomorphisms",
+      "statement": "Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR; inclusion directions otherwise",
+      "evidence": "proof argument plus all functions on three keys, each operation separately; bag pushforward of sum"
+    },
+    {
+      "id": "SET-BOOLEAN",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Finite set laws",
+      "statement": "Membership laws, explicit universe and count formulas",
+      "evidence": "bounded exhaustive equations and independent sorted merge"
+    },
+    {
+      "id": "SET-REP",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Representative refinement",
+      "statement": "Left union/intersection associate; commutation, XOR reassociation, and two absorption/distribution orientations can fail",
+      "evidence": "pointwise argument, metadata enumeration, pinned left rule"
+    },
+    {
+      "id": "MAP-LIFT",
+      "document": "docs/design/algebra/maps.md",
+      "name": "Map merge lifting",
+      "statement": "Lift collision resolver through absence and check totality/definedness",
+      "evidence": "pointwise proof argument; finite overrides/sum/deletion counterexample"
+    },
+    {
+      "id": "BAG-LAWS",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Count algebras",
+      "statement": "Natural sum versus max/min/monus/absolute difference",
+      "evidence": "pointwise argument, exhaustive small counts and counterexamples"
+    },
+    {
+      "id": "COUNT-PARTIAL",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Bounded count addition",
+      "statement": "Either association succeeds iff total fits; errors/traces separate",
+      "evidence": "nonnegative arithmetic argument and a model with bound M=3"
+    },
+    {
+      "id": "BAG-SUPPORT",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Support projection",
+      "statement": "Preserves sum/max as union and min as intersection; not monus/XOR",
+      "evidence": "pointwise proof and finite model"
+    },
+    {
+      "id": "SEQ-MONOID",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Free monoid",
+      "statement": "Concatenation identity/association, occurrence preservation",
+      "evidence": "word argument and finite words"
+    },
+    {
+      "id": "SEQ-EFFECT",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Execution effects",
+      "statement": "Pure equations do not establish callback/error/drop equivalence",
+      "evidence": "design obligation; future Rust effect/drop tests required"
+    },
+    {
+      "id": "MM-SUPPORT",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Empty-fiber normalization",
+      "statement": "Canonical proposed multimap absent iff fiber empty; native maps may differ",
+      "evidence": "definition and present-empty counterexample"
+    },
+    {
+      "id": "REL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Boolean relation composition",
+      "statement": "Existential witnesses; associative and union-distributive",
+      "evidence": "witness proof argument and finite Boolean matrices"
+    },
+    {
+      "id": "BAGREL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Weighted composition",
+      "statement": "Sum of products counts derivations; cycle convergence is a separate question in computed sets",
+      "evidence": "finite double-sum argument; 2×2 matrices with weights 0..2, cross-checked against Boolean composition"
+    },
+    {
+      "id": "BIMAP-CLOSED",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Partial-bijection closure",
+      "statement": "Subsets/inverse/composition preserve both uniqueness projections",
+      "evidence": "proof argument and all small partial bijections"
+    },
+    {
+      "id": "BIMAP-IDENTITY",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Local inverse identities",
+      "statement": "Identities on domain/range; global finite identity requires finite universe",
+      "evidence": "proof argument and finite model"
+    },
+    {
+      "id": "BIMAP-PARTIAL",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Checked operations",
+      "statement": "Union partial definedness associates; checked XOR does not",
+      "evidence": "subset proof argument; enumeration against validity of the three-way union; explicit conflict counterexample"
+    },
+    {
+      "id": "FROZEN-DENOTE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Phase transition",
+      "statement": "Successful freeze of lawful family preserves denotation, not all representation details",
+      "evidence": "typed contract; actual Rust transitions not executed"
+    },
+    {
+      "id": "FROZEN-STABLE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Structural versus deep stability",
+      "statement": "Fixed structure is not fixed heap payload or source revision",
+      "evidence": "abstract heap counterexample; no Rust aliasing proof"
+    },
+    {
+      "id": "KNOW-BOUNDS",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Incomplete set knowledge",
+      "statement": "Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption",
+      "evidence": "inclusion proof; soundness and tightness over all interval realizations on three keys"
+    },
+    {
+      "id": "DELTA-REPLAY",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Revisioned overlays",
+      "statement": "Exact base plus ordered complete suffix; ordered compaction preserves result",
+      "evidence": "fold decomposition argument; short histories against a last-event-wins reference"
+    },
+    {
+      "id": "BAG-MONUS",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Difference identities",
+      "statement": "Ten identities of natural-number monus hold; four set-difference identities fail under the sum and min reading; no finite complete rule set",
+      "evidence": "case argument; supplementary checks on counts 0..6; non-axiomatizability cited from SRC-PRIOR-SUCIU-DIFFERENCES, not proved"
+    },
+    {
+      "id": "BIMAP-COMPAT",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Compatibility",
+      "statement": "Functional pair union iff both mixed products are partial identities; orthogonal implies compatible; not transitive; composition distributes over compatible union",
+      "evidence": "proof argument; supplementary checks on all 34 partial bijections on three keys"
+    },
+    {
+      "id": "CLOSURE-STABLE",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Recursive weighted composition",
+      "statement": "Converges for every program iff the weight semiring is stable; N is not stable; capping commutes with sum and product",
+      "evidence": "theorem cited from SRC-PRIOR-DATALOGO, not re-proved; instances in the supplementary checks"
+    },
+    {
+      "id": "CTX-KEY",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Context in result keys",
+      "statement": "A reused result is keyed by every context component it depends on; reuse never upgrades a status",
+      "evidence": "argument from FM-REFINE; three-outcome toy model in the supplementary checks; incident SRC-PRIOR-SPICEDB-CVE-2026-55866"
+    }
+  ],
+  "implementation_plan": "docs/design/algebra/rust-integration.md",
+  "package_decision": "frost-wlt.1; no package list approved by this patch",
+  "checks": {
+    "model": "docs/research/formal-models/evidence/model-checks.mjs",
+    "results": "docs/research/formal-models/evidence/model-results.json",
+    "mutants": "docs/research/formal-models/evidence/model-mutants.mjs",
+    "mutant_results": "docs/research/formal-models/evidence/model-mutants-results.json",
+    "prior_art_checks": "docs/research/formal-models/evidence/prior-art-checks.mjs",
+    "prior_art_results": "docs/research/formal-models/evidence/prior-art-checks-results.json",
+    "prior_art_mutants": "docs/research/formal-models/evidence/prior-art-mutants.mjs",
+    "prior_art_mutant_results": "docs/research/formal-models/evidence/prior-art-mutants-results.json",
+    "note": "counterexamples without a check field belong to model-checks.mjs; its totals exclude prior-art-checks"
+  },
+  "historical_aliases": [
+    {
+      "old": "ListMultiMap",
+      "current": "SeqMultiMap",
+      "reason": "selected on current main; no linked-list implication"
+    },
+    {
+      "old": "MapGet/Get for maps",
+      "current": "LookupRef",
+      "reason": "existing capability retained"
+    },
+    {
+      "old": "SortedMapEntries",
+      "current": "Entries plus OrderedEntries",
+      "reason": "existing split retained"
+    },
+    {
+      "old": "bag symmetric_difference",
+      "current": "absolute_difference",
+      "reason": "new proposal spelling; no Boolean XOR associativity"
+    },
+    {
+      "old": "difference_keys",
+      "current": "difference_by_key",
+      "reason": "recommendation, not an implemented rename"
+    }
+  ],
+  "counterexamples": [
+    {
+      "id": "CX-REP-ABSORPTION",
+      "kind": "computed",
+      "why": "(B intersection A) union A returns B's representative, not A's"
+    },
+    {
+      "id": "CX-REP-DISTRIBUTE",
+      "kind": "computed",
+      "why": "(B intersection C) union A and (B union A) intersection (C union A) select different representatives"
+    },
+    {
+      "id": "CX-SET-XOR-REP",
+      "kind": "computed",
+      "why": "membership XOR association loses the selected representative"
+    },
+    {
+      "id": "CX-SET-UNION-COMMUTE",
+      "kind": "computed",
+      "why": "left representatives are not commutative"
+    },
+    {
+      "id": "CX-REP-FILTER",
+      "kind": "computed",
+      "why": "representative-sensitive filtering is not key-class filtering"
+    },
+    {
+      "id": "CX-COLLAPSED-INTERSECTION",
+      "kind": "computed",
+      "why": "a and b become the same target key"
+    },
+    {
+      "id": "CX-COLLAPSED-DIFFERENCE",
+      "kind": "computed",
+      "why": "projection changes exclusion"
+    },
+    {
+      "id": "CX-CANONICAL-IDEMPOTENCE",
+      "kind": "computed",
+      "why": "a constant normalizer is idempotent but not identity-preserving"
+    },
+    {
+      "id": "CX-BAG-ABS-ASSOC",
+      "kind": "computed",
+      "why": "absolute difference is not XOR"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-MONUS",
+      "kind": "computed",
+      "why": "positive residual multiplicity is lost by set subtraction"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MAX",
+      "kind": "computed",
+      "why": "coalescing keys changes maximum counts"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MIN",
+      "kind": "computed",
+      "why": "coalescing keys invents overlap"
+    },
+    {
+      "id": "CX-BAG-PUSHFORWARD-MONUS",
+      "kind": "computed",
+      "why": "coalescing keys cancels a residue that the separate keys keep"
+    },
+    {
+      "id": "CX-BAG-SUPPORT-ABS",
+      "kind": "computed",
+      "why": "absolute difference of unequal positive counts is positive; XOR of equal supports is empty"
+    },
+    {
+      "id": "CX-MAP-DELETE-ASSOC",
+      "kind": "computed",
+      "why": "a deleted binding can reappear differently after reassociation"
+    },
+    {
+      "id": "CX-MAP-SUBTRACT-ASSOC",
+      "kind": "computed",
+      "why": "closure does not imply associativity"
+    },
+    {
+      "id": "CX-MAP-PRESENT-NONE",
+      "kind": "illustration",
+      "why": "stored None is not missing"
+    },
+    {
+      "id": "CX-MAP-REP-PAYLOAD",
+      "kind": "illustration",
+      "why": "left key metadata plus right payload may violate a dependent invariant"
+    },
+    {
+      "id": "CX-JOIN-TUPLE-TYPE",
+      "kind": "computed",
+      "why": "join reassociation requires an explicit product isomorphism"
+    },
+    {
+      "id": "CX-NONEMPTY-CLOSURE",
+      "kind": "computed",
+      "why": "nonempty inputs can have empty intersection"
+    },
+    {
+      "id": "CX-CARDINALITY-CAP",
+      "kind": "computed",
+      "why": "a one-element collection bound is not closed under union"
+    },
+    {
+      "id": "CX-DERIVED-IDENTITY",
+      "kind": "illustration",
+      "why": "whole-record structural equality differs from selected-key identity"
+    },
+    {
+      "id": "CX-ZIP-CONCAT",
+      "kind": "computed",
+      "why": "length-misaligned concat changes pair positions"
+    },
+    {
+      "id": "CX-SEQ-INTERSECTION",
+      "kind": "computed",
+      "why": "membership-filter and bag-min intersection differ"
+    },
+    {
+      "id": "CX-REL-WITNESSES",
+      "kind": "computed",
+      "why": "two derivations become one Boolean pair"
+    },
+    {
+      "id": "CX-MM-PRESENT-EMPTY",
+      "kind": "computed",
+      "why": "native map empty fiber is not automatically normalized absence"
+    },
+    {
+      "id": "CX-MM-GROUP-REP",
+      "kind": "illustration",
+      "why": "group key and pair-origin contracts differ"
+    },
+    {
+      "id": "CX-MM-FLATTEN",
+      "kind": "computed",
+      "why": "grouping loses global interleaving"
+    },
+    {
+      "id": "CX-BIMAP-XOR-DEFINEDNESS",
+      "kind": "computed",
+      "why": "intermediate conflict changes success/failure"
+    },
+    {
+      "id": "CX-BIMAP-UNION-CLOSURE",
+      "kind": "computed",
+      "why": "two partners for one left key"
+    },
+    {
+      "id": "CX-BIMAP-RIGHT-UNIQUENESS",
+      "kind": "computed",
+      "why": "two left keys for one right key"
+    },
+    {
+      "id": "CX-BIMAP-PAIR-KEY-DIFF",
+      "kind": "computed",
+      "why": "equal left key but different pair"
+    },
+    {
+      "id": "CX-INCOMPLETE-DENY",
+      "kind": "computed",
+      "why": "using a deny lower bound as complete absence invents an allowed member"
+    },
+    {
+      "id": "CX-DELTA-ORDER",
+      "kind": "computed",
+      "why": "union of all inserts minus all deletes ignores last-write order"
+    },
+    {
+      "id": "CX-EMPTY-DOMAIN-SHORTCUT",
+      "kind": "computed",
+      "why": "an empty-operand shortcut hides a required compatibility error"
+    },
+    {
+      "id": "CX-FROZEN-DEEP-STABILITY",
+      "kind": "computed",
+      "why": "fixed membership does not freeze external payload state"
+    },
+    {
+      "id": "CX-OWNED-VS-BORROWED",
+      "kind": "illustration",
+      "why": "materialized references are not lifetime-independent"
+    },
+    {
+      "id": "CX-BAG-MONUS-SUM-CANCEL",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "(A sum B) monus B is A, not A monus B"
+    },
+    {
+      "id": "CX-BAG-MONUS-SUM-DIST",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "monus does not distribute over bag sum"
+    },
+    {
+      "id": "CX-BAG-MONUS-MIN",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "min with a difference is not the difference of the min"
+    },
+    {
+      "id": "CX-BAG-MONUS-NESTED",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "nested difference does not split into difference and min"
+    },
+    {
+      "id": "CX-MSEMIRING-A5",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "product does not distribute over monus in the max/min chain on three values"
+    },
+    {
+      "id": "CX-BIMAP-COMPAT-TRANSITIVE",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "two BiMaps compatible with the empty BiMap need not be compatible with each other"
+    },
+    {
+      "id": "CX-CLOSURE-N-DIVERGES",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "weighted closure over N keeps growing on a cycle; the Boolean closure of the same graph is fixed"
+    },
+    {
+      "id": "CX-CTX-CACHE-KEY",
+      "kind": "computed",
+      "check": "prior-art-checks",
+      "why": "a memo key without the caveat input returns Member where the direct answer is Conditional"
+    }
+  ],
+  "established_aliases": [
+    {
+      "here": "representation invariant I_R",
+      "established": "well-formedness predicate",
+      "source": "SRC-PRIOR-LEAN-MAPS",
+      "level": "integration-checked"
+    },
+    {
+      "here": "bag difference",
+      "established": "monus",
+      "source": "SRC-PRIOR-GEERTS-POGGI",
+      "level": "integration-checked"
+    },
+    {
+      "here": "signed carrier Z^(K)",
+      "established": "Z-set",
+      "source": "SRC-PRIOR-DBSP",
+      "level": "integration-checked"
+    },
+    {
+      "here": "compatible(R,S), try_union",
+      "established": "compatibility relation, compatible join",
+      "source": "SRC-PRIOR-LAWSON-PRIMER",
+      "level": "integration-checked"
+    },
+    {
+      "here": "union with disjoint endpoint sets",
+      "established": "orthogonal join",
+      "source": "SRC-PRIOR-LAWSON-PRIMER",
+      "level": "integration-checked"
+    },
+    {
+      "here": "weight algebra with terminating closure",
+      "established": "stable semiring",
+      "source": "SRC-PRIOR-DATALOGO",
+      "level": "integration-checked"
+    },
+    {
+      "here": "knowledge bounds [L,U]",
+      "established": "certain answers for L; possible answers for U",
+      "source": "SRC-PRIOR-LIBKIN-2016",
+      "level": "integration-checked for L and its criterion; the term for U is unread"
+    },
+    {
+      "here": "Seq, Bag, Set",
+      "established": "free monoid and its commutative and idempotent quotients",
+      "source": "SRC-PRIOR-BIRD-PRG69",
+      "level": "integration-checked"
+    },
+    {
+      "here": "left representative",
+      "established": "left-biased union",
+      "source": "none read",
+      "level": "unread"
+    },
+    {
+      "here": "align_with tags",
+      "established": "These, Ior, EitherOrBoth",
+      "source": "SRC-PRIOR-SEMIALIGN",
+      "level": "survey-read"
+    }
+  ],
+  "prior_art": {
+    "report": "docs/research/reports/value-domain-algebra-prior-art.md",
+    "sources": "docs/research/SOURCES.md#prior-art-survey-sources-2026-11-12",
+    "renames": "none; aliases only"
+  }
+}

@@ -64,7 +64,8 @@ stop_criteria: []          # acceptance or stop conditions
 Act as a Rust systems researcher and algebra/verification engineer. Answer the
 question so the maintainer can make the engineering decision. Produce the
 report file named in `output_path`, not a plan, a library list, or a chat
-summary. Read the repository's current `AGENTS.md`, `TOOLS.md`, design
+summary. Read the repository's current `AGENTS.md`, the implementation contracts it
+links (`docs/maintainers/implementation-contracts.md`), `TOOLS.md`, design
 documents, relevant code, tests, and the parent research before writing.
 State what you could not inspect.
 

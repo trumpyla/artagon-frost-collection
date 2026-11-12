@@ -7,6 +7,10 @@ reorganization epic `frost-wlt`, which depends on the standards epic
 is approved. [CRATES.md](../../CRATES.md) holds the rules that apply to every
 package; this document holds the design inputs for the split.
 
+The [crate split proposal](proposals/crate-split.md) of 2026-11-12 supplies a
+measured module graph, checks which cycles Rust allows cutting, and proposes a
+stage-1 package set and revised `frost-wlt` tasks. It is not approved.
+
 ## Current layout
 
 One package, `frost-collections` 0.4.0, library name `frost`, Rust 1.99.1,
@@ -72,7 +76,10 @@ compatibility decision.
    the owning package's feature of the same name. Enabling a feature still never
    changes a type's representation, hasher, bounds, or freeze/thaw partner.
 5. **Public paths are API.** Every current `frost::` path, prelude item, and
-   `compile_fail` doctest path must resolve through the facade.
+   `compile_fail` doctest path must resolve through the facade. *Relaxed on
+   2026-11-12:* the [API compatibility decision](decisions.md#api-compatibility-is-not-a-constraint-2026-11-12)
+   permits paths to change. Constraint 1 still describes Rust's rule, but
+   existing set algebra may now become a trait or expression layer.
 6. **Unsafe stays confined.** `src/adaptive/seq/buf.rs` moves as a unit with its
    safety comments, Miri lanes, and the Kani harness that includes it by path.
 7. **Path-included harnesses keep linking production code.** The publication
@@ -133,8 +140,9 @@ The tracker tasks under `frost-wlt` are authoritative. In summary:
 
 1. `frost-wlt.1`: approve the outputs above.
 2. `frost-wlt.2`: move code, tests, examples, benchmarks, factories, and
-   catalog records to their owners, and update the one-package policy in
-   [AGENTS.md](../../AGENTS.md), [decisions](decisions.md), and
+   catalog records to their owners, and update the one-package policy in the
+   [implementation contracts](../maintainers/implementation-contracts.md),
+   [decisions](decisions.md), and
    [CRATES.md](../../CRATES.md) in the same change. Do not weaken tests or
    duplicate algorithms. Catalog IDs survive the move unchanged, even though
    their middle segment names the target where each case was first registered

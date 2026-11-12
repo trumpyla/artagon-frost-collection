@@ -1,0 +1,349 @@
+{
+  "schema": "frost-formal-supplement/v1",
+  "date": "2026-11-12",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "path_base": "repository-root",
+  "scope": "this documentation/refinement supplement, not the full historical corpus",
+  "self_hash": "omitted to avoid recursive hashing",
+  "no_production_api_change": true,
+  "no_package_approval": true,
+  "artifacts": [
+    {
+      "path": "AGENTS.md",
+      "kind": "symlink",
+      "sha256": "95f14cb699ee0a62f3bf7ac87810f09cb33c1ecea8b3ab8286b53c5766a4ca6f",
+      "bytes": 31,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "README.md",
+      "kind": "file",
+      "sha256": "9293f21702705c8e3621a0e3e40dd9546771e7cdf3e8ae7a406a5f8beee2db63",
+      "bytes": 43046,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "file",
+      "sha256": "011d0df545a978a033970b7d8376e3ba170abd540cdcff6fce0e4530f96319e2",
+      "bytes": 13943,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/README.md",
+      "kind": "file",
+      "sha256": "0b70bceef860aed9398c35b6d8b8c9ed56e2bc4fa069540a051bb3a31eb1704a",
+      "bytes": 5030,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/bags.md",
+      "kind": "file",
+      "sha256": "17081014ff8072e96abf2f83031256959ed5974c3d9e6ac42a3ae739f590ab65",
+      "bytes": 7616,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/bimaps.md",
+      "kind": "file",
+      "sha256": "8290368356b402e196e9259fccefcedbd3a204ef4ee079908924b251eced196d",
+      "bytes": 7388,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/catalog.json",
+      "kind": "file",
+      "sha256": "1f436720af240943fa1404800704975f2ceab9a38fd6700d7d7ae30e406900da",
+      "bytes": 23568,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/collection-models.md",
+      "kind": "file",
+      "sha256": "8f2dbc25cf6f027d980f059ffa4074a56bbd6183dbb6cad0fd01d7990bfe160e",
+      "bytes": 1411,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/domains.md",
+      "kind": "file",
+      "sha256": "c41b928dcda539b8dbc10eabd142b9f23c94f221ccae158e051398eedc3b9da5",
+      "bytes": 10997,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/execution-and-computed-sets.md",
+      "kind": "file",
+      "sha256": "96370aaf61dd32156b2384e5f0af19055f3ab2d616e3fcb27d3702b6c22ed83d",
+      "bytes": 10539,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/formal-model.md",
+      "kind": "file",
+      "sha256": "00154ed90d5c8814a3e0f620c87764cc5720a1f3e0d209f827b98679b0b75966",
+      "bytes": 9718,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/frozen.md",
+      "kind": "file",
+      "sha256": "814018952f8b2f0d0b6cba2f7fb8ebf43b425566c5a24d3c68576c6dfdd29c09",
+      "bytes": 5665,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/maps.md",
+      "kind": "file",
+      "sha256": "a0b790c42138e2acc171cb8987581c3ac637f2cea9ed432c23f44fd475dee2f4",
+      "bytes": 6150,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/multimaps.md",
+      "kind": "file",
+      "sha256": "0866cd6ebb43fb55df76a942c3abd3634f3d8b1a03142bd34f8793f260ec1786",
+      "bytes": 6091,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/proof-obligations.md",
+      "kind": "file",
+      "sha256": "be293619550c4a7cf386ebabf603d328a6d07ea6d97a3ec34cc3073bbe2ca4a4",
+      "bytes": 12456,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/rewrite-contracts.md",
+      "kind": "file",
+      "sha256": "9d35345fc2de8e65e811be5771f368d5e4a67b193fbeaab6de0bca5080be8a2d",
+      "bytes": 6071,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/rust-integration.md",
+      "kind": "file",
+      "sha256": "71e8edc034610b6a6555106f098cb6471a7993234010dc001b4f864aa6249c5d",
+      "bytes": 7428,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/sequences.md",
+      "kind": "file",
+      "sha256": "88757ebc6cdb6ff9f7583298d865912c3231acea29887d2af24dc13176a139b4",
+      "bytes": 4819,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/sets.md",
+      "kind": "file",
+      "sha256": "c9594abce1b0860ce393b7518379fe36b735128db92f82a519fb54234fed1c31",
+      "bytes": 5739,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/terminology.md",
+      "kind": "file",
+      "sha256": "43e182f1bac825cd7ae7362f306f97f656f9de421c2ab32c973a2ce6f5080623",
+      "bytes": 5905,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/collection-algebra.md",
+      "kind": "file",
+      "sha256": "b2d0013ef745d064acc677ceaeea681cf725a93e35cc24aa89d4bac04c3c32ef",
+      "bytes": 19065,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/set-algebra.md",
+      "kind": "file",
+      "sha256": "159d87a2451346dd53993c0316327deb1db29f961adc3330303e8a0e44c16017",
+      "bytes": 45582,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/agent-rules.md",
+      "kind": "file",
+      "sha256": "e28f83b130f308145659a7cbab9271efe36375b2c8fb3bfb7a1657042aed96a9",
+      "bytes": 2535,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/documentation-rules.md",
+      "kind": "file",
+      "sha256": "0c5e0bd1f690d92a90b68ce470e9e2c61047d6f9d484379759c07b68c09e8cd1",
+      "bytes": 4146,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/implementation-contracts.md",
+      "kind": "file",
+      "sha256": "e84763928f3feecd2681718e75a7e0983ee18466c27d302eefaa7f3ecdf8a4cd",
+      "bytes": 9618,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/repository-rules.md",
+      "kind": "file",
+      "sha256": "9b26f0f6d4598f0df5d58357f38aa4bc03698d35420d435f8541df98bdc56609",
+      "bytes": 2337,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/rules.json",
+      "kind": "file",
+      "sha256": "f5c2f7a5ec81b2d799d97e01cfa71a844d9f23d6f044945421250cc7b7d6cc2b",
+      "bytes": 1023,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/README.md",
+      "kind": "file",
+      "sha256": "6ccdfa5e89d4140051b0ab7f2c67af51f5fd873b7e3028c581f9646d3bf906fb",
+      "bytes": 10343,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/README.md",
+      "kind": "file",
+      "sha256": "036eaba5f7df3299a7de2e5ddf468e83d01f445a9135e5aaee757bd8bfc183d0",
+      "bytes": 8320,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/SOURCES.md",
+      "kind": "file",
+      "sha256": "31b0f7d726d9483984fe74f7b2dc358bb6d1077d1ce288507b31c4c1e20a77f4",
+      "bytes": 4991,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/baseline.json",
+      "kind": "file",
+      "sha256": "263bc727129039c577f96381edda44a125a74ef2d4b08f5b7959a39232b9621c",
+      "bytes": 2422,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/model-checks.mjs",
+      "kind": "file",
+      "sha256": "9fb6a5abe739cc8849a49a2c2fe3c086f2885b84a8756b156db0ea99b5e54440",
+      "bytes": 24383,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/model-mutants-results.json",
+      "kind": "file",
+      "sha256": "0fb4cb15e3e63d05a9ec37124524f97fe901c2f22966e7c7aa807ccaf65d4978",
+      "bytes": 3874,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/model-mutants.mjs",
+      "kind": "file",
+      "sha256": "d465b53608487a2732692ab20a293945192fa5d7b3294d4507a303cdbdc3d2d5",
+      "bytes": 4295,
+      "status": "research-tooling"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/model-results.json",
+      "kind": "file",
+      "sha256": "fd74039d2f05e9f3aac9a4e6845a6944a7f55198931559ccf26e8f8376286ac4",
+      "bytes": 11691,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/prior-art-checks-results.json",
+      "kind": "file",
+      "sha256": "b6da74bd0595ee203f24e70cd72d0fa1f6d0f02056761345de1de4369045d86b",
+      "bytes": 4145,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/prior-art-checks.mjs",
+      "kind": "file",
+      "sha256": "62a7b2839ca6ecd36ab74266474e68234244a96367d81730bc065201de199f75",
+      "bytes": 16887,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/prior-art-mutants-results.json",
+      "kind": "file",
+      "sha256": "c60582dc5239b7d092e1e3485988315750abcf27d9993afd2a7893a47e4e9513",
+      "bytes": 2085,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/prior-art-mutants.mjs",
+      "kind": "file",
+      "sha256": "20effa61c82b816b9e6e574bd6cfec8b33591b4fc67821291bd52e92bbf0dd90",
+      "bytes": 3165,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/input-inventory.json",
+      "kind": "file",
+      "sha256": "d0623b1e42fc69607a9ef200e772436376ca6f4437291c1208bb6d74576fbd67",
+      "bytes": 227755,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/research-prompt.md",
+      "kind": "file",
+      "sha256": "df675bcfd2b6369238285b783b4a6b53f495bcc657e4beffcb9f28da2a8593e3",
+      "bytes": 5850,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/source-map.md",
+      "kind": "file",
+      "sha256": "1219d490a84bfc0b60234ef68d3bddf3a54ab211fb8ea12816ac683e504c4a1d",
+      "bytes": 4911,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/validation.md",
+      "kind": "file",
+      "sha256": "14cf1614a5b8c7e8bdb6f03c1ab954e9119b2e84206922c2f48d8819873a18a4",
+      "bytes": 9524,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/reports/value-domain-algebra-prior-art.md",
+      "kind": "file",
+      "sha256": "88e4fbb522bf608a488e8f7038fe7d61d7b36f584a784e4c093345940de3577e",
+      "bytes": 33536,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/reviews/supplied/value-domain-algebra-prior-art-survey-sources.txt",
+      "kind": "file",
+      "sha256": "02ce8d7e5ce80b13752d661ded9c15befcb6006f24dc48254fcb19c0640ca45c",
+      "bytes": 6171,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/reviews/supplied/value-domain-algebra-prior-art-survey.md",
+      "kind": "file",
+      "sha256": "e96cc829088ddb57e3ad1b00c2d8d4ff270a6d9482fffcf3bcf32132c6a17d59",
+      "bytes": 39313,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/reviews/value-domain-algebra-destination-review.md",
+      "kind": "file",
+      "sha256": "c0d7603b53f52121520beb276ad9eeae34f0204ac6ac1f0cc9c8d66cc1707fab",
+      "bytes": 10277,
+      "status": "review"
+    },
+    {
+      "path": "docs/reviews/value-domain-algebra-review.md",
+      "kind": "file",
+      "sha256": "75fe99ec470a60c4a4903dc7072aa0c365b855e91bc3d5937836271edd32cc39",
+      "bytes": 10338,
+      "status": "documentation-proposal-or-navigation"
+    }
+  ],
+  "regenerated": "2026-11-12 at integration; hashes describe the corrected files, not the delivery. Regenerated again on 2026-11-12 after the prior-art survey integration, which added seven artifacts"
+}

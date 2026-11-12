@@ -5,8 +5,10 @@ each directory may contain, which dependencies may reach which build, and what
 evidence a public API needs. It applies now to the single root package and,
 after the reorganization, to every package under `crates/`.
 
-[AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) state the
-semantic contracts and the normal workflow. The
+The [implementation contracts](docs/maintainers/implementation-contracts.md)
+(reached through the [AGENTS.md](AGENTS.md) entry point) and
+[CONTRIBUTING.md](CONTRIBUTING.md) state the semantic contracts and the normal
+workflow. The
 [testing standard](docs/maintainers/testing.md) defines gate tiers and
 obligation categories in detail; [verification scope](docs/verification.md)
 states what each tool proves; the [crate layout design](docs/design/crate-layout.md)
@@ -26,8 +28,9 @@ or test metadata, this file wins; fix the other document in the same change.
 `frost-wlt` depends on `frost-wou`: the migration uses these rules; it does not
 define them. Do not create `crates/`, a workspace manifest, or placeholder
 packages outside `frost-wlt`. Until its migration change lands and updates the
-decision record, the one-package policy in [AGENTS.md](AGENTS.md) remains in
-force.
+decision record, the one-package policy in the
+[implementation contracts](docs/maintainers/implementation-contracts.md#toolchain-and-layout)
+remains in force.
 
 Rules carry stable IDs (`CR-<AREA>-<n>`) so reviews, issues, and catalog records
 can cite them. Do not renumber a rule; retire it and add a new ID.
@@ -209,7 +212,7 @@ gives the detailed test requirements for each.
 
 | Category | Required evidence |
 | --- | --- |
-| Contract mapping | Each obligation names its documented contract (rustdoc, design document, or `AGENTS.md` rule) and the tests that check it |
+| Contract mapping | Each obligation names its documented contract (rustdoc, design document, or implementation-contracts rule) and the tests that check it |
 | Positive behavior | Results compared with an independent oracle: a standard-library collection, a finite model, or fixed expected values |
 | Negative behavior | Rejection, error, and returned-input paths; strict constructors return the rejected item |
 | Compile-fail | Forbidden mutation, capability, lifetime, and payload uses, as `compile_fail` doctests with error codes where stable |

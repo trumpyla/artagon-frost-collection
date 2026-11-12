@@ -4,7 +4,7 @@
     {
       "id": "C-ORDERED-SET-ALGEBRA",
       "title": "Frozen ordered set algebra agrees with BTreeSet and keeps the left representative",
-      "source": "docs/set-operations.md; AGENTS.md 'Families keep the first equivalent key/element'",
+      "source": "docs/set-operations.md; docs/maintainers/implementation-contracts.md 'Families keep the first equivalent key/element'",
       "obligations": [
         "FrozenOrderedSet::intersection",
         "FrozenOrderedSet::union",
@@ -22,7 +22,7 @@
     {
       "id": "C-FIRST-KEY-LAST-VALUE",
       "title": "Families keep the first equivalent key/element and the last map value",
-      "source": "docs/design/architecture.md section 2; AGENTS.md",
+      "source": "docs/design/architecture.md section 2; docs/maintainers/implementation-contracts.md",
       "obligations": [
         "FrozenOrderedMap",
         "FrozenOrderedSet",
@@ -33,7 +33,7 @@
     {
       "id": "C-INT-SET-ALGEBRA",
       "title": "Integer profile algebra and counts agree across all representations and sharing histories",
-      "source": "docs/design/integer-sets.md; AGENTS.md integer profile paragraph",
+      "source": "docs/design/integer-sets.md; docs/maintainers/implementation-contracts.md integer profile paragraph",
       "obligations": [
         "FrozenIntSet::try_from_iter",
         "FrozenIntSet::intersection_len",
@@ -47,7 +47,7 @@
     {
       "id": "C-INT-SET-POLICY-LIMITS",
       "title": "IntSetLimits and *_with_policy operations: commutative operations take the smaller limits; difference keeps the left limits; identity shortcuts check eligibility",
-      "source": "AGENTS.md integer profile paragraph",
+      "source": "docs/maintainers/implementation-contracts.md integer profile paragraph",
       "obligations": [
         "IntSetLimits",
         "IntSetPolicy"
@@ -56,7 +56,7 @@
     {
       "id": "C-SNAPSHOT-PUBLICATION",
       "title": "publish is unconditional; publish_if_current compares allocation identity; update may repeat the callback and returns the displaced version",
-      "source": "docs/design/snapshots.md; AGENTS.md snapshot paragraph",
+      "source": "docs/design/snapshots.md; docs/maintainers/implementation-contracts.md snapshot paragraph",
       "obligations": [
         "SnapshotStore"
       ]
@@ -64,7 +64,7 @@
     {
       "id": "C-INLINE-OWNERSHIP",
       "title": "Inline storage owns exactly the initialized prefix; every element is dropped once under mutation, transfer, and unwinding",
-      "source": "docs/verification.md 'Unsafe storage under Miri'; AGENTS.md unsafe paragraph",
+      "source": "docs/verification.md 'Unsafe storage under Miri'; docs/maintainers/implementation-contracts.md unsafe paragraph",
       "obligations": [
         "InlineVec"
       ]
@@ -81,7 +81,7 @@
     {
       "id": "C-ITERATOR-PROPERTIES",
       "title": "Borrowed lookup, iterator order, partial iteration, size hints, and fusion are preserved",
-      "source": "AGENTS.md 'Contracts that must survive optimization'",
+      "source": "docs/maintainers/implementation-contracts.md 'Contracts that must survive optimization'",
       "obligations": [
         "Entries",
         "Elements",
