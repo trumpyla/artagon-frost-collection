@@ -113,3 +113,68 @@ changed). `src/`, `tests/`, `benches/`, Cargo manifests, the Makefile, CI,
 scripts, and Beads state are untouched. The
 [destination review](../../reviews/value-domain-algebra-destination-review.md)
 lists every correction.
+
+## Prior-art integration results, 2026-11-12
+
+Run in a complete checkout of the branch at `89a80b6` (based on `27b1439`)
+with the prior-art integration applied as uncommitted edits, Rust 1.99.1 and
+Node v22.23.4. The integrator is one AI session, which also ran the survey.
+
+| Check | Result |
+| --- | --- |
+| `make check` | Passed. Its link step verified 1,238 repository-local links. It started before the last documentation edits of the integration; `make doc-links` was rerun after them (next row) |
+| `make doc-links` after all edits | Passed (1,244 links) |
+| `git diff --check` | Clean |
+| `model-checks.mjs` and `model-mutants.mjs` rerun | Byte-identical to the recorded results; neither file was changed |
+| `prior-art-checks.mjs` | 88,986 assertions, 48,922 cases, 5 groups, 8 computed counterexamples; two runs identical; a run from the repository path matches the recorded results |
+| `prior-art-mutants.mjs` | 8 of 8 caught |
+| Corpus manifest against its schema | Valid (checked with the Python `jsonschema` package) |
+| Raw input hashes, byte and line counts | Match for all five raw inputs |
+| Report front matter against its manifest entry | Equal |
+| Report sections against the landscape template | All thirteen present, in order |
+| Law IDs | 31 in the catalog, 31 in the proof ledger, each bracketed in its chapter |
+| Source ids used in changed documents | All defined in a source catalog |
+| Anchors of links in changed documents | All resolve |
+| Supplement manifest | Regenerated; every listed hash and size matches |
+
+The structural rows were checked with throwaway scripts that are not kept in
+the repository.
+
+External sources: fifteen pages were fetched and read through a text
+extraction on 2026-11-12. Four pages could not be read: the Isabelle
+Collections Framework paper (client error), two Hackage pages (automated
+fetching disallowed), and one Verus issue (rate-limited twice). The
+[source catalog](../SOURCES.md#prior-art-survey-sources-2026-11-12) records
+each. Two papers were read only to the first 100,000 characters.
+
+Not run: `make verify`, the feature matrix, embedded builds, Miri, Kani, Loom,
+`cargo-mutants`, the libFuzzer smoke, and benchmarks. The change touches no
+source, feature, or dependency. No person reviewed the mathematics, and no
+proof assistant or solver was used. The stability theorem and the
+non-axiomatizability result are cited, not proved.
+
+Files changed by the integration: the algebra chapters except `frozen.md`,
+`collection-models.md` and `rust-integration.md`; `catalog.json`;
+`docs/design/decisions.md`; the research index, manifest, source catalog, raw
+index and synthesis; this supplement's index, sources, prompt, manifest and
+this record; `docs/README.md`; `docs/reviews/supplied/README.md`; and
+`CHANGELOG.md`. New files: the curated report, the two raw inputs, and the
+four `prior-art-*` evidence files.
+
+### Replay onto the updated branch before push
+
+Before the push, the remote branch had gained one commit, `e1fd245`, a
+crate-split proposal that changes three documentation files and none of the
+files above except `docs/README.md`. The integration commit was replayed onto
+it without a conflict. The table above describes the run before the replay.
+After the replay:
+
+| Check | Result |
+| --- | --- |
+| `make check` | Passed on the replayed tree; its link step verified 1,251 repository-local links |
+| `git diff --check` against `e1fd245` | Clean |
+| `prior-art-checks.mjs`, `prior-art-mutants.mjs`, `model-checks.mjs` | Byte-identical to the recorded results |
+| Supplement manifest | Regenerated; `docs/README.md` was the one stale entry, and it was already stale at `e1fd245` |
+
+The other structural rows were not rerun; the replay changed none of their
+inputs.

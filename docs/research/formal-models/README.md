@@ -32,6 +32,9 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 | [Proof ledger](../../design/algebra/proof-obligations.md) | Proof arguments, finite checks and unexecuted implementation gates |
 | [Model source](evidence/model-checks.mjs) / [results](evidence/model-results.json) | Reproducible finite mathematical checks; no production Rust imported |
 | [Model mutants](evidence/model-mutants.mjs) / [results](evidence/model-mutants-results.json) | Which wrong definitions the model's checks catch |
+| [Prior-art report](../reports/value-domain-algebra-prior-art.md) | Established theory per construct, per-source check levels, corrections to the survey, and the four laws added from it |
+| [Prior-art checks](evidence/prior-art-checks.mjs) / [results](evidence/prior-art-checks-results.json) | Finite checks for `BAG-MONUS`, `BIMAP-COMPAT`, `CLOSURE-STABLE` and `CTX-KEY`; separate from the model and its totals |
+| [Prior-art check mutants](evidence/prior-art-mutants.mjs) / [results](evidence/prior-art-mutants-results.json) | Which wrong definitions those checks catch |
 | [Destination review](../../reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, and the gates that ran |
 | [Validation](validation.md) | Commands, patch checks and unavailable gates |
 | [Research prompt](research-prompt.md) | Focused child investigations using the existing project templates |
@@ -98,6 +101,22 @@ The delivered model had a section called "mutant detection" that compared
 constants and changed no model function; the destination review found seven real
 mutants that it accepted, replaced that section, and added the checks that now
 catch them. See the [destination review](../../reviews/value-domain-algebra-destination-review.md).
+
+The laws added with the prior-art survey of 2026-11-12 have their own script,
+so the model's recorded totals above are unchanged:
+
+```sh
+node docs/research/formal-models/evidence/prior-art-checks.mjs
+node docs/research/formal-models/evidence/prior-art-mutants.mjs
+```
+
+Recorded result: **88,986 assertions** over **48,922 counted cases** in 5
+groups, with 8 computed counterexamples; 8 of 8 mutants caught. The script
+checks monus identities on counts 0..6, compatibility on all 34 partial
+bijections on three keys, instances of the stability theorem, the
+three-valued reading of the knowledge bounds, and a toy model of a result
+cache. It does not prove the cited stability theorem, and its cache model is
+not a model of any engine. The same limits as the model apply.
 
 The checks cover logical membership, representatives, conversion/closure,
 map presence and joins, bag counts, sequence occurrences, relation/BiMap

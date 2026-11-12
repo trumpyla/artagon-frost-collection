@@ -1,0 +1,161 @@
+{
+  "schema": "frost-prior-art-supplement-checks/v1",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "execution": "independent finite mathematics; no Frost source imported or executed",
+  "result": "passed",
+  "groups": [
+    {
+      "name": "BAG-MONUS",
+      "bounds": "counts 0..6, all triples; subsets of three keys, all triples",
+      "assertions": 5515,
+      "cases": 5505
+    },
+    {
+      "name": "BIMAP-COMPAT",
+      "bounds": "all 34 partial bijections on three keys; all pairs and triples",
+      "assertions": 77870,
+      "cases": 40494
+    },
+    {
+      "name": "CLOSURE-STABLE",
+      "bounds": "elements 0..4, exponents 0..30; three-node weighted graphs, 24 naive iterations; caps 1..5",
+      "assertions": 4590,
+      "cases": 2239
+    },
+    {
+      "name": "KNOW-BOUNDS as three-valued membership",
+      "bounds": "one key, all nine pairs of states; two keys, all interval pairs",
+      "assertions": 973,
+      "cases": 648
+    },
+    {
+      "name": "CTX-KEY",
+      "bounds": "two subjects, three request contexts, all ordered request pairs",
+      "assertions": 38,
+      "cases": 36
+    }
+  ],
+  "total_assertions": 88986,
+  "total_cases": 48922,
+  "computed_counterexamples": 8,
+  "counterexamples": [
+    {
+      "id": "CX-BAG-MONUS-SUM-CANCEL",
+      "kind": "computed",
+      "at": {
+        "a": 1,
+        "b": 1,
+        "c": 0
+      },
+      "left": 1,
+      "right": 0,
+      "why": "(A sum B) monus B is A, not A monus B"
+    },
+    {
+      "id": "CX-BAG-MONUS-SUM-DIST",
+      "kind": "computed",
+      "at": {
+        "a": 1,
+        "b": 1,
+        "c": 1
+      },
+      "left": 1,
+      "right": 0,
+      "why": "monus does not distribute over bag sum"
+    },
+    {
+      "id": "CX-BAG-MONUS-MIN",
+      "kind": "computed",
+      "at": {
+        "a": 1,
+        "b": 2,
+        "c": 1
+      },
+      "left": 1,
+      "right": 0,
+      "why": "min with a difference is not the difference of the min"
+    },
+    {
+      "id": "CX-BAG-MONUS-NESTED",
+      "kind": "computed",
+      "at": {
+        "a": 1,
+        "b": 2,
+        "c": 1
+      },
+      "left": 0,
+      "right": 1,
+      "why": "nested difference does not split into difference and min"
+    },
+    {
+      "id": "CX-MSEMIRING-A5",
+      "kind": "computed",
+      "at": {
+        "a": 1,
+        "b": 2,
+        "c": 1
+      },
+      "left": 1,
+      "right": 0,
+      "why": "product does not distribute over monus in the max/min chain on three values"
+    },
+    {
+      "id": "CX-BIMAP-COMPAT-TRANSITIVE",
+      "kind": "computed",
+      "at": {
+        "r": [
+          [
+            0,
+            0
+          ]
+        ],
+        "s": [],
+        "t": [
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "left": true,
+      "right": false,
+      "why": "compatibility is not transitive: {(0,0)} and {(0,1)} are each compatible with the empty bijection"
+    },
+    {
+      "id": "CX-CLOSURE-N-DIVERGES",
+      "kind": "computed",
+      "at": {
+        "graph": "three-node directed cycle, unit weights",
+        "observed": "sum of all path counts",
+        "rounds": [
+          23,
+          24
+        ]
+      },
+      "left": 69,
+      "right": 72,
+      "why": "weighted closure over N keeps growing on a cycle; the same graph over the Booleans is fixed"
+    },
+    {
+      "id": "CX-CTX-CACHE-KEY",
+      "kind": "computed",
+      "at": {
+        "first": "caveat input true",
+        "second": "caveat input missing"
+      },
+      "left": "Member",
+      "right": "Conditional",
+      "why": "a memo key without the caveat input returns Member where the direct answer is Conditional"
+    }
+  ],
+  "limitations": [
+    "finite domains only",
+    "no Rust compilation",
+    "no ownership/aliasing proof",
+    "no solver proof",
+    "no performance measurement",
+    "the stability theorem itself is cited, not proved here; only its instances on the listed bounds are checked",
+    "the CTX-KEY group is a three-outcome toy model, not a model of any authorization engine",
+    "assertion counts are loop iterations, not a coverage measure; no mutation run covers this file"
+  ]
+}

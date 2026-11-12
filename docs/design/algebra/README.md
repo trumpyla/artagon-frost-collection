@@ -35,11 +35,17 @@ and benchmarks.
 | Execution | [Computed sets](execution-and-computed-sets.md), [rewrite contracts](rewrite-contracts.md) | What may stream, short-circuit, be reordered, or require a snapshot? |
 | Rust integration | [Capabilities and placement](rust-integration.md), [terminology](terminology.md) | How does this fit current Frost without a universal trait or new mandatory parameters? |
 | Assurance | [Proof obligations](proof-obligations.md), [adversarial review](../../reviews/value-domain-algebra-review.md) | Which propositions have arguments, bounded tests, or unresolved implementation gates? |
+| Prior art | [Prior-art survey](../../research/reports/value-domain-algebra-prior-art.md), [aliases](terminology.md#established-terms-recorded-as-aliases) | Which established theory does each construct match, and which sources were reread? |
 
 The [research supplement](../../research/formal-models/README.md) contains the
 input inventory, primary references, executable finite models, results, a
 focused research prompt, and the source-to-contract map. The
 [contract catalog](catalog.json) registers stable names and law IDs.
+
+The prior-art survey of 2026-11-12 added four laws: `BAG-MONUS`,
+`BIMAP-COMPAT`, `CLOSURE-STABLE` and `CTX-KEY`. It renamed nothing. Chapters
+cite `SRC-…` ids from the [source catalog](../../research/SOURCES.md) and say
+when a source was not reread.
 
 ## The core separation
 

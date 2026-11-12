@@ -26,6 +26,25 @@ are different requirements. Permission revocation, cache invalidation, and
 check-to-use enforcement belong to the surrounding engine. A sorted frozen
 index by itself proves none of them.
 
+[CTX-KEY] A memoized, cached, prepared or resumed result may answer a request
+only if the request's context agrees with the producing context on every
+component the result depends on: semantic binding, dictionary, snapshot,
+policy or model revision, request facts and caveat inputs, completeness
+requirement, and terminal. Argument: by [FM-REFINE](formal-model.md) the
+result is a denotation at θ together with its completion status, so a key that
+omits a component identifies two contexts whose results can differ
+(`CX-CTX-CACHE-KEY`). Reuse never upgrades a status: an incomplete or
+conditional result stays incomplete or conditional.
+
+A component may be left out of a key only with a proof that the result does
+not depend on it. That proof is a rewrite and is recorded under
+[rewrite contracts](rewrite-contracts.md). One production authorization engine
+reported the unproved case: a dispatch cache key omitted per-request hints,
+and a check returned full permission where the answer was conditional, for a
+permission that combined caveated and uncaveated paths by intersection or
+exclusion (`SRC-PRIOR-SPICEDB-CVE-2026-55866`). The continuation tokens of
+section 3 are one instance of this rule.
+
 ## 2. Lower and upper bounds on knowledge
 
 For a fixed compatible universe/context, describe incomplete knowledge as
@@ -49,6 +68,16 @@ be imprecise when sources are correlated. For the exact same pinned source A,
 A\A is known empty even when the independent interval rule is looser. That
 simplification still requires a contract that permits suppressing evaluation
 errors/effects and validates the source/context identity.
+
+Read per key, [L,U] gives three states: certain member, possible only, and
+certain non-member. The four rules are the strong three-valued connectives on
+those states: or, and, and-not, and exclusive or. In the incomplete-database
+literature, answers that hold however the unknowns are resolved are certain
+answers. L plays that role, and the requirement that an evaluation return
+only certain answers is called "no false positives"
+(`SRC-PRIOR-LIBKIN-2016`). The matching term for U, possible answers, comes
+from a source that was not read. These are aliases; the names here stay L
+and U.
 
 A candidate k is definitely present if k∈L; definitely absent if k∉U.
 Existence is settled true when L is nonempty and false when U is empty.
@@ -101,6 +130,31 @@ monotonicity and iteration from bottom give an ascending sequence and a least
 fixed point. If the universe has N possible facts, at most N strict fact additions
 occur; this is not a bound on total CPU/I/O work per iteration. Semi-naive
 execution propagates newly derived facts when its delta equations are valid.
+
+[CLOSURE-STABLE] For weights in a semiring write u^(p) = 1+u+…+u^p. An
+element u is p-stable when u^(p) = u^(p+1), and the semiring is stable when
+every element is p-stable for some p. Every recursive program over the weights
+converges iff the semiring is stable (`SRC-PRIOR-DATALOGO`, Theorem 1.2; cited
+here, not re-proved). The source states this for Datalog programs over a
+partially ordered pre-semiring, as a condition on its core semiring. The
+Boolean semiring is 0-stable. N is not stable:
+1^(p) = p+1 for every p, so one unit-weight cycle already diverges
+(`CX-CLOSURE-N-DIVERGES`).
+
+A recursive weighted composition, such as a closure of a BagMultiMap, is
+therefore admitted only in one of three cases:
+
+1. The terminal observes support only, and the plan computes over Booleans.
+2. The recursion's dependency graph is acyclic, so the iteration over N is
+   finite.
+3. Counts are checked, and `Overflow` or a budget stop is a declared outcome.
+   Neither is a negative answer.
+
+A count capped at M, min(M,·), is a different and stable algebra. Capping
+commutes with sum and product, so each round of a capped iteration is the cap
+of the same round over N. Its result means "at least M" at a capped entry. It
+is a separately named operation, as saturating addition is in
+[bags](bags.md).
 
 Bags over N, unbounded key generation, and unconstrained symbolic terms do not
 inherit the finite-height argument. Even one key can accumulate unbounded

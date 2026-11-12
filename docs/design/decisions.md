@@ -360,3 +360,24 @@ adopted. Source, features, manifests, CI, and the toolchain are unchanged.
 | Provenance | Record the delivery archive by size and SHA-256 without committing it. | The archive is 1.3 MB, mostly earlier revisions of files already here. Its inventory therefore cannot be verified from this repository alone. |
 | Agent rules | `AGENTS.md` is a relative symlink to [the short entry](../maintainers/agent-rules.md). The previous text is [implementation contracts](../maintainers/implementation-contracts.md), unchanged apart from its header. The entry states inline the rules that hold for every change. | The delivery requested the symlink. A short auto-loaded file is easier to keep current, but an agent that does not follow its link sees fewer rules, so the inline list covers the package, feature, unsafe, and gate rules. A checkout without symlink support shows a one-line file holding the target path. |
 | Stale references | Repoint catalog contract sources, `CRATES.md`, the crate-layout design, the root README, and the research prompt template to the implementation contracts. | The catalog tool checks only that a source path is a file, so the stale paragraphs would not have been reported. No catalog ID changed. |
+
+## Prior-art survey integration, 2026-11-12
+
+A prior-art survey of the value-domain algebra was run on 2026-11-12 and
+integrated the same day as a
+[curated report](../research/reports/value-domain-algebra-prior-art.md). This
+record states what the integration adopted. It is the integrator's reading and
+is flagged for the maintainer; the chapters stay proposed contracts. Source,
+features, manifests, CI, and the toolchain are unchanged.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Names | No rename. Established terms ("monus", "compatible join", "Z-set", "certain answers", "well-formedness") are recorded as aliases in [terminology](algebra/terminology.md#established-terms-recorded-as-aliases). | The documentation rules let only a recorded decision rename. The survey recommended renames; they are listed as not adopted in the report. |
+| Citations | A chapter cites a source only when the integrator reread it on 2026-11-12, or says in the same sentence that it was not reread. | The survey marks about half of its rows as written from prior knowledge. Those rows are in the [source catalog](../research/SOURCES.md#prior-art-survey-sources-2026-11-12) as unread and support no chapter statement. |
+| `BAG-MONUS` | Add as a proposed contract in the [bag chapter](algebra/bags.md): ten identities of bag difference that hold, four set-difference identities that fail, and admission of bag rewrites from a recorded list only. | The chapter said only that difference is not an additive inverse. The survey said bag difference fails the product axiom (A5); the reread source says (A5) holds for natural numbers and fails in other weight algebras, and the law says that. |
+| `BIMAP-COMPAT` | Add in the [BiMap chapter](algebra/bimaps.md): the chapter's `compatible` is the inverse-semigroup compatibility relation; n-ary checked union needs every pair compatible. | The equivalence is proved in the chapter. The non-transitivity is a planning hazard the chapter did not state. `try_union` keeps its name and its recovery rules. |
+| `CLOSURE-STABLE` | Add in [computed sets](algebra/execution-and-computed-sets.md): a recursive weighted composition is admitted for Boolean support, an acyclic recursion, or checked counts with `Overflow` as a declared outcome. | The chapter already denied a termination argument for bags. The cited theorem gives the exact condition. The choice among the three cases, and any capped-count profile, stays open. |
+| `CTX-KEY` | Add in [computed sets](algebra/execution-and-computed-sets.md): a cached, prepared or resumed result is keyed by every context component it depends on. | The rewrite chapter already bound cached values to their context in prose. The law gives that rule an ID, and one reported defect in a production engine shows the failure. It specifies no cache. |
+| Not adopted | Equality of empty multimaps across fiber kinds; all-or-nothing as a law for every checked operation; restricting weighted closure to Boolean weights. | The first contradicts fiber-in-the-type. The second is `Q-PARTIALBI-1`. The third is one of three admitted cases. |
+| Evidence | Add `prior-art-checks.mjs` and a mutant runner beside the finite model, with recorded results. | The four laws are not in `model-checks.mjs`, whose recorded totals are unchanged. Node stays optional research tooling. |
+| Research questions | Five seeded questions are added to the supplement's prompt and stay local to it. | The corpus manifest's question list and dependency order are unchanged. |

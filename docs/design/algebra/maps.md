@@ -34,6 +34,12 @@ use align_with or specify those converters explicitly. An align callback never
 receives BothAbsent. Its optional removal result is separate from a stored
 Option payload.
 
+Established names, recorded as aliases only: the three-way tag is called
+These, Ior or EitherOrBoth in other libraries, and per-side behaviours are
+called merge tactics (`SRC-PRIOR-CONTAINERS-MERGE`, `SRC-PRIOR-SEMIALIGN`).
+Both rows are survey-read and were not reread at integration, so no law here
+depends on them.
+
 ## 2. Closure and partial resolver algebra
 
 If r:V×V→V is total and closed, extend it to V⊥ with ⊥ as identity:

@@ -69,6 +69,12 @@ consumption must release any owned unvisited suffix exactly as documented.
 
 ## Conversions
 
+Lists, bags and sets are the free monoid on singletons and its commutative and
+idempotent quotients (`SRC-PRIOR-BIRD-PRG69`, sections 1.2 and 1.3). A sequence
+operation has a bag or set form only if it respects the added law: first and
+last elements do not (section 1.5), and size passes to bags and not to sets
+(section 1.3). The projections below are the homomorphisms that do exist.
+
 The occurrence-count projection count:Seq(K)→Bag(K) preserves ++ as additive
 sum. support∘count maps ++ to set union, forgetting order and occurrence identity.
 Neither conversion is invertible. Mapping sequence keys through a noninjective

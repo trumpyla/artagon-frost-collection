@@ -38,6 +38,34 @@ substituted for the current main decision. Whether selected multimap names
 receive separate frozen partners is a future API design decision, not resolved
 by inserting prefixes in this corpus.
 
+## Established terms recorded as aliases
+
+The [prior-art survey](../../research/reports/value-domain-algebra-prior-art.md)
+maps this refinement's terms to established ones. The left column stays the
+name used in this repository. An alias helps a reader search the literature;
+it renames nothing. "Reread" means the source was read at integration on
+2026-11-12; other rows are survey-read or unread, as the
+[source catalog](../../research/SOURCES.md#prior-art-survey-sources-2026-11-12)
+states.
+
+| Term here | Established term | Source and level |
+| --- | --- | --- |
+| Representation invariant I_R | Well-formedness predicate | `SRC-PRIOR-LEAN-MAPS`, reread |
+| Denotation α_R | Abstraction function; view; refinement relation | Unread or survey-read |
+| Left representative | Left-biased union | Unread |
+| Seq, Bag, Set | Free monoid; its commutative and idempotent quotients | `SRC-PRIOR-BIRD-PRG69`, reread |
+| Bag difference | Monus; truncated subtraction | `SRC-PRIOR-GEERTS-POGGI`, reread |
+| Signed carrier Z^(K) | Z-set | `SRC-PRIOR-DBSP`, reread |
+| Weighted relation, BagMultiMap | N-relation; K-relation | `SRC-PRIOR-GREEN-2007`, unread |
+| Weight algebra with terminating closure | Stable, p-stable semiring | `SRC-PRIOR-DATALOGO`, reread |
+| compatible(R,S); try_union | Compatibility relation; compatible join | `SRC-PRIOR-LAWSON-PRIMER`, reread |
+| Union with disjoint endpoint sets | Orthogonal join | `SRC-PRIOR-LAWSON-PRIMER`, reread |
+| Local identity R⁻¹∘R | Partial identity; idempotent | `SRC-PRIOR-LAWSON-PRIMER`, reread |
+| align_with tags | These; Ior; EitherOrBoth | Survey-read or unread |
+| Per-side merge behaviour | Merge tactic | `SRC-PRIOR-CONTAINERS-MERGE`, survey-read |
+| Knowledge bounds [L,U] | Certain answers for L; possible answers for U | `SRC-PRIOR-LIBKIN-2016`, reread, for L and its criterion; the term for U is from an unread source |
+| Snapshot component of θ | Zookie; consistency token | `SRC-ZANZIBAR-2019`, existing row |
+
 ## Operation spellings in this refinement
 
 - Sets retain union, intersection, difference, symmetric_difference.

@@ -57,6 +57,15 @@ performance or report recovery. Preserve raw inputs and unrelated work.
 | Q-PARTIALBI-1 | `Q-BIMAP-1` | Checked BiMap operations with streaming and transactional returned-error policy | Both endpoint conflicts, intermediate definedness, minimal checked-XOR counterexample and actual ownership tests |
 | Q-CSETKNOW-1 | `Q-CSET-1` | Fallible cursor protocol with certified negative evidence and budgets | Separate Pending, End, Incomplete and Failed; interval/epoch model; revisioned pagination and fault injection |
 | Q-OPTVALID-1 | `Q-ALG-1` | Law certificates and provenance-preserving plan rewrites | No unsafe reliance on semantic traits; observer-specific rules, property tests and cost evidence |
+| Q-PRIORART-1 | `Q-ALG-1` | Reread the sources that the prior-art survey cites from prior knowledge or that could not be fetched | Every `SRC-PRIOR-…` row is integration-checked with section and date, or stays out of the chapters; catalog updated |
+| Q-BAGID-1 | `Q-BAG-1` | The list of bag-difference rewrites a planner may use, beyond `BAG-MONUS` | Proof and counterexample per rule; overflow behaviour under `COUNT-PARTIAL`; checks added to the finite model |
+| Q-STABLE-1 | `Q-MM-1`, `Q-CSET-1` | Weight algebras admitted for recursive composition and the result protocol of a checked closure | Table of algebra, stability and closure outcome; decision among Boolean, capped and checked natural weights |
+| Q-CTXKEY-1 | `Q-CSET-1`, `Q-AUTHZ-1` | Components of the evaluation context that a memo, plan or cursor key must hold | Dependency footprint per terminal; fault model covering the cited cache defects; a test that a missing component is detected |
+| Q-MECH-1 | `Q-ALG-1` | Verification route for the first implemented carrier | Comparison of a proved model with differential testing, functional translation and a Rust verifier on one carrier, with tool versions |
+
+The last five rows were seeded by the
+[prior-art report](../reports/value-domain-algebra-prior-art.md), which gives
+their dependencies and reasons.
 
 These IDs are local to this supplement. They are not registered in the corpus
 [manifest](../manifest.json), whose questions in the

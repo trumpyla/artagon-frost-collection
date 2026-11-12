@@ -57,6 +57,13 @@ For a representation R define:
 - τ_R(r): its traversal contract, including occurrences, order and lifetimes.
 - C_R: allowed ownership, panic, returned-error, callback and cost observations.
 
+Established vocabulary: I_R is a representation invariant or well-formedness
+predicate, and α_R is an abstraction function or view. A verified map library
+pairs each raw operation with one lemma that the operation preserves the
+predicate, and verifies operations against a list model (`SRC-PRIOR-LEAN-MAPS`).
+[FM-REFINE] below is that obligation together with the denotation equation.
+The names here stay I_R and α_R.
+
 α is not necessarily injective. Different Sorted/Dense/Roaring/Chunked storage
 can denote the same set. Neither α-equivalence nor freezing proves that their
 allocation behavior, representation diagnostics or iterator costs agree.

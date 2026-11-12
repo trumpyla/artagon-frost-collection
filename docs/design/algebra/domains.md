@@ -26,6 +26,11 @@ to reflexivity; use a deliberately chosen key wrapper/domain instead of silently
 assuming every Rust value is a lawful key. A sequence of floats needs no such
 key contract until an operation deduplicates or indexes them.
 
+A verified map library states the same obligation as laws on its equality and
+hashing instances, and documents the failure: with a non-reflexive equality a
+map can report that it is not empty while no key can be retrieved
+(`SRC-PRIOR-LEAN-MAPS`).
+
 Distinct records may have the same logical identity. Keep their metadata and
 stored representative separate from key-class identity. Do not require an
 application payload predicate P to be invariant on *all raw T* merely because
@@ -125,6 +130,11 @@ the intersection and can only widen the denial. An expression must name the key
 domain it is defined over; the other evaluation is an approximation with that
 known direction, not an equivalent plan.
 
+Image and preimage are adjoint: f(A) ⊆ B iff A ⊆ f⁻¹(B). This is why image
+preserves every union and preimage preserves every intersection, for any f.
+Preimage also preserves complement, which image cannot do without the
+conditions below.
+
 Direct-image complement requires an explicit universe and target f(U); even
 injectivity does not justify complement over a larger target universe.
 Preimage f⁻¹ preserves Boolean operations, including relative complement over
@@ -172,6 +182,9 @@ claim ValidateValue permanently proves immutability. Borrow<Q> may be used only
 when borrowed and stored forms agree on identity/hash/order; a case-insensitive
 key must not pretend a case-sensitive str is the same key query. Existing
 LookupRef/SetContains implementations decide lawful borrowed-query bounds.
+A key contract that covers the stored type and not the lookup type leaves
+lookup unspecified; the survey reports that gap in one Rust verifier's map
+model (`SRC-PRIOR-VERUS-3176`, survey-read, not reread).
 
 ## 7. Do not confuse abstract-analysis domains
 

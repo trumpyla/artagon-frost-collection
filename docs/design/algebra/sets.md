@@ -58,6 +58,11 @@ while A XOR (B XOR C) returns a. Nor may (A XOR B) XOR A simplify to B at that
 observation. Retain the original expression for representative recovery even
 when membership evaluation uses a canonical Boolean expression.
 
+Other libraries call the left rule a left-biased union. The prior-art survey
+of 2026-11-12 found no published statement of these representative-level
+counterexamples. That is an absence in one survey, not a claim of novelty;
+the arguments above are derived in this chapter.
+
 ## Filtering and conversion
 
 A pure key predicate p supports filter_p(A union B) = filter_p(A) union

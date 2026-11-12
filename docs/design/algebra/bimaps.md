@@ -68,6 +68,48 @@ does not preserve the definedness of binary checked BiMap evaluation.
 Replacement/upsert that evicts conflicting pairs is not union: it removes data
 and can retain different endpoint objects. The external bimap crate's native
 insertion policy must not silently define Frost's proposed algebra policy.
+Existing libraries expose three different behaviours under similar names:
+rejection that leaves the map unchanged, eviction that can remove up to two
+pairs and shrink the map, and bulk insertion that keeps earlier entries when a
+later one is rejected (`SRC-PRIOR-GUAVA-BIMAP`, `SRC-BIMAP-063`). Only the
+first is a step of try_union.
+
+### Compatibility
+
+[BIMAP-COMPAT] compatible(R,S) holds iff both mixed products are partial
+identities:
+
+    S ∘ R⁻¹ ⊆ 1_L    and    S⁻¹ ∘ R ⊆ 1_K.
+
+Proof: S∘R⁻¹ relates l to l' exactly when some k has (k,l)∈R and (k,l')∈S.
+It lies inside the identity iff no left endpoint has two right endpoints in
+R∪S. The second product does the same for right endpoints.
+
+This is the compatibility relation of inverse-semigroup theory, in which the
+idempotents of the partial bijections on a set are the partial identities, and
+try_union is the compatible join (`SRC-PRIOR-LAWSON-PRIMER`, sections 2.1 and
+2.3). The local identities of [BIMAP-IDENTITY] are those idempotents:
+R⁻¹∘R = 1_dom(R). The established names are aliases; try_union stays the
+proposed spelling.
+
+Three consequences:
+
+- **Orthogonal operands.** If R and S share no left endpoint and no right
+  endpoint, both mixed products are empty, so they are compatible and R∪S is a
+  disjoint union. A plan that can establish disjoint endpoint sets, for
+  example from disjoint key ranges, needs no pair comparison.
+- **No transitivity.** {(a,1)} and {(a,2)} are each compatible with the empty
+  BiMap and not with each other (`CX-BIMAP-COMPAT-TRANSITIVE`). An n-ary
+  try_union succeeds iff every pair of operands is compatible, because a
+  uniqueness conflict involves two pairs and each lies in one operand.
+  Checking each operand against the union built so far is sufficient.
+  Checking every operand against one common operand is not.
+- **Composition distributes.** For compatible R and S and any BiMap T on a
+  matching middle domain, T∘(R∪S) = (T∘R)∪(T∘S) and (R∪S)∘T = (R∘T)∪(S∘T), and
+  each right side is a union of compatible BiMaps. This follows from
+  [REL-COMP] and [BIMAP-CLOSED]. It is a statement about logical pairs;
+  conflict diagnostics and the representative of an equal pair follow the
+  union's own rule.
 
 ## 3. Representatives, ownership and construction
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased — prior-art survey of the value-domain algebra
+
+Documentation only. No source, feature, or public API change.
+
+- Add a curated prior-art survey of the proposed algebra as
+  `docs/research/reports/value-domain-algebra-prior-art.md`, with its input
+  under `docs/reviews/supplied` and its sources in the research catalog.
+- Add four proposed laws to `docs/design/algebra`: `BAG-MONUS`,
+  `BIMAP-COMPAT`, `CLOSURE-STABLE`, and `CTX-KEY`. Record established terms
+  as aliases; rename nothing.
+- Add a second finite-check script and a mutant runner for those laws under
+  `docs/research/formal-models/evidence`. They import no Frost code and are
+  not a build or CI step.
+
 ## Unreleased — value-domain algebra documents and rules entry
 
 Documentation only. No source, feature, or public API change.
