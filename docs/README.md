@@ -30,6 +30,7 @@ does not validate later changes.
 | [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
 | [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
 | [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
+| [Crate split proposal](design/proposals/crate-split.md) | Measured module graph, stage-1 packages, feature map, and proposed changes to epic `frost-wlt` | Proposal |
 
 ## Formal models and domain-specific algebra
 
