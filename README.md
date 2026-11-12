@@ -77,6 +77,30 @@ representatives, orders, or errors. The
 [collection algebra guide](docs/design/collection-algebra.md) covers the
 proposed map, bag, sequence, multimap, and bimap laws.
 
+## Value domains and formal algebra
+
+A value domain states which values are admissible. A key domain additionally
+states logical identity. Neither one decides multiplicity, traversal, conflict
+resolution, ownership, or whether two indexed sources share a revision.
+Those are separate collection and operation contracts.
+
+The proposed [formal model](docs/design/algebra/formal-model.md) starts with
+admissible values and key equivalence, then defines finite sets, sequences
+(mathematical lists), partial maps, bags, multimap fibers, and partial bijections.
+Its [domain contract](docs/design/algebra/domains.md) distinguishes validation,
+normalization, lossless encoding, runtime source compatibility, and conversions
+that can collapse distinct keys. A mathematical law is an optimization permission
+only under its representative, order, effect, failure, and context assumptions.
+
+Read the [formal-algebra index](docs/design/algebra/README.md) for each domain,
+[frozen lifecycle refinement](docs/design/algebra/frozen.md),
+[computed-source model](docs/design/algebra/execution-and-computed-sets.md), and
+[adversarial review](docs/reviews/value-domain-algebra-review.md). The
+[terminology registry](docs/design/algebra/terminology.md) preserves implemented
+names and the selected `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap` proposals.
+This documentation adds no mandatory `ValueDomain` parameter, production algebra
+API, crate, solver, or authorization engine.
+
 ## Frozen lifecycle
 
 ```text
@@ -85,7 +109,8 @@ construct or update      mutable family, native backend, or builder
   -> freeze              seal, compact, freeze, or an explicit freeze plan
   -> retain or publish   own the value, share it, or publish a snapshot
   -> evaluate            lookups, traversal, algebra, counts
-  -> materialize         build an owned result; the frozen inputs stay frozen
+  -> materialize         construct a result with explicit element ownership;
+                         the frozen inputs stay frozen
   -> leave (optional)    extract the backend, thaw, or use owning iteration;
                          each consumes the frozen value
 ```
@@ -106,8 +131,9 @@ Five related concepts stay separate:
 | Computed set or query | A description of how to answer from sources | Proposal; today's borrowed set iterators are lazy but are not reusable plans |
 | Persistent version | A version that shares unchanged structure | Partial: `imbl-7` exact wrappers keep native persistent sharing; Chunked integer sets share containers but copy a flat directory; a persistent integer family is a proposal |
 | Snapshot | A version tied to a publication or revision boundary | Implemented in memory with `arc-swap-1`; no durable snapshots |
-| Materialized answer | A result owned independently of its inputs | Implemented: collected results, integer and bitmap algebra results |
+| Materialized answer | A constructed result collection; elements may borrow, share ownership, or be independently owned | Implemented: collected results, integer and bitmap algebra results |
 
+Materializing a collection of references still depends on the sources' lifetimes.
 A query description does not freeze the data that it reads. A stable snapshot
 can still be too old for a revocation requirement. The
 [Frozen API guide](docs/design/frozen-api.md) maps each of these contracts to
@@ -241,6 +267,7 @@ selective merge; earlier reviews and benchmarks remain historical evidence.
 | Frozen API | [Frozen API guide](docs/design/frozen-api.md) | Families, exact wrappers, plans, recovery, access models, costs, snapshots | Current contracts; proposals marked |
 | Principles | [Philosophy](docs/design/philosophy.md), [architecture](docs/design/architecture.md), [decisions](docs/design/decisions.md) | Durable principles, current architecture, and recorded choices | Current design |
 | Naming | [Naming dispositions](docs/design/collection-algebra.md#naming-dispositions) | Stable public capabilities and distinct proposed collection names | Current decision; future types marked |
+| Formal domains | [Formal model](docs/design/algebra/formal-model.md), [value domains](docs/design/algebra/domains.md), [domain chapters](docs/design/algebra/README.md) | Denotations, validity, closure, observations and refinement obligations | Proposed contracts; no production API |
 | Algebra | [Set operations](docs/set-operations.md), [collection algebra](docs/design/collection-algebra.md), [general set algebra](docs/design/set-algebra.md) | Implemented set contracts; proposed algebra for other collections | Implemented and proposal |
 | Integers | [Integer design](docs/design/integer-sets.md), [integer views](docs/design/integer-views.md), [roadmap](docs/design/integer-roadmap.md) | Codecs, storage, policies; deferred expressions | Implemented and proposal |
 | Versions | [Snapshots](docs/design/snapshots.md), [persistent storage](docs/design/persistent-integer-storage.md) | Publication, retries, sharing, and retention | Implemented and proposal |

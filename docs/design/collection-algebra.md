@@ -29,6 +29,21 @@ execution. That fits the current [architecture](architecture.md),
 [Frozen API guide](frozen-api.md), and
 [general set-algebra proposal](set-algebra.md).
 
+## Formal refinement added after the research integration
+
+The [formal model](algebra/formal-model.md) and [value-domain contract](algebra/domains.md)
+now specify a common refinement framework before the
+[collection-specific chapters](algebra/collection-models.md). They distinguish
+valid values, logical identity, representation invariants, closure, observable
+behavior and source context. [The catalog](algebra/catalog.json) registers the
+terms and obligations; [the review](../reviews/value-domain-algebra-review.md)
+records corrections and bounded evidence.
+
+These are proposed contracts, not implemented APIs. The historical synthesis
+below remains provenance; its selected names are retained. The new specification
+uses `absolute_difference` for bag counts and recommends `difference_by_key`
+for map restriction. Neither spelling renames an existing public method.
+
 ## Package layout and naming
 
 Frost is one library package, `frost-collections`, imported as `frost`. The
@@ -59,11 +74,12 @@ spellings below are historical alternatives, not additional public names.
 | Map lookup | Retain `LookupRef<Q>` instead of report names `MapGet<Q>` or `Get<Q>` | Returns the stored key and value; each implementation defines its query relation. |
 | Set lookup | Retain `SetContains<Q>` and `SetGet<Q>` instead of historical `Contains<Q>` and set `Get<Q>`, respectively | Membership does not promise a reference; retrieval returns the stored representative. |
 | Ordered map traversal | Retain `Entries` plus `OrderedEntries` instead of `SortedMapEntries` | Together they promise ascending key traversal; `OrderedEntries` also provides both endpoints. |
-| Multimap fibers | Propose distinct `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`; reject the historical `ListMultiMap` alternative | `SeqMultiMap` names ordered values with duplicates without implying linked-list storage. Detailed fiber semantics remain open. |
+| Multimap fibers | Propose distinct `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`; reject the historical `ListMultiMap` alternative | `SeqMultiMap` names ordered values with duplicates without implying linked-list storage. Proposed fiber semantics are now in [multimap algebra](algebra/multimaps.md); implementation remains open. |
 | Bimap lifecycle | Propose insertion on `MutableBiMap` or a builder; keep `FrozenBiMap` structurally immutable | Frozen algebra may produce a new value; conflict and failure contracts remain open. |
 | Integer sets | Retain implemented `FrozenIntSet`; keep proposed `IntSetExpr`, `FrozenIntSetView`, and `PersistentIntSet` distinct | Respectively: owned eager set, borrowed algebra query, validated borrowed storage view, and owned persistent set. The last three remain unimplemented. |
 
-Package naming and map-difference spelling remain separate open decisions.
+Package naming remains open under `frost-wlt.1`. The formal refinement recommends
+`difference_by_key`; accepting a concrete API still requires its own design gate.
 
 ## Distinct logical contracts
 
@@ -79,7 +95,8 @@ Package naming and map-difference spelling remain separate open decisions.
 
 For a bag with multiplicities `a(x)` and `b(x)`, the candidate definitions are
 `sum = a + b`, `max_union = max(a, b)`, `intersection = min(a, b)`,
-`difference = a.saturating_sub(b)`, and `symmetric_difference = abs_diff(a, b)`.
+`difference = a.saturating_sub(b)`, and `absolute_difference = abs_diff(a, b)`. The older bag spelling
+`symmetric_difference` denotes this count operation, not associative set XOR.
 An additive count overflow must be reported explicitly. Saturation is part of
 the subtraction definition, not an implicit overflow policy for addition.
 `max_union`, `intersection`, truncated difference, and absolute difference
@@ -125,7 +142,7 @@ traits in [`read`](../../src/read.rs) rather than silently renaming public APIs:
 | `SortedMapEntries` | `Entries` plus `OrderedEntries` | Together promise ascending traversal; `OrderedEntries` provides endpoints |
 | `Len` | `Len`; `Cardinality` for `u64` counts | Counts are never truncated to `usize` |
 | `BagCount`, `PrefixIndex` | None | New capabilities; need their own proposal |
-| `difference_by_key` (Frost1), `difference_keys` (Frost2) | None | Pick one name in a map-algebra proposal |
+| `difference_by_key` (Frost1), `difference_keys` (Frost2) | None | Formal refinement recommends `difference_by_key`; no implemented API is renamed |
 
 Ordinary families continue to keep the first equivalent key or element and the
 last map value. Borrowed union and intersection keep left representatives.

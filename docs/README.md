@@ -31,6 +31,26 @@ does not validate later changes.
 | [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
 | [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
 
+## Formal models and domain-specific algebra
+
+These are proposed contracts, not new production APIs. Read the abstract model
+before specializing it to a collection. Existing names and current standards
+remain authoritative for implemented behavior.
+
+| Document | Purpose |
+| --- | --- |
+| [Formal-algebra index](design/algebra/README.md) | Reading order, authority and scope |
+| [Abstract model](design/algebra/formal-model.md) | Denotations, representation invariants, partial operations and observable refinement |
+| [Value domains](design/algebra/domains.md) | Admissibility, key equivalence, encodings, conversions and contexts |
+| [Collection models](design/algebra/collection-models.md) | Set, sequence/list, map, bag, multimap and BiMap chapters |
+| [Frozen refinement](design/algebra/frozen.md) | Structural freezing, materialization, persistence and snapshots |
+| [Computed sets](design/algebra/execution-and-computed-sets.md) | Incomplete knowledge, streams, revisions, deltas and fixed points |
+| [Rewrite contracts](design/algebra/rewrite-contracts.md) | Preconditions for reassociation, projection and terminal-specific execution |
+| [Rust integration](design/algebra/rust-integration.md), [terminology](design/algebra/terminology.md) | Existing capability names, selected proposals and future placement |
+| [Proof obligations](design/algebra/proof-obligations.md) | Arguments, finite checks and unexecuted implementation gates |
+| [Adversarial review](reviews/value-domain-algebra-review.md) | Same-author review passes, counterexamples and remaining risks |
+| [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
+
 ## Research corpus
 
 | Document | Purpose | Status |

@@ -12,10 +12,24 @@ explains the rationale and the implemented library.
 The current [naming dispositions](../design/collection-algebra.md#naming-dispositions)
 resolve selected research spellings without implementing the proposed types.
 
-Baseline for every artifact: commit `82becb998af5627cc1e58118ae01515d8a3559ca`,
+Baseline for the original corpus artifacts listed below: commit `82becb998af5627cc1e58118ae01515d8a3559ca`,
 imported or written on 2026-11-09. The [machine manifest](manifest.json)
 (validated against [its schema](manifest.schema.json)) records ids, hashes,
 status, and relationships for scripts; this page is the human index.
+
+## Formal-model refinement supplement
+
+The [value-domain and algebra supplement](formal-models/README.md) reconciles the
+available session documents with main at `27b1439`, preserves the selected
+multimap names, and develops the formal model before each collection's laws.
+It includes a source/input ledger, same-author adversarial reviews, bounded
+executable mathematical checks, and a focused follow-up prompt. Its own
+[supplement manifest](formal-models/manifest.json) records these new artifacts;
+the older corpus's baseline, original hashes and citation recovery claims below
+remain historical and are not relabeled as current verification.
+
+The separately linked full reports that earlier summaries described remain
+unrecovered. Newly authored formal chapters do not claim to be those files.
 
 ## Status labels
 

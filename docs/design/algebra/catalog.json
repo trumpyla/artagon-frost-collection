@@ -1,0 +1,344 @@
+{
+  "schema": "frost-formal-algebra-catalog/v1",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "status": "proposed-contract",
+  "production_api_changed": false,
+  "authority": {
+    "implementation": "source/rustdoc/contracts at pinned revision",
+    "layout": "CRATES.md",
+    "current_names": "docs/design/collection-algebra.md#naming-dispositions",
+    "this_proposal": "docs/design/algebra/README.md"
+  },
+  "concepts": [
+    {
+      "name": "Value domain",
+      "model": "D=(T,P)",
+      "role": "admissibility; equality and enumeration are separate"
+    },
+    {
+      "name": "Key domain",
+      "model": "(D, equivalence)",
+      "role": "logical identity with observable representatives"
+    },
+    {
+      "name": "Set",
+      "model": "finite subsets of quotient keys",
+      "implemented": [
+        "MutableOrderedSet",
+        "FrozenOrderedSet",
+        "MutableHashSet",
+        "FrozenHashSet"
+      ],
+      "proposed": [
+        "SetView"
+      ]
+    },
+    {
+      "name": "Encoded set",
+      "implemented": [
+        "FrozenIntSet"
+      ],
+      "distinct_proposals": [
+        "IntSetExpr",
+        "FrozenIntSetView",
+        "PersistentIntSet"
+      ]
+    },
+    {
+      "name": "Map",
+      "model": "finite partial function",
+      "implemented": [
+        "MutableOrderedMap",
+        "FrozenOrderedMap",
+        "MutableHashMap",
+        "FrozenHashMap"
+      ],
+      "proposed": [
+        "MapView"
+      ]
+    },
+    {
+      "name": "Sequence",
+      "aliases": [
+        "mathematical list"
+      ],
+      "model": "finite words",
+      "implemented": [
+        "MutableVec",
+        "FrozenVec",
+        "InlineVec",
+        "InlineFrozenVec"
+      ],
+      "candidate": [
+        "SequenceView"
+      ]
+    },
+    {
+      "name": "Bag",
+      "aliases": [
+        "multiset"
+      ],
+      "model": "finite-support natural counts",
+      "candidate": [
+        "MutableBag",
+        "FrozenBag",
+        "BagView"
+      ]
+    },
+    {
+      "name": "Multimap",
+      "model": "finite-support fiber map",
+      "selected_proposed_names": [
+        "SeqMultiMap",
+        "SetMultiMap",
+        "BagMultiMap"
+      ],
+      "lifecycle_partners": "not decided by this refinement"
+    },
+    {
+      "name": "BiMap",
+      "model": "finite partial bijection",
+      "selected_proposed_names": [
+        "MutableBiMap",
+        "FrozenBiMap"
+      ]
+    },
+    {
+      "name": "Frozen",
+      "model": "structural access/lifecycle refinement, not separate collection carrier",
+      "implemented": [
+        "Frozen"
+      ],
+      "not_introduced": [
+        "FrozenValue",
+        "FrozenCollection",
+        "FrozenList",
+        "FrozenValueDomain"
+      ]
+    }
+  ],
+  "laws": [
+    {
+      "id": "FM-REFINE",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Representation refinement",
+      "statement": "Safety implication with typed preconditions; separate progress and error obligations",
+      "evidence": "definition; no generic executable implementation"
+    },
+    {
+      "id": "FM-OBS",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Observable refinement",
+      "statement": "Allowed-trace sets model unspecified order; equality is stronger than refinement",
+      "evidence": "definition; effect/representation counterexamples"
+    },
+    {
+      "id": "FM-PREFIX",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Stream prefix soundness",
+      "statement": "Every emitted item justified; completeness must be separately established",
+      "evidence": "definition; knowledge-bound finite model"
+    },
+    {
+      "id": "DOM-EQ",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Stable key equivalence",
+      "statement": "Equivalence classes require reflexivity, symmetry, transitivity and stability",
+      "evidence": "finite classifier-generated equivalences; Rust-law obligation remains"
+    },
+    {
+      "id": "DOM-CONGRUENCE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Quotient congruence",
+      "statement": "Key-only operations constant on each equivalence class",
+      "evidence": "finite functions/filters and representative counterexample"
+    },
+    {
+      "id": "DOM-VALID",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Validation soundness",
+      "statement": "Successful admission implies predicate; completeness/termination not inferred",
+      "evidence": "finite percentage boundaries; general obligation"
+    },
+    {
+      "id": "DOM-NORMALIZE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Typed normalization",
+      "statement": "Separate raw meaning from valid-output equivalence; explicit embedding for idempotence",
+      "evidence": "proof obligation; raw-to-integer example and constant-normalizer counterexample"
+    },
+    {
+      "id": "DOM-CODE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Code injectivity",
+      "statement": "Key-code inverse on image; existing IntKey has stronger full-value laws",
+      "evidence": "proof obligation; current source mapping, no codec implementation executed"
+    },
+    {
+      "id": "DOM-IMAGE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Conversion homomorphisms",
+      "statement": "Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR",
+      "evidence": "proof argument plus all functions on three keys"
+    },
+    {
+      "id": "SET-BOOLEAN",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Finite set laws",
+      "statement": "Membership laws, explicit universe and count formulas",
+      "evidence": "bounded exhaustive equations and independent sorted merge"
+    },
+    {
+      "id": "SET-REP",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Representative refinement",
+      "statement": "Left union/intersection associate; commutation and XOR reassociation can fail",
+      "evidence": "pointwise argument and metadata enumeration"
+    },
+    {
+      "id": "MAP-LIFT",
+      "document": "docs/design/algebra/maps.md",
+      "name": "Map merge lifting",
+      "statement": "Lift collision resolver through absence and check totality/definedness",
+      "evidence": "pointwise proof argument; finite overrides/sum/deletion counterexample"
+    },
+    {
+      "id": "BAG-LAWS",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Count algebras",
+      "statement": "Natural sum versus max/min/monus/absolute difference",
+      "evidence": "pointwise argument, exhaustive small counts and counterexamples"
+    },
+    {
+      "id": "COUNT-PARTIAL",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Bounded count addition",
+      "statement": "Either association succeeds iff total fits; errors/traces separate",
+      "evidence": "nonnegative arithmetic argument and width-three model"
+    },
+    {
+      "id": "BAG-SUPPORT",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Support projection",
+      "statement": "Preserves sum/max as union and min as intersection; not monus/XOR",
+      "evidence": "pointwise proof and finite model"
+    },
+    {
+      "id": "SEQ-MONOID",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Free monoid",
+      "statement": "Concatenation identity/association, occurrence preservation",
+      "evidence": "word argument and finite words"
+    },
+    {
+      "id": "SEQ-EFFECT",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Execution effects",
+      "statement": "Pure equations do not establish callback/error/drop equivalence",
+      "evidence": "design obligation; future Rust effect/drop tests required"
+    },
+    {
+      "id": "MM-SUPPORT",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Empty-fiber normalization",
+      "statement": "Canonical proposed multimap absent iff fiber empty; native maps may differ",
+      "evidence": "definition and present-empty counterexample"
+    },
+    {
+      "id": "REL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Boolean relation composition",
+      "statement": "Existential witnesses; associative and union-distributive",
+      "evidence": "witness proof argument and finite Boolean matrices"
+    },
+    {
+      "id": "BAGREL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Weighted composition",
+      "statement": "Sum of products counts derivations; no general cycle convergence",
+      "evidence": "finite double-sum argument and small natural matrices"
+    },
+    {
+      "id": "BIMAP-CLOSED",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Partial-bijection closure",
+      "statement": "Subsets/inverse/composition preserve both uniqueness projections",
+      "evidence": "proof argument and all small partial bijections"
+    },
+    {
+      "id": "BIMAP-IDENTITY",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Local inverse identities",
+      "statement": "Identities on domain/range; global finite identity requires finite universe",
+      "evidence": "proof argument and finite model"
+    },
+    {
+      "id": "BIMAP-PARTIAL",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Checked operations",
+      "statement": "Union partial definedness associates; checked XOR does not",
+      "evidence": "subset proof argument, enumeration and explicit conflict counterexample"
+    },
+    {
+      "id": "FROZEN-DENOTE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Phase transition",
+      "statement": "Successful freeze of lawful family preserves denotation, not all representation details",
+      "evidence": "typed contract; actual Rust transitions not executed"
+    },
+    {
+      "id": "FROZEN-STABLE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Structural versus deep stability",
+      "statement": "Fixed structure is not fixed heap payload or source revision",
+      "evidence": "abstract heap counterexample; no Rust aliasing proof"
+    },
+    {
+      "id": "KNOW-BOUNDS",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Incomplete set knowledge",
+      "statement": "Sound lower/upper transfer; not correlation-complete or error absorption",
+      "evidence": "inclusion proof and all interval realizations on three keys"
+    },
+    {
+      "id": "DELTA-REPLAY",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Revisioned overlays",
+      "statement": "Exact base plus ordered complete suffix; ordered compaction preserves result",
+      "evidence": "fold decomposition argument and exhaustive short histories"
+    }
+  ],
+  "implementation_plan": "docs/design/algebra/rust-integration.md",
+  "package_decision": "frost-wlt.1; no package list approved by this patch",
+  "checks": {
+    "model": "docs/research/formal-models/evidence/model-checks.mjs",
+    "results": "docs/research/formal-models/evidence/model-results.json"
+  },
+  "historical_aliases": [
+    {
+      "old": "ListMultiMap",
+      "current": "SeqMultiMap",
+      "reason": "selected on current main; no linked-list implication"
+    },
+    {
+      "old": "MapGet/Get for maps",
+      "current": "LookupRef",
+      "reason": "existing capability retained"
+    },
+    {
+      "old": "SortedMapEntries",
+      "current": "Entries plus OrderedEntries",
+      "reason": "existing split retained"
+    },
+    {
+      "old": "bag symmetric_difference",
+      "current": "absolute_difference",
+      "reason": "new proposal spelling; no Boolean XOR associativity"
+    },
+    {
+      "old": "difference_keys",
+      "current": "difference_by_key",
+      "reason": "recommendation, not an implemented rename"
+    }
+  ]
+}

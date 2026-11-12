@@ -1,5 +1,18 @@
 # Set algebra across all Frost set families
 
+## Formal-domain companion
+
+This detailed expression proposal is complemented by the
+[abstract refinement model](algebra/formal-model.md),
+[value and key domains](algebra/domains.md), and [set laws](algebra/sets.md).
+For runtime-bound sources, compatible dictionaries and revision contexts are
+additional preconditions, not consequences of a common Rust element type.
+Keep current family methods and left-representative semantics; the companion
+does not retrofit mandatory domain parameters or implement these views.
+Its [rewrite rules](algebra/rewrite-contracts.md) separate membership from
+representatives, order, effects, error behavior and completeness.
+
+
 Status: **design proposal, not an implemented API**. Review date: **2026-11-08,
 America/New_York**. Target remains **Rust 1.99.1, edition 2024**.
 
