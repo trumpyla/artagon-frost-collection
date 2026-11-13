@@ -127,6 +127,7 @@ change.
 | [Verification catalog](../verification/catalog/README.md) | Catalog and benchmark-inventory schemas, structural discovery, and its limits | Current |
 | [Coverage policy](../verification/coverage/README.md), [mutation policy](../verification/mutation/README.md), [fuzz harness](../verification/fuzz/README.md) | Denominators and gates, survivor triage, and isolated fuzz targets | Current |
 | [Rust verification strategy](research/reports/rust-verification-strategy.md) | Source-backed rationale for the tool choices | Research |
+| [Formal validation tools](research/reports/formal-validation-tools.md) | Established tools for the formal models and law proofs, 2026-11-13 | Research |
 | [GitHub workflow](maintainers/github-workflow.md) | Issue forms and pull requests as intake; tracker records as the work plan | Current |
 | [Contributor guide](../CONTRIBUTING.md) | How to make and verify changes | Current |
 
