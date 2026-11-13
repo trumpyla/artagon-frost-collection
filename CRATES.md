@@ -59,6 +59,7 @@ Directories that a package does not need are omitted, never created empty.
   verification/       isolated verification packages and package-owned metadata
     loom/               Loom model package, own manifest and lockfile
     kani/               Kani harness package, own manifest and lockfile
+    verus/              spec-level Verus proofs of this package's laws; not a Cargo package
     <downstream>/       downstream-consumer checks, for example int-key-downstream
     metadata/           catalog and benchmark-inventory records for this package
 ```
@@ -124,7 +125,8 @@ repository root, so its `docs/`, `CHANGELOG.md`, and
   must fail. A model of a proposed operation lives in the package its design
   assigns as owner. Models state their finite domain and are not proofs.
   Formal artifacts are written in Rust or in a tool adopted in section 7, and
-  run through the Make gates.
+  run through the Make gates. Spec-level proofs of the same laws live in
+  `<package>/verification/verus/` and are not linked to production code.
 
 ## 2. Responsibility boundaries
 
@@ -404,8 +406,8 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 377
-  structural test and proof declarations, 391 case records (68 `curated`, 323
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 380
+  structural test and proof declarations, 394 case records (71 `curated`, 323
   `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
   every inventory entry `unreviewed`. Three contracts
   (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)
@@ -421,11 +423,12 @@ input.
 
 | Tool | Make entry | Claim it supports |
 | --- | --- | --- |
-| Standard tests, `proptest`, exhaustive domains | `make check`, `make test` | Behavior on executed and generated inputs; committed failing seeds |
+| Standard tests, `proptest`, `proptest-state-machine`, `exhaust` and `itertools` domains | `make check`, `make test` | Behavior on executed and generated inputs; committed failing seeds |
 | cargo-nextest with [nextest.toml](.config/nextest.toml) | `make nextest` | The same tests with explicit profiles and zero retries |
 | Miri | `make miri` on the pinned diagnostic nightly | Undefined behavior on executed paths, not soundness for all callers |
 | Loom | `make loom` | The production retry loop under the stated writer bound and store assumption |
 | Kani | `make kani` | Bounded symbolic results with stated unwind limits, only when the verifier ran |
+| Verus, pinned by `VERUS_VERSION` | `make verus` | A law holds for its reference definition over vstd types; says nothing about Frost code |
 | Fuzzing ([fuzz harness](verification/fuzz/README.md)) | `make fuzz-check` replays the seed corpus on stable; `make fuzz-smoke` runs bounded libFuzzer on `FUZZ_TOOLCHAIN` | Oracle agreement on inputs reached in a recorded run; no absence-of-bugs claim |
 | Source coverage ([policy](verification/coverage/README.md)) | `make coverage`, `make coverage-gate`; `make coverage-branch` on nightly | Executed code in a stated scope (CR-COV-1, CR-COV-2) |
 | Mutation testing ([policy](verification/mutation/README.md)) | `make mutants` with `.config/mutants.toml` | Survivors show unasserted behavior; a low survivor count is not proof |
@@ -439,8 +442,14 @@ input.
 - **CR-TOOL-3.** Do not lower bounds, disable unwind or validity checks, or
   filter cases to turn a gate green.
 - **CR-TOOL-4.** Every optional-tool target checks the tool's version first and
-  fails when it is absent. On the reference host `cargo-mutants` and Kani are not
-  installed, so `make mutants` and `make kani` fail there by design.
+  fails when it is absent. On the reference host `cargo-mutants`, Kani and Verus
+  are not installed, so `make mutants`, `make kani` and `make verus` fail there
+  by design.
+- **CR-TOOL-5.** Proof layers are named by what they cover. Finite models and
+  sampled tests cover their stated domains. Kani refinement harnesses tie a real
+  operation to its reference definition within their bounds. Verus proves the
+  reference definition without bounds and touches no production code. No
+  combination is an unbounded proof of Frost code.
 
 ## 8. Make orchestration
 

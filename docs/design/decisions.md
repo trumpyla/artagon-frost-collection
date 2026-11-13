@@ -372,5 +372,17 @@ states what that means and what changed now, before any package exists.
 | Package contents | Everything a package owns lives under its directory: code, tests, benchmarks, examples, fuzz targets, Loom, Kani, and downstream harnesses, formal models, catalog and inventory records, README, changelog, and the design documents for its contracts ([CRATES.md](../../CRATES.md) CR-LAYOUT-9). | Moving or extracting a package then carries all of its evidence. Repository-wide documents (philosophy, architecture, decisions, maintainer guides, research corpus) and historical evidence stay at the root. |
 | Cross-package tests | A test that needs several packages lives in the lowest package that depends on all of them; the facade holds the rest. | A dev-dependency back on a higher package would compile a second copy of the lower one's types. |
 | Formal models | Executable models are Rust test targets in the owning package's `tests/formal_models/`; proof harnesses go in `<package>/verification/<tool>/` (CR-LAYOUT-10). The Node model under `docs/research/formal-models/evidence` was ported to Rust and removed. | The repository builds with Rust and Make only. Rust models run in `make check`, are catalogued, and can run the real types. Today the single package is the owner, so the target is `tests/formal_models`; at the split it moves to `frost-core`. |
-| Tooling | Which established tools generate inputs and prove laws is an open question, under research on 2026-11-13. | The maintainer asked not to build a custom framework. The current models still use small hand-written generators, which the chosen tools should replace. |
+| Tooling | Settled the same day; see [Formal validation tools](#formal-validation-tools-2026-11-13). | The hand-written generators were replaced. |
 | Contract obligations | A catalog contract may name `law:<ID>` obligations for a law in `docs/design/algebra/catalog.json` that has no public item yet. | Curated model cases need a contract, and proposed operations have no public path to cite. |
+
+## Formal validation tools, 2026-11-13
+
+The maintainer approved the three recommendations of the
+[formal validation tools report](../research/reports/formal-validation-tools.md)
+on 2026-11-13.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Finite models and real-type tests | `exhaust` and `itertools` generate the finite domains, `proptest` the sampled ones, and `proptest-state-machine` drives real types against a reference model. They are dev-dependencies; [CRATES.md](../../CRATES.md) CR-DEP-2 counts them as test libraries. | No generator, enumerator, runner or shrinker is hand-written. bolero was rejected because its current release does not resolve with Frost's `indexmap`; quickcheck and arbtest duplicate proptest. |
+| Bounded refinement | Kani harnesses check real operations against the reference definitions of the laws, starting with `SET-REP` and `SET-BOOLEAN` on `FrozenOrderedSet` (`verification/kani/src/set_laws.rs`). | Covers only the stated bounds. A law on a type Frost does not implement has no refinement harness. |
+| Unbounded proofs | Verus, pinned by `VERUS_VERSION` in the root `Makefile`, proves laws for their reference definitions in `verification/verus`, which is not a Cargo package and does not link to Frost. Verifying production code with Verus stays deferred until after `frost-wlt`. | The pinned release uses Rust 1.99.1. A Verus proof says nothing about Frost code (CR-TOOL-5). Lean with Mathlib, Aeneas and Creusot were not adopted. |

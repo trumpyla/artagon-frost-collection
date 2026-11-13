@@ -11,6 +11,9 @@ BATS ?= bats
 SHELLCHECK ?= shellcheck
 SHFMT ?= shfmt
 AST_GREP ?= ast-grep
+# Verus release pinned in docs/verification.md; its own driver uses Rust 1.99.1.
+VERUS ?= verus
+VERUS_VERSION ?= 0.2026.11.02.8bf68ee
 MIRI_TOOLCHAIN ?= nightly-2026-11-08
 MIRI_SURVEY_JOBS ?= 4
 MIRI_SURVEY_SHARDS := $(foreach shape,0 1 2 3 4 5 6 7 8 9 10,$(foreach width,32 64,$(foreach policy,0 1 2 3,miri-survey-$(shape)-$(width)-$(policy))))
@@ -39,7 +42,7 @@ AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
 	test-examples profiles features integers examples package embedded miri \
-	bounded loom kani nextest coverage coverage-gate coverage-branch mutants \
+	bounded loom kani verus nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
 	tools-check search-index integer-ab miri-survey $(MIRI_SURVEY_SHARDS) clean
 
@@ -63,6 +66,7 @@ help:
 	  'make miri-survey  Full planner matrix in isolated 32-bit Miri processes' \
 	  'make bounded      Finite collection/retry models and native Kani helpers' \
 	  'make loom|kani    Optional protocol model or symbolic proofs' \
+	  'make verus        Spec-level algebra proofs with the pinned Verus release' \
 	  'make nextest      Run test suite with cargo-nextest (.config/nextest.toml)' \
 	  'make coverage     Export source-only cargo-llvm-cov JSON summary and scope' \
 	  'make coverage-gate Enforce portable floor (77/70/77) and scoped ratchet' \
@@ -244,6 +248,11 @@ loom:
 kani:
 	"$(CARGO)" kani --version
 	cd verification/kani && "$(CARGO)" kani --lib
+
+# Fails when Verus is absent or is not the pinned release.
+verus:
+	"$(VERUS)" --version | grep -F "$(VERUS_VERSION)"
+	"$(VERUS)" --crate-type=lib verification/verus/src/lib.rs
 
 nextest:
 	"$(CARGO)" nextest --version

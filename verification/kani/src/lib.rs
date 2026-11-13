@@ -11,6 +11,10 @@ extern crate alloc;
 #[path = "../../../src/adaptive/seq/buf.rs"]
 mod inline_buf;
 
+// `SET-REP` and `SET-BOOLEAN` refinement on the real ordered merge kernels.
+#[cfg(any(kani, test))]
+mod set_laws;
+
 #[cfg(any(kani, test))]
 mod checks {
     use alloc::vec::Vec;

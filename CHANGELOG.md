@@ -20,6 +20,13 @@ Documentation only. No source, feature, or public API change.
   `FrozenOrderedMap`, and `FrozenVec` on the same inputs.
 - `CRATES.md` now requires self-contained packages (CR-LAYOUT-9) that own
   their formal models and proof harnesses (CR-LAYOUT-10).
+- Generate the formal-model domains with `exhaust`, `itertools`, `proptest`
+  and `proptest-state-machine` (new dev-dependencies) instead of hand-written
+  generators, and add operation-sequence tests of the real mutable set
+  families. The catalog tool now discovers `prop_state_machine!` tests.
+- Add Kani harnesses that check `FrozenOrderedSet` operations against the
+  left-representative rule, and spec-level Verus proofs of the algebra laws
+  under `verification/verus` with a pinned `make verus` target.
 
 ## Unreleased — emptied adaptive tree ranges
 

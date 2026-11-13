@@ -199,6 +199,10 @@
         "T-FORMAL_MODELS-019",
         "T-FORMAL_MODELS-018",
         "T-FORMAL_MODELS-016"
+      ],
+      "verus": [
+        "image_preserves_union_and_bounds_intersection",
+        "preimage_preserves_the_boolean_operations"
       ]
     },
     {
@@ -213,6 +217,15 @@
         "T-FORMAL_MODELS-037",
         "T-FORMAL_MODELS-044",
         "T-FORMAL_MODELS-045"
+      ],
+      "kani": [
+        "proofs::ordered_set_algebra",
+        "set_laws::proofs::ordered_set_operations_refine_the_representative_rule"
+      ],
+      "verus": [
+        "set_union_and_intersection_form_semilattices",
+        "set_lattice_is_distributive",
+        "symmetric_difference_is_a_group_operation"
       ]
     },
     {
@@ -228,6 +241,13 @@
         "T-FORMAL_MODELS-039",
         "T-FORMAL_MODELS-036",
         "T-FORMAL_MODELS-046"
+      ],
+      "kani": [
+        "set_laws::proofs::ordered_set_operations_refine_the_representative_rule",
+        "set_laws::proofs::nested_ordered_union_and_intersection_keep_the_first_representative"
+      ],
+      "verus": [
+        "left_representatives_associate"
       ]
     },
     {
@@ -252,6 +272,9 @@
         "T-FORMAL_MODELS-002",
         "T-FORMAL_MODELS-003",
         "T-FORMAL_MODELS-004"
+      ],
+      "verus": [
+        "count_operations_satisfy_their_laws"
       ]
     },
     {
@@ -262,6 +285,9 @@
       "evidence": "nonnegative arithmetic argument and a model with bound M=3",
       "cases": [
         "T-FORMAL_MODELS-001"
+      ],
+      "verus": [
+        "checked_sum_associates"
       ]
     },
     {
@@ -272,6 +298,9 @@
       "evidence": "pointwise proof and finite model",
       "cases": [
         "T-FORMAL_MODELS-005"
+      ],
+      "verus": [
+        "support_follows_the_lattice"
       ]
     },
     {
@@ -284,6 +313,9 @@
         "T-FORMAL_MODELS-033",
         "T-FORMAL_MODELS-035",
         "T-FORMAL_MODELS-034"
+      ],
+      "verus": [
+        "concatenation_is_a_monoid"
       ]
     },
     {
@@ -358,6 +390,10 @@
       "cases": [
         "T-FORMAL_MODELS-007",
         "T-FORMAL_MODELS-006"
+      ],
+      "verus": [
+        "partial_bijections_are_downward_closed",
+        "checked_union_succeeds_exactly_when_the_whole_union_is_valid"
       ]
     },
     {
@@ -391,6 +427,9 @@
       "cases": [
         "T-FORMAL_MODELS-011",
         "T-FORMAL_MODELS-014"
+      ],
+      "verus": [
+        "knowledge_bounds_are_sound"
       ]
     },
     {
@@ -416,7 +455,9 @@
       "T-FORMAL_MODELS-013",
       "T-FORMAL_MODELS-022",
       "T-FORMAL_MODELS-026"
-    ]
+    ],
+    "kani": "verification/kani/src/lib.rs",
+    "verus": "verification/verus/src/lib.rs"
   },
   "historical_aliases": [
     {

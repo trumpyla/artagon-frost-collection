@@ -3,7 +3,7 @@ id: frost-research-report-formal-validation-tools
 kind: report
 level: deep-dive
 research_status: curated
-implementation_status: proposed
+implementation_status: adopted
 source_validation: verified
 input_files: [tests/formal_models/main.rs, docs/design/algebra/catalog.json]
 input_members: []
@@ -27,8 +27,11 @@ depended on Frost by path, on the pinned 1.99.1 toolchain. **No proof tool was
 installed or run**: Kani, Verus, Lean, Z3 and Why3 were absent from the host,
 so every proof sketch below is uncompiled.
 
-Nothing here is adopted. The recommendation needs a maintainer decision because
-it adds dev-dependencies and, for Layer A, a new tool.
+The maintainer approved all three layers on 2026-11-13; see the
+[design decision](../../design/decisions.md#formal-validation-tools-2026-11-13).
+The testing tools are dev-dependencies, the Kani refinement harnesses are in
+`verification/kani/src/set_laws.rs`, and the Verus proofs are in
+`verification/verus`.
 
 ## Testing tools
 
