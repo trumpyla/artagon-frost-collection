@@ -31,7 +31,8 @@ The maintainer approved all three layers on 2026-11-13; see the
 [design decision](../../design/decisions.md#formal-validation-tools-2026-11-13).
 The testing tools are dev-dependencies, the Kani refinement harnesses are in
 `verification/kani/src/set_laws.rs`, and the Verus proofs are in
-`verification/verus`.
+`verification/verus`. Kani 0.68.0 was installed afterwards and five
+refinement harnesses verified; the Verus proofs remain unrun.
 
 ## Testing tools
 
@@ -85,7 +86,9 @@ Flux, KMIR and RAPx, not Verus, Creusot, Prusti, Aeneas or hax.
 
 The strategy report says Kani 0.68.0's bundled `nightly-2026-08-21` is below
 the 1.99.1 MSRV. That toolchain's rustc reports `1.100.0-nightly (2026-08-20)`.
-The claim needs re-checking with a local Kani run before the report is changed.
+A Kani 0.68.0 run on 2026-11-13 compiled the edition-2024 package and verified
+harnesses with that toolchain, so the strategy report's row is corrected. Results
+are in [`docs/verification.md`](../../verification.md#optional-kani-proofs).
 
 ## Recommended layering
 
@@ -114,7 +117,7 @@ Aeneas translation; both are later work.
 ## Unverified
 
 - Verus support for edition 2024, and whether every Verus release pins 1.99.1.
-- Kani's handling of `RandomState`, and Kani 0.68 on Frost's edition-2024 code.
+- Kani's handling of `RandomState`.
 - Charon and Aeneas on Frost's trait-generic code.
 - Repository commit activity (only release dates were checked).
 

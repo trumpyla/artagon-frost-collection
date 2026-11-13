@@ -406,8 +406,8 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 384
-  structural test and proof declarations, 398 case records (75 `curated`, 323
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 383
+  structural test and proof declarations, 397 case records (74 `curated`, 323
   `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
   every inventory entry `unreviewed`. Three contracts
   (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)
@@ -444,7 +444,9 @@ input.
 - **CR-TOOL-4.** Every optional-tool target checks the tool's version first and
   fails when it is absent. On the reference host `cargo-mutants`, Kani and Verus
   are not installed, so `make mutants`, `make kani` and `make verus` fail there
-  by design.
+  by design. With Kani 0.68.0 installed, `make kani` still does not pass: two
+  harnesses do not finish within the host's memory
+  ([recorded run](docs/verification.md#recorded-run-2026-11-13)).
 - **CR-TOOL-5.** Proof layers are named by what they cover. Finite models and
   sampled tests cover their stated domains. Kani refinement harnesses tie a real
   operation to its reference definition within their bounds. Verus proves the

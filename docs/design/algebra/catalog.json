@@ -250,8 +250,7 @@
         "set_laws::proofs::ordered_intersection_refines_the_representative_rule",
         "set_laws::proofs::ordered_difference_refines_the_representative_rule",
         "set_laws::proofs::ordered_symmetric_difference_refines_the_representative_rule",
-        "set_laws::proofs::nested_ordered_union_keeps_the_first_representative",
-        "set_laws::proofs::nested_ordered_intersection_keeps_the_first_representative"
+        "set_laws::proofs::nested_ordered_union_keeps_the_first_representative"
       ],
       "verus": [
         "left_representatives_associate"

@@ -288,8 +288,9 @@ test or substitute copied collection implementations.
 | `inline_transfer_drops_each_owner_once` | Length and consumed count 0 through 3, arbitrary front/back choices, heap/iterator transfer | Every original owner is destroyed exactly once; source ownership becomes empty | 16 |
 | `inline_zero_capacity` | Capacity zero | Rejected push, empty pop/slice/iterator, and empty heap transfer | 4 |
 | `dense_padding_does_not_create_members` | Lengths 0 through 6; two arbitrary complete machine words | Scalar membership, result counts/universes, subset/disjointness, and sanitized result padding | 32 |
-| `set_laws::ordered_{union,intersection,difference,symmetric_difference}_refines_the_representative_rule` (four harnesses) | Every pair of subsets of three keys, with fixed distinct labels per operand | `SET-REP` refinement: the label stored per key in the real result equals the reference rule on the operands; every yielded object is borrowed from the operand that holds its key, the left one when both do; keys strictly ascending | 8 |
-| `set_laws::nested_ordered_{union,intersection}_keeps_the_first_representative` (two harnesses) | Every triple of subsets of three keys, with fixed distinct labels | Both groupings, with materialized intermediate frozen sets, select the objects the reference selects left to right | 8 |
+| `set_laws::ordered_{union,symmetric_difference}_refines_the_representative_rule` (two harnesses) | Every pair of subsets of three keys, symbolic masks, fixed distinct labels per operand | `SET-REP` refinement: the label stored per key in the real result equals the reference rule on the operands; keys strictly ascending | 8 |
+| `set_laws::ordered_{intersection,difference}_refines_the_representative_rule` (two harnesses) | The same 64 pairs, enumerated concretely inside the model checker | The same assertions. Only the merge strategy runs at this size | 9 |
+| `set_laws::nested_ordered_union_keeps_the_first_representative` | Every triple of subsets of three keys, symbolic masks, fixed distinct labels | Both groupings, with materialized intermediate frozen sets, select the objects the reference selects left to right | 8 |
 
 Kani also checks the supported classes of memory errors, panics, and arithmetic
 errors in the explored program. The inline destruction harness uses a bounded
@@ -308,7 +309,7 @@ make kani
 The first target includes a check that the property helpers compile and execute
 against the real implementations. It does not exercise `kani::any`, the proof
 attributes, or symbolic verification. A release must report the Kani target
-separately and require all twelve expected harnesses to be discovered and pass.
+separately and require all eleven expected harnesses to be discovered and pass.
 
 As reviewed on 2026-11-09, Kani 0.68.0 is the published release and uses its own
 nightly compiler dated 2026-08-21. This crate requires Rust 1.99.1. Compatibility
@@ -317,6 +318,52 @@ the ordinary Rust toolchain's success does not establish compatibility. The
 review environment did not initially have Kani or its solver installed. Do not
 lower `rust-version`, remove checks, or describe a blocked verifier run as a
 successful proof. See the [Kani release notes][kani-releases].
+
+### Recorded run, 2026-11-13
+
+Kani 0.68.0 with its bundled `nightly-2026-08-21` (rustc `1.100.0-nightly`)
+compiled this edition-2024 package, which settles the compatibility question
+above for that release. Each harness ran alone on a 4-CPU, 15 GB Linux host.
+Memory is the peak resident size of the `cbmc` process, sampled every two
+seconds.
+
+| Harness | Result | Time | Peak memory |
+| --- | --- | ---: | ---: |
+| `ordered_set_algebra` | **Not verified**: stopped at 1,500 s, still in symbolic execution | — | 10.3 GB |
+| `sorted_constructor_preserves_or_rejects_input` | Verified | 12 s | 0.8 GB |
+| `inline_prefix_preserved` | Verified | 6 s | 0.3 GB |
+| `inline_transfer_drops_each_owner_once` | Verified | 121 s | 9.9 GB |
+| `inline_zero_capacity` | Verified | under 1 s | not sampled |
+| `dense_padding_does_not_create_members` | **Not verified**: stopped at 420 s | — | 4.6 GB at stop |
+| `set_laws::ordered_union_refines_the_representative_rule` | Verified | 19 s | 0.6 GB |
+| `set_laws::ordered_symmetric_difference_refines_the_representative_rule` | Verified | 126 s | 3.0 GB |
+| `set_laws::ordered_intersection_refines_the_representative_rule` | Verified | 393 s | 4.2 GB |
+| `set_laws::ordered_difference_refines_the_representative_rule` | Verified | 428 s | 4.3 GB |
+| `set_laws::nested_ordered_union_keeps_the_first_representative` | Verified | 129 s | 2.2 GB |
+
+`make kani` therefore does not pass on that host: two harnesses that predate the
+`set_laws` module do not finish, and the repository records no earlier solver
+run of them, only native helper runs. They
+build a `Vec` whose length depends on a symbolic value; the `set_laws` harnesses
+ran out of memory the same way until each operand mask was dispatched to an
+allocation of fixed size. `inline_transfer_drops_each_owner_once` needs most of
+the host's memory, so the harnesses cannot run in parallel there.
+
+Limits of the `set_laws` results:
+
+- Three keys. Intersection and difference pick a seeking strategy only when one
+  operand is at least 32 times longer than the other, so only their merge
+  strategy is covered.
+- Intersection and difference enumerate the 64 mask pairs concretely. With
+  symbolic masks the verifier explored the seeking strategies and ran out of
+  memory.
+- Nested intersection has no Kani harness; it would cost about eight times the
+  intersection harness per operation. The native test
+  `set_laws::tests::representative_helpers_execute_against_production_code` and
+  the finite models cover it.
+- The union harness was also run against a deliberately wrong reference that
+  prefers the right operand, and failed as expected at the refinement
+  assertion.
 
 Every harness states an unwind limit, and the package defaults otherwise to one
 iteration so newly added loops cannot silently receive an arbitrary generous

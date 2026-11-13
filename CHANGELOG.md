@@ -27,6 +27,9 @@ Documentation only. No source, feature, or public API change.
 - Add Kani harnesses that check `FrozenOrderedSet` operations against the
   left-representative rule, and spec-level Verus proofs of the algebra laws
   under `verification/verus` with a pinned `make verus` target.
+- Record the first Kani solver run: nine of eleven harnesses verify under Kani
+  0.68.0; `ordered_set_algebra` and `dense_padding_does_not_create_members` do
+  not finish on a 15 GB host.
 
 ## Unreleased — emptied adaptive tree ranges
 
