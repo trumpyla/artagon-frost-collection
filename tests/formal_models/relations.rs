@@ -3,7 +3,8 @@
 //! Relations over two-by-two keys: a Boolean relation is a four-bit mask with
 //! bit `2a + b` for the pair `(a, b)`; a weighted relation stores four counts.
 
-use super::common::{subsets, tuples};
+use core::iter::repeat_n;
+use itertools::Itertools;
 use std::collections::BTreeMap;
 
 const N: usize = 2;
@@ -64,7 +65,7 @@ fn support(w: &[u32]) -> u32 {
 #[test]
 fn boolean_composition_associates_and_distributes_over_union() {
     assert_eq!(N * N, 4);
-    let all = subsets(PAIRS);
+    let all = 0..1 << PAIRS;
     for r in all.clone() {
         for s in all.clone() {
             for t in all.clone() {
@@ -80,7 +81,9 @@ fn boolean_composition_associates_and_distributes_over_union() {
 /// on supports. Weighted composition counts every derivation.
 #[test]
 fn weighted_composition_associates_and_projects_to_boolean_composition() {
-    let all = tuples(3, N * N);
+    let all = repeat_n(0..3, N * N)
+        .multi_cartesian_product()
+        .collect::<Vec<Vec<u32>>>();
     for r in &all {
         for s in &all {
             assert_eq!(support(&weighted(r, s)), compose(support(r), support(s)));
@@ -103,7 +106,9 @@ fn weighted_composition_associates_and_projects_to_boolean_composition() {
 /// cross-check; one that takes the maximum loses the witness count.
 #[test]
 fn wrong_compositions_are_rejected() {
-    let all = tuples(3, N * N);
+    let all = repeat_n(0..3, N * N)
+        .multi_cartesian_product()
+        .collect::<Vec<Vec<u32>>>();
     let first_only_agrees = all.iter().all(|r| {
         all.iter()
             .all(|s| support(&weighted(r, s)) == compose_with(support(r), support(s), 1))

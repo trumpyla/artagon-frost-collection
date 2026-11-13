@@ -224,6 +224,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "exhaust"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8502ca11bf13d10e518a180e12787b3630dcd75b3648251fdbe5e748cba28fa"
+dependencies = [
+ "exhaust-macros",
+ "itertools",
+ "mutants",
+]
+
+[[package]]
+name = "exhaust-macros"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b18ebe804a66e3843203555d81fe7def7ed845620f49913636f71d899b5b652"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
 name = "fastrand"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -277,13 +299,16 @@ dependencies = [
  "borsh",
  "crossbeam-skiplist",
  "dashmap",
+ "exhaust",
  "fixedbitset",
  "fst",
  "hashbrown 0.17.1",
  "imbl",
  "indexmap",
+ "itertools",
  "phf",
  "proptest",
+ "proptest-state-machine",
  "rayon",
  "roaring",
  "scc",
@@ -361,6 +386,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b4baf93f58d4425749ca49a51c50ebab072c5df6994d08fed93541c331481dc"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -398,6 +432,12 @@ name = "memchr"
 version = "2.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
+
+[[package]]
+name = "mutants"
+version = "0.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "add0ac067452ff1aca8c5002111bd6b1c895baee6e45fcbc44e0193aea17be56"
 
 [[package]]
 name = "num-traits"
@@ -505,6 +545,15 @@ dependencies = [
  "rusty-fork",
  "tempfile",
  "unarray",
+]
+
+[[package]]
+name = "proptest-state-machine"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76fe42bc434fdb72020f41a6e9dbc6d29fdcc3ac43fb3470dba5147039cf5220"
+dependencies = [
+ "proptest",
 ]
 
 [[package]]

@@ -210,7 +210,9 @@
       "cases": [
         "T-FORMAL_MODELS-040",
         "T-FORMAL_MODELS-038",
-        "T-FORMAL_MODELS-037"
+        "T-FORMAL_MODELS-037",
+        "T-FORMAL_MODELS-044",
+        "T-FORMAL_MODELS-045"
       ]
     },
     {
@@ -224,7 +226,8 @@
         "T-FORMAL_MODELS-041",
         "T-FORMAL_MODELS-042",
         "T-FORMAL_MODELS-039",
-        "T-FORMAL_MODELS-036"
+        "T-FORMAL_MODELS-036",
+        "T-FORMAL_MODELS-046"
       ]
     },
     {
@@ -332,7 +335,8 @@
       "cases": [
         "T-FORMAL_MODELS-008",
         "T-FORMAL_MODELS-009",
-        "T-FORMAL_MODELS-006"
+        "T-FORMAL_MODELS-006",
+        "T-FORMAL_MODELS-043"
       ]
     },
     {
@@ -362,7 +366,10 @@
       "name": "Phase transition",
       "statement": "Successful freeze of lawful family preserves denotation, not all representation details",
       "evidence": "typed contract; actual Rust transitions not executed",
-      "cases": []
+      "cases": [
+        "T-FORMAL_MODELS-044",
+        "T-FORMAL_MODELS-045"
+      ]
     },
     {
       "id": "FROZEN-STABLE",

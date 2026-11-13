@@ -1339,6 +1339,7 @@ mod tests {
             mod left { #[test] fn same() {} }
             mod right { #[test] fn same() {} }
             proptest! { #[cfg(feature = "std")] #[test] fn property(x in 0..2) {} }
+            prop_state_machine! { #[test] fn machine(sequential 1..4 => Machine); }
             #[kani::proof] fn proof() {}
             #[cfg(feature = "std")] macro_rules! has_one { () => { #[test] fn generated() {} }; }
             const TEXT: &str = r#"#[test] fn fake() {}"#;
@@ -1367,6 +1368,7 @@ mod tests {
             [
                 "macro:has_one::generated",
                 "test:left::same",
+                "test:machine",
                 "test:outside::child::sibling",
                 "test:outside::from_path",
                 "test:proof",

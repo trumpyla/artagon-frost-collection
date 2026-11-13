@@ -2,7 +2,8 @@
 //!
 //! Frost implements no bag yet; these check the proposed definitions.
 
-use super::common::tuples;
+use core::iter::repeat_n;
+use itertools::Itertools;
 
 /// A bag over a fixed set of keys: slot `k` is the multiplicity of key `k`.
 type Bag = Vec<u32>;
@@ -37,7 +38,7 @@ fn support(bag: &Bag) -> u32 {
 }
 
 fn bags() -> Vec<Bag> {
-    tuples(4, 2)
+    repeat_n(0..4, 2).multi_cartesian_product().collect()
 }
 
 /// Scalar identities that tie the operations to each other. They pin each

@@ -271,7 +271,7 @@ fn scan_items(
                     .path
                     .segments
                     .last()
-                    .is_some_and(|s| s.ident == "proptest") =>
+                    .is_some_and(|s| s.ident == "proptest" || s.ident == "prop_state_machine") =>
             {
                 for (name, local_cfg) in proptest_items(m.mac.tokens.clone()) {
                     let mut names = modules.to_vec();
@@ -322,7 +322,8 @@ fn scan_items(
     Ok(())
 }
 
-// Proptest's `name(arg in strategy)` is not a Rust function signature. Inspect
+// Proptest's `name(arg in strategy)` and proptest-state-machine's
+// `name(sequential 1..n => Test)` are not Rust function signatures. Inspect
 // top-level macro tokens, never strings/comments or arbitrary macro expansions.
 fn proptest_items(tokens: TokenStream) -> Vec<(String, Vec<String>)> {
     let tokens: Vec<TokenTree> = tokens.into_iter().collect();

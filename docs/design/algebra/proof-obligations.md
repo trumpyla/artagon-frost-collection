@@ -39,7 +39,7 @@ performance advantage. A large assertion count is not a coverage percentage.
 | `BIMAP-CLOSED` | [Partial-bijection closure](bimaps.md) | Subsets/inverse/composition preserve both uniqueness projections | proof argument and all small partial bijections |
 | `BIMAP-IDENTITY` | [Local inverse identities](bimaps.md) | Identities on domain/range; global finite identity requires finite universe | proof argument and finite model |
 | `BIMAP-PARTIAL` | [Checked operations](bimaps.md) | Union partial definedness associates; checked XOR does not | subset proof argument; enumeration against validity of the three-way union; explicit conflict counterexample |
-| `FROZEN-DENOTE` | [Phase transition](frozen.md) | Successful freeze of lawful family preserves denotation, not all representation details | typed contract; actual Rust transitions not executed |
+| `FROZEN-DENOTE` | [Phase transition](frozen.md) | Successful freeze of lawful family preserves denotation, not all representation details | typed contract; set-family freeze and thaw executed in operation sequences |
 | `FROZEN-STABLE` | [Structural versus deep stability](frozen.md) | Fixed structure is not fixed heap payload or source revision | abstract heap counterexample; no Rust aliasing proof |
 | `KNOW-BOUNDS` | [Incomplete set knowledge](execution-and-computed-sets.md) | Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption | inclusion proof; soundness and tightness over all interval realizations on three keys |
 | `DELTA-REPLAY` | [Revisioned overlays](execution-and-computed-sets.md) | Exact base plus ordered complete suffix; ordered compaction preserves result | fold decomposition argument; short histories against a last-event-wins reference |
@@ -77,17 +77,20 @@ not cause memory unsafety, regardless of the mathematical assumption.
 ## Current executable evidence
 
 The finite models are the Rust test target
-[`tests/formal_models`](../../../tests/formal_models/main.rs): 42 cases, one
-module per chapter, run by `make check` and recorded in the verification
-catalog under `C-ALGEBRA-FORMAL-MODELS`. Each law checker also runs on
-deliberately wrong definitions, which must fail. Seven cases run real Frost
-types on the same inputs. A passing case covers only its stated finite domain;
+[`tests/formal_models`](../../../tests/formal_models/main.rs): 46 cases, one
+module per chapter plus one for operation sequences, run by `make check` and
+recorded in the verification catalog under `C-ALGEBRA-FORMAL-MODELS`. Finite
+domains come from `exhaust` and `itertools`; sampled domains and operation
+sequences from `proptest` and `proptest-state-machine`. Each law checker also
+runs on deliberately wrong definitions, which must fail. Nine cases run real
+Frost types on the same inputs. A passing case covers only its stated finite domain;
 it is not a proof, a coverage measure, or a mutation score for Frost.
 
 Three obligations have no executable check: `FM-PREFIX` (no stream model
 exists), `DOM-EQ` (the model's relations are equivalences by construction),
-and `SEQ-EFFECT`. `FM-REFINE`, `FM-OBS`, `DOM-CODE`, `FROZEN-DENOTE` and
-`MM-SUPPORT` are definitions or contracts with at most one counterexample.
+and `SEQ-EFFECT`. `FM-REFINE`, `FM-OBS`, `DOM-CODE` and `MM-SUPPORT` are
+definitions or contracts with at most one counterexample. `FROZEN-DENOTE` is
+checked for the ordered and hash set families only.
 
 ## Before implementing any public API
 

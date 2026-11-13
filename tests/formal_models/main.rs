@@ -2,6 +2,8 @@
 //!
 //! Each module owns one chapter. Laws are checked by exhausting a small stated
 //! domain against reference definitions written here, not imported from Frost.
+//! Domains come from `exhaust` and `itertools`; sampled domains and operation
+//! sequences from `proptest` and `proptest-state-machine`.
 //! Where Frost implements the operation (frozen set algebra, frozen interior
 //! mutability), the same inputs also run through the real types.
 //!
@@ -23,3 +25,4 @@ mod maps;
 mod relations;
 mod sequences;
 mod sets;
+mod stateful;

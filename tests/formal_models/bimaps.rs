@@ -1,7 +1,9 @@
 //! `BIMAP-CLOSED`, `BIMAP-IDENTITY`, and `BIMAP-PARTIAL` from
 //! `docs/design/algebra/bimaps.md`, over every relation on three-by-three keys.
 
-use super::common::subsets;
+use super::common::Key3;
+use exhaust::Exhaust;
+use std::collections::{BTreeMap, BTreeSet};
 
 const N: u32 = 3;
 
@@ -44,8 +46,23 @@ fn checked_union(r: Option<u32>, s: Option<u32>) -> Option<u32> {
     r.zip(s).map(|(r, s)| r | s).filter(|&u| valid(u))
 }
 
+/// Every partial bijection, enumerated by `exhaust` as a partial function
+/// whose values are distinct, independently of `valid`.
 fn bimaps() -> Vec<u32> {
-    subsets(N * N).filter(|&r| valid(r)).collect()
+    BTreeMap::<Key3, Key3>::exhaust()
+        .filter(|map| map.values().collect::<BTreeSet<_>>().len() == map.len())
+        .map(|map| relation(map.into_iter().map(|(a, b)| (a.index(), b.index()))))
+        .collect()
+}
+
+/// `valid` admits exactly the relations `exhaust` enumerates as partial bijections.
+#[test]
+fn validity_agrees_with_an_independent_enumeration() {
+    let by_validity: BTreeSet<u32> = (0..1 << (N * N)).filter(|&r| valid(r)).collect();
+    let enumerated: BTreeSet<u32> = bimaps().into_iter().collect();
+    assert_eq!(BTreeMap::<Key3, Key3>::exhaust().count(), 64);
+    assert_eq!(enumerated.len(), 34);
+    assert_eq!(by_validity, enumerated);
 }
 
 /// Closure, inverses, and local identities over all 34 partial bijections.
@@ -59,7 +76,7 @@ fn partial_bijections_are_closed_under_the_listed_operations() {
         let range = relation(pairs(r).map(|(_, b)| (b, b)));
         assert_eq!(compose(r, inverse(r)), domain);
         assert_eq!(compose(inverse(r), r), range);
-        for keys in subsets(N) {
+        for keys in 0..1 << N {
             assert!(valid(relation(
                 pairs(r).filter(|(a, _)| keys & (1 << a) != 0)
             )));
@@ -103,7 +120,10 @@ fn checked_union_succeeds_exactly_when_the_whole_union_is_valid() {
 /// a union that never reports a conflict accepts an invalid result.
 #[test]
 fn wrong_bimap_definitions_are_rejected() {
-    assert_ne!(subsets(N * N).filter(|&r| valid_with(r, false)).count(), 34);
+    assert_ne!(
+        (0..1 << (N * N)).filter(|&r| valid_with(r, false)).count(),
+        34
+    );
     let never_conflicts = |r: u32, s: u32| r | s;
     let (r, s) = (relation([(0, 0)]), relation([(0, 1)]));
     assert!(!valid(never_conflicts(r, s)));

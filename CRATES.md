@@ -166,10 +166,13 @@ repository root, so its `docs/`, `CHANGELOG.md`, and
   additive and never change an existing type's representation, hasher, bounds,
   or freeze/thaw partner.
 - **CR-DEP-2.** Test and benchmark libraries (`proptest`, format crates,
-  default-feature backends) are `[dev-dependencies]`. Cargo does not propagate
+  default-feature backends) are `[dev-dependencies]`. Libraries that generate
+  inputs or drive reference models inside a package's own test targets
+  (`exhaust`, `itertools`, `proptest-state-machine`) are test libraries in this
+  sense, because CR-LAYOUT-10 makes formal models test targets. Cargo does not propagate
   dev-dependencies to dependents ([Cargo: development dependencies][cargo-dev-deps]).
-- **CR-DEP-3.** Proof, model, fuzz, mutation, coverage, and catalog tools are
-  never normal or dev-dependencies of a library package. They live in isolated
+- **CR-DEP-3.** Proof, model-checker, fuzz, mutation, coverage, and catalog
+  tools are never normal or dev-dependencies of a library package. They live in isolated
   packages or are external commands invoked by Make.
 - **CR-DEP-4.** Host test builds unify dev-dependency features, which can hide
   a `std` requirement. Bare-metal library builds (`make embedded`) are the leak
@@ -401,8 +404,8 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 373
-  structural test and proof declarations, 387 case records (64 `curated`, 323
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 377
+  structural test and proof declarations, 391 case records (68 `curated`, 323
   `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
   every inventory entry `unreviewed`. Three contracts
   (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)

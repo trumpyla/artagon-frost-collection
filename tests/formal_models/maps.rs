@@ -3,8 +3,10 @@
 //! Frost implements no map merge or join yet, so these check the proposed
 //! definitions only. Present-`None` is checked against `FrozenOrderedMap`.
 
-use super::common::tuples;
+use core::iter::repeat_n;
+use exhaust::Exhaust;
 use frost::family::FrozenOrderedMap;
+use itertools::Itertools;
 
 /// A map over a fixed set of keys: slot `k` is the value bound to `k`, or `None`.
 type Map = Vec<Option<u32>>;
@@ -26,18 +28,16 @@ fn merge(r: &Resolver, a: &Map, b: &Map) -> Map {
 
 /// Every map from `keys` keys to values `0..values`.
 fn maps(keys: usize, values: u32) -> Vec<Map> {
-    tuples(values + 1, keys)
-        .into_iter()
-        .map(|word| word.into_iter().map(|v| v.checked_sub(1)).collect())
+    repeat_n((0..=values).map(|v| v.checked_sub(1)), keys)
+        .multi_cartesian_product()
         .collect()
 }
 
-/// Every resolver from `{0, 1}²` to `{absent, 0, 1}`.
+/// Every resolver from `{0, 1}²` to `{absent, 0, 1}`, as a table indexed by `2v + w`.
 fn resolvers() -> Vec<Resolver> {
-    tuples(3, 4)
-        .into_iter()
+    <[Option<bool>; 4]>::exhaust()
         .map(|table| {
-            Box::new(move |v: u32, w: u32| table[(v * 2 + w) as usize].checked_sub(1)) as Resolver
+            Box::new(move |v: u32, w: u32| table[(v * 2 + w) as usize].map(u32::from)) as Resolver
         })
         .collect()
 }

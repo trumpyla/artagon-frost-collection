@@ -127,3 +127,14 @@ Frost types.
 | `cargo test --locked --test formal_models` | 42 passed |
 | `cargo clippy --all-targets --all-features --locked -- -D warnings` | Passed |
 | `make catalog` | Passed; 387 case records, 64 curated, 12 contracts |
+
+On the same day the hand-written generators were replaced by `exhaust`,
+`itertools`, `proptest` and `proptest-state-machine`, and four cases were added:
+an independent enumeration of partial bijections, exhaustive and sampled
+operation sequences on the real mutable set families, and a sampled union law
+whose wrong rule must fail with a shrunk counterexample.
+
+| Check | Result |
+| --- | --- |
+| `cargo test --locked --test formal_models` | 46 passed |
+| `make catalog` | Passed; 391 case records, 68 curated, 12 contracts |

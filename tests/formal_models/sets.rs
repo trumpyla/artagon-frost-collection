@@ -1,10 +1,11 @@
 //! `SET-BOOLEAN` and `SET-REP` from `docs/design/algebra/sets.md`, checked against
 //! the model and against `FrozenOrderedSet` and `FrozenHashSet`.
 
-use super::common::{is_subset, members, subsets};
+use super::common::{is_subset, members};
 use core::cmp::Ordering;
 use core::hash::{Hash, Hasher};
 use frost::family::{FrozenHashSet, FrozenOrderedSet};
+use itertools::iproduct;
 
 const KEYS: u32 = 4;
 
@@ -167,7 +168,7 @@ fn hash_len(a: &FrozenHashSet<Key>, b: &FrozenHashSet<Key>, op: Op) -> usize {
 /// `SET-BOOLEAN` at membership level over every subset of four keys.
 #[test]
 fn membership_laws_hold_for_every_subset_of_four_keys() {
-    let all = subsets(KEYS);
+    let all = 0..1 << KEYS;
     for a in all.clone() {
         assert_eq!(a | a, a);
         assert_eq!(a & a, a);
@@ -211,11 +212,11 @@ fn membership_laws_hold_for_every_subset_of_four_keys() {
 /// four keys whose stored objects record their operand.
 #[test]
 fn frozen_set_families_match_the_model_on_every_pair() {
-    for a_mask in subsets(KEYS) {
+    for a_mask in 0..1 << KEYS {
         let a = labelled(a_mask, KEYS, 'a');
         let ordered_a: FrozenOrderedSet<Key> = keys(&a).into_iter().collect();
         let hash_a: FrozenHashSet<Key> = keys(&a).into_iter().collect();
-        for b_mask in subsets(KEYS) {
+        for b_mask in 0..1 << KEYS {
             let b = labelled(b_mask, KEYS, 'b');
             let ordered_b: FrozenOrderedSet<Key> = keys(&b).into_iter().collect();
             let hash_b: FrozenHashSet<Key> = keys(&b).into_iter().collect();
@@ -285,7 +286,7 @@ fn nested_union_and_intersection_keep_the_first_operand_representative() {
 }
 
 fn triples(n: u32) -> impl Iterator<Item = (u32, u32, u32)> {
-    subsets(n).flat_map(move |a| subsets(n).flat_map(move |b| subsets(n).map(move |c| (a, b, c))))
+    iproduct!(0..1 << n, 0..1 << n, 0..1 << n)
 }
 
 /// Laws that hold for membership but not for the selected object.
@@ -394,12 +395,67 @@ fn associativity_does_not_pin_the_representative_rule() {
 /// Members found by mask helpers match the slot model.
 #[test]
 fn bit_and_slot_encodings_agree() {
-    for set in subsets(KEYS) {
+    for set in 0..1 << KEYS {
         let rep = labelled(set, KEYS, 'a');
         assert_eq!(mask(&rep), set);
         assert_eq!(
             members(set, KEYS).count(),
             usize::try_from(set.count_ones()).expect("small")
         );
+    }
+}
+
+/// Union of sets with stored representatives, over 64 keys.
+type Sampled = std::collections::BTreeMap<u8, char>;
+
+fn sampled_union(
+    rule: fn(Option<char>, Option<char>) -> Option<char>,
+    a: &Sampled,
+    b: &Sampled,
+) -> Sampled {
+    (0..64)
+        .filter_map(|k| rule(a.get(&k).copied(), b.get(&k).copied()).map(|label| (k, label)))
+        .collect()
+}
+
+/// `SET-REP` for union, checked by proptest over 64 keys and whether the
+/// rule passes or fails with a shrunk counterexample.
+fn sampled_union_law(
+    rule: fn(Option<char>, Option<char>) -> Option<char>,
+) -> Result<(), proptest::test_runner::TestError<(Sampled, Sampled, Sampled)>> {
+    use proptest::prelude::*;
+    use proptest::test_runner::{Config, TestRunner};
+    let operand = |label: char| {
+        prop::collection::btree_set(0_u8..64, 0..=64)
+            .prop_map(move |keys| keys.into_iter().map(|k| (k, label)).collect::<Sampled>())
+    };
+    let config = Config {
+        failure_persistence: None,
+        ..Config::default()
+    };
+    TestRunner::new(config).run(&(operand('a'), operand('b'), operand('c')), |(a, b, c)| {
+        let grouped_left = sampled_union(rule, &sampled_union(rule, &a, &b), &c);
+        let grouped_right = sampled_union(rule, &a, &sampled_union(rule, &b, &c));
+        prop_assert_eq!(&grouped_left, &grouped_right);
+        for (k, label) in &grouped_left {
+            let first = [&a, &b, &c].into_iter().find_map(|s| s.get(k));
+            prop_assert_eq!(Some(label), first);
+        }
+        Ok(())
+    })
+}
+
+#[test]
+fn sampled_union_keeps_the_first_representative_and_rejects_the_right_rule() {
+    use proptest::test_runner::TestError;
+    assert!(sampled_union_law(Option::or).is_ok());
+    match sampled_union_law(|left, right| right.or(left)) {
+        Err(TestError::Fail(_, (a, b, c))) => {
+            assert!(
+                a.len() + b.len() + c.len() <= 2,
+                "not shrunk: {a:?} {b:?} {c:?}"
+            );
+        }
+        other => panic!("the right-biased rule was not rejected: {other:?}"),
     }
 }

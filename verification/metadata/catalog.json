@@ -137,7 +137,8 @@
         "law:BIMAP-PARTIAL",
         "law:KNOW-BOUNDS",
         "law:DELTA-REPLAY",
-        "law:FROZEN-STABLE"
+        "law:FROZEN-STABLE",
+        "law:FROZEN-DENOTE"
       ]
     }
   ],
@@ -8832,6 +8833,98 @@
       "oracle": "Computed slot-model results on one key held by every operand",
       "scenario": "XOR reassociation and cancellation, commutation, and right-first absorption/distribution change the selected object",
       "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-043",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::validity_agrees_with_an_independent_enumeration",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "exhaust enumeration of partial functions on three keys with distinct values",
+      "scenario": "The mask-level validity predicate admits exactly the 34 relations exhaust enumerates as partial bijections",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-044",
+      "file": "tests/formal_models/stateful.rs",
+      "selector": "test:stateful::every_short_operation_sequence_matches_the_model",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "BTreeSet reference over every sequence of at most four insert, remove or freeze-thaw steps on three keys",
+      "scenario": "MutableOrderedSet and MutableHashSet, frozen and thawed, match the model after each of 4,096 sequences",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-045",
+      "file": "tests/formal_models/stateful.rs",
+      "selector": "test:stateful::sampled_operation_sequences_match_the_model",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "proptest-state-machine BTreeSet reference over sampled sequences of up to 40 steps on 16 keys",
+      "scenario": "Both mutable set families and their frozen forms match the reference after every sampled step; failures shrink",
+      "seed": "proptest",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-046",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::sampled_union_keeps_the_first_representative_and_rejects_the_right_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "property",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "First operand holding each key, over sampled triples of sets on 64 keys",
+      "scenario": "Union associates and keeps the first representative; the right-biased rule fails and shrinks to at most two members",
+      "seed": "proptest",
       "target": "tests/formal_models/main.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "fast"

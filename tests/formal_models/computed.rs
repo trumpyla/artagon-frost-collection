@@ -2,7 +2,9 @@
 //! `docs/design/algebra/execution-and-computed-sets.md`, plus positive
 //! recursion and context compatibility. Frost implements none of these yet.
 
-use super::common::{is_subset, subsets, words};
+use super::common::is_subset;
+use core::iter::repeat_n;
+use itertools::Itertools;
 
 const N: u32 = 3;
 
@@ -33,9 +35,9 @@ const RULES: [(Rule, SetOp); 4] = [
 ];
 
 fn intervals() -> Vec<(u32, u32)> {
-    subsets(N)
+    (0..1 << N)
         .flat_map(|l| {
-            subsets(N)
+            (0..1 << N)
                 .filter(move |&u| is_subset(l, u))
                 .map(move |u| (l, u))
         })
@@ -50,8 +52,8 @@ fn check(rule: Rule, op: SetOp) -> (bool, bool) {
         for b in intervals() {
             let (lower, upper) = rule(a, b);
             let (mut meet, mut join) = ((1 << N) - 1, 0);
-            for x in subsets(N).filter(|&x| is_subset(a.0, x) && is_subset(x, a.1)) {
-                for y in subsets(N).filter(|&y| is_subset(b.0, y) && is_subset(y, b.1)) {
+            for x in (0..1 << N).filter(|&x| is_subset(a.0, x) && is_subset(x, a.1)) {
+                for y in (0..1 << N).filter(|&y| is_subset(b.0, y) && is_subset(y, b.1)) {
                     let actual = op(x, y);
                     sound &= is_subset(lower, actual) && is_subset(actual, upper);
                     meet &= actual;
@@ -114,23 +116,24 @@ fn last_event_wins(base: u32, events: &[Event]) -> u32 {
         .sum()
 }
 
+/// Every history of at most four events on two keys.
 fn histories() -> Vec<Vec<Event>> {
-    words(
-        &[
-            Event::Insert(0),
-            Event::Insert(1),
-            Event::Delete(0),
-            Event::Delete(1),
-        ],
-        4,
-    )
+    let events = [
+        Event::Insert(0),
+        Event::Insert(1),
+        Event::Delete(0),
+        Event::Delete(1),
+    ];
+    (0..=4)
+        .flat_map(|len| repeat_n(events, len).multi_cartesian_product())
+        .collect()
 }
 
 /// `DELTA-REPLAY`: ordered replay matches the last-event reference, and
 /// compaction at any cut preserves the result.
 #[test]
 fn ordered_replay_matches_last_event_wins_and_compaction() {
-    for base in subsets(2) {
+    for base in 0..1 << 2 {
         for events in histories() {
             assert_eq!(replay(base, &events), last_event_wins(base, &events));
             for cut in 0..=events.len() {
@@ -181,7 +184,7 @@ fn wrong_replays_are_rejected() {
         (base | inserts) & !deletes
     };
     let disagrees = |wrong: &dyn Fn(u32, &[Event]) -> u32| {
-        subsets(2).any(|base| {
+        (0..1 << 2).any(|base| {
             histories()
                 .iter()
                 .any(|events| wrong(base, events) != last_event_wins(base, events))
@@ -197,7 +200,7 @@ fn wrong_replays_are_rejected() {
 /// fixed point within three strict steps and matches breadth-first search.
 #[test]
 fn positive_recursion_reaches_its_fixed_point_in_at_most_n_steps() {
-    for graph in subsets(N * N) {
+    for graph in 0..1 << (N * N) {
         let edges: Vec<(u32, u32)> = (0..N * N)
             .filter(|i| graph & (1 << i) != 0)
             .map(|i| (i / N, i % N))

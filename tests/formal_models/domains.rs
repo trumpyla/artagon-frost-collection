@@ -1,13 +1,18 @@
 //! `DOM-IMAGE`, `DOM-CONGRUENCE`, `DOM-VALID`, and `DOM-NORMALIZE` from
 //! `docs/design/algebra/domains.md`, plus subcarrier closure from the formal model.
 
-use super::common::{is_subset, members, subsets, tuples};
+use super::common::{Key3, is_subset, members};
+use core::iter::repeat_n;
+use exhaust::Exhaust;
+use itertools::Itertools;
 
 const KEYS: u32 = 3;
 
 /// Every total function from three keys to three keys, as `f[key]`.
 fn functions() -> Vec<Vec<u32>> {
-    tuples(KEYS, KEYS as usize)
+    <[Key3; 3]>::exhaust()
+        .map(|f| f.map(Key3::index).to_vec())
+        .collect()
 }
 
 fn image(f: &[u32], set: u32) -> u32 {
@@ -35,8 +40,8 @@ fn direct_image_needs_injectivity_beyond_union() {
     let mut saw_collapsing = false;
     for f in functions() {
         let mut keeps = [true; 3];
-        for a in subsets(KEYS) {
-            for b in subsets(KEYS) {
+        for a in 0..1 << KEYS {
+            for b in 0..1 << KEYS {
                 assert_eq!(image(&f, a | b), image(&f, a) | image(&f, b));
                 keeps[0] &= image(&f, a & b) == image(&f, a) & image(&f, b);
                 keeps[1] &= image(&f, a & !b) == image(&f, a) & !image(&f, b);
@@ -94,7 +99,9 @@ fn push(f: &[u32], bag: &[u32]) -> Vec<u32> {
 /// conversion and max, min and monus only for injective ones.
 #[test]
 fn bag_pushforward_preserves_sum_and_needs_injectivity_for_the_rest() {
-    let bags = tuples(3, KEYS as usize);
+    let bags: Vec<Vec<u32>> = repeat_n(0..3, KEYS as usize)
+        .multi_cartesian_product()
+        .collect();
     let pointwise = |a: &[u32], b: &[u32], op: fn(u32, u32) -> u32| -> Vec<u32> {
         a.iter().zip(b).map(|(&x, &y)| op(x, y)).collect()
     };
@@ -122,7 +129,7 @@ fn bag_pushforward_preserves_sum_and_needs_injectivity_for_the_rest() {
 #[test]
 fn class_filters_commute_with_conversion_exactly_when_congruent() {
     for f in functions() {
-        for predicate in subsets(KEYS) {
+        for predicate in 0..1 << KEYS {
             let congruent = (0..KEYS).all(|x| {
                 (0..KEYS).all(|y| {
                     f[x as usize] != f[y as usize]
@@ -131,7 +138,7 @@ fn class_filters_commute_with_conversion_exactly_when_congruent() {
             });
             // On classes, keep a class when any member satisfies the predicate.
             let class_predicate = image(&f, predicate);
-            let commutes = subsets(KEYS)
+            let commutes = (0..1 << KEYS)
                 .all(|set| image(&f, set & predicate) == image(&f, set) & class_predicate);
             assert_eq!(
                 commutes, congruent,

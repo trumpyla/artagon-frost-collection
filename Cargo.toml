@@ -79,6 +79,9 @@ arc-swap = { version = "1.7", optional = true }
 
 [dev-dependencies]
 proptest = "1.12"
+proptest-state-machine = "0.9"
+exhaust = { version = "0.2.7", default-features = false, features = ["alloc"] }
+itertools = "0.15"
 hashbrown = { version = "0.17", default-features = true }
 indexmap = { version = "2.14", default-features = true }
 serde_json = "1"

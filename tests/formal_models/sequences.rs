@@ -1,8 +1,16 @@
 //! `SEQ-MONOID` and the sequence projections from `docs/design/algebra/sequences.md`.
 
-use super::common::words;
+use core::iter::repeat_n;
+use itertools::Itertools;
 
 type Word = Vec<char>;
+
+/// Every word of at most `max_len` letters over `a` and `b`.
+fn words(max_len: usize) -> Vec<Word> {
+    (0..=max_len)
+        .flat_map(|len| repeat_n(['a', 'b'], len).multi_cartesian_product())
+        .collect()
+}
 
 fn concat(s: &Word, t: &Word) -> Word {
     s.iter().chain(t).copied().collect()
@@ -27,7 +35,8 @@ fn zip(s: &Word, t: &Word) -> Vec<(char, char)> {
 /// occurrence counting, over every word of at most three letters.
 #[test]
 fn concatenation_is_a_monoid_and_projections_respect_it() {
-    let all = words(&['a', 'b'], 3);
+    let all = words(3);
+    assert_eq!(all.len(), 15);
     let upper = |c: char| c.to_ascii_uppercase();
     let double = |c: char| vec![c, c];
     for s in &all {
@@ -59,7 +68,7 @@ fn concatenation_is_a_monoid_and_projections_respect_it() {
 /// Zip distributes over concatenation only when the left parts have equal length.
 #[test]
 fn zip_distributes_over_concatenation_only_when_aligned() {
-    let all = words(&['a', 'b'], 3);
+    let all = words(3);
     for s in &all {
         for t in &all {
             for u in all.iter().filter(|u| u.len() == s.len()) {
