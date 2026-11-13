@@ -64,7 +64,7 @@ checkout; record any fresh execution separately.
 | `tests/inline_safety.rs` under Miri | Actual unsafe inline storage through public APIs | Concrete ownership, alignment, zero-sized-value, partial-iterator, and panic paths | Soundness for every safe caller or a complete model of Rust's semantics |
 | Three-operation inline test under Miri | Actual inline transitions and per-element ownership counters | All 7^3 traces at capacities 0 and 2; 686 traces total | The larger native five-operation domain, arbitrary capacities, or every unwind path |
 | `verification/loom` | The same production retry loop with Loom-instrumented synchronization | Two and three one-shot incrementing writers; no preemption, permutation, or duration truncation | arc-swap's pointer publication, reference counting, reclamation, or lock-free progress |
-| `verification/kani` | Actual public collection APIs and the exact private `InlineBuf` source | Eight bounded harnesses, described below | Unbounded collection correctness, arbitrary callbacks/destructors, or concurrent memory ordering |
+| `verification/kani` | Actual public collection APIs and the exact private `InlineBuf` source | Twelve bounded harnesses, described below | Unbounded collection correctness, arbitrary callbacks/destructors, or concurrent memory ordering |
 | `tests/api_contracts.rs` | Public `MutableVec`, `MutableOrderedMap` entries/ranges/iterators, and generic `MapInsert`/`MapRemove`/`LookupRef` capabilities | Five initial vectors across all 16^3 three-step traces (20,480 traces); deterministic `usize::MAX` reservation overflow; 8-element non-`Clone` partial drain drop counters; explicit key-representative tags and lazy callback counters ([obligations](../verification/crate-standards-validation/api-contracts.md)) | Arbitrary trace lengths, allocator OOM behavior, panic unwinding, or unexercised families |
 | `verification/fuzz` (`make fuzz-check`, `make fuzz-smoke`) | Public `MutableOrderedSet`, `FrozenOrderedSet`, `MutableOrderedMap`, `FrozenOrderedMap`, and `FrozenIntSet<i32>` across all five `IntSetPolicy` modes | Deterministic seed-corpus and boundary replay on stable 1.99.1 plus coverage-guided `libFuzzer` runs on `nightly-2026-11-08` against `BTreeMap`/`BTreeSet` and `Hasher` event-stream oracles | Exhaustive proof over unbounded inputs or non-instrumented target architectures |
 
@@ -288,8 +288,8 @@ test or substitute copied collection implementations.
 | `inline_transfer_drops_each_owner_once` | Length and consumed count 0 through 3, arbitrary front/back choices, heap/iterator transfer | Every original owner is destroyed exactly once; source ownership becomes empty | 16 |
 | `inline_zero_capacity` | Capacity zero | Rejected push, empty pop/slice/iterator, and empty heap transfer | 4 |
 | `dense_padding_does_not_create_members` | Lengths 0 through 6; two arbitrary complete machine words | Scalar membership, result counts/universes, subset/disjointness, and sanitized result padding | 32 |
-| `set_laws::ordered_set_operations_refine_the_representative_rule` | Every pair of subsets of three keys, every byte label per stored object, all four operations | `SET-REP` refinement: the label stored per key in the real result equals the reference rule on the operands; every yielded object is borrowed from the operand that holds its key, the left one when both do; keys strictly ascending | 8 |
-| `set_laws::nested_ordered_union_and_intersection_keep_the_first_representative` | Every triple of subsets of three keys and every label; union or intersection | Both groupings, with materialized intermediate frozen sets, select the objects the reference selects left to right | 8 |
+| `set_laws::ordered_{union,intersection,difference,symmetric_difference}_refines_the_representative_rule` (four harnesses) | Every pair of subsets of three keys, with fixed distinct labels per operand | `SET-REP` refinement: the label stored per key in the real result equals the reference rule on the operands; every yielded object is borrowed from the operand that holds its key, the left one when both do; keys strictly ascending | 8 |
+| `set_laws::nested_ordered_{union,intersection}_keeps_the_first_representative` (two harnesses) | Every triple of subsets of three keys, with fixed distinct labels | Both groupings, with materialized intermediate frozen sets, select the objects the reference selects left to right | 8 |
 
 Kani also checks the supported classes of memory errors, panics, and arithmetic
 errors in the explored program. The inline destruction harness uses a bounded
@@ -308,7 +308,7 @@ make kani
 The first target includes a check that the property helpers compile and execute
 against the real implementations. It does not exercise `kani::any`, the proof
 attributes, or symbolic verification. A release must report the Kani target
-separately and require all eight expected harnesses to be discovered and pass.
+separately and require all twelve expected harnesses to be discovered and pass.
 
 As reviewed on 2026-11-09, Kani 0.68.0 is the published release and uses its own
 nightly compiler dated 2026-08-21. This crate requires Rust 1.99.1. Compatibility

@@ -5,8 +5,9 @@
 //! so the label records which stored object an operation returned. The
 //! abstraction maps a set to the label stored for each key. Each proof asserts
 //! that the abstraction of the real result equals the reference operation on
-//! the abstractions of the operands, for every operand mask and every label.
-//! The bounds are three keys and one level of nesting.
+//! the abstractions of the operands, for every operand mask. Labels are fixed
+//! and distinct per operand: the kernels never read them. The bounds are three
+//! keys and one level of nesting.
 
 use alloc::vec::Vec;
 use core::cmp::Ordering;
@@ -149,46 +150,66 @@ pub(crate) fn nested(op: Op, masks: [u8; 3], labels: [[u8; KEYS as usize]; 3]) {
     assert_eq!(slots(apply(op, &a, &bc)), expected);
 }
 
+/// Distinct labels per operand. The kernels never read a label, so fixed
+/// distinct values identify the source of every yielded object.
+const LABELS: [[u8; KEYS as usize]; 3] = [[10, 11, 12], [20, 21, 22], [30, 31, 32]];
+
 #[cfg(kani)]
 mod proofs {
-    use super::{Op, nested, representatives};
+    use super::{LABELS, Op, nested, representatives};
 
-    fn op() -> Op {
-        match kani::any::<u8>() % 4 {
-            0 => Op::Union,
-            1 => Op::Intersection,
-            2 => Op::Difference,
-            _ => Op::Xor,
-        }
-    }
-
-    #[kani::proof]
-    #[kani::unwind(8)]
-    fn ordered_set_operations_refine_the_representative_rule() {
+    fn pair(op: Op) {
         let masks: [u8; 2] = kani::any();
         kani::assume(masks[0] < 8 && masks[1] < 8);
-        representatives(op(), masks, kani::any());
+        representatives(op, masks, [LABELS[0], LABELS[1]]);
+    }
+
+    fn triple(op: Op) {
+        let masks: [u8; 3] = kani::any();
+        kani::assume(masks[0] < 8 && masks[1] < 8 && masks[2] < 8);
+        nested(op, masks, LABELS);
     }
 
     #[kani::proof]
     #[kani::unwind(8)]
-    fn nested_ordered_union_and_intersection_keep_the_first_representative() {
-        let masks: [u8; 3] = kani::any();
-        kani::assume(masks.iter().all(|&m| m < 8));
-        let op = if kani::any() {
-            Op::Union
-        } else {
-            Op::Intersection
-        };
-        nested(op, masks, kani::any());
+    fn ordered_union_refines_the_representative_rule() {
+        pair(Op::Union);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(8)]
+    fn ordered_intersection_refines_the_representative_rule() {
+        pair(Op::Intersection);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(8)]
+    fn ordered_difference_refines_the_representative_rule() {
+        pair(Op::Difference);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(8)]
+    fn ordered_symmetric_difference_refines_the_representative_rule() {
+        pair(Op::Xor);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(8)]
+    fn nested_ordered_union_keeps_the_first_representative() {
+        triple(Op::Union);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(8)]
+    fn nested_ordered_intersection_keeps_the_first_representative() {
+        triple(Op::Intersection);
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{OPS, Op, nested, representatives};
-
-    const LABELS: [[u8; 3]; 3] = [[10, 11, 12], [20, 21, 22], [30, 31, 32]];
+    use super::{LABELS, OPS, Op, nested, representatives};
 
     #[test]
     fn representative_helpers_execute_against_production_code() {

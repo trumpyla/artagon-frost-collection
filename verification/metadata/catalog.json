@@ -8932,7 +8932,7 @@
     {
       "id": "T-LIB-039",
       "file": "verification/kani/src/set_laws.rs",
-      "selector": "test:set_laws::proofs::nested_ordered_union_and_intersection_keep_the_first_representative",
+      "selector": "test:set_laws::proofs::nested_ordered_union_keeps_the_first_representative",
       "status": "curated",
       "tags": [
         "set-algebra",
@@ -8945,8 +8945,8 @@
       "contracts": [
         "C-ALGEBRA-FORMAL-MODELS"
       ],
-      "oracle": "Reference rule applied left to right, for symbolic masks and labels of three operands",
-      "scenario": "Kani: both groupings of union or intersection, with materialized intermediate frozen sets, select the first operand holding each key",
+      "oracle": "Reference rule applied left to right, for symbolic masks of three operands with fixed distinct labels",
+      "scenario": "Kani: both groupings of union, with materialized intermediate frozen sets, select the first operand holding each key, over three keys",
       "seed": "none",
       "target": "verification/kani/src/lib.rs",
       "cfg": "cfg (any (kani , test)); cfg (kani)",
@@ -8955,7 +8955,7 @@
     {
       "id": "T-LIB-040",
       "file": "verification/kani/src/set_laws.rs",
-      "selector": "test:set_laws::proofs::ordered_set_operations_refine_the_representative_rule",
+      "selector": "test:set_laws::proofs::ordered_union_refines_the_representative_rule",
       "status": "curated",
       "tags": [
         "set-algebra",
@@ -8968,8 +8968,8 @@
       "contracts": [
         "C-ALGEBRA-FORMAL-MODELS"
       ],
-      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks and labels",
-      "scenario": "Kani: union, intersection, difference and symmetric difference of real FrozenOrderedSet values refine SET-REP over three keys; yielded objects are borrowed from the holding operand",
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: union of real FrozenOrderedSet values refines SET-REP over three keys; yielded objects are borrowed from the holding operand",
       "seed": "none",
       "target": "verification/kani/src/lib.rs",
       "cfg": "cfg (any (kani , test)); cfg (kani)",
@@ -8997,6 +8997,98 @@
       "target": "verification/kani/src/lib.rs",
       "cfg": "cfg (any (kani , test)); cfg (test)",
       "cost": "fast"
+    },
+    {
+      "id": "T-LIB-042",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::nested_ordered_intersection_keeps_the_first_representative",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference rule applied left to right, for symbolic masks of three operands with fixed distinct labels",
+      "scenario": "Kani: both groupings of intersection, with materialized intermediate frozen sets, select the first operand holding each key, over three keys",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-043",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_difference_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: difference of real FrozenOrderedSet values refines SET-REP over three keys; yielded objects are borrowed from the holding operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-044",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_intersection_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: intersection of real FrozenOrderedSet values refines SET-REP over three keys; yielded objects are borrowed from the holding operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-045",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_symmetric_difference_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: symmetric difference of real FrozenOrderedSet values refines SET-REP over three keys; yielded objects are borrowed from the holding operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
     }
   ]
 }

@@ -406,8 +406,8 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 380
-  structural test and proof declarations, 394 case records (71 `curated`, 323
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 384
+  structural test and proof declarations, 398 case records (75 `curated`, 323
   `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
   every inventory entry `unreviewed`. Three contracts
   (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)
