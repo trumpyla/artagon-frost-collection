@@ -51,6 +51,7 @@ remain authoritative for implemented behavior.
 | [Proof obligations](design/algebra/proof-obligations.md) | Arguments, finite checks and unexecuted implementation gates |
 | [Adversarial review](reviews/value-domain-algebra-review.md) | Same-author review passes, counterexamples and remaining risks |
 | [Destination review](reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, gate results and open items |
+| [Crate split review](reviews/crate-split-adversarial-review.md) | Adversarial review of the crate-split proposal: two blockers, compile-tested |
 | [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
 
 ## Research corpus

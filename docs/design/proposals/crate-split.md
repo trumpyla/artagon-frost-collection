@@ -6,6 +6,14 @@ and proposes changes to the epic and its tasks. It changes no tracker record,
 package, or source file. [Crate layout](../crate-layout.md) remains the record
 of constraints; this document supplies the evidence that one lacked.
 
+> **Not ready to accept.** An [adversarial review](../../reviews/crate-split-adversarial-review.md)
+> on 2026-11-13 found two blockers and fifteen high-severity defects in this
+> text. `frost-concurrent` does not compile as specified (S01), `make package`
+> cannot pass with unpublished siblings (S02), section 3.3 and the feature map
+> are incomplete (S04, S06), and decisions E and F rest on claims the review
+> found false or unsupported (S07, S11). The text below is unchanged pending
+> the maintainer's decisions listed in that review.
+
 ## 1. Recommendation
 
 Split now, along the seams that do not depend on the coming API refactor, and
