@@ -62,6 +62,13 @@ evidence layer, in provenance, and in what the rules restructure left stale.
 | D20 | low | "Materialized answer" was redefined in the root README but not in the research synthesis. | Synthesis aligned. |
 | D21 | low | The delivery's validation record describes the delivery; several of its statements are false for this branch. | Marked as the delivery's record and followed by destination results. |
 
+## Later change, 2026-11-13
+
+The revised Node model and its mutant runner were replaced by the Rust test
+target `tests/formal_models`, so the models run in `make check`, are catalogued,
+and exercise real Frost types where they exist. Findings D01 to D05, D17 and D19
+describe the Node model and its counterexample IDs, and are kept as history.
+
 ## Confirmed, with no change needed
 
 - The patch hash matches the delivery record and the patch applies to `27b1439`.

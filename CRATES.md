@@ -37,17 +37,20 @@ can cite them. Do not renumber a rule; retire it and add a new ID.
 
 ## 1. Standard crate-local layout
 
-Every library package uses the same tree. Directories that a package does not
-need are omitted, never created empty.
+Every library package uses the same tree and is self-contained (CR-LAYOUT-9).
+Directories that a package does not need are omitted, never created empty.
 
 ```text
 <package>/
   Cargo.toml          manifest; features, targets, lints, package include/exclude
-  README.md           package purpose and links (root README serves today)
+  README.md           package purpose, contracts, and links (root README serves today)
+  CHANGELOG.md        changes to this package (root changelog serves today)
+  docs/               design and contract documents for this package's types
   src/                production code; private unit tests in #[cfg(test)] modules
   tests/              integration and contract tests; one file per contract area
     <area>.rs           one Cargo test target
     <area>/main.rs      a multi-file test target; its modules live beside it
+    formal_models/      finite formal models of this package's laws (CR-LAYOUT-10)
     support/mod.rs      shared test helpers and workload factories; never a target
   benches/            harness = false benchmark targets
     support/mod.rs      shared measurement, factory, and control helpers
@@ -61,11 +64,13 @@ need are omitted, never created empty.
 ```
 
 Repository-level files stay at the root: `Makefile`, `rust-toolchain.toml`,
-`Cargo.lock`, `CHANGELOG.md`, licenses, policy files, `.config/` tool
-configuration, `docs/`, historical evidence under `verification/`, and
-repository tooling such as the catalog validator in `verification/catalog/`.
-Today the single package's metadata lives in
-[verification/metadata/](verification/metadata/catalog.json).
+`Cargo.lock`, the workspace manifest, licenses, policy files, `.config/` tool
+configuration, repository-wide documents under `docs/` (philosophy,
+architecture, decisions, maintainer guides, the research corpus), historical
+evidence under `verification/`, and repository tooling such as the catalog
+validator in `verification/catalog/`. Today the single package is the
+repository root, so its `docs/`, `CHANGELOG.md`, and
+[verification/metadata/](verification/metadata/catalog.json) are the root ones.
 
 - **CR-LAYOUT-1.** `src/` contains code that ships. Test helpers, factories,
   oracles, and benchmark drivers live in `tests/support/`, `benches/support/`,
@@ -100,6 +105,26 @@ Today the single package's metadata lives in
 - **CR-LAYOUT-8.** Historical logs, raw samples, and supplied inputs are
   evidence. They stay where they were recorded and are not moved into a
   package during the reorganization.
+- **CR-LAYOUT-9.** A package is self-contained. Everything that belongs to it
+  lives under its directory: code, tests, benchmarks, examples, fuzz targets,
+  Loom, Kani, and downstream harnesses, formal models, catalog and inventory
+  records, README, changelog, and the design documents for its contracts.
+  These refer only to files under the package, workspace-root files, and the
+  packages it depends on. A test that needs several packages lives in the
+  lowest package that depends on all of them; the facade holds the rest.
+  Moving a package directory moves everything it owns. Repository-wide
+  documents and historical evidence (CR-LAYOUT-8) are not package artifacts.
+- **CR-LAYOUT-10.** A package owns the formal artifacts for its laws.
+  Executable models are Rust test targets in `tests/formal_models/`, one module
+  per design chapter, run by `make check`. Proof harnesses for those laws live
+  in `<package>/verification/<tool>/` as isolated packages (CR-LAYOUT-6). Model
+  reference definitions are never imported from production code. Where the
+  package implements an operation, the same inputs also run through the real
+  types. Each law check also runs on deliberately wrong definitions, which
+  must fail. A model of a proposed operation lives in the package its design
+  assigns as owner. Models state their finite domain and are not proofs.
+  Formal artifacts are written in Rust or in a tool adopted in section 7, and
+  run through the Make gates.
 
 ## 2. Responsibility boundaries
 
@@ -110,7 +135,9 @@ Today the single package's metadata lives in
 | Workload factories and oracles | `tests/support/`, `benches/support/`, or a `publish = false` support package | Produce Frost types when a plain `Vec`/`BTreeSet` input suffices |
 | Benchmark timing | `benches/` with common support | Validate answers inside the timed region |
 | Model checking, proofs, fuzzing, catalog validation | Isolated packages | Become normal or dev-dependencies of the library |
-| Test and benchmark metadata | `verification/metadata/` (section 6) | Live only in comments or test names |
+| Test and benchmark metadata | `<package>/verification/metadata/` (section 6) | Live only in comments or test names |
+| Formal models | `<package>/tests/formal_models/` (CR-LAYOUT-10) | Import production code into a reference definition, or run outside the Make gates |
+| Package design documents | `<package>/docs/` | Duplicate a repository-wide decision instead of linking it |
 | Orchestration | Root `Makefile` | Hide failures, skip missing tools, or require Python |
 
 - **CR-BOUND-1.** A shared support package used by several crates is
@@ -321,7 +348,7 @@ lists every benchmark target and compares the exact case names. Both run in
 
 | Record | Fields |
 | --- | --- |
-| Contract | `id` (for example `C-ORDERED-SET-ALGEBRA`), `title`, `source` documents, `obligations[]` (public paths as traceability references) |
+| Contract | `id` (for example `C-ORDERED-SET-ALGEBRA`), `title`, `source` documents, `obligations[]` (public paths as traceability references, or `law:<ID>` for a law in `docs/design/algebra/catalog.json` that has no public item yet) |
 | Target | `path`, Cargo `kind`, `features[]`; must include the target's Cargo `required-features` |
 | Case | `id`, `target`, `file`, `selector`, `status`, `kind`, `tags[]`, `features`, `cfg`, `area`, `provenance`, `contracts[]`, `oracle`, `scenario`, `seed`, `cost`; benchmark cases add `timing` and `control` |
 
@@ -374,9 +401,9 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 331
-  structural test and proof declarations, 345 case records (22 `curated`, 323
-  `unreviewed`), 11 contracts, and 922 benchmark names in seven targets, with
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 373
+  structural test and proof declarations, 387 case records (64 `curated`, 323
+  `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
   every inventory entry `unreviewed`. Three contracts
   (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)
   have no curated case. Curating the unreviewed legacy records is part of
@@ -443,6 +470,7 @@ change does not claim that it has run on GitHub.
 | Change | Required in the same change |
 | --- | --- |
 | New or changed public item | Rustdoc with ownership, panic, complexity, feature, and concurrency notes; obligations; tests per category; curated catalog cases linked to a contract; changelog |
+| New or changed formal law | A model module in the owning package's `tests/formal_models/` with wrong-definition checks; the law in `docs/design/algebra/catalog.json` and the proof ledger; curated catalog cases |
 | New test or benchmark | Catalog case or inventory entry (scaffold, then curate when reviewed); features and `cfg`; benchmark control, timing, and seed; `make catalog` and `make catalog-inventory` pass |
 | New feature | `Cargo.toml` entry, feature catalog in [README.md](README.md), isolated and embedded matrix entries, tests compiled out when disabled |
 | New isolated verification package | Own manifest and lockfile; Make target with a tool-version check; exclusion from packaging; proof-scope statement |

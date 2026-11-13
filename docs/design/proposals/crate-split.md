@@ -123,6 +123,26 @@ package. A test that uses `frost-integer` and `frost-concurrent` cannot live in
 `frost-integer`: a dev-dependency back on `frost-concurrent` compiles a second
 copy of the integer types, and the two copies do not unify.
 
+### 3.5 Self-contained packages
+
+The maintainer decided on 2026-11-13 that every package is self-contained
+([decision](../decisions.md#self-contained-packages-and-formal-models-2026-11-13),
+[CRATES.md](../../../CRATES.md) CR-LAYOUT-9 and CR-LAYOUT-10). Each package
+therefore ends its extraction owning these artifacts, with catalog IDs kept:
+
+| Package | Tests, benches, examples (by the types they use) | Harnesses and models | Documents |
+| --- | --- | --- | --- |
+| `frost-core` | Family, capability, backend, and set-algebra tests and benches; the `core`, `mutable`, `sequences`, `static_maps`, `advanced`, `set_operations`, `frameworks` examples; `tests/formal_models` | Ordered-set fuzz target; Kani harnesses for ordered algebra and bitmap padding | `set-operations.md`, `frozen-api.md`, the `algebra/` chapters, `set-algebra.md`, `collection-algebra.md` |
+| `frost-adaptive` | Adaptive and inline tests, adaptive benches, `adaptive` example | Kani harness for `seq/buf.rs`; its Miri lanes | Adaptive sections of the architecture |
+| `frost-integer` | Integer tests, benches, and `integer_sets` example | Integer fuzz target; `int-key-downstream`; integer views and output harnesses that are not historical evidence | `integer-sets.md`, `integer-views.md`, `integer-roadmap.md`, `persistent-integer-storage.md` |
+| `frost-concurrent` | Concurrent, snapshot, and publication-model tests; snapshot bench; `concurrent` and `snapshots` examples | Loom package | `snapshots.md` |
+| Facade | Tests that need several packages or reach them all through the prelude | — | README (crate docs), migration table |
+
+Each package also gets its own `verification/metadata/` records, README, and
+changelog. Historical evidence under `verification/` and the research corpus
+stay where they are (CR-LAYOUT-8). The fuzz package splits by owner, as does
+the Kani package, whose harnesses cover two packages today.
+
 ## 4. Feature map
 
 Features stay additive, and each facade feature forwards to the package that
@@ -151,7 +171,7 @@ confinement rule becomes a compiler check rather than a review convention.
 | A | Separate `family` from `frost-core` now? | **No.** It requires replacing `native.compact()` → family with `From` conversions. Decide that in the API refactor, then split if it still pays. |
 | B | Facade package name: `frost-api` (current target) or `frost-collections`? | **`frost-collections`.** It is the existing package and registry identity, and the Makefile and docs already use it. The import name `frost` is unchanged either way. |
 | C | How do siblings share internals? | **`#[doc(hidden)] pub mod __private` plus exact version pins.** Do not promote the kernels to public API until a consumer outside Frost needs them. |
-| D | Where do tests, benches, and examples live during the move? | **At the facade, unchanged**, so they are a fixed oracle while code moves. Relocate single-package tests in a separate later task. |
+| D | Where do tests, benches, and examples live during the move? | **At the facade while the code moves, then into the package in the same task.** Each extraction first moves code with tests unchanged as a fixed oracle, then, once green, moves the package's own artifacts (section 3.5). No package is left half self-contained between tasks. |
 | E | Doctest paths in moved modules | **Spike in the scaffold task.** Either rewrite them to `frost_core::…`, or keep `frost::…` through a facade dev-dependency. The second keeps user-facing docs right but compiles a second copy of the crate for doctests. Pick using the `compile_fail` error codes on 1.99.1. |
 | F | Split before or after the API refactor? | **Before, for stage 1 only.** These seams (unsafe, encoded integers, concurrency) survive any refactor of the family API. Later boundaries such as family/core, a kernels crate, or an expression layer wait for the refactor design. |
 
@@ -193,13 +213,13 @@ confinement rule becomes a compiler check rather than a review convention.
 | Task | Title | Depends on | Acceptance, in brief |
 | --- | --- | --- | --- |
 | `.1` (revise) | Approve stage-1 boundaries | — | Decisions A–F recorded in `docs/design/decisions.md`; this proposal accepted or amended. |
-| `.7` (new) | Workspace scaffold, no split | `.1`, `frost-wou.10` | Root becomes a virtual workspace and the current package moves unchanged to `crates/frost-collections`. Make recipes, the catalog tool, `make package`, and CI handle any number of members. The doctest strategy (decision E) is chosen. `make check` and `make verify` results match the pre-move run, and catalog IDs are unchanged. |
-| `.2` (revise) | Extract `frost-core` | `.7` | Modules from section 1; `__private` module; `forbid(unsafe_code)`; core framework impls; the facade re-exports; tests untouched and green; embedded builds pass. |
-| `.8` (new) | Extract `frost-adaptive` | `.2` | Adaptive profiles, their framework impls, and the `Inline`/`AdaptiveHash` freeze impls moved from `family`. Kani harness path updated; Miri lanes green. |
-| `.9` (new) | Extract `frost-integer` | `.2` | Integer profile; downstream codec package and integer fuzz targets repointed; atomic and non-atomic embedded builds pass. |
-| `.10` (new) | Extract `frost-concurrent` | `.8`, `.9` | Live access, snapshots, and seals; Loom and `publication_model` include the moved `publication.rs`; `int-set` forwarding works. |
+| `.7` (new) | Workspace scaffold, no split | `.1`, `frost-wou.10` | Root becomes a virtual workspace and the current package moves unchanged to `crates/frost-collections`. Make recipes, the catalog tool (per-package metadata files), `make package`, and CI handle any number of members. The doctest strategy (decision E) is chosen. `make check` and `make verify` results match the pre-move run, and catalog IDs are unchanged. |
+| `.2` (revise) | Extract `frost-core` | `.7` | Modules from section 1; `__private` module; `forbid(unsafe_code)`; core framework impls; the facade re-exports; embedded builds pass. Then its artifacts from section 3.5, including `tests/formal_models`, with catalog IDs kept. |
+| `.8` (new) | Extract `frost-adaptive` | `.2` | Adaptive profiles, their framework impls, and the `Inline`/`AdaptiveHash` freeze impls moved from `family`; Miri lanes green. Then its artifacts, including its Kani harness. |
+| `.9` (new) | Extract `frost-integer` | `.2` | Integer profile; atomic and non-atomic embedded builds pass. Then its artifacts, including the downstream codec package and integer fuzz target. |
+| `.10` (new) | Extract `frost-concurrent` | `.8`, `.9` | Live access, snapshots, and seals; `int-set` forwarding works. Then its artifacts, including Loom and `publication_model` on the moved `publication.rs`. |
 | `.4` (revise) | Facade and feature parity | `.10` | Migration table for every changed path; each isolated feature, core/alloc/std, and embedded builds pass; each `compile_fail` keeps its semantic intent. |
-| `.3` (revise) | Relocate single-package tests, benches, examples, and fuzz targets | `.10` | Each moves to the lowest package that has every type it uses; the rest stay at the facade; catalog IDs are kept. |
+| `.3` (revise) | Facade tests and shared test support | `.10` | Cross-package tests settle in the facade; any test support used by several packages becomes a `publish = false` support package (CR-BOUND-1); no package refers to another package's `tests/`. |
 | `.5` (revise) | Update policy and design documents | `.10` | `CRATES.md`, implementation contracts, agent entry, crate layout, architecture, and README describe the workspace. The one-package rule is removed in the same change as the last extraction. |
 | `.6` (keep) | Record verification evidence | `.3`, `.4`, `.5` | Unchanged. |
 

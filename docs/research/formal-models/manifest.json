@@ -25,8 +25,8 @@
     {
       "path": "docs/README.md",
       "kind": "file",
-      "sha256": "f4cf040fb983a34260b0923656ed5e7bc7578f097b17440689d42d98df00ef6f",
-      "bytes": 13395,
+      "sha256": "87a5d4ccf3f56bbb0161ca74646390b8cd60a4b4be579930e2c6ed713e806cac",
+      "bytes": 13563,
       "status": "documentation-proposal-or-navigation"
     },
     {
@@ -53,8 +53,8 @@
     {
       "path": "docs/design/algebra/catalog.json",
       "kind": "file",
-      "sha256": "29f4091f925188102579c6bd368039ff2fd136f2415c8dbfb98b0b557dcded45",
-      "bytes": 17825,
+      "sha256": "475417ca043edf985514818211ce324fcd374aaaa73499e4ea32c876868adc9b",
+      "bytes": 14466,
       "status": "documentation-proposal-or-navigation"
     },
     {
@@ -109,8 +109,8 @@
     {
       "path": "docs/design/algebra/proof-obligations.md",
       "kind": "file",
-      "sha256": "089d0d8e2beef819761a0c228539c102898724a9945f99d6da34694db0098c3a",
-      "bytes": 9387,
+      "sha256": "b8490b1b8ee435e6c21179a646ac7f7c1daf4d3485f95d60d2d5b259f1707575",
+      "bytes": 9227,
       "status": "documentation-proposal-or-navigation"
     },
     {
@@ -207,8 +207,8 @@
     {
       "path": "docs/research/formal-models/README.md",
       "kind": "file",
-      "sha256": "1fa559f791c45ed40b3b4f4ce99fb48c30ede31c31e68db57f26cc5defa51d41",
-      "bytes": 6974,
+      "sha256": "f8eb72a48ae483118b9856a388b59fe171aba13c6749f6dc1d64a4e72e8362cf",
+      "bytes": 6587,
       "status": "documentation-proposal-or-navigation"
     },
     {
@@ -223,34 +223,6 @@
       "kind": "file",
       "sha256": "263bc727129039c577f96381edda44a125a74ef2d4b08f5b7959a39232b9621c",
       "bytes": 2422,
-      "status": "research-evidence"
-    },
-    {
-      "path": "docs/research/formal-models/evidence/model-checks.mjs",
-      "kind": "file",
-      "sha256": "9fb6a5abe739cc8849a49a2c2fe3c086f2885b84a8756b156db0ea99b5e54440",
-      "bytes": 24383,
-      "status": "research-evidence"
-    },
-    {
-      "path": "docs/research/formal-models/evidence/model-mutants-results.json",
-      "kind": "file",
-      "sha256": "0fb4cb15e3e63d05a9ec37124524f97fe901c2f22966e7c7aa807ccaf65d4978",
-      "bytes": 3874,
-      "status": "research-evidence"
-    },
-    {
-      "path": "docs/research/formal-models/evidence/model-mutants.mjs",
-      "kind": "file",
-      "sha256": "d465b53608487a2732692ab20a293945192fa5d7b3294d4507a303cdbdc3d2d5",
-      "bytes": 4295,
-      "status": "research-tooling"
-    },
-    {
-      "path": "docs/research/formal-models/evidence/model-results.json",
-      "kind": "file",
-      "sha256": "fd74039d2f05e9f3aac9a4e6845a6944a7f55198931559ccf26e8f8376286ac4",
-      "bytes": 11691,
       "status": "research-evidence"
     },
     {
@@ -277,24 +249,24 @@
     {
       "path": "docs/research/formal-models/validation.md",
       "kind": "file",
-      "sha256": "c46f2f443a3ac98e7a157f2f4b301e2d16274a063e12c3310b49934b4c17f51c",
-      "bytes": 5774,
+      "sha256": "97ad64edf9e805eeae41bf75b4724b528b6c401f9557d99995ac24f0fdd61af7",
+      "bytes": 6464,
       "status": "documentation-proposal-or-navigation"
     },
     {
       "path": "docs/reviews/value-domain-algebra-destination-review.md",
       "kind": "file",
-      "sha256": "c0d7603b53f52121520beb276ad9eeae34f0204ac6ac1f0cc9c8d66cc1707fab",
-      "bytes": 10277,
+      "sha256": "d722b5736a1a4ef82b1f5aac7b9f8d53a08fc5520f212f65609b950fba6c9968",
+      "bytes": 10622,
       "status": "review"
     },
     {
       "path": "docs/reviews/value-domain-algebra-review.md",
       "kind": "file",
-      "sha256": "75fe99ec470a60c4a4903dc7072aa0c365b855e91bc3d5937836271edd32cc39",
-      "bytes": 10338,
+      "sha256": "34aff8d7830532425dae12a50d6bab0e90e2c803a85157127a3bea7247e02ae6",
+      "bytes": 10329,
       "status": "documentation-proposal-or-navigation"
     }
   ],
-  "regenerated": "2026-11-12 at integration; hashes describe the corrected files, not the delivery"
+  "regenerated": "2026-11-13; hashes describe the current files"
 }

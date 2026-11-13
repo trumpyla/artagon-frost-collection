@@ -14,6 +14,12 @@ Documentation only. No source, feature, or public API change.
   unchanged.
 - Repoint seven verification-catalog contract sources to the implementation
   contracts. No catalog ID changed.
+- Port the finite formal models from a Node script to the Rust test target
+  `tests/formal_models` (42 catalogued cases). It checks each law against
+  wrong definitions and runs `FrozenOrderedSet`, `FrozenHashSet`,
+  `FrozenOrderedMap`, and `FrozenVec` on the same inputs.
+- `CRATES.md` now requires self-contained packages (CR-LAYOUT-9) that own
+  their formal models and proof harnesses (CR-LAYOUT-10).
 
 ## Unreleased — emptied adaptive tree ranges
 

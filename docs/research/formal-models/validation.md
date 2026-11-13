@@ -29,8 +29,8 @@ deliberately incorrect model variants" were comparisons of constants, not
 mutations of the model. The model was revised at integration; current numbers
 are in the destination results below. Two consecutive runs produce identical
 JSON output.
-The [result record](evidence/model-results.json) states every bounded domain.
-No Frost source is imported or executed by this model. Assertions count checks,
+Its result record and the script were removed on 2026-11-13 when the models
+moved to Rust tests; see the last section. No Frost source is imported or executed by this model. Assertions count checks,
 not Rust tests, production coverage, independent reviewers, or unbounded proofs.
 
 ## Source and document checks
@@ -97,8 +97,8 @@ Run in a complete checkout of `27b1439` with Rust 1.99.1 and Node v22.23.4.
 | `make package` with the symlink | Passed; Cargo packages `AGENTS.md` as a regular copy of its target |
 | `make fuzz-check` | Passed (3 deterministic regressions) |
 | `make check` after all corrections | Passed (1,168 repository-local links) |
-| Revised model | 415,592 assertions, 145,463 cases, 13 groups, 32 computed counterexamples, 5 illustrations; deterministic |
-| Model mutants | 18 of 18 killed |
+| Revised Node model (2026-11-12, since removed) | 415,592 assertions, 145,463 cases, 13 groups, 32 computed counterexamples, 5 illustrations; deterministic |
+| Its mutant runner (since removed) | 18 of 18 killed |
 
 Not run: `make verify`, the feature matrix, embedded builds, Miri, Kani, Loom,
 `cargo-mutants`, the libFuzzer smoke, and benchmarks. The change touches no
@@ -113,3 +113,17 @@ changed). `src/`, `tests/`, `benches/`, Cargo manifests, the Makefile, CI,
 scripts, and Beads state are untouched. The
 [destination review](../../reviews/value-domain-algebra-destination-review.md)
 lists every correction.
+
+## Rust models, 2026-11-13
+
+The Node model and its mutant runner were replaced by the Rust test target
+[`tests/formal_models`](../../../tests/formal_models/main.rs). It has 42 cases,
+each a curated catalog record under `C-ALGEBRA-FORMAL-MODELS`. The textual
+mutants became wrong-definition tests inside the target. Seven cases run real
+Frost types.
+
+| Check | Result |
+| --- | --- |
+| `cargo test --locked --test formal_models` | 42 passed |
+| `cargo clippy --all-targets --all-features --locked -- -D warnings` | Passed |
+| `make catalog` | Passed; 387 case records, 64 curated, 12 contracts |

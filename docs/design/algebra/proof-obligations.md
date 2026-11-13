@@ -76,15 +76,13 @@ not cause memory unsafety, regardless of the mathematical assumption.
 
 ## Current executable evidence
 
-The [result file](../../research/formal-models/evidence/model-results.json)
-records **415,592 assertions** over **145,463 counted cases** in 13 groups, with
-32 computed counterexamples and 5 illustrations.
-Counters count assertions/loop cases, not distinct Rust tests or exhaustive
-production states; many are identities of native bit operators. An illustration
-is a pair of hand-written values and is not evidence about a model. A separate
-[mutant run](../../research/formal-models/evidence/model-mutants-results.json)
-applies 18 textual mutations to the model and all are caught. That is not
-cargo-mutants execution or a mutation score for Frost.
+The finite models are the Rust test target
+[`tests/formal_models`](../../../tests/formal_models/main.rs): 42 cases, one
+module per chapter, run by `make check` and recorded in the verification
+catalog under `C-ALGEBRA-FORMAL-MODELS`. Each law checker also runs on
+deliberately wrong definitions, which must fail. Seven cases run real Frost
+types on the same inputs. A passing case covers only its stated finite domain;
+it is not a proof, a coverage measure, or a mutation score for Frost.
 
 Three obligations have no executable check: `FM-PREFIX` (no stream model
 exists), `DOM-EQ` (the model's relations are equivalences by construction),

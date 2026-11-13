@@ -30,8 +30,7 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 | [Primary sources](SOURCES.md) | Checked primary contracts, definitions and limits |
 | [Adversarial review](../../reviews/value-domain-algebra-review.md) | Four same-author passes and concrete dispositions |
 | [Proof ledger](../../design/algebra/proof-obligations.md) | Proof arguments, finite checks and unexecuted implementation gates |
-| [Model source](evidence/model-checks.mjs) / [results](evidence/model-results.json) | Reproducible finite mathematical checks; no production Rust imported |
-| [Model mutants](evidence/model-mutants.mjs) / [results](evidence/model-mutants-results.json) | Which wrong definitions the model's checks catch |
+| [Finite models](../../../tests/formal_models/main.rs) | Rust tests of the laws, with wrong-definition checks and differential checks of implemented types |
 | [Destination review](../../reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, and the gates that ran |
 | [Validation](validation.md) | Commands, patch checks and unavailable gates |
 | [Research prompt](research-prompt.md) | Focused child investigations using the existing project templates |
@@ -70,34 +69,27 @@ own dated evidence and cannot validate this patch.
 
 ## Model evidence
 
-Run from a complete repository after applying the patch:
+The finite models are Rust tests owned by the library, in
+[`tests/formal_models`](../../../tests/formal_models/main.rs), one module per
+design chapter. `make check` runs them, and the verification catalog records
+each case under contract `C-ALGEBRA-FORMAL-MODELS`. To run only them:
 
 ```sh
-node docs/research/formal-models/evidence/model-checks.mjs
+cargo test --locked --test formal_models
 ```
 
-The script uses only Node's standard assertion library, no network/dependencies,
-no filesystem writes and no Rust imports. Node is optional research tooling,
-not a new Make/build/CI prerequisite. Current result: **415,592 assertions** over **145,463 counted cases** in 13 groups, with
-32 computed counterexamples and 5 illustrations.
-An illustration records two hand-written values that differ; it is not a model
-result. Many assertions are identities of JavaScript's native bit operators, so
-the count is not a coverage measure. Small integer arithmetic stays exactly
-representable in JavaScript Number; it is not a simulation of every u64/usize
-overflow path.
+Each law checker runs on the reference definition and on deliberately wrong
+definitions, which must fail. Where Frost implements the operation, the same
+inputs also run through the real types: `FrozenOrderedSet` and `FrozenHashSet`
+set algebra and counts, `FrozenOrderedMap` lookup of a stored `None`, and
+`FrozenVec` interior mutability.
 
-A separate runner applies 18 textual mutations to the model and reports which
-checks catch them:
-
-```sh
-node docs/research/formal-models/evidence/model-mutants.mjs
-```
-
-All 18 are caught in the [recorded run](evidence/model-mutants-results.json).
-The delivered model had a section called "mutant detection" that compared
-constants and changed no model function; the destination review found seven real
-mutants that it accepted, replaced that section, and added the checks that now
-catch them. See the [destination review](../../reviews/value-domain-algebra-destination-review.md).
+Until 2026-11-13 these models were a Node script in this directory. It was
+removed because the repository builds with Rust and Make only, and a separate
+runtime could not exercise the real types. Its results are recorded in the
+[validation record](validation.md) as history. Which established verification
+tools replace the hand-written generators is an open question; see the
+[destination review](../../reviews/value-domain-algebra-destination-review.md).
 
 The checks cover logical membership, representatives, conversion/closure,
 map presence and joins, bag counts, sequence occurrences, relation/BiMap

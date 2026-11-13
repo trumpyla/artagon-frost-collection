@@ -80,7 +80,7 @@ current IntKey implementations; they belong in source-level bindings/adapters.
 
 ## Executed evidence and limits
 
-As delivered, the [finite models](../research/formal-models/evidence/model-checks.mjs)
+As delivered, the finite models (a Node script, since replaced by Rust tests)
 executed 258,624 assertions over 99,118 counted cases and recorded 33
 counterexamples. The destination review found that statement overstated: the
 "six deliberate incorrect variants" compared constants, nine counterexamples

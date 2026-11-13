@@ -112,6 +112,33 @@
       "title": "Test/bench workload factories are deterministic in their spec, give exact structural guarantees, reject invalid parameters before generation, and keep oracles outside timing",
       "source": "tests/support/workload.rs module documentation; docs/design/philosophy.md 'Optimize work, then verify the tradeoff'",
       "obligations": []
+    },
+    {
+      "id": "C-ALGEBRA-FORMAL-MODELS",
+      "title": "Proposed collection-algebra laws checked by finite models; obligations name law IDs from docs/design/algebra/catalog.json, not public items",
+      "source": "docs/design/algebra/proof-obligations.md; docs/design/algebra/catalog.json",
+      "obligations": [
+        "law:SET-BOOLEAN",
+        "law:SET-REP",
+        "law:DOM-IMAGE",
+        "law:DOM-CONGRUENCE",
+        "law:DOM-VALID",
+        "law:DOM-NORMALIZE",
+        "law:MAP-LIFT",
+        "law:BAG-LAWS",
+        "law:BAG-SUPPORT",
+        "law:COUNT-PARTIAL",
+        "law:SEQ-MONOID",
+        "law:REL-COMP",
+        "law:BAGREL-COMP",
+        "law:MM-SUPPORT",
+        "law:BIMAP-CLOSED",
+        "law:BIMAP-IDENTITY",
+        "law:BIMAP-PARTIAL",
+        "law:KNOW-BOUNDS",
+        "law:DELTA-REPLAY",
+        "law:FROZEN-STABLE"
+      ]
     }
   ],
   "targets": [
@@ -487,6 +514,13 @@
       "path": "verification/loom/src/lib.rs",
       "kind": "lib",
       "features": []
+    },
+    {
+      "path": "tests/formal_models/main.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
     }
   ],
   "cases": [
@@ -7574,12 +7608,17 @@
       "file": "src/integer/storage.rs",
       "selector": "test:integer::storage::tests::sorted_difference_cost_comparison_handles_large_lengths",
       "status": "curated",
-      "tags": ["integer", "set-algebra"],
+      "tags": [
+        "integer",
+        "set-algebra"
+      ],
       "features": "inherit",
       "area": "integer",
       "provenance": "docs/integer-optimization-validation.md merge review",
       "kind": "regression",
-      "contracts": ["C-INT-SET-ALGEBRA"],
+      "contracts": [
+        "C-INT-SET-ALGEBRA"
+      ],
       "oracle": "Exact u128 probe and merge costs, independent of usize overflow",
       "scenario": "Zero, small, and maximum addressable u32 slice lengths; compare kernel selection without allocating the slices",
       "seed": "none",
@@ -7817,6 +7856,985 @@
       "target": "tests/contracts.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-FORMAL_MODELS-001",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::checked_sum_succeeds_in_either_grouping_exactly_when_the_total_fits",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Bounds 0..=7, all operand triples within each bound",
+      "scenario": "Both groupings of a checked sum equal the total when it fits and fail otherwise; wrapping differs",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-002",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::count_operations_satisfy_their_laws",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All two-key bags with counts 0..=3, pairs and triples; scalar identities",
+      "scenario": "Commutativity, associativity, lattice distributivity, zero-self, and non-associative absolute difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-003",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::identities_reject_wrong_count_definitions",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Scalar identities applied to wrong min and monus definitions",
+      "scenario": "Identities reject a product min and a left-projection monus",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-004",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::left_present_representatives_associate_for_sum_max_and_min",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All count triples 0..=3 with operand labels",
+      "scenario": "The left-present representative policy associates for sum, max, and min",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-005",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::support_preserves_only_the_lattice_and_sum",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All two-key bags with counts 0..=3; computed counterexamples",
+      "scenario": "Support maps sum and max to union, min to intersection, and preserves neither monus nor absolute difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-006",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::bimap_counterexamples_are_real",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed relations",
+      "scenario": "Union is not closed on either side, checked XOR definedness does not reassociate, pair and key difference differ",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-007",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::checked_union_succeeds_exactly_when_the_whole_union_is_valid",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All triples of the 34 partial bijections against validity of the three-way union",
+      "scenario": "Checked union succeeds in either grouping exactly when the whole union is valid",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-008",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::partial_bijections_are_closed_under_the_listed_operations",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 34 partial bijections on three-by-three keys, pairs and triples",
+      "scenario": "Closure under intersection, difference, composition, inverse, restriction; local identities; inverse of a composition",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-009",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::wrong_bimap_definitions_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Left-only validity count and a union that never conflicts",
+      "scenario": "Both wrong definitions are rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-010",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::empty_shortcuts_must_not_skip_context_checks",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Checked union against an empty-operand shortcut for each context field",
+      "scenario": "The shortcut hides each compatibility error the checked union reports",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-011",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::knowledge_bounds_are_sound_and_exact_for_independent_operands",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 intervals on three keys and every realization of each pair",
+      "scenario": "Each transfer rule is sound and equals the meet and join of realizations",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-012",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::ordered_replay_matches_last_event_wins_and_compaction",
+      "status": "curated",
+      "tags": [
+        "snapshot",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Last-event-wins reference over all histories of at most four events on two keys, every cut",
+      "scenario": "Ordered replay matches the reference and compaction at any cut",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-013",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::positive_recursion_reaches_its_fixed_point_in_at_most_n_steps",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Breadth-first search over all 512 directed graphs on three nodes",
+      "scenario": "Iterated reachability stabilizes within three strict steps and matches search",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-014",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::wrong_knowledge_rules_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Deny-lower-bound difference and a loose XOR rule",
+      "scenario": "The first is unsound; the second is sound but not exact",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-015",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::wrong_replays_are_rejected",
+      "status": "curated",
+      "tags": [
+        "snapshot",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Last-event-wins reference",
+      "scenario": "Replays that ignore deletions or order disagree with the reference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-016",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::bag_pushforward_preserves_sum_and_needs_injectivity_for_the_rest",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 functions on three keys; all bags with counts 0..=2",
+      "scenario": "Pushforward preserves sum always and max, min, monus exactly when injective",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-017",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::class_filters_commute_with_conversion_exactly_when_congruent",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 classifiers and all predicates on three keys",
+      "scenario": "A filter commutes with conversion to classes exactly when it is constant on each class",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-018",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::collapsing_conversion_changes_grant_and_deny_answers",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed grant/deny rule before and after collapsing keys",
+      "scenario": "Converting early invents a grant at intersection and removes one at difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-019",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::direct_image_needs_injectivity_beyond_union",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 functions on three keys and all subset pairs; injectivity computed independently",
+      "scenario": "Image preserves union always and intersection, difference, XOR exactly when injective; inclusion directions; preimage preserves all",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-020",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::normalization_preserves_meaning_but_idempotence_alone_does_not",
+      "status": "curated",
+      "tags": [
+        "catalog",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Written raw-to-meaning table; a constant normalizer",
+      "scenario": "Normalization preserves meaning and is idempotent on outputs; an idempotent constant collapses identities",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-021",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::percentage_validation_matches_its_boundary_table",
+      "status": "curated",
+      "tags": [
+        "catalog",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Written boundary table",
+      "scenario": "Percentage admission at -1, 0, 1, 99, 100, 101, fractions, NaN, and an out-of-range sum",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-022",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::subcarrier_restrictions_are_not_closed",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed counterexamples",
+      "scenario": "Nonempty and at-most-one restrictions are not closed; IEEE NaN has no total order",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-023",
+      "file": "tests/formal_models/frozen.rs",
+      "selector": "test:frozen::frozen_structure_does_not_freeze_interior_state",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "ownership",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-FREEZE-THAW-PARTNERS"
+      ],
+      "oracle": "FrozenVec of Cell before and after an interior update",
+      "scenario": "A frozen sequence keeps its structure while element state changes",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-024",
+      "file": "tests/formal_models/frozen.rs",
+      "selector": "test:frozen::materialized_references_still_borrow_their_source",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "ownership",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-FREEZE-THAW-PARTNERS"
+      ],
+      "oracle": "Pointer identity of a FrozenVec of references with its source",
+      "scenario": "A materialized collection of references still points into its source",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-025",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::deleting_and_subtracting_resolvers_do_not_reassociate",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed merges on one key",
+      "scenario": "A deleting resolver and a subtracting resolver fail associativity",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-026",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::joins_and_alignment_have_the_stated_domains_and_shapes",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All maps on two keys with three values; pinned alignment",
+      "scenario": "Inner join covers common keys, commutes up to swap, reassociates up to reshaping; alignment covers all keys with tags",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-027",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::merge_associates_exactly_when_the_lifted_resolver_does",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 81 resolvers from two values to absence-or-value; all maps on two keys",
+      "scenario": "Pointwise merge associates exactly when the lifted resolver associates",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-028",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::stored_none_is_not_a_missing_binding",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-MAP-ENTRY-REPRESENTATIVES"
+      ],
+      "oracle": "FrozenOrderedMap lookup of a stored None and of a missing key",
+      "scenario": "Present None and absence are distinct observations",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-029",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::boolean_composition_associates_and_distributes_over_union",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All Boolean relations on two-by-two keys, triples",
+      "scenario": "Composition associates and distributes over union on both sides",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-030",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::empty_fibers_and_grouping_are_explicit_conversions",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "std BTreeMap fibers before and after normalization; grouped entries flattened",
+      "scenario": "An empty native fiber stays present until normalized; grouping loses interleaving",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-031",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::weighted_composition_associates_and_projects_to_boolean_composition",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Weights 0..=2 on two-by-two keys; Boolean composition on supports as a second implementation",
+      "scenario": "Weighted composition associates, projects to Boolean composition, and counts two witnesses",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-032",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::wrong_compositions_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "First-middle-only and maximum compositions against the cross-check and witness count",
+      "scenario": "Both wrong compositions are rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-033",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::concatenation_is_a_monoid_and_projections_respect_it",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All words of at most three letters over two symbols, pairs and triples",
+      "scenario": "Concatenation is a monoid; map, filter, flat_map, counting preserve it; reverse reverses it",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-034",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::list_intersection_is_ambiguous_until_named",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Membership filter and multiset intersection computed on the same words",
+      "scenario": "The two readings of list intersection differ on duplicates",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-035",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::zip_distributes_over_concatenation_only_when_aligned",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All aligned word quadruples; a computed misaligned case",
+      "scenario": "Zip distributes over concatenation when left parts have equal length, not otherwise",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-036",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::associativity_does_not_pin_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "A right-biased rule checked against the same associativity and pinned cases",
+      "scenario": "Associativity holds for both biases; only the pinned cases reject the wrong rule",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-037",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::bit_and_slot_encodings_agree",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Two independent encodings of the same subsets",
+      "scenario": "Bit-mask and slot encodings agree on membership and count",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-038",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::frozen_set_families_match_the_model_on_every_pair",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "hash",
+        "set-algebra",
+        "iterator",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-ORDERED-SET-ALGEBRA",
+        "C-FIRST-KEY-LAST-VALUE"
+      ],
+      "oracle": "Slot model of representatives with the documented left/sole-operand rule; all 256 pairs of labelled subsets of four keys",
+      "scenario": "FrozenOrderedSet and FrozenHashSet union, intersection, difference, symmetric difference, their counts, subset and disjoint agree with the model; ordered output ascends",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-039",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::left_first_absorption_and_distribution_hold_on_representatives",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Slot model; all triples of labelled subsets of three keys",
+      "scenario": "Left-first absorption and distribution preserve representatives",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-040",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::membership_laws_hold_for_every_subset_of_four_keys",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Bit-mask set algebra over all subsets of four keys; count identities",
+      "scenario": "SET-BOOLEAN membership laws, identities, and difference counterexamples",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-041",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::nested_union_and_intersection_keep_the_first_operand_representative",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-ORDERED-SET-ALGEBRA"
+      ],
+      "oracle": "Slot model; all 512 triples of labelled subsets of three keys, intermediates materialized as FrozenOrderedSet",
+      "scenario": "Left-representative union and intersection reassociate in the model and in nested real results",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-042",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::representative_level_counterexamples_are_real",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed slot-model results on one key held by every operand",
+      "scenario": "XOR reassociation and cancellation, commutation, and right-first absorption/distribution change the selected object",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
     }
   ]
 }
