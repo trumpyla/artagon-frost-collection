@@ -39,9 +39,12 @@ CATALOG_INVENTORY_DIR ?= target/catalog-inventory
 AB_BASELINE ?= origin/main
 AB_ROUNDS ?= 3
 AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
+# Fails a lane whose test selection matched nothing.
+REQUIRE_TESTS := "$(SHELL)" scripts/require-tests.sh
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
 	test-examples profiles features integers examples package embedded miri \
+	doctest-codes \
 	bounded loom kani verus nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
 	tools-check search-index integer-ab miri-survey $(MIRI_SURVEY_SHARDS) clean
@@ -65,6 +68,7 @@ help:
 	  'make miri         Ownership diagnostics with MIRI_TOOLCHAIN' \
 	  'make miri-survey  Full planner matrix in isolated 32-bit Miri processes' \
 	  'make bounded      Finite collection/retry models and native Kani helpers' \
+	  'make doctest-codes Check compile_fail error codes with the pinned nightly' \
 	  'make loom|kani    Optional protocol model or symbolic proofs' \
 	  'make verus        Spec-level algebra proofs with the pinned Verus release' \
 	  'make nextest      Run test suite with cargo-nextest (.config/nextest.toml)' \
@@ -181,22 +185,27 @@ embedded:
 	  --features alloc,hashbrown-0_17,indexmap-2,smallvec-1,arrayvec-0_7,fixedbitset-0_5,slotmap-1,phf-0_14,serde-1,borsh-1,schemars-1 \
 	  --target "$(EMBEDDED_TARGET)"
 
-miri:
-	"$(CARGO)" "+$(MIRI_TOOLCHAIN)" test --doc --all-features --locked
+# Stable rustdoc accepts any error for a `compile_fail` doctest. The pinned
+# nightly checks the stated error code, so a doctest cannot pass for a wrong
+# reason such as an unresolved import.
+doctest-codes:
+	$(REQUIRE_TESTS) --total "$(CARGO)" "+$(MIRI_TOOLCHAIN)" test --doc --all-features --locked
+
+miri: doctest-codes
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety --test families --test core_review -- --skip under_random_ops
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety --test families --test core_review -- --skip under_random_ops
 	MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety
 	MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1 \
 	    --skip integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey
 	@set -euo pipefail; \
@@ -208,7 +217,7 @@ miri:
 	  integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
 	  integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do \
 	  MIRIFLAGS='-Zmiri-strict-provenance' \
-	    "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	      --target i686-unknown-linux-gnu --lib "$$case_name" -- --exact --test-threads=1; \
 	done
 	@set -euo pipefail; \
@@ -218,7 +227,7 @@ miri:
 	  empty_operands_and_identity_shortcuts_do_not_bypass_limits \
 	  output_policy_overrides_are_checked_and_retained; do \
 	  MIRIFLAGS='-Zmiri-strict-provenance' \
-	    "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	      --target i686-unknown-linux-gnu --test integer_output "$$case_name" -- --exact --test-threads=1; \
 	done
 	+$(MAKE) miri-survey
@@ -231,19 +240,19 @@ miri-survey:
 $(MIRI_SURVEY_SHARDS):
 	FROST_MIRI_SURVEY_CASE="$(patsubst miri-survey-%,%,$@)" \
 	  MIRIFLAGS='-Zmiri-strict-provenance -Zmiri-env-forward=FROST_MIRI_SURVEY_CASE' \
-	  "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib \
 	    integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey \
 	    -- --exact --test-threads=1
 
 bounded:
-	"$(CARGO)" test --locked --test exhaustive_collections --features fixedbitset-0_5
-	"$(CARGO)" test --locked --test publication_model -- --nocapture
+	$(REQUIRE_TESTS) "$(CARGO)" test --locked --test exhaustive_collections --features fixedbitset-0_5
+	$(REQUIRE_TESTS) "$(CARGO)" test --locked --test publication_model -- --nocapture
 	# Native property helpers; this does not execute a symbolic solver.
-	"$(CARGO)" test --manifest-path verification/kani/Cargo.toml --locked
+	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/kani/Cargo.toml --locked
 
 loom:
-	"$(CARGO)" test --manifest-path verification/loom/Cargo.toml --release --locked
+	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/loom/Cargo.toml --release --locked
 
 kani:
 	"$(CARGO)" kani --version
@@ -372,8 +381,8 @@ catalog-inventory:
 	done <<< "$$benches"
 
 shell-check:
-	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh" verification/shell/*.bats
-	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh"
+	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh scripts/require-tests.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh" verification/shell/*.bats
+	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh scripts/require-tests.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh"
 	"$(SHFMT)" -ln bats -d -i 2 -ci -bn verification/shell/*.bats
 	+$(MAKE) shell-test
 

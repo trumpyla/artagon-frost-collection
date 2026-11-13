@@ -6,6 +6,10 @@ and proposes changes to the epic and its tasks. It changes no tracker record,
 package, or source file. [Crate layout](../crate-layout.md) remains the record
 of constraints; this document supplies the evidence that one lacked.
 
+> **Superseded** on 2026-11-13 by the [crate split plan](../crate-split-plan.md),
+> which answers the review below and a second one. This text is kept as the
+> record of the first proposal.
+>
 > **Not ready to accept.** An [adversarial review](../../reviews/crate-split-adversarial-review.md)
 > on 2026-11-13 found two blockers and fifteen high-severity defects in this
 > text. `frost-concurrent` does not compile as specified (S01), `make package`

@@ -407,12 +407,10 @@ input.
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
 - **CR-META-5.** Counts are not coverage. On this checkout `check` reports 383
-  structural test and proof declarations, 397 case records (74 `curated`, 323
+  structural test and proof declarations, 397 case records (77 `curated`, 320
   `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
-  every inventory entry `unreviewed`. Three contracts
-  (`C-INLINE-OWNERSHIP`, `C-INT-SET-POLICY-LIMITS`, `C-SNAPSHOT-PUBLICATION`)
-  have no curated case. Curating the unreviewed legacy records is part of
-  `frost-wou.6`.
+  every inventory entry `unreviewed`. Every contract has at least one curated
+  case. Curating the unreviewed legacy records is part of `frost-wou.6`.
 - **CR-META-6.** Benchmark records keep raw samples and slower observations,
   and identify the compiler, profile, target CPU, and source revision. Listing
   validates answers and names without timing; it supports no performance claim.

@@ -3744,22 +3744,24 @@
       "id": "T-EXHAUSTIVE_COLLECTIONS-003",
       "file": "tests/exhaustive_collections.rs",
       "selector": "test:inline_ownership_exhausts_three_operation_traces",
-      "status": "unreviewed",
+      "status": "curated",
       "tags": [
-        "unreviewed",
+        "inline",
         "integration"
       ],
       "features": "inherit",
-      "area": "family",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: inline ownership exhausts three operation traces",
-      "seed": "unreviewed",
+      "area": "adaptive",
+      "provenance": "docs/verification.md",
+      "kind": "ownership",
+      "contracts": [
+        "C-INLINE-OWNERSHIP"
+      ],
+      "oracle": "std::vec::Vec of (identity, value) pairs and a per-element drop counter that panics on a second drop",
+      "scenario": "All 7^3 traces of push, pop, front removal, retain, freeze/thaw and shrink on InlineVec at capacities 0 and 2; after every step contents match the reference and every element no longer owned has been dropped exactly once",
+      "seed": "none",
       "target": "tests/exhaustive_collections.rs",
       "cfg": "cfg (feature = \"alloc\")",
-      "cost": "unreviewed"
+      "cost": "bounded"
     },
     {
       "id": "T-EXHAUSTIVE_COLLECTIONS-004",
@@ -4563,22 +4565,24 @@
       "id": "T-INTEGER_OUTPUT-008",
       "file": "tests/integer_output.rs",
       "selector": "test:empty_operands_and_identity_shortcuts_do_not_bypass_limits",
-      "status": "unreviewed",
+      "status": "curated",
       "tags": [
-        "unreviewed",
+        "integer",
         "integration"
       ],
       "features": "inherit",
       "area": "integer",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: empty operands and identity shortcuts do not bypass limits",
-      "seed": "unreviewed",
+      "provenance": "docs/maintainers/implementation-contracts.md",
+      "kind": "contract",
+      "contracts": [
+        "C-INT-SET-POLICY-LIMITS"
+      ],
+      "oracle": "Hand-expected limits and representation: the stricter operand limits for union, symmetric difference and intersection; the left limits for difference",
+      "scenario": "A dense 512-member set combined with an empty or equal set whose limits forbid dense and Roaring storage: identity shortcuts still apply the stricter limits and produce the sorted representation",
+      "seed": "none",
       "target": "tests/integer_output.rs",
       "cfg": "cfg (feature = \"int-set\")",
-      "cost": "unreviewed"
+      "cost": "fast"
     },
     {
       "id": "T-INTEGER_OUTPUT-009",
@@ -5865,22 +5869,25 @@
       "id": "T-PUBLICATION_MODEL-002",
       "file": "tests/publication_model.rs",
       "selector": "test:three_writers_exhaust_all_load_and_compare_exchange_orders",
-      "status": "unreviewed",
+      "status": "curated",
       "tags": [
-        "unreviewed",
+        "snapshot",
+        "concurrent",
         "integration"
       ],
       "features": "inherit",
       "area": "concurrent",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: three writers exhaust all load and compare exchange orders",
-      "seed": "unreviewed",
+      "provenance": "docs/verification.md",
+      "kind": "model",
+      "contracts": [
+        "C-SNAPSHOT-PUBLICATION"
+      ],
+      "oracle": "Exhaustive schedule enumeration over a trusted sequentially consistent store of version handles; the explored schedule count, maximum failures and maximum steps are asserted exactly (198, 3, 9)",
+      "scenario": "Three writers run the production retry loop, included by path, through every interleaving of load and compare-exchange; the store model does not cover arc-swap memory ordering or reclamation",
+      "seed": "none",
       "target": "tests/publication_model.rs",
       "cfg": "cfg (feature = \"std\")",
-      "cost": "unreviewed"
+      "cost": "bounded"
     },
     {
       "id": "T-RAYON_PERFORMANCE-001",

@@ -1,0 +1,375 @@
+  impl frost::Compact : Clone
+  impl frost::Compact : Copy
+  impl frost::Compact : Debug
+  impl frost::Compact : Default
+  impl frost::Compact : Eq
+  impl frost::Compact : Hash
+  impl frost::Compact : PartialEq
+  impl frost::Compact : StructuralPartialEq
+  impl frost::ExactLen : Clone
+  impl frost::ExactLen : Copy
+  impl frost::ExactLen : Debug
+  impl frost::ExactLen : Default
+  impl frost::ExactLen : Eq
+  impl frost::ExactLen : Hash
+  impl frost::ExactLen : PartialEq
+  impl frost::ExactLen : StructuralPartialEq
+  impl frost::Frozen : AsRef
+  impl frost::Frozen : Cardinality
+  impl frost::Frozen : Clone
+  impl frost::Frozen : Debug
+  impl frost::Frozen : Default
+  impl frost::Frozen : DequeRead
+  impl frost::Frozen : Deref
+  impl frost::Frozen : ElementType
+  impl frost::Frozen : Elements
+  impl frost::Frozen : Entries
+  impl frost::Frozen : Eq
+  impl frost::Frozen : FromIterator
+  impl frost::Frozen : Hash
+  impl frost::Frozen : IndexOf
+  impl frost::Frozen : IndexedEntries
+  impl frost::Frozen : IntoIterator
+  impl frost::Frozen : Len
+  impl frost::Frozen : LookupRef
+  impl frost::Frozen : LookupValue
+  impl frost::Frozen : MapTypes
+  impl frost::Frozen : Ord
+  impl frost::Frozen : OrderedElements
+  impl frost::Frozen : OrderedEntries
+  impl frost::Frozen : PartialEq
+  impl frost::Frozen : PartialOrd
+  impl frost::Frozen : PriorityRead
+  impl frost::Frozen : RangeElements
+  impl frost::Frozen : RangeEntries
+  impl frost::Frozen : SetContains
+  impl frost::Frozen : SetGet
+  impl frost::Frozen : StructuralPartialEq
+  impl frost::Frozen : TwoSlices
+  impl frost::Frozen : ValueElements
+  impl frost::Frozen : ValueRef
+  impl frost::Rejected : Clone
+  impl frost::Rejected : Debug
+  impl frost::Rejected : Display
+  impl frost::Rejected : Eq
+  impl frost::Rejected : Error
+  impl frost::Rejected : PartialEq
+  impl frost::Rejected : StructuralPartialEq
+  impl frost::Retain : Clone
+  impl frost::Retain : Copy
+  impl frost::Retain : Debug
+  impl frost::Retain : Default
+  impl frost::Retain : Eq
+  impl frost::Retain : FreezeWith
+  impl frost::Retain : Hash
+  impl frost::Retain : PartialEq
+  impl frost::Retain : StructuralPartialEq
+  impl frost::plan::Compact : Clone
+  impl frost::plan::Compact : Copy
+  impl frost::plan::Compact : Debug
+  impl frost::plan::Compact : Default
+  impl frost::plan::Compact : Eq
+  impl frost::plan::Compact : Hash
+  impl frost::plan::Compact : PartialEq
+  impl frost::plan::Compact : StructuralPartialEq
+  impl frost::plan::ExactLen : Clone
+  impl frost::plan::ExactLen : Copy
+  impl frost::plan::ExactLen : Debug
+  impl frost::plan::ExactLen : Default
+  impl frost::plan::ExactLen : Eq
+  impl frost::plan::ExactLen : Hash
+  impl frost::plan::ExactLen : PartialEq
+  impl frost::plan::ExactLen : StructuralPartialEq
+  impl frost::plan::LengthMismatch : Clone
+  impl frost::plan::LengthMismatch : Copy
+  impl frost::plan::LengthMismatch : Debug
+  impl frost::plan::LengthMismatch : Display
+  impl frost::plan::LengthMismatch : Eq
+  impl frost::plan::LengthMismatch : Error
+  impl frost::plan::LengthMismatch : PartialEq
+  impl frost::plan::LengthMismatch : StructuralPartialEq
+  impl frost::plan::Rejected : Clone
+  impl frost::plan::Rejected : Debug
+  impl frost::plan::Rejected : Display
+  impl frost::plan::Rejected : Eq
+  impl frost::plan::Rejected : Error
+  impl frost::plan::Rejected : PartialEq
+  impl frost::plan::Rejected : StructuralPartialEq
+  impl frost::plan::Retain : Clone
+  impl frost::plan::Retain : Copy
+  impl frost::plan::Retain : Debug
+  impl frost::plan::Retain : Default
+  impl frost::plan::Retain : Eq
+  impl frost::plan::Retain : FreezeWith
+  impl frost::plan::Retain : Hash
+  impl frost::plan::Retain : PartialEq
+  impl frost::plan::Retain : StructuralPartialEq
+  impl frost::plan::Sorted : Clone
+  impl frost::plan::Sorted : Copy
+  impl frost::plan::Sorted : Debug
+  impl frost::plan::Sorted : Default
+  impl frost::plan::Sorted : Eq
+  impl frost::plan::Sorted : Hash
+  impl frost::plan::Sorted : PartialEq
+  impl frost::plan::Sorted : StructuralPartialEq
+  impl frost::prelude::Compact : Clone
+  impl frost::prelude::Compact : Copy
+  impl frost::prelude::Compact : Debug
+  impl frost::prelude::Compact : Default
+  impl frost::prelude::Compact : Eq
+  impl frost::prelude::Compact : Hash
+  impl frost::prelude::Compact : PartialEq
+  impl frost::prelude::Compact : StructuralPartialEq
+  impl frost::prelude::ExactLen : Clone
+  impl frost::prelude::ExactLen : Copy
+  impl frost::prelude::ExactLen : Debug
+  impl frost::prelude::ExactLen : Default
+  impl frost::prelude::ExactLen : Eq
+  impl frost::prelude::ExactLen : Hash
+  impl frost::prelude::ExactLen : PartialEq
+  impl frost::prelude::ExactLen : StructuralPartialEq
+  impl frost::prelude::Frozen : AsRef
+  impl frost::prelude::Frozen : Cardinality
+  impl frost::prelude::Frozen : Clone
+  impl frost::prelude::Frozen : Debug
+  impl frost::prelude::Frozen : Default
+  impl frost::prelude::Frozen : DequeRead
+  impl frost::prelude::Frozen : Deref
+  impl frost::prelude::Frozen : ElementType
+  impl frost::prelude::Frozen : Elements
+  impl frost::prelude::Frozen : Entries
+  impl frost::prelude::Frozen : Eq
+  impl frost::prelude::Frozen : FromIterator
+  impl frost::prelude::Frozen : Hash
+  impl frost::prelude::Frozen : IndexOf
+  impl frost::prelude::Frozen : IndexedEntries
+  impl frost::prelude::Frozen : IntoIterator
+  impl frost::prelude::Frozen : Len
+  impl frost::prelude::Frozen : LookupRef
+  impl frost::prelude::Frozen : LookupValue
+  impl frost::prelude::Frozen : MapTypes
+  impl frost::prelude::Frozen : Ord
+  impl frost::prelude::Frozen : OrderedElements
+  impl frost::prelude::Frozen : OrderedEntries
+  impl frost::prelude::Frozen : PartialEq
+  impl frost::prelude::Frozen : PartialOrd
+  impl frost::prelude::Frozen : PriorityRead
+  impl frost::prelude::Frozen : RangeElements
+  impl frost::prelude::Frozen : RangeEntries
+  impl frost::prelude::Frozen : SetContains
+  impl frost::prelude::Frozen : SetGet
+  impl frost::prelude::Frozen : StructuralPartialEq
+  impl frost::prelude::Frozen : TwoSlices
+  impl frost::prelude::Frozen : ValueElements
+  impl frost::prelude::Frozen : ValueRef
+  impl frost::prelude::Retain : Clone
+  impl frost::prelude::Retain : Copy
+  impl frost::prelude::Retain : Debug
+  impl frost::prelude::Retain : Default
+  impl frost::prelude::Retain : Eq
+  impl frost::prelude::Retain : FreezeWith
+  impl frost::prelude::Retain : Hash
+  impl frost::prelude::Retain : PartialEq
+  impl frost::prelude::Retain : StructuralPartialEq
+  impl frost::write::PushRejected : Clone
+  impl frost::write::PushRejected : Debug
+  impl frost::write::PushRejected : Display
+  impl frost::write::PushRejected : Eq
+  impl frost::write::PushRejected : Error
+  impl frost::write::PushRejected : PartialEq
+  impl frost::write::PushRejected : StructuralPartialEq
+  item frost::FreezeExt :: compact
+  item frost::FreezeExt :: seal
+  item frost::FreezeWith :: Output
+  item frost::FreezeWith :: freeze_with
+  item frost::Frozen :: as_array
+  item frost::Frozen :: into_inner
+  item frost::Frozen :: is_empty
+  item frost::Frozen :: len
+  item frost::Frozen :: peek
+  item frost::Rejected :: into_input
+  item frost::Rejected :: into_parts
+  item frost::TryFreezeWith :: Error
+  item frost::TryFreezeWith :: Output
+  item frost::TryFreezeWith :: try_freeze_with
+  item frost::plan::FreezeExt :: compact
+  item frost::plan::FreezeExt :: seal
+  item frost::plan::FreezeWith :: Output
+  item frost::plan::FreezeWith :: freeze_with
+  item frost::plan::Rejected :: into_input
+  item frost::plan::Rejected :: into_parts
+  item frost::plan::TryFreezeWith :: Error
+  item frost::plan::TryFreezeWith :: Output
+  item frost::plan::TryFreezeWith :: try_freeze_with
+  item frost::prelude::Cardinality :: cardinality
+  item frost::prelude::DequeRead :: back
+  item frost::prelude::DequeRead :: front
+  item frost::prelude::ElementType :: Item
+  item frost::prelude::Elements :: Iter
+  item frost::prelude::Elements :: elements
+  item frost::prelude::Entries :: Iter
+  item frost::prelude::Entries :: entries
+  item frost::prelude::FreezeExt :: compact
+  item frost::prelude::FreezeExt :: seal
+  item frost::prelude::FreezeWith :: Output
+  item frost::prelude::FreezeWith :: freeze_with
+  item frost::prelude::Frozen :: as_array
+  item frost::prelude::Frozen :: into_inner
+  item frost::prelude::Frozen :: is_empty
+  item frost::prelude::Frozen :: len
+  item frost::prelude::Frozen :: peek
+  item frost::prelude::IndexOf :: get_index_of
+  item frost::prelude::IndexedEntries :: get_index
+  item frost::prelude::Len :: is_empty
+  item frost::prelude::Len :: len
+  item frost::prelude::LookupRef :: contains_key
+  item frost::prelude::LookupRef :: get
+  item frost::prelude::LookupRef :: get_key_value
+  item frost::prelude::LookupValue :: Value
+  item frost::prelude::LookupValue :: get_value
+  item frost::prelude::MapTypes :: Key
+  item frost::prelude::MapTypes :: Value
+  item frost::prelude::OrderedElements :: first_element
+  item frost::prelude::OrderedElements :: last_element
+  item frost::prelude::OrderedEntries :: first_key_value
+  item frost::prelude::OrderedEntries :: last_key_value
+  item frost::prelude::PriorityRead :: peek
+  item frost::prelude::RangeElements :: Range
+  item frost::prelude::RangeElements :: range_elements
+  item frost::prelude::RangeEntries :: Range
+  item frost::prelude::RangeEntries :: range_entries
+  item frost::prelude::SetContains :: contains
+  item frost::prelude::SetGet :: get
+  item frost::prelude::TryFreezeWith :: Error
+  item frost::prelude::TryFreezeWith :: Output
+  item frost::prelude::TryFreezeWith :: try_freeze_with
+  item frost::prelude::TwoSlices :: as_slices
+  item frost::prelude::ValueElements :: Values
+  item frost::prelude::ValueElements :: values
+  item frost::prelude::ValueRef :: Value
+  item frost::prelude::ValueRef :: get_ref
+  item frost::read::Cardinality :: cardinality
+  item frost::read::DequeRead :: back
+  item frost::read::DequeRead :: front
+  item frost::read::ElementType :: Item
+  item frost::read::Elements :: Iter
+  item frost::read::Elements :: elements
+  item frost::read::Entries :: Iter
+  item frost::read::Entries :: entries
+  item frost::read::IndexOf :: get_index_of
+  item frost::read::IndexedEntries :: get_index
+  item frost::read::Len :: is_empty
+  item frost::read::Len :: len
+  item frost::read::LookupRef :: contains_key
+  item frost::read::LookupRef :: get
+  item frost::read::LookupRef :: get_key_value
+  item frost::read::LookupValue :: Value
+  item frost::read::LookupValue :: get_value
+  item frost::read::MapTypes :: Key
+  item frost::read::MapTypes :: Value
+  item frost::read::OrderedElements :: first_element
+  item frost::read::OrderedElements :: last_element
+  item frost::read::OrderedEntries :: first_key_value
+  item frost::read::OrderedEntries :: last_key_value
+  item frost::read::PriorityRead :: peek
+  item frost::read::RangeElements :: Range
+  item frost::read::RangeElements :: range_elements
+  item frost::read::RangeEntries :: Range
+  item frost::read::RangeEntries :: range_entries
+  item frost::read::SetContains :: contains
+  item frost::read::SetGet :: get
+  item frost::read::TwoSlices :: as_slices
+  item frost::read::ValueElements :: Values
+  item frost::read::ValueElements :: values
+  item frost::read::ValueRef :: Value
+  item frost::read::ValueRef :: get_ref
+  item frost::write::MapInsert :: insert
+  item frost::write::MapRemove :: remove
+  item frost::write::MapRemove :: remove_entry
+  item frost::write::Push :: Item
+  item frost::write::Push :: push
+  item frost::write::SetInsert :: insert
+  item frost::write::SetRemove :: remove
+  item frost::write::TryPush :: Error
+  item frost::write::TryPush :: Item
+  item frost::write::TryPush :: try_push
+module frost::adapters
+module frost::backend
+module frost::plan
+module frost::prelude
+module frost::read
+module frost::write
+struct frost::Compact
+struct frost::ExactLen
+struct frost::Frozen
+struct frost::Rejected
+struct frost::Retain
+struct frost::plan::Compact
+struct frost::plan::ExactLen
+struct frost::plan::LengthMismatch
+struct frost::plan::Rejected
+struct frost::plan::Retain
+struct frost::plan::Sorted
+struct frost::prelude::Compact
+struct frost::prelude::ExactLen
+struct frost::prelude::Frozen
+struct frost::prelude::Retain
+struct frost::write::PushRejected
+trait frost::Eligible
+trait frost::FreezeExt
+trait frost::FreezeWith
+trait frost::TryFreezeWith
+trait frost::plan::FreezeExt
+trait frost::plan::FreezeWith
+trait frost::plan::TryFreezeWith
+trait frost::prelude::Cardinality
+trait frost::prelude::DequeRead
+trait frost::prelude::ElementType
+trait frost::prelude::Elements
+trait frost::prelude::Entries
+trait frost::prelude::FreezeExt
+trait frost::prelude::FreezeWith
+trait frost::prelude::IndexOf
+trait frost::prelude::IndexedEntries
+trait frost::prelude::Len
+trait frost::prelude::LookupRef
+trait frost::prelude::LookupValue
+trait frost::prelude::MapTypes
+trait frost::prelude::OrderedElements
+trait frost::prelude::OrderedEntries
+trait frost::prelude::PriorityRead
+trait frost::prelude::RangeElements
+trait frost::prelude::RangeEntries
+trait frost::prelude::SetContains
+trait frost::prelude::SetGet
+trait frost::prelude::TryFreezeWith
+trait frost::prelude::TwoSlices
+trait frost::prelude::ValueElements
+trait frost::prelude::ValueRef
+trait frost::read::Cardinality
+trait frost::read::DequeRead
+trait frost::read::ElementType
+trait frost::read::Elements
+trait frost::read::Entries
+trait frost::read::IndexOf
+trait frost::read::IndexedEntries
+trait frost::read::Len
+trait frost::read::LookupRef
+trait frost::read::LookupValue
+trait frost::read::MapTypes
+trait frost::read::OrderedElements
+trait frost::read::OrderedEntries
+trait frost::read::PriorityRead
+trait frost::read::RangeElements
+trait frost::read::RangeEntries
+trait frost::read::SetContains
+trait frost::read::SetGet
+trait frost::read::TwoSlices
+trait frost::read::ValueElements
+trait frost::read::ValueRef
+trait frost::write::MapInsert
+trait frost::write::MapRemove
+trait frost::write::Push
+trait frost::write::SetInsert
+trait frost::write::SetRemove
+trait frost::write::TryPush

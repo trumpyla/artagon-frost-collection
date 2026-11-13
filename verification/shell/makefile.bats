@@ -7,6 +7,9 @@ setup() {
   frost_cargo="$BATS_TEST_TMPDIR/cargo stub"
   mkdir -p "$frost_fixture"
   cp "$BATS_TEST_DIRNAME/../../Makefile" "$frost_fixture/Makefile"
+  mkdir -p "$frost_fixture/scripts"
+  cp "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" "$frost_fixture/scripts/"
+  export FROST_TEST_RESULT='test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out'
   export FROST_TEST_LOG="$BATS_TEST_TMPDIR/calls"
   export FROST_TEST_FAIL_COMMAND=
   unset RUSTDOCFLAGS
@@ -35,6 +38,12 @@ fi
 if [[ $1 == metadata ]]; then
   printf '%s\n' "$FROST_TEST_METADATA"
 fi
+for argument in "$@"; do
+  if [[ $argument == test ]]; then
+    printf '%s\n' "$FROST_TEST_RESULT"
+    break
+  fi
+done
 STUB
   chmod +x "$frost_cargo"
 }
@@ -178,6 +187,7 @@ STUB
     "SHELL=$frost_bash" "CARGO=$frost_cargo" integer-ab
   [ "$status" -eq 0 ]
   [ "$output" = $'case,old_min_ns,new_min_ns,old_over_new,old_repr,new_repr\nfixture,2,1,2,Sorted,Sorted' ]
+  # shellcheck disable=SC2154 # set by Bats `run --separate-stderr`
   [[ "$stderr" == *'prepared baseline fixture'* ]]
 }
 
@@ -192,4 +202,25 @@ STUB
       done
     done
   done
+}
+
+@test "a lane that selects tests by name fails when it executes none" {
+  export FROST_TEST_RESULT='test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out'
+  run_make bounded
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'a selected test binary executed no test'* ]]
+}
+
+@test "the empty-selection guard checks each test binary" {
+  frost_two="$BATS_TEST_TMPDIR/two binaries"
+  cat >"$frost_two" <<'STUB'
+#!/usr/bin/env bash
+printf 'test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\n'
+printf 'test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out\n'
+STUB
+  chmod +x "$frost_two"
+  run "$frost_bash" "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" "$frost_two"
+  [ "$status" -eq 1 ]
+  run "$frost_bash" "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" --total "$frost_two"
+  [ "$status" -eq 0 ]
 }

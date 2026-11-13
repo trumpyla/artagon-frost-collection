@@ -73,7 +73,7 @@ let leaked: &mut i32 = map.with_entry_mut(&"counter", |_, value| value).unwrap()
     doc = r"
 Skip-list entries do not provide exclusive mutable value access:
 
-```compile_fail
+```compile_fail,E0599
 use frost::backend::crossbeam_skiplist::SkipMap;
 use frost::concurrent::ConcurrentUpdate;
 let map: SkipMap<i32, i32> = SkipMap::new();

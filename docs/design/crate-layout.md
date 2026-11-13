@@ -7,9 +7,10 @@ reorganization epic `frost-wlt`, which depends on the standards epic
 is approved. [CRATES.md](../../CRATES.md) holds the rules that apply to every
 package; this document holds the design inputs for the split.
 
-The [crate split proposal](proposals/crate-split.md) of 2026-11-12 supplies a
-measured module graph, checks which cycles Rust allows cutting, and proposes a
-stage-1 package set and revised `frost-wlt` tasks. It is not approved.
+The [crate split plan](crate-split-plan.md) of 2026-11-13 chooses the packages,
+names and module mapping and is the design the `frost-wlt` tasks execute. It
+supersedes the [first proposal](proposals/crate-split.md). Where this document
+and the plan differ, the plan is current.
 
 ## Current layout
 

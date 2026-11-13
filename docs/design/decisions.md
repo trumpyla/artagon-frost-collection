@@ -386,3 +386,24 @@ on 2026-11-13.
 | Finite models and real-type tests | `exhaust` and `itertools` generate the finite domains, `proptest` the sampled ones, and `proptest-state-machine` drives real types against a reference model. They are dev-dependencies; [CRATES.md](../../CRATES.md) CR-DEP-2 counts them as test libraries. | No generator, enumerator, runner or shrinker is hand-written. bolero was rejected because its current release does not resolve with Frost's `indexmap`; quickcheck and arbtest duplicate proptest. |
 | Bounded refinement | Kani harnesses check real operations against the reference definitions of the laws, starting with `SET-REP` and `SET-BOOLEAN` on `FrozenOrderedSet` (`verification/kani/src/set_laws.rs`). | Covers only the stated bounds. A law on a type Frost does not implement has no refinement harness. |
 | Unbounded proofs | Verus, pinned by `VERUS_VERSION` in the root `Makefile`, proves laws for their reference definitions in `verification/verus`, which is not a Cargo package and does not link to Frost. Verifying production code with Verus stays deferred until after `frost-wlt`. | The pinned release uses Rust 1.99.1. A Verus proof says nothing about Frost code (CR-TOOL-5). Lean with Mathlib, Aeneas and Creusot were not adopted. |
+
+## Crate split execution, 2026-11-13
+
+The maintainer asked on 2026-11-13 for the crate-split epic `frost-wlt` to be
+reviewed adversarially, corrected, shown, and executed. The
+[crate split plan](crate-split-plan.md) is the corrected design; the
+[plan review](../reviews/crate-split-plan-review.md) records the 27 findings
+it answers. This entry records what is decided and by whom.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Timing | The split runs now, before the API refactor. | Maintainer instruction. It supersedes the ordering under which `frost-wlt` waited for `frost-wou`; the standards tasks `frost-wou.6`–`.10` stay open. |
+| Packages | Three code packages, a facade and a dev-only support package: `frost-collections-core`, `-integer`, `-concurrent`, `frost-collections`, `frost-collections-test-support`. | Author's default (plan D4, D5). It replaces the `frost-api` facade name recorded on 2026-11-09. `frost-core` is taken on crates.io. |
+| Adaptive profiles | They stay in the core package. | Extracting them would open the serde seal, which relaxes a contract. Only the maintainer can approve that; it is tracked as `frost-adp`. |
+| Publication | Nothing is published; every package is `publish = false`; the facade is the only supported entry point. | Author's default (plan D3). |
+| Contracts | No semantic or safety contract changes. Known defects are tracked as `frost-r0a` and `frost-k4n`, not fixed inside a move. | The API-compatibility decision relaxes no contract. |
+| Unrun lanes | A verification lane that cannot run on the host blocks closing the epic unless waived here. | Plan D16. No waiver has been given. |
+
+Decisions D2–D16 of the plan are defaults taken so that execution is not
+blocked. The maintainer may overrule any of them; the plan states what undoing
+each one costs.

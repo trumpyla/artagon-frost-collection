@@ -35,7 +35,7 @@
 //!
 //! The set is structurally frozen and has no mutable element view:
 //!
-//! ```compile_fail
+//! ```compile_fail,E0599
 //! use frost::integer::FrozenIntSet;
 //! let mut set: FrozenIntSet<u32> = [1, 2].into_iter().collect();
 //! set.insert(3);

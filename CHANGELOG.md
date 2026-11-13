@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased — crate split (`frost-wlt`)
+
+No public API or behaviour change so far.
+
+- Rewrite epic `frost-wlt` and its tasks after two adversarial reviews; the
+  design is `docs/design/crate-split-plan.md`. Tasks `.2`–`.5` are closed as
+  superseded. New issues: `frost-adp`, `frost-r0a`, `frost-k4n`.
+- Record pre-move baselines under `verification/results/crate-split/`: public
+  API paths and executed test counts for five feature profiles.
+- `scripts/require-tests.sh` fails a lane whose test selection executes no
+  test; the Miri, bounded and Loom lanes use it. `make doctest-codes` checks
+  `compile_fail` error codes with the pinned nightly.
+- Four `compile_fail` doctests now name their error code. Every catalog
+  contract has a curated case.
+
 ## Unreleased — value-domain algebra documents and rules entry
 
 Documentation only. No source, feature, or public API change.

@@ -1,0 +1,71 @@
+# Crate-split evidence (`frost-wlt`)
+
+Baselines recorded before any file moved, and the tools that produced them.
+They let each step of the [crate-split plan](../../../docs/design/crate-split-plan.md)
+be checked against the single-package tree instead of against expectations.
+Nothing here is a Make gate.
+
+## Baseline
+
+Source: commit `ab15901` plus the `frost-wlt.7` changes (error codes on four
+`compile_fail` doctests, three curated catalog records, the empty-selection
+guard in the Makefile). No test body differs from `ab15901`.
+Host: Linux x86-64, 4 CPUs, 15 GB. `cargo 1.99.1`.
+
+| File | Content | Produced by |
+| --- | --- | --- |
+| `baseline/test-counts.<profile>.tsv` | Executed tests per target: target, passed, failed, ignored | `cargo test <profile flags> --locked` piped through `test-counts.sh` |
+| `baseline/api-paths.<profile>.txt` | Public item paths reachable from `frost::`, with inherent items and implemented traits per type | `api_paths.py --methods` over rustdoc JSON from `nightly-2026-08-21` |
+| `baseline/compile-fail-uncoded.txt` | The compiler error of each `compile_fail` doctest that cannot name an error code | Each block run as an ordinary doctest once |
+| `crate-names.txt` | crates.io index lookups for the candidate package names | `curl` against the sparse index |
+| `layout-inventory.tsv` | Every tooling or configuration line keyed on the single-package layout: file, line, kind, text | `git grep`, collected by an agent; see the plan, section 5 |
+
+Profiles: `all-features`, `default`, `alloc` (`--no-default-features --features alloc`),
+`core-only` (`--no-default-features`), `int-set` (`--no-default-features --features int-set`).
+
+| Profile | Targets | Tests passed |
+| --- | ---: | ---: |
+| `all-features` | 41 | 413 |
+| `default` | 34 | 213 |
+| `alloc` | 33 | 82 |
+| `core-only` | 31 | 18 |
+| `int-set` | 34 | 165 |
+
+Gates run on the same tree, all passing: `make check`, `make profiles`,
+`make features` (20 isolated features), `make embedded` (`thumbv7em-none-eabihf`
+and `thumbv6m-none-eabi`), `make bounded`, `make doctest-codes`
+(`nightly-2026-11-08`; 60 doctests, error codes checked), and two Miri lanes
+under Tree Borrows with strict provenance: `--test inline_safety` (12 tests) and
+`--test exhaustive_collections inline_ownership_exhausts_three_operation_traces`
+(1 test).
+
+`make shell-check` passes (ShellCheck 0.9.0, shfmt, 39 Bats cases) after one
+ShellCheck false positive (SC2154 on the `$stderr` that Bats sets) in
+`verification/shell/makefile.bats` was annotated; the scripts added
+here pass ShellCheck and shfmt.
+
+Not run for the baseline: the remaining `make miri` lanes including the survey
+shards, `make loom`, `make kani`, `make verus`, fuzzing, coverage, nextest,
+mutation testing and `make package`.
+
+Installed for this work: `nightly-2026-11-08` with Miri, both embedded targets,
+ShellCheck 0.9.0, shfmt, Bats 1.10.0, ast-grep 0.51.2, cargo-nextest 0.9.151,
+cargo-llvm-cov 0.9.1. Kani 0.68.0 was already present. Not installed:
+cargo-mutants, cargo-fuzz, Verus.
+
+## Limits
+
+- `api_paths.py` lists paths, inherent item names and implemented trait paths.
+  It does not compare signatures, bounds or auto traits; the contract tests
+  and `compile_fail` doctests cover those.
+- rustdoc strips `#[doc(hidden)]` items, so the path lists omit them.
+- A test count that matches does not show the tests are the same tests; the
+  moves change no test body, which `git diff` shows.
+
+## Tools
+
+| Tool | Use |
+| --- | --- |
+| [`test-counts.sh`](test-counts.sh) | `cargo test … 2>&1 \| bash test-counts.sh` |
+| [`api_paths.py`](api_paths.py) | `python3 api_paths.py <dir of rustdoc JSON> frost --methods` |
+| [`relink.py`](relink.py) | `python3 relink.py OLD=NEW…` after a move, to rewrite Markdown links |

@@ -30,7 +30,8 @@ does not validate later changes.
 | [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
 | [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
 | [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
-| [Crate split proposal](design/proposals/crate-split.md) | Measured module graph, stage-1 packages, feature map, and proposed changes to epic `frost-wlt` | Proposal |
+| [Crate split plan](design/crate-split-plan.md) | Execution plan for epic `frost-wlt`: decisions, packages, module and feature maps, artifact owners, rules that change | Proposed, under execution |
+| [Crate split proposal](design/proposals/crate-split.md) | First proposal for `frost-wlt`, with the measured module graph | Superseded by the plan |
 
 ## Formal models and domain-specific algebra
 
@@ -52,6 +53,7 @@ remain authoritative for implemented behavior.
 | [Adversarial review](reviews/value-domain-algebra-review.md) | Same-author review passes, counterexamples and remaining risks |
 | [Destination review](reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, gate results and open items |
 | [Crate split review](reviews/crate-split-adversarial-review.md) | Adversarial review of the crate-split proposal: two blockers, compile-tested |
+| [Crate split plan review](reviews/crate-split-plan-review.md) | Adversarial review of the execution plan: 27 findings and their dispositions |
 | [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
 
 ## Research corpus

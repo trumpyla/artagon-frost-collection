@@ -16,7 +16,7 @@ mod sealed {
 ///
 /// Downstream crates cannot expand the supported snapshot payloads:
 ///
-/// ```compile_fail
+/// ```compile_fail,E0277
 /// use frost::concurrent::SnapshotValue;
 /// struct PretendFrozen;
 /// impl SnapshotValue for PretendFrozen {}
@@ -178,7 +178,7 @@ impl<F: SnapshotValue + fmt::Debug> fmt::Debug for SnapshotGuard<F> {
 ///
 /// Mutable collections are not accepted as snapshot payloads:
 ///
-/// ```compile_fail
+/// ```compile_fail,E0277
 /// use frost::concurrent::SnapshotStore;
 /// let store = SnapshotStore::new(vec![1, 2, 3]);
 /// ```
