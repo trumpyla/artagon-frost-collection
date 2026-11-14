@@ -77,7 +77,7 @@ not cause memory unsafety, regardless of the mathematical assumption.
 ## Current executable evidence
 
 The finite models are the Rust test target
-[`tests/formal_models`](../../../tests/formal_models/main.rs): 46 cases, one
+[`tests/formal_models`](../../../crates/frost-collections/tests/formal_models/main.rs): 46 cases, one
 module per chapter plus one for operation sequences, run by `make check` and
 recorded in the verification catalog under `C-ALGEBRA-FORMAL-MODELS`. Finite
 domains come from `exhaust` and `itertools`; sampled domains and operation

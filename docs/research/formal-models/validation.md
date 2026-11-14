@@ -117,7 +117,7 @@ lists every correction.
 ## Rust models, 2026-11-13
 
 The Node model and its mutant runner were replaced by the Rust test target
-[`tests/formal_models`](../../../tests/formal_models/main.rs). It has 42 cases,
+[`tests/formal_models`](../../../crates/frost-collections/tests/formal_models/main.rs). It has 42 cases,
 each a curated catalog record under `C-ALGEBRA-FORMAL-MODELS`. The textual
 mutants became wrong-definition tests inside the target. Seven cases run real
 Frost types.

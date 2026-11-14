@@ -34,10 +34,10 @@ The frozen ordered map is shared by the ordinary and adaptive ordered families.
 `FrozenOrderedMap::thaw()` always returns `MutableOrderedMap`;
 `AdaptiveOrderedMap::from_frozen(frozen, policy)` is the explicit alternative.
 
-Sources: [exact wrapper](../../src/frozen.rs), [family modules](../../src/family/mod.rs),
-[adaptive profiles](../../src/adaptive/mod.rs), [integer profile](../../src/integer/mod.rs).
-Tests: [families](../../tests/families.rs), [mutable sets](../../tests/mutable_sets.rs),
-[contracts](../../tests/contracts.rs).
+Sources: [exact wrapper](../../crates/frost-collections/src/frozen.rs), [family modules](../../crates/frost-collections/src/family/mod.rs),
+[adaptive profiles](../../crates/frost-collections/src/adaptive/mod.rs), [integer profile](../../crates/frost-collections/src/integer/mod.rs).
+Tests: [families](../../crates/frost-collections/tests/families.rs), [mutable sets](../../crates/frost-collections/tests/mutable_sets.rs),
+[contracts](../../crates/frost-collections/tests/contracts.rs).
 
 ### Exact-backend `Frozen<B>`
 
@@ -62,8 +62,8 @@ behavior, not the family's first-key rule.
 - Live concurrent collections are not eligible. Exact FST freezing accepts
   only audited immutable byte storage, not any user `AsRef<[u8]>` type.
 
-Sources: [`Eligible` and `Frozen`](../../src/frozen.rs),
-[FST eligibility](../../src/backends/fst.rs). The compile-fail doctests in
+Sources: [`Eligible` and `Frozen`](../../crates/frost-collections/src/frozen.rs),
+[FST eligibility](../../crates/frost-collections/src/backends/fst.rs). The compile-fail doctests in
 `src/frozen.rs` and the README check the missing `Deref`, mutable access, and
 private construction.
 
@@ -82,9 +82,9 @@ frozen family's `thaw()` returns exactly its named mutable partner. Features
 never change either result. Owning iteration also consumes a frozen family and
 ends the frozen state.
 
-Sources: [vector](../../src/family/vec/frozen.rs), [hash map](../../src/family/hash_map/frozen.rs),
-[ordered map and set](../../src/family/ordered/frozen.rs), [hash set](../../src/family/hash_set.rs),
-[set families](../../src/family/sets.rs).
+Sources: [vector](../../crates/frost-collections/src/family/vec/frozen.rs), [hash map](../../crates/frost-collections/src/family/hash_map/frozen.rs),
+[ordered map and set](../../crates/frost-collections/src/family/ordered/frozen.rs), [hash set](../../crates/frost-collections/src/family/hash_set.rs),
+[set families](../../crates/frost-collections/src/family/sets.rs).
 
 ## 2. Construction paths and plans
 
@@ -106,9 +106,9 @@ method set, `seal` and `compact`; new plans use `freeze_with` or
 `try_freeze_with` so that blanket methods cannot collide with downstream
 extension traits.
 
-Sources: [plan definitions](../../src/plan.rs), [vector plans](../../src/backends/std_seq.rs),
-[integer plans](../../src/integer/set.rs). Tests: [contracts](../../tests/contracts.rs),
-[core review](../../tests/core_review.rs), [inline ownership](../../tests/inline_safety.rs).
+Sources: [plan definitions](../../crates/frost-collections/src/plan.rs), [vector plans](../../crates/frost-collections/src/backends/std_seq.rs),
+[integer plans](../../crates/frost-collections/src/integer/set.rs). Tests: [contracts](../../crates/frost-collections/tests/contracts.rs),
+[core review](../../crates/frost-collections/tests/core_review.rs), [inline ownership](../../crates/frost-collections/tests/inline_safety.rs).
 
 ## 3. Errors decide what you can recover
 
@@ -133,8 +133,8 @@ a failure. Strict `try_from_unique` builders follow two different protocols:
 
 With several duplicates, the two protocols can reject different items.
 
-Sources: [`Rejected`](../../src/plan.rs), [duplicate errors](../../src/family/mod.rs),
-[ordered validation](../../src/family/ordered/frozen.rs), [integer errors](../../src/integer/set.rs).
+Sources: [`Rejected`](../../crates/frost-collections/src/plan.rs), [duplicate errors](../../crates/frost-collections/src/family/mod.rs),
+[ordered validation](../../crates/frost-collections/src/family/ordered/frozen.rs), [integer errors](../../crates/frost-collections/src/integer/set.rs).
 
 ## 4. Duplicate and representative laws
 
@@ -153,12 +153,12 @@ These rules rely on lawful user traits. Equivalent keys must hash alike,
 borrowed queries must agree with their keys, ordering must be coherent, and
 interior mutation must not change a key's equivalence or order. Freezing does
 not repair inconsistent trait implementations. The README's
-[representative example](../../README.md#contracts-that-matter) is a doctest
+[representative example](../../crates/frost-collections/README.md#contracts-that-matter) is a doctest
 with hand-written `PartialEq`, `Eq`, and `Hash` that use the same field.
 
-Sources: [family laws](../../src/family/mod.rs), [hash set algebra](../../src/family/hash_set.rs).
-Tests: [contracts](../../tests/contracts.rs), [hash set operations](../../tests/hash_set_ops.rs),
-[ordered set operations](../../tests/ordered_set_ops.rs), [set review](../../tests/sets_review.rs).
+Sources: [family laws](../../crates/frost-collections/src/family/mod.rs), [hash set algebra](../../crates/frost-collections/src/family/hash_set.rs).
+Tests: [contracts](../../crates/frost-collections/tests/contracts.rs), [hash set operations](../../crates/frost-collections/tests/hash_set_ops.rs),
+[ordered set operations](../../crates/frost-collections/tests/ordered_set_ops.rs), [set review](../../crates/frost-collections/tests/sets_review.rs).
 
 ## 5. Three read access models
 
@@ -185,9 +185,9 @@ access models separate, and a backend implements only the traits it can honor.
 generic methods, so they are dyn-compatible. Traversal traits use generic
 associated types and are not.
 
-Sources: [read capabilities](../../src/read.rs), [FST](../../src/backends/fst.rs),
-[bitmaps](../../src/backends/bitmap.rs), [slot maps](../../src/backends/slotmap.rs).
-Tests: [backend review](../../tests/backend_review.rs), [specialized](../../tests/specialized.rs).
+Sources: [read capabilities](../../crates/frost-collections/src/read.rs), [FST](../../crates/frost-collections/src/backends/fst.rs),
+[bitmaps](../../crates/frost-collections/src/backends/bitmap.rs), [slot maps](../../crates/frost-collections/src/backends/slotmap.rs).
+Tests: [backend review](../../crates/frost-collections/tests/backend_review.rs), [specialized](../../crates/frost-collections/tests/specialized.rs).
 
 ## 6. What frozen does and does not mean
 
@@ -228,8 +228,8 @@ implementations. `FrozenIntSet<K>` keeps `K`'s restrictions through
 | Changed Chunked result | Shares untouched containers; copies the flat directory in O(C) for C containers |
 | Final owner of shared integer storage | Releases every reachable container |
 
-Sources: [plans](../../src/plan.rs), [ordered family](../../src/family/ordered/frozen.rs),
-[integer storage](../../src/integer/set.rs). The [set operations](../set-operations.md)
+Sources: [plans](../../crates/frost-collections/src/plan.rs), [ordered family](../../crates/frost-collections/src/family/ordered/frozen.rs),
+[integer storage](../../crates/frost-collections/src/integer/set.rs). The [set operations](../set-operations.md)
 guide records algebra complexity; the [benchmark method](../maintainers/benchmarks.md)
 governs any timing claim.
 
@@ -265,9 +265,9 @@ not a variant of an ordinary family.
   and predicate kernels stay on canonical codes; some mixed pairs allocate
   temporary conversion storage. There is no lazy integer expression engine.
 
-Sources: [codec laws](../../src/integer/key.rs), [policies](../../src/integer/policy.rs),
-[set and freeze plans](../../src/integer/set.rs), [shared alias](../../src/integer/mod.rs).
-Tests: [integer sets](../../tests/integer_sets.rs), [integer output](../../tests/integer_output.rs).
+Sources: [codec laws](../../crates/frost-collections/src/integer/key.rs), [policies](../../crates/frost-collections/src/integer/policy.rs),
+[set and freeze plans](../../crates/frost-collections/src/integer/set.rs), [shared alias](../../crates/frost-collections/src/integer/mod.rs).
+Tests: [integer sets](../../crates/frost-collections/tests/integer_sets.rs), [integer output](../../crates/frost-collections/tests/integer_output.rs).
 Design: [integer profile](integer-sets.md).
 
 ## 9. Snapshot admission and publication
@@ -292,10 +292,10 @@ and displaced or rejected values run their destructors wherever their last
 owner drops them. A snapshot freezes structure, not
 interior state shared by elements.
 
-Sources: [snapshot API](../../src/concurrent/snapshot.rs),
-[retry helper](../../src/concurrent/publication.rs). Tests:
-[snapshot behavior](../../tests/concurrent/snapshot.rs),
-[retry schedules](../../tests/publication_model.rs). Contract:
+Sources: [snapshot API](../../crates/frost-collections/src/concurrent/snapshot.rs),
+[retry helper](../../crates/frost-collections/src/concurrent/publication.rs). Tests:
+[snapshot behavior](../../crates/frost-collections/tests/concurrent/snapshot.rs),
+[retry schedules](../../crates/frost-collections/tests/publication_model.rs). Contract:
 [snapshot publication](snapshots.md); model bounds: [verification](../verification.md).
 
 ## 10. Feature boundaries
@@ -311,7 +311,7 @@ Sources: [snapshot API](../../src/concurrent/snapshot.rs),
 
 Features are additive. Enabling one never changes an existing type's
 representation, hasher, public bounds, or freeze/thaw partner. The README
-[feature catalog](../../README.md#feature-catalog) is the complete list.
+[feature catalog](../../crates/frost-collections/README.md#feature-catalog) is the complete list.
 
 ## 11. Proposals, not current API
 

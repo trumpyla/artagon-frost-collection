@@ -13,7 +13,7 @@ description = "Same-executable comparison of a baseline revision and the working
 # The candidate is the working tree. `prepare-baseline.sh <rev>` archives the
 # baseline revision into ./baseline under a renamed package, so one executable
 # links both.
-frost = { package = "frost-collections", path = "../../..", default-features = false, features = ["int-set", "std"] }
+frost = { package = "frost-collections", path = "../../../crates/frost-collections", default-features = false, features = ["int-set", "std"] }
 frost_baseline = { package = "frost-baseline", path = "baseline", default-features = false, features = ["int-set", "std"] }
 
 [profile.release]

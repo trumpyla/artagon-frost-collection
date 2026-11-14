@@ -10,7 +10,7 @@ description = "Same-binary A/B harness: 0.4.0 integer profile versus the revised
 [workspace]
 
 [dependencies]
-frost = { package = "frost-collections", path = "../../../..", default-features = false, features = ["int-set", "roaring-0_12"] }
+frost = { package = "frost-collections", path = "../../../../crates/frost-collections", default-features = false, features = ["int-set", "roaring-0_12"] }
 # Copy the 0.4.0 tree next to this directory as `frost-baseline`, renaming the
 # package to `frost-baseline` and its library to `frost_baseline`.
 frost_baseline = { package = "frost-baseline", path = "../frost-baseline", default-features = false, features = ["int-set"] }

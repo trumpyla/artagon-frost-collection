@@ -1,6 +1,6 @@
 # Frost documentation
 
-Start with the [crate README](../README.md) for the rationale, semantic laws,
+Start with the [crate README](../crates/frost-collections/README.md) for the rationale, semantic laws,
 API examples, and features. This index lists every maintained document by
 category. Status labels: **current** describes implemented behavior;
 **proposal** describes design with no production API; **research** is curated

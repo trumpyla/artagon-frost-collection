@@ -31,7 +31,7 @@ harnesses:
 | `verification/int-key-downstream` | Standalone downstream crate testing `IntKey` coherence and compile-fail domain separation | Isolated `Cargo.lock`; runs in `make integers` |
 | `verification/coverage` | Source-coverage policy ([`coverage-policy.json`](../../verification/coverage/coverage-policy.json)) and denominator documentation ([`README.md`](../../verification/coverage/README.md)) | Executed via `cargo-llvm-cov` (`make coverage`, `make coverage-gate`) |
 | `verification/mutation` | Mutation policy and survivor triage ledger ([`survivor-triage.json`](../../verification/mutation/survivor-triage.json), [`README.md`](../../verification/mutation/README.md)) | Executed via `cargo-mutants` and [`.config/mutants.toml`](../../.config/mutants.toml) (`make mutants`) |
-| `verification/catalog` | Structural test/proof metadata, contract references, and live benchmark inventory checks ([`verification/metadata/catalog.json`](../../verification/metadata/catalog.json), [`verification/metadata/bench-inventory.json`](../../verification/metadata/bench-inventory.json)); semantic obligation coverage remains unmeasured | Executed via `make catalog` and `make catalog-inventory` |
+| `verification/catalog` | Structural test/proof metadata, contract references, and live benchmark inventory checks ([`verification/metadata/catalog.json`](../../verification/metadata/catalog.json), [`verification/metadata/bench-inventory.json`](../../crates/frost-collections/verification/metadata/bench-inventory.json)); semantic obligation coverage remains unmeasured | Executed via `make catalog` and `make catalog-inventory` |
 
 ## 2. Public API semantic obligations beyond percentages
 
@@ -47,7 +47,7 @@ obligations:
    - Set `union` and `intersection` retain the **left** representative.
    - Tests must use composite keys whose `Eq`/`Ord`/`Hash` inspect an identifier
      while carrying a distinct observable tag (as in
-     [`tests/api_contracts.rs`](../../tests/api_contracts.rs) and
+     [`tests/api_contracts.rs`](../../crates/frost-collections/tests/api_contracts.rs) and
      [`verification/fuzz/src/lib.rs`](../../verification/fuzz/src/lib.rs)),
      never only primitive integers where all equal values are identical.
 2. **Ownership and drop accounting**:
@@ -133,7 +133,7 @@ The authoritative `aarch64-apple-darwin` baseline at commit
   Follow-up Beads tasks (`frost-wou.6` through `frost-wou.10`, preceding the
   multi-crate migration in `frost-wlt.1` through `frost-wlt.6`) own raising the
   floor toward the `CRATES.md` §5 targets as subsystem tests land (beginning
-  with [`tests/api_contracts.rs`](../../tests/api_contracts.rs), mapped in
+  with [`tests/api_contracts.rs`](../../crates/frost-collections/tests/api_contracts.rs), mapped in
   [`verification/crate-standards-validation/api-contracts.md`](../../verification/crate-standards-validation/api-contracts.md)).
 - **Exclusions**: Never sprinkle `#[coverage(off)]` on production functions to
   inflate percentages. Target-specific branches (such as the non-atomic `Rc`
@@ -162,7 +162,7 @@ Mutation testing runs via `make mutants` using
 
 - **No timing assertions or sleeps**: Correctness tests must never call
   `thread::sleep` or assert wall-clock durations. Concurrency tests use explicit
-  barriers or deterministic schedule exploration ([`tests/publication_model.rs`](../../tests/publication_model.rs)
+  barriers or deterministic schedule exploration ([`tests/publication_model.rs`](../../crates/frost-collections/tests/publication_model.rs)
   and [`verification/loom/src/lib.rs`](../../verification/loom/src/lib.rs)).
 - **Nextest profile ([`.config/nextest.toml`](../../.config/nextest.toml))**:
   `retries = 0` is mandatory in all profiles (`default`, `ci`, `mutants`).

@@ -53,7 +53,7 @@ complementary evidence lanes:
    `i686-unknown-linux-gnu` integer storage checks in `make miri`,
    `SRC-VERIFY-MIRI`).
 7. **Concurrency schedule exploration and bounded symbolic proofs** via the
-   shared production retry helper in [`tests/publication_model.rs`](../../../tests/publication_model.rs),
+   shared production retry helper in [`tests/publication_model.rs`](../../../crates/frost-collections/tests/publication_model.rs),
    isolated [`verification/loom`](../../../verification/loom/src/lib.rs)
    (`loom 0.7.3`, `SRC-VERIFY-LOOM`), and isolated
    [`verification/kani`](../../../verification/kani/src/lib.rs) (`Kani 0.68.0`,
@@ -134,7 +134,7 @@ From [`verification/crate-standards-validation/baseline-coverage.json`](../../..
 | Set algebra kernels (`ordered/set_ops.rs`, `hash_set_ops.rs`, `backends/bitmap.rs`) | 833 / 844 (98.70%) | 141 / 142 (99.30%) | 1,289 / 1,310 (98.40%) | Exhaustive 6-element / 66,564-bitmap suites cover nearly all branches |
 | Concurrency (`src/concurrent/**`) | 117 / 128 (91.41%) | 33 / 36 (91.67%) | 179 / 195 (91.79%) | Guarded lookup, live wrappers, and snapshot retry loop well covered |
 | Inline unsafe buffer (`src/adaptive/seq/buf.rs`) | 107 / 121 (88.43%) | 19 / 22 (86.36%) | 146 / 165 (88.48%) | Covered by 33,614-trace exhaustive and Miri suites |
-| Mutable sequence & ordered family (`vec/mutable.rs`, `ordered/mutable.rs`) | 183 / 465 (39.35%) | 49 / 131 (37.40%) | 237 / 617 (38.41%) | Addressed by new [`tests/api_contracts.rs`](../../../tests/api_contracts.rs) obligations |
+| Mutable sequence & ordered family (`vec/mutable.rs`, `ordered/mutable.rs`) | 183 / 465 (39.35%) | 49 / 131 (37.40%) | 237 / 617 (38.41%) | Addressed by new [`tests/api_contracts.rs`](../../../crates/frost-collections/tests/api_contracts.rs) obligations |
 | Capability traits & plans (`src/write.rs`, `src/plan.rs`, `src/iter.rs`) | 71 / 174 (40.80%) | 23 / 55 (41.82%) | 111 / 267 (41.57%) | Default trait methods and error display paths need direct contract tests |
 | Native backend capability impls (`std_btree.rs`, `std_hash.rs`, `hashbrown.rs`, `indexmap.rs`) | 130 / 420 (30.95%) | 32 / 110 (29.09%) | 147 / 491 (29.94%) | Thin capability impls over native collections under-exercised in baseline |
 
@@ -180,8 +180,8 @@ Structural coverage cannot detect whether an operation returned the **wrong**
 equivalent representative or leaked an element on early iterator drop. Frost
 requires every public family and capability to be verified against six semantic
 obligation classes (cataloged by `verification/catalog` and tested in
-[`tests/api_contracts.rs`](../../../tests/api_contracts.rs),
-[`tests/exhaustive_collections.rs`](../../../tests/exhaustive_collections.rs),
+[`tests/api_contracts.rs`](../../../crates/frost-collections/tests/api_contracts.rs),
+[`tests/exhaustive_collections.rs`](../../../crates/frost-collections/tests/exhaustive_collections.rs),
 and [`verification/fuzz/src/lib.rs`](../../../verification/fuzz/src/lib.rs)):
 
 1. **Representative identity**: First-key/first-element retention on
@@ -210,8 +210,8 @@ and [`verification/fuzz/src/lib.rs`](../../../verification/fuzz/src/lib.rs)):
 Neither concurrency models nor bounded proofs may verify a detached copy of an
 algorithm:
 
-- **Retry scheduler model ([`tests/publication_model.rs`](../../../tests/publication_model.rs))**:
-  Includes [`src/concurrent/publication.rs`](../../../src/concurrent/publication.rs)
+- **Retry scheduler model ([`tests/publication_model.rs`](../../../crates/frost-collections/tests/publication_model.rs))**:
+  Includes [`src/concurrent/publication.rs`](../../../crates/frost-collections/src/concurrent/publication.rs)
   directly and explores all 6 terminal schedules for 2 writers and all 198
   terminal schedules for 3 writers under noncommuting updates `4*x + k`,
   asserting the exact bound of `n + n(n+1)/2` atomic steps (at most 9 for 3

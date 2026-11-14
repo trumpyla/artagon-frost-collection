@@ -1,11 +1,15 @@
 //! Discovery and validation of the Frost test/benchmark metadata catalog.
 //!
-//! The catalog is the JSON sidecar `verification/metadata/catalog.json`. This
-//! tool discovers every `#[test]` function under `tests/` and every benchmark
-//! target under `benches/`, then checks that the catalog is complete and
-//! internally consistent. It reports catalog counts separately from API
-//! obligation coverage, which this tool does not measure: a cataloged case is
-//! a traceability link, not evidence that an obligation is exercised.
+//! A catalog is a JSON sidecar at `<base>/verification/metadata/catalog.json`.
+//! The repository root has one, for repository tooling and isolated packages;
+//! each package of the root manifest may have its own, with paths relative to
+//! the package. The files share one namespace of contract and case IDs. This
+//! tool discovers every `#[test]` function and benchmark target of the root
+//! manifest's packages and of the isolated manifests the catalogs list, then
+//! checks that the catalogs are complete and internally consistent. It
+//! reports catalog counts separately from API obligation coverage, which this
+//! tool does not measure: a cataloged case is a traceability link, not
+//! evidence that an obligation is exercised.
 //!
 //! ```text
 //! cargo run --locked --manifest-path verification/catalog/Cargo.toml -- check --root .
@@ -284,8 +288,174 @@ fn print_report(report: &Report) {
 
 // ---------------------------------------------------------------- discovery
 
-fn discover(root: &Path) -> Result<Vec<Discovered>, String> {
-    discovery::discover(root)
+fn discover(root: &Path, isolated: &[String]) -> Result<Vec<Discovered>, String> {
+    discovery::discover(root, isolated)
+}
+
+// ---------------------------------------------------------------- workspace
+
+/// The catalogs of a repository, merged.
+///
+/// A catalog file lives at `<base>/verification/metadata/catalog.json`. The
+/// root catalog has base `""`; each package of the root manifest may have its
+/// own. `targets[].path`, `cases[].file`, `cases[].target` and `isolated[]`
+/// are relative to the file's base. A contract `source` or case `provenance`
+/// path names a file under the base if one exists there, and otherwise a file
+/// relative to the repository root, such as a design document. Contracts and
+/// case IDs share one namespace across files.
+struct Workspace {
+    /// Bases in ascending order; the root base `""` is first.
+    bases: Vec<String>,
+    /// All files merged, with base-relative paths made root-relative.
+    catalog: Json,
+    /// Manifests of isolated packages to discover, root-relative.
+    isolated: Vec<String>,
+}
+
+fn join_base(base: &str, path: &str) -> String {
+    if base.is_empty() {
+        path.to_string()
+    } else {
+        format!("{base}/{path}")
+    }
+}
+
+/// The base that owns a root-relative path: the longest base that prefixes it.
+fn owner<'a>(bases: &'a [String], path: &str) -> &'a str {
+    bases
+        .iter()
+        .filter(|base| {
+            base.is_empty()
+                || path
+                    .strip_prefix(base.as_str())
+                    .is_some_and(|rest| rest.starts_with('/'))
+        })
+        .max_by_key(|base| base.len())
+        .map_or("", String::as_str)
+}
+
+/// A root-relative path made relative to `base`.
+fn strip_base(base: &str, path: &str) -> String {
+    if base.is_empty() {
+        path.to_string()
+    } else {
+        path.strip_prefix(base)
+            .and_then(|rest| rest.strip_prefix('/'))
+            .unwrap_or(path)
+            .to_string()
+    }
+}
+
+fn prefix_field(fields: &mut [(String, Json)], key: &str, base: &str) {
+    if let Some((_, Json::Str(value))) = fields.iter_mut().find(|(k, _)| k == key) {
+        *value = join_base(base, value);
+    }
+}
+
+/// Resolves the leading path of a `provenance` value, or of each `;`-separated
+/// part of a contract `source`. A path that names a file under the catalog's
+/// base is made root-relative; any other path is already root-relative.
+fn resolve_document(root: &Path, fields: &mut [(String, Json)], key: &str, base: &str) {
+    if base.is_empty() {
+        return;
+    }
+    let Some((_, Json::Str(value))) = fields.iter_mut().find(|(k, _)| k == key) else {
+        return;
+    };
+    let parts: Vec<String> = value
+        .split(';')
+        .map(|part| {
+            let trimmed = part.trim_start();
+            let lead = &part[..part.len() - trimmed.len()];
+            let path = trimmed.split_whitespace().next().unwrap_or("");
+            if safe_relative(path) && root.join(base).join(path).is_file() {
+                format!("{lead}{base}/{trimmed}")
+            } else {
+                part.to_string()
+            }
+        })
+        .collect();
+    *value = parts.join(";");
+}
+
+fn load_workspace(root: &Path, allow_missing_root: bool) -> Result<Workspace, String> {
+    let mut bases = discovery::member_dirs(root)?;
+    if !bases.iter().any(String::is_empty) {
+        bases.insert(0, String::new());
+    }
+    bases.sort();
+    let mut contracts = Vec::new();
+    let mut targets = Vec::new();
+    let mut cases = Vec::new();
+    let mut isolated = Vec::new();
+    for base in &bases {
+        let display = join_base(base, CATALOG_PATH);
+        let text = match fs::read_to_string(root.join(&display)) {
+            Ok(text) => text,
+            Err(_) if !base.is_empty() || allow_missing_root => continue,
+            Err(e) => return Err(format!("{display}: {e}")),
+        };
+        let file = Json::parse(&text).map_err(|e| format!("{display}: {e}"))?;
+        if file.get("schema").and_then(Json::as_str) != Some(SCHEMA) {
+            return Err(format!("{display}: schema must be {SCHEMA:?}"));
+        }
+        for (key, value) in file.as_object().unwrap_or_default() {
+            let items = value.as_array().unwrap_or_default();
+            match key.as_str() {
+                "schema" => {}
+                "contracts" => {
+                    for item in items {
+                        let mut item = item.clone();
+                        if let Json::Object(fields) = &mut item {
+                            resolve_document(root, fields, "source", base);
+                        }
+                        contracts.push(item);
+                    }
+                }
+                "targets" => {
+                    for item in items {
+                        let mut item = item.clone();
+                        if let Json::Object(fields) = &mut item {
+                            prefix_field(fields, "path", base);
+                        }
+                        targets.push(item);
+                    }
+                }
+                "cases" => {
+                    for item in items {
+                        let mut item = item.clone();
+                        if let Json::Object(fields) = &mut item {
+                            prefix_field(fields, "file", base);
+                            prefix_field(fields, "target", base);
+                            resolve_document(root, fields, "provenance", base);
+                        }
+                        cases.push(item);
+                    }
+                }
+                "isolated" => {
+                    for item in items {
+                        let Some(manifest) = item.as_str().filter(|m| safe_relative(m)) else {
+                            return Err(format!(
+                                "{display}: isolated entries must be relative manifest paths"
+                            ));
+                        };
+                        isolated.push(join_base(base, manifest));
+                    }
+                }
+                other => return Err(format!("{display}: unknown top-level field {other:?}")),
+            }
+        }
+    }
+    Ok(Workspace {
+        bases,
+        catalog: Json::Object(vec![
+            ("schema".to_string(), Json::Str(SCHEMA.to_string())),
+            ("contracts".to_string(), Json::Array(contracts)),
+            ("targets".to_string(), Json::Array(targets)),
+            ("cases".to_string(), Json::Array(cases)),
+        ]),
+        isolated,
+    })
 }
 
 fn rel(root: &Path, path: &Path) -> String {
@@ -299,7 +469,14 @@ fn rel(root: &Path, path: &Path) -> String {
 
 fn check(root: &Path) -> Report {
     let mut report = Report::default();
-    let discovered = match discover(root) {
+    let workspace = match load_workspace(root, false) {
+        Ok(workspace) => workspace,
+        Err(message) => {
+            report.errors.push(message);
+            return report;
+        }
+    };
+    let discovered = match discover(root, &workspace.isolated) {
         Ok(found) => found,
         Err(message) => {
             report.errors.push(message);
@@ -311,88 +488,90 @@ fn check(root: &Path) -> Report {
         .filter(|d| d.selector.starts_with("test:"))
         .count();
     report.discovered_benches = discovered.iter().filter(|d| d.selector == "bench").count();
-    let catalog_path = root.join(CATALOG_PATH);
-    let catalog = match fs::read_to_string(&catalog_path)
-        .map_err(|e| format!("{CATALOG_PATH}: {e}"))
-        .and_then(|text| Json::parse(&text))
-    {
-        Ok(catalog) => catalog,
-        Err(message) => {
-            report.errors.push(message);
-            return report;
-        }
-    };
-    validate(root, &catalog, &discovered, &mut report);
-    // Structural check of the benchmark inventory sidecar: every discovered
+    let catalog = &workspace.catalog;
+    validate(root, catalog, &discovered, &mut report);
+    let contract_ids: BTreeSet<&str> = catalog
+        .get("contracts")
+        .and_then(Json::as_array)
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|c| c.get("id").and_then(Json::as_str))
+        .collect();
+    // Structural check of each benchmark inventory sidecar: every discovered
     // bench target must register its measured cases with valid metadata.
     // Whether those names match what actually runs is checked per target by
-    // `inventory`, which needs a fresh `FROST_BENCH_LIST=1` listing.
-    let bench_targets: BTreeSet<String> = discovered
-        .iter()
-        .filter(|d| d.selector == "bench")
-        .map(|d| d.target.clone())
-        .collect();
-    match bench::load_sidecar(root) {
-        Ok(sidecar) => {
-            report.measured_cases = bench_targets
-                .iter()
-                .map(|t| {
-                    sidecar
-                        .get("targets")
-                        .and_then(|s| s.get(t))
-                        .and_then(Json::as_array)
-                        .map_or(0, <[Json]>::len)
-                })
-                .sum();
-            report.errors.extend(bench::validate_sidecar(
-                &sidecar,
-                &bench_targets,
-                &TIMINGS,
-                &STATUSES,
-                &TAGS,
-            ));
-            let contract_ids: BTreeSet<&str> = catalog
-                .get("contracts")
+    // `inventory`, which needs a fresh `FROST_BENCH_LIST=1` listing. A sidecar
+    // names its targets relative to its own base.
+    for base in &workspace.bases {
+        let benches: Vec<&Discovered> = discovered
+            .iter()
+            .filter(|d| d.selector == "bench" && owner(&workspace.bases, &d.target) == base)
+            .collect();
+        let sidecar_path = join_base(base, bench::SIDECAR_PATH);
+        if benches.is_empty() && !root.join(&sidecar_path).exists() {
+            continue;
+        }
+        let bench_targets: BTreeSet<String> = benches
+            .iter()
+            .map(|d| strip_base(base, &d.target))
+            .collect();
+        let sidecar = match bench::load_sidecar(&root.join(base)) {
+            Ok(sidecar) => sidecar,
+            Err(message) => {
+                report.errors.push(join_base(base, &message));
+                continue;
+            }
+        };
+        report.measured_cases += bench_targets
+            .iter()
+            .map(|t| {
+                sidecar
+                    .get("targets")
+                    .and_then(|s| s.get(t))
+                    .and_then(Json::as_array)
+                    .map_or(0, <[Json]>::len)
+            })
+            .sum::<usize>();
+        report.errors.extend(bench::validate_sidecar(
+            &sidecar,
+            &bench_targets,
+            &TIMINGS,
+            &STATUSES,
+            &TAGS,
+        ));
+        for discovery in &benches {
+            let target = strip_base(base, &discovery.target);
+            for entry in sidecar
+                .get("targets")
+                .and_then(|t| t.get(&target))
                 .and_then(Json::as_array)
                 .unwrap_or_default()
-                .iter()
-                .filter_map(|c| c.get("id").and_then(Json::as_str))
-                .collect();
-            for target in &bench_targets {
-                let Some(discovery) = discovered.iter().find(|d| &d.target == target) else {
-                    continue;
-                };
-                for entry in sidecar
-                    .get("targets")
-                    .and_then(|t| t.get(target))
-                    .and_then(Json::as_array)
-                    .unwrap_or_default()
-                {
-                    if let Some(features) = entry.get("features").and_then(Json::as_array) {
-                        if features.iter().any(|f| {
-                            !f.as_str().is_some_and(|s| {
-                                discovery.available_features.iter().any(|known| known == s)
-                            })
-                        }) {
-                            report
-                                .errors
-                                .push(format!("bench inventory {target}: unknown feature"));
-                        }
+            {
+                if let Some(features) = entry.get("features").and_then(Json::as_array) {
+                    if features.iter().any(|f| {
+                        !f.as_str().is_some_and(|s| {
+                            discovery.available_features.iter().any(|known| known == s)
+                        })
+                    }) {
+                        report.errors.push(format!(
+                            "bench inventory {}: unknown feature",
+                            discovery.target
+                        ));
                     }
-                    if let Some(contracts) = entry.get("contracts").and_then(Json::as_array) {
-                        if contracts
-                            .iter()
-                            .any(|c| !c.as_str().is_some_and(|s| contract_ids.contains(s)))
-                        {
-                            report
-                                .errors
-                                .push(format!("bench inventory {target}: unknown contract"));
-                        }
+                }
+                if let Some(contracts) = entry.get("contracts").and_then(Json::as_array) {
+                    if contracts
+                        .iter()
+                        .any(|c| !c.as_str().is_some_and(|s| contract_ids.contains(s)))
+                    {
+                        report.errors.push(format!(
+                            "bench inventory {}: unknown contract",
+                            discovery.target
+                        ));
                     }
                 }
             }
         }
-        Err(message) => report.errors.push(message),
     }
     report
 }
@@ -885,9 +1064,59 @@ fn safe_relative(path: &str) -> bool {
 /// Add `scaffolded` stubs for every uncovered target and case to the catalog
 /// (creating it if absent). Existing entries are preserved verbatim.
 fn scaffold(root: &Path) -> Result<usize, String> {
-    let discovered = discover(root)?;
-    let path = root.join(CATALOG_PATH);
-    let mut catalog = match fs::read_to_string(&path) {
+    let workspace = load_workspace(root, true)?;
+    let discovered = discover(root, &workspace.isolated)?;
+    // IDs share one namespace across catalog files.
+    let mut counters: BTreeMap<String, usize> = BTreeMap::new();
+    for case in workspace
+        .catalog
+        .get("cases")
+        .and_then(Json::as_array)
+        .unwrap_or_default()
+    {
+        if let Some(id) = case.get("id").and_then(Json::as_str) {
+            if let Some((prefix, number)) = id.rsplit_once('-') {
+                let n = number.parse().unwrap_or(0);
+                let entry = counters.entry(prefix.to_string()).or_insert(0);
+                *entry = (*entry).max(n);
+            }
+        }
+    }
+    let mut added = 0;
+    for base in &workspace.bases {
+        let mut local = Vec::new();
+        for item in &discovered {
+            if owner(&workspace.bases, &item.target) != base {
+                continue;
+            }
+            if owner(&workspace.bases, &item.file) != base && !base.is_empty() {
+                return Err(format!(
+                    "{}: selector file {} lies outside the catalog base {base}",
+                    item.target, item.file
+                ));
+            }
+            let mut item = item.clone();
+            item.target = strip_base(base, &item.target);
+            item.file = strip_base(base, &item.file);
+            local.push(item);
+        }
+        let path = root.join(join_base(base, CATALOG_PATH));
+        if local.is_empty() && !path.exists() {
+            continue;
+        }
+        added += scaffold_file(&path, &local, &mut counters)?;
+    }
+    Ok(added)
+}
+
+/// Scaffolds one catalog file. `discovered` holds the items its base owns,
+/// with paths relative to that base.
+fn scaffold_file(
+    path: &Path,
+    discovered: &[Discovered],
+    counters: &mut BTreeMap<String, usize>,
+) -> Result<usize, String> {
+    let mut catalog = match fs::read_to_string(path) {
         Ok(text) => Json::parse(&text)?,
         Err(_) => Json::Object(vec![
             ("schema".to_string(), Json::Str(SCHEMA.to_string())),
@@ -954,19 +1183,9 @@ fn scaffold(root: &Path) -> Result<usize, String> {
             ))
         })
         .collect();
-    let mut counters: BTreeMap<String, usize> = BTreeMap::new();
-    for case in field_array(fields, "cases") {
-        if let Some(id) = case.get("id").and_then(Json::as_str) {
-            if let Some((prefix, number)) = id.rsplit_once('-') {
-                let n = number.parse().unwrap_or(0);
-                let entry = counters.entry(prefix.to_string()).or_insert(0);
-                *entry = (*entry).max(n);
-            }
-        }
-    }
     let mut new_targets = Vec::new();
     let mut new_cases = Vec::new();
-    for item in &discovered {
+    for item in discovered {
         if !existing_targets.contains(&item.target)
             && !new_targets
                 .iter()
@@ -1086,7 +1305,7 @@ fn scaffold(root: &Path) -> Result<usize, String> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
-    fs::write(&path, catalog.to_pretty()).map_err(|e| format!("{}: {e}", path.display()))?;
+    fs::write(path, catalog.to_pretty()).map_err(|e| format!("{}: {e}", path.display()))?;
     Ok(added)
 }
 
@@ -1308,7 +1527,7 @@ mod tests {
     #[test]
     fn discovery_finds_tests_in_targets_and_module_files_only() {
         let fixture = Fixture::new();
-        let found = discover(&fixture.root).unwrap();
+        let found = discover(&fixture.root, &[]).unwrap();
         let selectors: Vec<String> = found
             .iter()
             .map(|d| format!("{} {}", d.file, d.selector))
@@ -1357,7 +1576,7 @@ mod tests {
             "#[test] fn sibling() {}\n",
         )
         .unwrap();
-        let found = discover(&fixture.root).unwrap();
+        let found = discover(&fixture.root, &[]).unwrap();
         let selectors: BTreeSet<_> = found
             .iter()
             .filter(|d| d.target == "tests/nested/main.rs")
@@ -1616,7 +1835,7 @@ mod tests {
             "{errors:?}"
         );
         let errors = errors_for(&fixture, "{\"schema\": \"frost-verification-catalog/1\",}");
-        assert!(errors.iter().any(|e| e.starts_with("json:")), "{errors:?}");
+        assert!(errors.iter().any(|e| e.contains("json:")), "{errors:?}");
         // Required provenance metadata: empty tags, a tag outside the
         // vocabulary, a malformed features type, and an unknown area.
         let errors = errors_for(
@@ -1707,5 +1926,113 @@ mod tests {
         assert!(text.contains("\"T-A-008\""), "continues numbering: {text}");
         assert!(text.contains("\"B-B-001\""));
         assert_eq!(scaffold(&fixture.root).unwrap(), 0);
+    }
+    /// A virtual workspace: a root catalog that defines the contract and one
+    /// member with its own catalog, whose paths are relative to the member.
+    fn workspace_fixture() -> Fixture {
+        let n = COUNTER.fetch_add(1, Ordering::Relaxed);
+        let root =
+            std::env::temp_dir().join(format!("frost-catalog-ws-{}-{n}", std::process::id()));
+        let member = root.join("crates/member");
+        fs::create_dir_all(member.join("src")).unwrap();
+        fs::create_dir_all(member.join("tests")).unwrap();
+        fs::create_dir_all(member.join("verification/metadata")).unwrap();
+        fs::create_dir_all(root.join("verification/metadata")).unwrap();
+        fs::create_dir_all(root.join("docs")).unwrap();
+        fs::write(root.join("docs/x.md"), "fixture contract\n").unwrap();
+        fs::write(
+            root.join("Cargo.toml"),
+            "[workspace]\nmembers = [\"crates/*\"]\nresolver = \"3\"\n",
+        )
+        .unwrap();
+        fs::write(
+            root.join("Cargo.lock"),
+            "version = 4\n[[package]]\nname = \"member\"\nversion = \"0.1.0\"\n",
+        )
+        .unwrap();
+        fs::write(
+            member.join("Cargo.toml"),
+            "[package]\nname = \"member\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        fs::write(member.join("src/lib.rs"), "pub fn probe() {}\n").unwrap();
+        fs::write(
+            member.join("tests/a.rs"),
+            "#[test]\nfn first() {}\n#[test]\nfn second() {}\n",
+        )
+        .unwrap();
+        fs::write(
+            root.join(CATALOG_PATH),
+            r#"{
+  "schema": "frost-verification-catalog/1",
+  "contracts": [
+    {"id": "C-THING", "title": "Thing probes", "source": "docs/x.md", "obligations": ["Thing"]}
+  ],
+  "targets": [],
+  "cases": []
+}"#,
+        )
+        .unwrap();
+        fs::write(
+            member.join(CATALOG_PATH),
+            r#"{
+  "schema": "frost-verification-catalog/1",
+  "contracts": [],
+  "targets": [
+    {"path": "src/lib.rs", "kind": "lib", "features": []},
+    {"path": "tests/a.rs", "kind": "test", "features": []}
+  ],
+  "cases": [
+    {"id": "T-LIB-001", "target": "src/lib.rs", "cfg": "none", "cost": "unreviewed", "file": "src/lib.rs", "selector": "target", "status": "unreviewed", "kind": "unreviewed", "tags": ["unreviewed", "integration"], "features": "inherit", "area": "family", "provenance": "discovery:scaffold", "contracts": [], "oracle": "unreviewed", "scenario": "scaffold: target", "seed": "unreviewed"},
+    {"id": "T-A-001", "target": "tests/a.rs", "cfg": "none", "file": "tests/a.rs", "selector": "test:first", "status": "curated", "kind": "contract", "tags": ["integration"], "features": "inherit", "area": "family", "provenance": "src/lib.rs probe", "contracts": ["C-THING"], "oracle": "hand-expected", "scenario": "first probes the thing", "seed": "none", "cost": "fast"}
+  ]
+}"#,
+        )
+        .unwrap();
+        Fixture { root }
+    }
+
+    #[test]
+    fn member_catalogs_merge_with_the_root_catalog() {
+        let fixture = workspace_fixture();
+        // The member's second test has no record yet.
+        let errors = check(&fixture.root).errors;
+        assert!(
+            errors
+                .iter()
+                .any(|e| e.contains("crates/member/tests/a.rs") && e.contains("second")),
+            "{errors:?}"
+        );
+        // Scaffolding writes it to the member's file, relative to the member,
+        // and the member's case may cite the root's contract.
+        assert_eq!(scaffold(&fixture.root).unwrap(), 1);
+        let member =
+            fs::read_to_string(fixture.root.join("crates/member").join(CATALOG_PATH)).unwrap();
+        assert!(member.contains("\"T-A-002\""), "{member}");
+        assert!(member.contains("\"file\": \"tests/a.rs\""), "{member}");
+        assert!(!member.contains("crates/member"), "{member}");
+        let root = fs::read_to_string(fixture.root.join(CATALOG_PATH)).unwrap();
+        assert!(!root.contains("T-A-002"), "{root}");
+        let report = check(&fixture.root);
+        assert!(report.errors.is_empty(), "{:?}", report.errors);
+        assert_eq!(report.cases, 3);
+    }
+
+    #[test]
+    fn case_ids_are_unique_across_catalog_files() {
+        let fixture = workspace_fixture();
+        let path = fixture.root.join(CATALOG_PATH);
+        let root = fs::read_to_string(&path).unwrap().replace(
+            "\"cases\": []",
+            "\"cases\": [{\"id\": \"T-A-001\", \"target\": \"crates/member/tests/a.rs\", \"cfg\": \"none\", \"file\": \"crates/member/tests/a.rs\", \"selector\": \"test:second\", \"status\": \"curated\", \"kind\": \"contract\", \"tags\": [\"integration\"], \"features\": \"inherit\", \"area\": \"family\", \"provenance\": \"docs/x.md\", \"contracts\": [\"C-THING\"], \"oracle\": \"hand-expected\", \"scenario\": \"second probes the thing\", \"seed\": \"none\", \"cost\": \"fast\"}]",
+        );
+        fs::write(&path, root).unwrap();
+        let errors = check(&fixture.root).errors;
+        assert!(
+            errors
+                .iter()
+                .any(|e| e.contains("T-A-001") && e.contains("duplicate")),
+            "{errors:?}"
+        );
     }
 }

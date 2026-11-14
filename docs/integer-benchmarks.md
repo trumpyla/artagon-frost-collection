@@ -37,8 +37,8 @@ taskset -c 0 target/release/deps/integer_sets-65df4a1a9fb4a10c
 Cargo prints the build-specific executable name. The [execution record](../verification/int-set/bench-execution.json)
 contains exact commands, successful exit codes, and executable/source hashes.
 The [environment record](../verification/int-set/environment.json) records the
-compiler, CPU, flags, dependencies and affinity. The [benchmark source](../benches/integer_sets.rs)
-uses the common [timing support](../benches/support/mod.rs).
+compiler, CPU, flags, dependencies and affinity. The [benchmark source](../crates/frost-collections/benches/integer_sets.rs)
+uses the common [timing support](../crates/frost-collections/benches/support/mod.rs).
 
 Both revised runs exited successfully with **213 distinct cases and 1,491 raw
 samples each**: 135 same-policy operation cases, 21 BTreeSet/FrozenOrderedSet

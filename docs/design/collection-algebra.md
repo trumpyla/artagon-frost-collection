@@ -132,7 +132,7 @@ the value. Stable insertion order does not authorize a sorted merge. Borrowed
 lookup must remain available without imposing `Clone` or `Default` on elements.
 
 The reports invent capability names. Proposals must map them to the existing
-traits in [`read`](../../src/read.rs) rather than silently renaming public APIs:
+traits in [`read`](../../crates/frost-collections/src/read.rs) rather than silently renaming public APIs:
 
 | Report name | Existing Frost capability | Note |
 | --- | --- | --- |
@@ -173,7 +173,7 @@ not copy them.
 | Supplied sketch | Problem | Disposition |
 | --- | --- | --- |
 | Frost1 `FrozenBiMap::try_insert(&mut self, ...)` | Mutation on a frozen type contradicts frozen semantics | Put insertion on `MutableBiMap` or a builder; frozen algebra consumes or borrows and returns a new value. See the [Frozen API guide](frozen-api.md#11-proposals-not-current-api). |
-| Frost1 `#[derive(Hash, Eq, PartialEq)]` key whose equality "depends only on `logical_id`" | Derived traits compare and hash every field, including `display` | Write `PartialEq`, `Eq`, and `Hash` by hand over the same fields. The README's [representative example](../../README.md#contracts-that-matter) is a compiled doctest. |
+| Frost1 `#[derive(Hash, Eq, PartialEq)]` key whose equality "depends only on `logical_id`" | Derived traits compare and hash every field, including `display` | Write `PartialEq`, `Eq`, and `Hash` by hand over the same fields. The README's [representative example](../../crates/frost-collections/README.md#contracts-that-matter) is a compiled doctest. |
 | Lookup traits over unconstrained `Q` (`MapGet<Q>`, `get_by_left<Q>`, `get_left<Q: ?Sized>`) | No relation ties `Q` to the stored key, so an implementation cannot look anything up correctly | Keep the relation on each implementation, as `LookupRef` does. Do not add a blanket `Borrow` bound that excludes `Equivalent`-style backends. |
 | Frost1 `model_inner_join(a: &BTreeMap, b: &BTreeMap) -> Vec<(&K, &A, &B)>` | Two reference inputs and no `self`: lifetime elision fails, so the sketch does not compile | Name the lifetimes explicitly. Treat every report snippet as a sketch until compiled. |
 | N-ary sorted operations described as total-input-linear | The upstream bound hides stream count and key length | See [n-ary merge cost](#n-ary-sorted-merge-cost). |

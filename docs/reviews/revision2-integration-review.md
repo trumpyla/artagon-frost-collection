@@ -77,7 +77,7 @@ before rebuilding. The policy caps dense payload bytes and native Roaring
 upper-32-bit partitions; it does not cap total process memory, staging, sorted
 storage, or chunked storage.
 
-Evidence: [`tests/integer_output.rs`](../../tests/integer_output.rs), including
+Evidence: [`tests/integer_output.rs`](../../crates/frost-collections/tests/integer_output.rs), including
 `identity_sharing_obeys_forced_representations_and_inherited_limits`, and the
 retained original result-policy regressions.
 
@@ -98,7 +98,7 @@ exhausted states, cloned iterators, every container kind, and values near
 Miri exercises the same failure without enumerating a full container.
 
 Evidence: [original failure](../../verification/revision2-integration/before/chunked-fold-reproducer.log),
-[`src/integer/chunked.rs`](../../src/integer/chunked.rs).
+[`src/integer/chunked.rs`](../../crates/frost-collections/src/integer/chunked.rs).
 
 ### 3. Targets without pointer atomics stopped compiling: fixed
 
@@ -115,7 +115,7 @@ the GitHub checkout carries that check in `make embedded` and CI.
 
 Evidence: [baseline build](../../verification/revision2-integration/before/baseline-thumbv6m.log),
 [incoming failure](../../verification/revision2-integration/before/revision2-thumbv6m.log),
-[`src/integer/mod.rs`](../../src/integer/mod.rs).
+[`src/integer/mod.rs`](../../crates/frost-collections/src/integer/mod.rs).
 
 ### 4. Unchanged overlapping chunks lost sharing: fixed
 

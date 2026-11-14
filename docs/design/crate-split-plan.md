@@ -162,6 +162,12 @@ and every edit to a moved test other than its alias line.
 
 | Task | Change | Reason |
 | --- | --- | --- |
+| `.8` | `src/`, `tests/`, `benches/`, `examples/`, `README.md` and the package manifest moved to `crates/frost-collections/`; 131 files are exact renames (`git diff -M100%`). No Rust source line changed. | Workspace scaffold. |
+| `.8` | Root `Cargo.toml` is a virtual workspace; package version, edition, Rust version, licence, `publish` and lints are inherited. Dependency versions stay in the package until a second package shares them. | CR-DEP-7. |
+| `.8` | Root `README.md` is a new workspace overview. The former README is the crate documentation at `crates/frost-collections/README.md`. | It is included by `src/lib.rs` and must be inside the packaged file set. |
+| `.8` | The catalog is split: 361 records and all 12 contracts in `crates/frost-collections/verification/metadata/catalog.json`, 36 harness and tooling records in the root file, which also lists the isolated manifests. The benchmark inventory moved with the package. Two new records, `T-MAIN-015` and `T-MAIN-016`, cover the catalog tool's workspace tests. | D11. |
+| `.8` | `make package` tests a scratch workspace instead of an extracted `.crate`. | D13. |
+| `.8` | `make integer-ab` accepts only baselines from before this change until `.15` teaches `prepare-baseline.sh` the workspace layout. | The script archives a root package. |
 
 ## 8. Risks accepted
 

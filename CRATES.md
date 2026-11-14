@@ -20,17 +20,17 @@ or test metadata, this file wins; fix the other document in the same change.
 
 | Scope | State | Where it is decided |
 | --- | --- | --- |
-| One library package, `frost-collections`, imported as `frost`, at the repository root | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
+| A Cargo workspace whose members live under `crates/`. One member today: `frost-collections`, imported as `frost`, which holds all the code | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
-| Flat `crates/frost-*` packages behind a `frost-api` facade whose library name stays `frost` | **Proposed target, not implemented.** Package boundaries, names, and the module mapping are not approved. | Reorganization epic `frost-wlt` (`frost-wlt.1`–`.6`); [crate layout design](docs/design/crate-layout.md) |
+| `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **In progress.** The workspace exists (`frost-wlt.8`); the packages are extracted by `frost-wlt.9`–`.13`. Names and boundaries are the author's defaults and may be overruled. | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
 
-`frost-wlt` depends on `frost-wou`: the migration uses these rules; it does not
-define them. Do not create `crates/`, a workspace manifest, or placeholder
-packages outside `frost-wlt`. Until its migration change lands and updates the
-decision record, the one-package policy in the
-[implementation contracts](docs/maintainers/implementation-contracts.md#toolchain-and-layout)
-remains in force.
+`frost-wlt` uses these rules; it does not define them. Since 2026-11-13 it no
+longer waits for the open `frost-wou` tasks
+([decision](docs/design/decisions.md#crate-split-execution-2026-11-13)). Do
+not add a package, or a placeholder for one, outside `frost-wlt`. Where a rule
+below names `src/`, `tests/`, `benches/` or `examples/`, it means that
+directory of a package.
 
 Rules carry stable IDs (`CR-<AREA>-<n>`) so reviews, issues, and catalog records
 can cite them. Do not renumber a rule; retire it and add a new ID.
@@ -69,9 +69,11 @@ Repository-level files stay at the root: `Makefile`, `rust-toolchain.toml`,
 configuration, repository-wide documents under `docs/` (philosophy,
 architecture, decisions, maintainer guides, the research corpus), historical
 evidence under `verification/`, and repository tooling such as the catalog
-validator in `verification/catalog/`. Today the single package is the
-repository root, so its `docs/`, `CHANGELOG.md`, and
-[verification/metadata/](verification/metadata/catalog.json) are the root ones.
+validator in `verification/catalog/`. The root
+[verification/metadata/](verification/metadata/catalog.json) catalog records
+repository tooling and the isolated packages still under `verification/`.
+Until `frost-wlt.17`, the root `docs/` and `CHANGELOG.md` also serve the
+packages.
 
 - **CR-LAYOUT-1.** `src/` contains code that ships. Test helpers, factories,
   oracles, and benchmark drivers live in `tests/support/`, `benches/support/`,
@@ -181,7 +183,10 @@ repository root, so its `docs/`, `CHANGELOG.md`, and
   check for `core`/`alloc` profiles; a host `--no-default-features` test is not.
 - **CR-DEP-5.** The packaged source must build and test on its own.
   `package.exclude` keeps verification and supplied evidence out of the
-  `.crate` file, and `make package` tests the extracted package.
+  packaged file set. Nothing is published, and `cargo package` cannot resolve
+  unpublished path siblings, so `make package` copies the file set that
+  `cargo package --list` reports for each member into a fresh scratch workspace
+  and builds and tests it there with all features.
 - **CR-DEP-6.** In the target workspace, set `resolver = "3"` explicitly in the
   root manifest; the resolver is a workspace-wide setting ([Cargo resolver
   versions][cargo-resolver]). Isolated verification and fuzz packages are listed
@@ -348,8 +353,20 @@ lists every benchmark target and compares the exact case names. Both run in
 
 ### Catalog: `frost-verification-catalog/1`
 
-[catalog.json](verification/metadata/catalog.json) holds `schema`,
-`contracts[]`, `targets[]`, and `cases[]`.
+A catalog file holds `schema`, `contracts[]`, `targets[]`, `cases[]`, and
+optionally `isolated[]`. There is one per base directory, at
+`<base>/verification/metadata/catalog.json`:
+
+- the [root catalog](verification/metadata/catalog.json) records repository
+  tooling and the isolated packages under `verification/`;
+- each workspace member may have its own, for example
+  [the library's](crates/frost-collections/verification/metadata/catalog.json).
+
+`targets[].path`, `cases[].file`, `cases[].target` and `isolated[]` are relative
+to the file's base, so a package's records move with it. One `check` reads all
+of them. Contract and case IDs share one namespace across files, and a case may
+cite a contract defined in another file. `isolated[]` lists the manifests of
+isolated packages whose targets the tool also discovers.
 
 | Record | Fields |
 | --- | --- |
@@ -367,7 +384,7 @@ lists every benchmark target and compares the exact case names. Both run in
 | `features` | An explicit array of the package's features, or `"inherit"` to take the target record's features |
 | `cfg` | The structural enclosing and item conditions the tool discovered, or `none`; must equal the discovered value |
 | `area` | `family`, `adaptive`, `integer`, `backends`, `adapters`, `concurrent`, `verification`, `support` |
-| `provenance` | An existing repository path (first token), `review <note>`, or `discovery:scaffold` |
+| `provenance` | An existing path (first token), `review <note>`, or `discovery:scaffold`. The path names a file under the catalog's base if one exists there, and otherwise a file relative to the repository root. A contract's `source` paths resolve the same way |
 | `contracts` | Known contract IDs; a curated case must name at least one |
 | `oracle`, `scenario` | Nonempty; a curated case names a real oracle and scenario |
 | `seed` | `none`, `fixed`, `proptest`, `factory`, `unreviewed` |
@@ -377,7 +394,7 @@ lists every benchmark target and compares the exact case names. Both run in
 
 ### Benchmark inventory: `frost-bench-inventory/1`
 
-[bench-inventory.json](verification/metadata/bench-inventory.json) maps each
+[bench-inventory.json](crates/frost-collections/verification/metadata/bench-inventory.json) maps each
 benchmark target to every exact case name that `FROST_BENCH_LIST=1` prints.
 Each entry has `name`, `timing`, `status`, `tags`, `features`, `scenario`,
 `control`, `area`, `provenance`, `seed`, `cost` (always `timed`), and
@@ -406,11 +423,12 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 383
-  structural test and proof declarations, 397 case records (77 `curated`, 320
-  `unreviewed`), 12 contracts, and 922 benchmark names in seven targets, with
-  every inventory entry `unreviewed`. Every contract has at least one curated
-  case. Curating the unreviewed legacy records is part of `frost-wou.6`.
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 385
+  structural test and proof declarations and 399 case records (77 `curated`,
+  322 `unreviewed`): 361 in the library's catalog and 38 in the root catalog.
+  There are 12 contracts, and 922 benchmark names in seven targets, with every
+  inventory entry `unreviewed`. Every contract has at least one curated case.
+  Curating the unreviewed legacy records is part of `frost-wou.6`.
 - **CR-META-6.** Benchmark records keep raw samples and slower observations,
   and identify the compiler, profile, target CPU, and source revision. Listing
   validates answers and names without timing; it supports no performance claim.
@@ -462,9 +480,15 @@ input.
 - **CR-MAKE-3.** Optional tools are explicit targets that fail with a clear
   message when the tool is absent. They are never silently skipped or reported
   as passed.
-- **CR-MAKE-4.** In the target workspace, recipes iterate packages from Cargo
-  metadata; adding a package must not require a hand-edited list unless it is an
-  intentional exclusion.
+- **CR-MAKE-4.** Recipes iterate packages from Cargo metadata; adding a package
+  must not require a hand-edited list unless it is an intentional exclusion.
+  A recipe that sets features names its package with `-p` and never relies on
+  feature unification across workspace members: at the workspace root,
+  `--no-default-features` does not turn `std` off in a package that another
+  member builds with it.
+- **CR-MAKE-5.** Scripts kept with recorded evidence, such as those under
+  `verification/results/crate-split/`, are not build tooling. No recipe calls
+  them, and they may use Python.
 
 `make check` runs formatting, links, Clippy, rustdoc, tests, examples,
 `catalog`, and `catalog-inventory`. `make verify` adds profiles, isolated
@@ -484,7 +508,7 @@ change does not claim that it has run on GitHub.
 | New or changed public item | Rustdoc with ownership, panic, complexity, feature, and concurrency notes; obligations; tests per category; curated catalog cases linked to a contract; changelog |
 | New or changed formal law | A model module in the owning package's `tests/formal_models/` with wrong-definition checks; the law in `docs/design/algebra/catalog.json` and the proof ledger; curated catalog cases |
 | New test or benchmark | Catalog case or inventory entry (scaffold, then curate when reviewed); features and `cfg`; benchmark control, timing, and seed; `make catalog` and `make catalog-inventory` pass |
-| New feature | `Cargo.toml` entry, feature catalog in [README.md](README.md), isolated and embedded matrix entries, tests compiled out when disabled |
+| New feature | `Cargo.toml` entry, feature catalog in [README.md](crates/frost-collections/README.md), isolated and embedded matrix entries, tests compiled out when disabled |
 | New isolated verification package | Own manifest and lockfile; Make target with a tool-version check; exclusion from packaging; proof-scope statement |
 | Coverage denominator, floor, or waiver change | Before/after metric in the same scope; policy file and waiver fields |
 | Layout or package move (`frost-wlt` only) | Module mapping, preserved IDs and import paths, updated links, full matrix rerun |

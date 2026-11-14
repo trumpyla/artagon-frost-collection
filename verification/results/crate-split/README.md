@@ -69,3 +69,13 @@ cargo-mutants, cargo-fuzz, Verus.
 | [`test-counts.sh`](test-counts.sh) | `cargo test … 2>&1 \| bash test-counts.sh` |
 | [`api_paths.py`](api_paths.py) | `python3 api_paths.py <dir of rustdoc JSON> frost --methods` |
 | [`relink.py`](relink.py) | `python3 relink.py OLD=NEW…` after a move, to rewrite Markdown links |
+
+## After `frost-wlt.8` (workspace scaffold)
+
+On the tree with the package at `crates/frost-collections`: the executed test
+counts of all five profiles are identical to the baseline files, line for line.
+Gates that passed: `make check`, `profiles`, `features` (20 features),
+`integers`, `examples`, `package` (scratch workspace), `embedded`, `bounded`,
+`loom`, `fuzz-check`, `doctest-codes`, `shell-check` (40 Bats cases),
+`tools-check`, and the two Miri lanes over `buf.rs` named above. Not run: the
+other `make miri` lanes, `kani`, `nextest`, coverage, mutation, `fuzz-smoke`.

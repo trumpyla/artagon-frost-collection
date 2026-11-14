@@ -11,10 +11,12 @@ implementation: unchanged
 This is a navigation checklist, not a replacement for [CRATES.md](../../CRATES.md)
 or the preserved [implementation contracts](implementation-contracts.md).
 
-1. **Scope and layout.** One root `frost-collections` package, Rust import `frost`,
-   remains current. The flat `crates/frost-*` target and `frost-api` facade are
-   migration work under `frost-wlt`. Do not create empty packages or adopt a
-   different proposed crate list by copying historical research.
+1. **Scope and layout.** A Cargo workspace with its packages under `crates/`.
+   `frost-collections`, Rust import `frost`, is the library and the only
+   supported entry point. Extracting `frost-collections-core`, `-integer` and
+   `-concurrent` from it is migration work under `frost-wlt`, by the
+   [crate split plan](../design/crate-split-plan.md). Do not create empty
+   packages or adopt a different crate list by copying historical research.
 2. **Code.** Keep features additive and preserve the semantic contracts:
    representatives, borrowed queries, iterator contracts, recovery and panic/drop
    behavior. Public API shape (names, paths, signatures, bounds, type parameters,

@@ -113,7 +113,7 @@ all remaining owners. The separate panic regressions cover unwinding behavior.
 The retry model runs as part of `make bounded`.
 
 Both the real store and the model call
-[`src/concurrent/publication.rs`](../src/concurrent/publication.rs). The test
+[`src/concurrent/publication.rs`](../crates/frost-collections/src/concurrent/publication.rs). The test
 includes that file directly; it does not maintain a second copy of the retry
 algorithm. Only the atomic store is replaced.
 
@@ -185,7 +185,7 @@ under an atomic-store assumption. See the [Loom documentation][loom] and
 ## Unsafe storage under Miri
 
 The only runtime module allowed to use `unsafe` is
-[`src/adaptive/seq/buf.rs`](../src/adaptive/seq/buf.rs). Its invariant is that an
+[`src/adaptive/seq/buf.rs`](../crates/frost-collections/src/adaptive/seq/buf.rs). Its invariant is that an
 inline buffer owns exactly the initialized prefix, and an owning iterator owns
 exactly its remaining contiguous range. Moving storage must transfer that
 ownership before any destructor can run.

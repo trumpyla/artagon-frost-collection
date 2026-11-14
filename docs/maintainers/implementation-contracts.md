@@ -34,9 +34,11 @@ module. `docs/maintainers/guide.md` is the maintainer entry point.
   dependency placement, the feature/target matrix, public API obligations,
   coverage accounting, and test/benchmark metadata. Follow it for every new
   test, benchmark, feature, or verification package.
-- Keep one library package. The flat `crates/frost-*` layout is the target of
-  reorganization epic `frost-wlt` ([crate layout](../design/crate-layout.md));
-  do not create packages, a workspace, or `crates/` outside that epic.
+- The repository is a Cargo workspace with its packages under `crates/`. The
+  packages are those of the [crate split plan](../design/crate-split-plan.md),
+  extracted under reorganization epic `frost-wlt`; do not add a package outside
+  that epic. Until the extractions land, `crates/frost-collections` holds all
+  the code, and module paths below are relative to that package.
   `src/family` owns ordinary mutable/frozen pairs;
   `src/adaptive` owns explicit policies; `src/backends` and `src/adapters` supply
   optional integrations. `src/concurrent` separates live guarded access from

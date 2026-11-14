@@ -9,7 +9,7 @@
 These proofs are about the reference definitions. Nothing here links to Frost,
 and no Frost type is shown to implement a law by them. The links to real code
 are the bounded Kani harnesses in [`verification/kani`](../kani/src/set_laws.rs)
-and the finite models in [`tests/formal_models`](../../tests/formal_models/main.rs).
+and the finite models in [`tests/formal_models`](../../crates/frost-collections/tests/formal_models/main.rs).
 
 | Law | Proof |
 | --- | --- |

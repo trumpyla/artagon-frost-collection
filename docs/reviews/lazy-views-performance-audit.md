@@ -157,7 +157,7 @@ Sources:
 [comparison CSV](../../verification/integer-output/comparison.csv),
 [measurement metadata](../../verification/integer-output/bench-metadata.json),
 [exact payload diagnostic](../../verification/integer-output/payload-check.csv),
-and [common harness](../../benches/integer_output.rs).
+and [common harness](../../crates/frost-collections/benches/integer_output.rs).
 The current Dense+singleton time is close to its prepared native Dense
 clone-and-update control. A new sharing design must therefore beat a compact
 eager copy, rather than only the obsolete Sorted expansion.

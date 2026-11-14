@@ -30,7 +30,7 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 | [Primary sources](SOURCES.md) | Checked primary contracts, definitions and limits |
 | [Adversarial review](../../reviews/value-domain-algebra-review.md) | Four same-author passes and concrete dispositions |
 | [Proof ledger](../../design/algebra/proof-obligations.md) | Proof arguments, finite checks and unexecuted implementation gates |
-| [Finite models](../../../tests/formal_models/main.rs) | Rust tests of the laws, with wrong-definition checks and differential checks of implemented types |
+| [Finite models](../../../crates/frost-collections/tests/formal_models/main.rs) | Rust tests of the laws, with wrong-definition checks and differential checks of implemented types |
 | [Destination review](../../reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, and the gates that ran |
 | [Validation](validation.md) | Commands, patch checks and unavailable gates |
 | [Research prompt](research-prompt.md) | Focused child investigations using the existing project templates |
@@ -70,7 +70,7 @@ own dated evidence and cannot validate this patch.
 ## Model evidence
 
 The finite models are Rust tests owned by the library, in
-[`tests/formal_models`](../../../tests/formal_models/main.rs), one module per
+[`tests/formal_models`](../../../crates/frost-collections/tests/formal_models/main.rs), one module per
 design chapter. `make check` runs them, and the verification catalog records
 each case under contract `C-ALGEBRA-FORMAL-MODELS`. To run only them:
 

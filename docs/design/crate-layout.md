@@ -1,7 +1,7 @@
 # Crate layout: current package and reorganization target
 
-Status: **current layout plus a proposed target.** The repository has one
-library package. The flat `crates/frost-*` layout is the target of the
+Status: **design inputs for the split, kept as a record.** The repository is
+a workspace with one library package. The flat `crates/frost-*` layout is the target of the
 reorganization epic `frost-wlt`, which depends on the standards epic
 `frost-wou`. No package boundary, crate name, or module mapping in this document
 is approved. [CRATES.md](../../CRATES.md) holds the rules that apply to every
@@ -14,9 +14,10 @@ and the plan differ, the plan is current.
 
 ## Current layout
 
-One package, `frost-collections` 0.4.0, library name `frost`, Rust 1.99.1,
-edition 2024, at the repository root. [Architecture](architecture.md) describes
-its module boundaries:
+A Cargo workspace with one member, `frost-collections` 0.4.0, library name
+`frost`, Rust 1.99.1, edition 2024, at `crates/frost-collections`
+(`frost-wlt.8`). [Architecture](architecture.md) describes its module
+boundaries; paths in the table are relative to the package:
 
 | Module | Responsibility |
 | --- | --- |
@@ -163,5 +164,5 @@ The tracker tasks under `frost-wlt` are authoritative. In summary:
 
 It does not choose package names, approve the split, change the current
 installation instructions, or authorize publishing. Until `frost-wlt` lands,
-[README.md](../../README.md) installation and the one-package policy remain
+[README.md](../../crates/frost-collections/README.md) installation and the one-package policy remain
 current.

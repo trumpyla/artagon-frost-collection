@@ -84,7 +84,7 @@ issue status. Sources actually used for new factual claims are listed in the
 | Insertion/declaration order is not sorted order | `specialized::indexset_compact_retains_positions`; `specialized::static_maps_and_sets_preserve_their_query_and_order_contracts` |
 | FST keys use lending traversal | `specialized::fst_lookup_decodes_values_and_streams_lend_keys` |
 
-The source files are under [tests](../../tests/). These tests constrain future
+The source files are under [tests](../../crates/frost-collections/tests/). These tests constrain future
 work; they do not exercise a new expression layer.
 
 ## 5. Baseline verification actually executed

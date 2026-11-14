@@ -140,9 +140,9 @@ jobs:
       - name: Run mutation suite over priority algorithmic modules
         run: |
           cargo mutants --config .config/mutants.toml \
-            --file src/adaptive/seq/buf.rs \
-            --file src/concurrent/publication.rs \
-            --file src/family/ordered/set_ops.rs \
+            --file crates/frost-collections/src/adaptive/seq/buf.rs \
+            --file crates/frost-collections/src/concurrent/publication.rs \
+            --file crates/frost-collections/src/family/ordered/set_ops.rs \
             --output target/mutants
       - name: Upload cargo-mutants results
         if: always()

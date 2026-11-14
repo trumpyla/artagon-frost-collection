@@ -84,11 +84,11 @@ borrowed iterators. That behavior stays intact.
 | FST byte-string sets | Membership and lending streams | Stream algebra, explicit owned materialization, directional membership filters |
 | Live concurrent sets | Guard-scoped/live access | Capture a coherent snapshot or keep a separately documented live-filter API |
 
-Source entry points are [read capabilities](../../src/read.rs),
-[ordinary set families](../../src/family/sets.rs),
-[hash algebra](../../src/family/hash_set_ops.rs),
-[ordered algebra](../../src/family/ordered/set_ops.rs),
-[backend adapters](../../src/backends/mod.rs), and
+Source entry points are [read capabilities](../../crates/frost-collections/src/read.rs),
+[ordinary set families](../../crates/frost-collections/src/family/sets.rs),
+[hash algebra](../../crates/frost-collections/src/family/hash_set_ops.rs),
+[ordered algebra](../../crates/frost-collections/src/family/ordered/set_ops.rs),
+[backend adapters](../../crates/frost-collections/src/backends/mod.rs), and
 [current operation contracts](../set-operations.md).
 
 No current wrong-answer bug in the ordinary frozen kernels was established by
@@ -784,8 +784,8 @@ bug reports were rerun in this pass.
 - **S4:** [imbl GenericHashSet](https://docs.rs/imbl/latest/imbl/hashset/struct.GenericHashSet.html), 7.0.2; corroborated against the cached 7.0.2 source and Frost's persistent adapter.
 - **S5:** [imbl GenericOrdSet](https://docs.rs/imbl/latest/imbl/ordset/struct.GenericOrdSet.html), 7.0.2: ordered persistent structure and stored-member lookup.
 - **S6:** [Rust Arc documentation](https://doc.rust-lang.org/std/sync/struct.Arc.html), Rust 1.99.1: sharing, clone-on-write, pointer identity, and auto-trait conditions.
-- **S7:** [Existing operation contract](../set-operations.md), [capabilities](../../src/read.rs), and [generic review ledger](../reviews/generic-set-algebra-review.md): repository facts and executed checks.
-- **S8:** [IndexSet documentation](https://docs.rs/indexmap/2.14.0/indexmap/set/struct.IndexSet.html), 2.14.0, and the [Frost indexmap adapter](../../src/backends/indexmap.rs): order and query contracts. The [hashbrown adapter](../../src/backends/hashbrown.rs) records its separate Equivalent relation.
+- **S7:** [Existing operation contract](../set-operations.md), [capabilities](../../crates/frost-collections/src/read.rs), and [generic review ledger](../reviews/generic-set-algebra-review.md): repository facts and executed checks.
+- **S8:** [IndexSet documentation](https://docs.rs/indexmap/2.14.0/indexmap/set/struct.IndexSet.html), 2.14.0, and the [Frost indexmap adapter](../../crates/frost-collections/src/backends/indexmap.rs): order and query contracts. The [hashbrown adapter](../../crates/frost-collections/src/backends/hashbrown.rs) records its separate Equivalent relation.
 - **S9:** [Rust Reference: implementation coherence](https://doc.rust-lang.org/reference/items/implementations.html#trait-implementation-coherence): overlapping implementations are rejected.
 - **S10:** [fst set OpBuilder](https://docs.rs/fst/latest/fst/set/struct.OpBuilder.html), 0.4.7: multi-input lexicographic stream algebra.
 - **S11:** [Finite representative model](../../verification/set-algebra/README.md): reproduced semantic counterexamples, scope, and raw results.

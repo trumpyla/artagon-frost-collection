@@ -6,7 +6,7 @@ portable citations, a decision-oriented synthesis, reusable research
 templates, and ready-to-run prompts for the next focused investigations.
 Nothing here is an accepted design or an implemented API unless its status
 says so. The [documentation index](../README.md) lists every design,
-verification, and review document; the [crate README](../../README.md)
+verification, and review document; the [crate README](../../crates/frost-collections/README.md)
 explains the rationale and the implemented library.
 
 The current [naming dispositions](../design/collection-algebra.md#naming-dispositions)

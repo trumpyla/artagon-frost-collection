@@ -12,12 +12,12 @@ This pass implements five focused improvements and adds a broader benchmark corp
 
 | Priority | Finding | Action | Source |
 | --- | --- | --- | --- |
-| High | Ordered intersections scanned nearly all of a large slice even when the other set was tiny. | Added monotonic exponential seeking, identity and endpoint shortcuts, and separate bulk kernels. | [ordered kernels](../../src/family/ordered/set_ops.rs) |
-| High | Dense bitset reductions carried zero-extension iterator state and checked addition through every word. | Split full-word spans from boundaries and suffixes; added direct one/two-word paths. | [bitmap kernels](../../src/backends/bitmap.rs) |
-| Medium | Small adaptive map entry access searched the same representation twice. | Reuse the successful lookup or insertion index across the promotion decision. | [hash entry](../../src/adaptive/hash_map/mutable.rs), [ordered entry](../../src/adaptive/ordered_map/mutable.rs) |
-| Medium | Owning Rayon traversal expressed a new collection even when a contiguous buffer already existed. | Transfer the existing boxed-slice/vector allocation directly to Rayon. | [Rayon adapter](../../src/adapters/rayon.rs) |
-| Low | Set iterator wrappers did not forward native bulk operations consistently with map wrappers. | Forward `fold`, `count`, and ordered reverse folds. | [set iterators](../../src/family/sets.rs) |
-| High, measurement | Earlier large ratios compared against deliberately more expensive algorithms. | Added before/after measurements and appropriate native operations. | [benchmark](../../benches/performance_review.rs) |
+| High | Ordered intersections scanned nearly all of a large slice even when the other set was tiny. | Added monotonic exponential seeking, identity and endpoint shortcuts, and separate bulk kernels. | [ordered kernels](../../crates/frost-collections/src/family/ordered/set_ops.rs) |
+| High | Dense bitset reductions carried zero-extension iterator state and checked addition through every word. | Split full-word spans from boundaries and suffixes; added direct one/two-word paths. | [bitmap kernels](../../crates/frost-collections/src/backends/bitmap.rs) |
+| Medium | Small adaptive map entry access searched the same representation twice. | Reuse the successful lookup or insertion index across the promotion decision. | [hash entry](../../crates/frost-collections/src/adaptive/hash_map/mutable.rs), [ordered entry](../../crates/frost-collections/src/adaptive/ordered_map/mutable.rs) |
+| Medium | Owning Rayon traversal expressed a new collection even when a contiguous buffer already existed. | Transfer the existing boxed-slice/vector allocation directly to Rayon. | [Rayon adapter](../../crates/frost-collections/src/adapters/rayon.rs) |
+| Low | Set iterator wrappers did not forward native bulk operations consistently with map wrappers. | Forward `fold`, `count`, and ordered reverse folds. | [set iterators](../../crates/frost-collections/src/family/sets.rs) |
+| High, measurement | Earlier large ratios compared against deliberately more expensive algorithms. | Added before/after measurements and appropriate native operations. | [benchmark](../../crates/frost-collections/benches/performance_review.rs) |
 
 ## Measured results
 

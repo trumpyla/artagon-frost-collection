@@ -74,9 +74,9 @@ language explicitly; configured rules declare `language: Rust` in YAML.
 
 ```sh
 ast-grep --version
-ast-grep run --lang rust --pattern '$VALUE.freeze()' src
+ast-grep run --lang rust --pattern '$VALUE.freeze()' crates
 ast-grep test --config sgconfig.yml
-ast-grep scan --config sgconfig.yml --inspect summary src
+ast-grep scan --config sgconfig.yml --inspect summary crates
 ```
 
 The `rust-unsafe-block-scope` rule flags unsafe blocks in production source

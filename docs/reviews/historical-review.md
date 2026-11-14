@@ -79,7 +79,7 @@ operations; the failure was accepting a logical request whose required length
 could not be represented.
 
 Evidence: `inline_zero_sized_reservation_checks_length_overflow` in
-[tests/core_review.rs](../../tests/core_review.rs), with the corrected allocation-only
+[tests/core_review.rs](../../crates/frost-collections/tests/core_review.rs), with the corrected allocation-only
 run in [verification/core-alloc.log](../../verification/history/core-alloc.log). A separate run
 against unmodified archived source with Rust 1.99.1 failed with the assertion
 `len + additional must not overflow for ZSTs`;
@@ -108,7 +108,7 @@ returns `InvalidData` if construction reduced that count. The correction covers
 ordinary and adaptive hash maps and is also applied to the added hash-set
 families. Ordinary duplicate or descending keys are still rejected by the
 ordering check. Tests cover both classes of rejection in
-[tests/ecosystem_review.rs](../../tests/ecosystem_review.rs).
+[tests/ecosystem_review.rs](../../crates/frost-collections/tests/ecosystem_review.rs).
 
 The severity is deliberately limited: this reproduction violates the key type's
 `Ord`/`Eq` consistency requirements. It is defensive strengthening of a strict
@@ -136,9 +136,9 @@ The missing mutable sets and hash-set family were requested-scope gaps in the
 attachment. Their addition is not presented as repairing a failed existing set
 implementation. Tests now cover representative preservation, borrowed queries,
 strict construction, set algebra, ordered ranges, fallible reservation, and
-freeze/thaw ownership. See [tests/mutable_sets.rs](../../tests/mutable_sets.rs),
-[tests/sets_review.rs](../../tests/sets_review.rs), and
-[tests/root_regressions.rs](../../tests/root_regressions.rs).
+freeze/thaw ownership. See [tests/mutable_sets.rs](../../crates/frost-collections/tests/mutable_sets.rs),
+[tests/sets_review.rs](../../crates/frost-collections/tests/sets_review.rs), and
+[tests/root_regressions.rs](../../crates/frost-collections/tests/root_regressions.rs).
 
 An exact-backend `Mutable<B>` wrapper is still excluded. It would retain the
 backend in the application type while requiring the crate to forward its mutable
@@ -168,9 +168,9 @@ publication. Capability design follows what storage can honestly return:
 | FST streams lend keys from reusable storage and decode values | Keep lending traversal and value-returning lookup distinct | `fst_lookup_decodes_values_and_streams_lend_keys` |
 | ArrayVec capacity and requested output length are different quantities | Validate current length and return the owned source on failure | `arrayvec_exact_length_failure_preserves_owned_elements` |
 
-These tests are in [tests/advanced.rs](../../tests/advanced.rs),
-[tests/specialized.rs](../../tests/specialized.rs), and
-[tests/backend_review.rs](../../tests/backend_review.rs). The FixedBitSet and
+These tests are in [tests/advanced.rs](../../crates/frost-collections/tests/advanced.rs),
+[tests/specialized.rs](../../crates/frost-collections/tests/specialized.rs), and
+[tests/backend_review.rs](../../crates/frost-collections/tests/backend_review.rs). The FixedBitSet and
 SecondaryMap cases are retained review regressions from the earlier design,
 not newly discovered defects in the attachment, which did not contain those
 adapters.
@@ -196,8 +196,8 @@ adaptive profiles, native mutable collections, and live concurrent collections
 are ineligible. Tests exercise old-version retention, whole-version publication,
 and the new frozen adaptive profiles; compile-fail examples reject mutable
 payloads and guard-lifetime escape. See
-[src/concurrent.rs](../../src/concurrent/mod.rs) and
-[tests/concurrent.rs](../../tests/concurrent.rs).
+[src/concurrent.rs](../../crates/frost-collections/src/concurrent/mod.rs) and
+[tests/concurrent.rs](../../crates/frost-collections/tests/concurrent.rs).
 
 This guarantees publication of a whole owned version. It does not make a
 multiwriter read/derive/publish sequence transactional, and structural freezing
@@ -225,8 +225,8 @@ Strict constructors return the rejected owned entry or the unchanged rejected
 input where documented. Tests check that the rejected key is the input key,
 not the previously stored representative. Different strict constructors may
 detect duplicates in input order or after sorting; their documentation states
-which entry is returned. See [tests/core_review.rs](../../tests/core_review.rs) and
-[tests/ecosystem_review.rs](../../tests/ecosystem_review.rs).
+which entry is returned. See [tests/core_review.rs](../../crates/frost-collections/tests/core_review.rs) and
+[tests/ecosystem_review.rs](../../crates/frost-collections/tests/ecosystem_review.rs).
 
 ### Remove bounds that an operation does not need
 
@@ -282,7 +282,7 @@ was found. The relevant invariants are concrete:
 Additional regressions exercise rejected-element destructor panic, mixed-end
 iterator consumption followed by destructor panic, over-aligned elements,
 zero-sized destructors, partial cloning, and zero capacity.
-[tests/inline_safety.rs](../../tests/inline_safety.rs). Focused Miri evidence is recorded
+[tests/inline_safety.rs](../../crates/frost-collections/tests/inline_safety.rs). Focused Miri evidence is recorded
 in [verification/core-miri-stacked.log](../../verification/history/core-miri-stacked.log);
 the exact final Miri scope belongs to [VERIFICATION.md](historical-verification.md).
 
@@ -291,14 +291,14 @@ If user hashing or comparison panics while rebuilding a representation, moved
 entries can be dropped. The object remains valid and owned values are dropped
 once. The new promotion tests verify subsequent usability and drop accounting;
 they do not assert preservation of all pre-panic entries.
-[tests/core_review.rs](../../tests/core_review.rs).
+[tests/core_review.rs](../../crates/frost-collections/tests/core_review.rs).
 
 The framework review found no new Rayon lifetime or aliasing counterexample.
 Borrowed wrappers retain the source lifetime, including boxed-slice storage.
 Mutable map iteration yields immutable key references and disjoint mutable value
 references. Owned iteration transfers values into the owning native iterator.
 There is no lifetime widening or new unsafe code in these wrappers.
-[src/adapters/rayon.rs](../../src/adapters/rayon.rs).
+[src/adapters/rayon.rs](../../crates/frost-collections/src/adapters/rayon.rs).
 
 ## 6. Framework guarantees and verification limits
 
@@ -321,7 +321,7 @@ contracts are narrowed where representation independence alone was insufficient:
   private representation fields. Generators deliberately vary adaptive
   thresholds and growth states to exercise invariants; those choices are not
   performance recommendations. See
-  [src/adapters/arbitrary.rs](../../src/adapters/arbitrary.rs).
+  [src/adapters/arbitrary.rs](../../crates/frost-collections/src/adapters/arbitrary.rs).
 
 The attachment's framework test file was gated on all five framework features
 together. A successful all-features run therefore did not demonstrate that each

@@ -2,7 +2,7 @@
 
 The source coverage baseline in [baseline-coverage.json](baseline-coverage.json)
 identified weak execution coverage in mutable vectors, ordered map entry APIs,
-and native capability implementations. [api_contracts.rs](../../tests/api_contracts.rs)
+and native capability implementations. [api_contracts.rs](../../crates/frost-collections/tests/api_contracts.rs)
 adds the following independent contract checks. These checks do not establish
 complete public API coverage.
 

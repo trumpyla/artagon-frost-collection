@@ -14,6 +14,12 @@ No public API or behaviour change so far.
   `compile_fail` error codes with the pinned nightly.
 - Four `compile_fail` doctests now name their error code. Every catalog
   contract has a curated case.
+- The repository is now a Cargo workspace. The package moved unchanged to
+  `crates/frost-collections`; its README moved with it and the root README is
+  a workspace overview. Recipes name the package with `-p`.
+- The catalog tool reads one catalog per package plus a root catalog, with
+  package-relative paths and one namespace of IDs. `make package` tests a
+  scratch copy of each member's packaged file set.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

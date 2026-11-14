@@ -10,7 +10,7 @@ description = "Separate downstream compilation fixture for extensible Frost inte
 [workspace]
 
 [dependencies]
-frost = { package = "frost-collections", path = "../..", default-features = false, features = ["int-set"] }
+frost = { package = "frost-collections", path = "../../crates/frost-collections", default-features = false, features = ["int-set"] }
 
 [lints.rust]
 unsafe_code = "forbid"

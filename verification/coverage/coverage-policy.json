@@ -65,7 +65,7 @@
     "achieved": false
   },
   "unsafe_module_policy": {
-    "allowed_paths": ["src/adaptive/seq/buf.rs"],
+    "allowed_paths": ["crates/frost-collections/src/adaptive/seq/buf.rs"],
     "baseline_lines_percent": 88.42975206611571,
     "target_lines_percent": 95.0,
     "mandatory_companion_gates": ["make miri", "make bounded", "make tools-check"]
