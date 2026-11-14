@@ -70,9 +70,12 @@ No public API or behaviour change so far.
 - Add repository configuration for Claude Code, Codex, the Antigravity CLI and
   Copilot: rules that ask before a slow lane, a push or a workflow edit, a
   low-cost agent for mechanical file edits, a gate-running skill, path-specific
-  instructions, review priorities for Copilot, and a pre-edit guard against
-  `unsafe` code outside `buf.rs`. `docs/maintainers/agent-clis.md` lists each
-  file and what a repository file cannot set.
+  instructions and review priorities for Copilot.
+  `docs/maintainers/agent-clis.md` lists each file and what a repository file
+  cannot set.
+- Register the optional `hashline` server for hash-anchored file edits in each
+  agent CLI, and document it in `TOOLS.md`. An edit names lines by a content
+  hash and is refused when the file has changed since it was read.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

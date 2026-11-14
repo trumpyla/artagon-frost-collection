@@ -1,0 +1,8 @@
+# Project configuration for Codex. Codex loads it when the project is trusted.
+
+# Hash-anchored file edits; see TOOLS.md. The server needs the `hashline`
+# binary on PATH and is skipped when it is missing.
+[mcp_servers.hashline]
+command = "hashline"
+args = ["mcp"]
+env = { HASHLINE_NO_UPDATE_CHECK = "1" }
