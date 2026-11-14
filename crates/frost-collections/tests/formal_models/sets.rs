@@ -418,13 +418,13 @@ fn sampled_union(
         .collect()
 }
 
-/// `SET-REP` for union, checked by proptest over 64 keys and whether the
-/// rule passes or fails with a shrunk counterexample.
+/// `SET-REP` for union, checked by proptest over 64 keys with a fixed seed,
+/// and whether the rule passes or fails with a shrunk counterexample.
 fn sampled_union_law(
     rule: fn(Option<char>, Option<char>) -> Option<char>,
 ) -> Result<(), proptest::test_runner::TestError<(Sampled, Sampled, Sampled)>> {
     use proptest::prelude::*;
-    use proptest::test_runner::{Config, TestRunner};
+    use proptest::test_runner::{Config, RngAlgorithm, TestRng, TestRunner};
     let operand = |label: char| {
         prop::collection::btree_set(0_u8..64, 0..=64)
             .prop_map(move |keys| keys.into_iter().map(|k| (k, label)).collect::<Sampled>())
@@ -433,7 +433,10 @@ fn sampled_union_law(
         failure_persistence: None,
         ..Config::default()
     };
-    TestRunner::new(config).run(&(operand('a'), operand('b'), operand('c')), |(a, b, c)| {
+    // A fixed seed: the shrunk counterexample below must not depend on the run.
+    let rng = TestRng::deterministic_rng(RngAlgorithm::ChaCha);
+    let mut runner = TestRunner::new_with_rng(config, rng);
+    runner.run(&(operand('a'), operand('b'), operand('c')), |(a, b, c)| {
         let grouped_left = sampled_union(rule, &sampled_union(rule, &a, &b), &c);
         let grouped_right = sampled_union(rule, &a, &sampled_union(rule, &b, &c));
         prop_assert_eq!(&grouped_left, &grouped_right);
