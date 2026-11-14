@@ -27,6 +27,10 @@ No public API or behaviour change so far.
   changed.
 - Extract `frost-collections-integer`: the `integer` module. The facade
   re-exports it under `int-set`. No public path changed.
+- Extract `frost-collections-concurrent`: live access and snapshot
+  publication. `frost-collections` is now re-exports, feature forwarding and
+  documentation only. No public path changed. `make feature-forwarding`
+  checks that every layer declares the features of the layers below it.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

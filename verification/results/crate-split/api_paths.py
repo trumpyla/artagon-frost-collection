@@ -16,6 +16,9 @@ path: `<kind> <path>`. With --methods, each struct, enum, union and trait is
 followed by its inherent method and associated item names and by the traits it
 implements, so two layouts can be compared beyond paths.
 
+A re-export that cannot be followed into a loaded crate (an external crate
+such as `arc_swap`) is printed as `extern <path> <- <last segment of its
+source>`, so re-exporting it through another package does not change the line.
 Trait impls written in a crate other than the type's are collected from every
 JSON file in <doc-dir>. `#[doc(hidden)]` items are omitted because rustdoc
 strips them.
@@ -134,11 +137,11 @@ class Walker:
             if "use" in inner:
                 use = inner["use"]
                 if use["id"] is None:
-                    self.unresolved.add("::".join(prefix + [use["name"]]) + " <- " + use["source"])
+                    self.unresolved.add("::".join(prefix + [use["name"]]) + " <- " + use["source"].split("::")[-1])
                     continue
                 found = self.resolve(crate_name, use["id"])
                 if found is None:
-                    self.unresolved.add("::".join(prefix + [use["name"]]) + " <- " + use["source"])
+                    self.unresolved.add("::".join(prefix + [use["name"]]) + " <- " + use["source"].split("::")[-1])
                     continue
                 target_crate, target = found
                 target_item = self.crate(target_crate).index[target]

@@ -113,7 +113,7 @@ all remaining owners. The separate panic regressions cover unwinding behavior.
 The retry model runs as part of `make bounded`.
 
 Both the real store and the model call
-[`src/concurrent/publication.rs`](../crates/frost-collections/src/concurrent/publication.rs). The test
+[`src/concurrent/publication.rs`](../crates/frost-collections-concurrent/src/concurrent/publication.rs). The test
 includes that file directly; it does not maintain a second copy of the retry
 algorithm. Only the atomic store is replaced.
 

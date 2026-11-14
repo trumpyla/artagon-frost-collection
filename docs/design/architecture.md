@@ -405,7 +405,7 @@ structural versions; it does not deep-freeze elements or shared interior state.
 See [the complete snapshot contract](snapshots.md) and
 [verification scope](../verification.md) for the linearization and model boundary.
 
-Source: [concurrent access and snapshot publication](../../crates/frost-collections/src/concurrent/mod.rs).
+Source: [concurrent access and snapshot publication](../../crates/frost-collections-concurrent/src/concurrent/mod.rs).
 
 ## 7. Five framework contracts
 

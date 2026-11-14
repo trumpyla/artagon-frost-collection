@@ -17,6 +17,7 @@ mod sealed {
 /// Downstream crates cannot expand the supported snapshot payloads:
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotValue;
 /// struct PretendFrozen;
 /// impl SnapshotValue for PretendFrozen {}
@@ -25,24 +26,28 @@ mod sealed {
 /// Mutable families and profiles must be frozen before publication:
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::family::MutableVec;
 /// let store = SnapshotStore::new(MutableVec::<u8>::new());
 /// ```
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::adaptive::InlineVec;
 /// let store = SnapshotStore::new(InlineVec::<u8, 4>::new());
 /// ```
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::adaptive::AdaptiveHashMap;
 /// let store = SnapshotStore::new(AdaptiveHashMap::<u8, u8>::new());
 /// ```
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::adaptive::AdaptiveOrderedMap;
 /// let store = SnapshotStore::new(AdaptiveOrderedMap::<u8, u8>::new());
@@ -53,6 +58,7 @@ mod sealed {
 Live concurrent maps are not frozen snapshots:
 
 ```compile_fail,E0277
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::dashmap::DashMap;
 use frost::concurrent::SnapshotStore;
 let store = SnapshotStore::new(DashMap::<u8, u8>::new());
@@ -98,6 +104,7 @@ impl<K, V, S> SnapshotValue for crate::adaptive::AdaptiveFrozenHashMap<K, V, S> 
 /// that every guarded read avoids reference-count operations.
 ///
 /// ```
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::family::FrozenVec;
 /// let store = SnapshotStore::new(FrozenVec::from([1, 2]));
@@ -166,6 +173,7 @@ impl<F: SnapshotValue + fmt::Debug> fmt::Debug for SnapshotGuard<F> {
 /// implementations.
 ///
 /// ```
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// use frost::family::FrozenVec;
 /// let store = SnapshotStore::new(FrozenVec::from([1, 2]));
@@ -179,6 +187,7 @@ impl<F: SnapshotValue + fmt::Debug> fmt::Debug for SnapshotGuard<F> {
 /// Mutable collections are not accepted as snapshot payloads:
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_concurrent as frost;
 /// use frost::concurrent::SnapshotStore;
 /// let store = SnapshotStore::new(vec![1, 2, 3]);
 /// ```
@@ -226,6 +235,7 @@ impl<F: SnapshotValue> SnapshotStore<F> {
     /// versions and occupying a fast-read slot unnecessarily.
     ///
     /// ```
+    /// # extern crate frost_collections_concurrent as frost;
     /// use frost::concurrent::SnapshotStore;
     /// use frost::family::FrozenVec;
     /// let store = SnapshotStore::new(FrozenVec::from([1, 2, 3]));
@@ -233,6 +243,7 @@ impl<F: SnapshotValue> SnapshotStore<F> {
     /// ```
     ///
     /// ```compile_fail
+    /// # extern crate frost_collections_concurrent as frost;
     /// use frost::concurrent::SnapshotStore;
     /// use frost::family::FrozenVec;
     /// let store = SnapshotStore::new(FrozenVec::from([1, 2, 3]));
@@ -270,6 +281,7 @@ impl<F: SnapshotValue> SnapshotStore<F> {
     /// # Examples
     ///
     /// ```
+    /// # extern crate frost_collections_concurrent as frost;
     /// use frost::concurrent::SnapshotStore;
     /// use frost::family::FrozenVec;
     /// let store = SnapshotStore::new(FrozenVec::from([0]));
@@ -320,6 +332,7 @@ impl<F: SnapshotValue> SnapshotStore<F> {
     /// bounded completion time or unconditional lock-free progress.
     ///
     /// ```
+    /// # extern crate frost_collections_concurrent as frost;
     /// use frost::concurrent::SnapshotStore;
     /// use frost::family::FrozenVec;
     /// let store = SnapshotStore::new(FrozenVec::from([0_usize]));

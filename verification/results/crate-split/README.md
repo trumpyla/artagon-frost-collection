@@ -105,3 +105,20 @@ Miri: the 32-bit lane `--lib integer::storage::word::tests` passed on the
 integer package (4 tests). The other integer Miri lanes were stopped and are
 not run: the maintainer instructed on 2026-11-14 that Miri is not to be run in
 this session.
+
+## After `frost-wlt.12` (concurrent extracted; facade is re-exports only)
+
+Public paths, inherent items and trait implementations under `frost::` are
+identical to the baseline in all five profiles. Test counts equal the baseline
+plus one in every profile: the new `compile_fail,E0432` doctest showing that
+`frost::__private` does not resolve. The four `compile_fail` doctests without
+an error code were re-run as ordinary doctests and fail with the recorded
+error. Gates that passed: `make check`, `profiles` (with `feature-isolation`
+and `feature-forwarding`), `features` (78 package-feature pairs), `integers`,
+`examples`, `package`, `embedded`, `bounded`, `loom`, `fuzz-check`,
+`doctest-codes`, `shell-check` (45 Bats cases), `tools-check`. Miri was not
+run, by maintainer instruction.
+
+`api_paths.py` now prints an external re-export by the last segment of its
+source, so routing `arc_swap` through another package does not change its
+line; the baseline files are reproduced unchanged by the updated tool.

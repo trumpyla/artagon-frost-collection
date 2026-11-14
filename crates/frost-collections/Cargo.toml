@@ -22,7 +22,7 @@ default = ["std"]
 # and the hash families. Every feature is additive: enabling one never changes
 # the representation or bounds of an existing public type.
 alloc = ["frost-collections-core/alloc"]
-std = ["alloc", "frost-collections-core/std", "frost-collections-integer?/std"]
+std = ["alloc", "frost-collections-core/std", "frost-collections-integer?/std", "dep:frost-collections-concurrent"]
 # Public dependency features name compatibility lines. Supporting a future
 # incompatible line additively needs a separately named dependency and adapter.
 hashbrown-0_17 = ["alloc", "frost-collections-core/hashbrown-0_17"]
@@ -43,15 +43,15 @@ roaring-0_12 = ["std", "frost-collections-core/roaring-0_12"]
 # The complete integer profile has fixed sorted, dense, Roaring, and explicit
 # chunked candidates. Automatic construction does not select chunked storage.
 # Other integration features never change its representation alternatives.
-int-set = ["alloc", "frost-collections-core/int-set", "dep:frost-collections-integer"]
+int-set = ["alloc", "frost-collections-core/int-set", "dep:frost-collections-integer", "frost-collections-concurrent?/int-set"]
 fixedbitset-0_5 = ["alloc", "frost-collections-core/fixedbitset-0_5"]
 slotmap-1 = ["alloc", "frost-collections-core/slotmap-1"]
 phf-0_14 = ["frost-collections-core/phf-0_14"]
 fst-0_4 = ["std", "frost-collections-core/fst-0_4"]
-dashmap-6 = ["std", "frost-collections-core/dashmap-6", "dep:dashmap"]
-scc-3 = ["std", "frost-collections-core/scc-3", "dep:scc"]
-crossbeam-skiplist-0_1 = ["std", "frost-collections-core/crossbeam-skiplist-0_1", "dep:crossbeam-skiplist"]
-arc-swap-1 = ["std", "dep:arc-swap"]
+dashmap-6 = ["std", "frost-collections-core/dashmap-6", "frost-collections-concurrent/dashmap-6"]
+scc-3 = ["std", "frost-collections-core/scc-3", "frost-collections-concurrent/scc-3"]
+crossbeam-skiplist-0_1 = ["std", "frost-collections-core/crossbeam-skiplist-0_1", "frost-collections-concurrent/crossbeam-skiplist-0_1"]
+arc-swap-1 = ["std", "frost-collections-concurrent/arc-swap-1"]
 concurrent = ["dashmap-6", "scc-3", "crossbeam-skiplist-0_1", "arc-swap-1"]
 advanced = ["smallvec-1", "arrayvec-0_7", "imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1", "phf-0_14", "fst-0_4"]
 frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
@@ -59,12 +59,7 @@ frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
 [dependencies]
 frost-collections-core = { workspace = true }
 frost-collections-integer = { workspace = true, optional = true }
-# Used directly by the `concurrent` module this package still holds: the live
-# backends and arc-swap.
-dashmap = { workspace = true, optional = true }
-scc = { workspace = true, optional = true }
-crossbeam-skiplist = { workspace = true, optional = true }
-arc-swap = { workspace = true, optional = true }
+frost-collections-concurrent = { workspace = true, optional = true }
 
 [dev-dependencies]
 proptest = "1.12"
@@ -85,6 +80,7 @@ imbl = { workspace = true }
 slotmap = { workspace = true }
 fixedbitset = { workspace = true }
 roaring = { workspace = true }
+arc-swap = { workspace = true }
 
 [lints]
 workspace = true

@@ -1,22 +1,27 @@
 #![doc = include_str!("../README.md")]
+//!
+//! # Internal packages
+//!
+//! `frost` re-exports the internal packages `frost-collections-core`,
+//! `frost-collections-integer` and `frost-collections-concurrent`. Depend on
+//! `frost-collections` only. The hidden interface those packages share is not
+//! reachable from here:
+//!
+//! ```compile_fail,E0432
+//! use frost::__private;
+//! ```
 #![no_std]
 #![forbid(unsafe_code)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-// Of the code still held here, only the snapshot store allocates.
-#[cfg(feature = "arc-swap-1")]
-extern crate alloc;
-#[cfg(feature = "std")]
-extern crate std;
-
-// The facade names every re-export. It adds no algorithm and does not
+// The facade holds no algorithm. It names every re-export and does not
 // re-export the core package's hidden `__private` module.
 pub use frost_collections_core::{adapters, plan, read, write};
 #[cfg(feature = "alloc")]
 pub use frost_collections_core::{adaptive, family, iter, mutable};
 
 #[cfg(feature = "std")]
-pub mod concurrent;
+pub use frost_collections_concurrent::concurrent;
 
 #[cfg(feature = "int-set")]
 pub use frost_collections_integer::integer;
@@ -35,7 +40,7 @@ pub use frost_collections_core::{FreezeExt, FreezeWith, Rejected, TryFreezeWith}
 /// contracts are documented by the corresponding upstream crate.
 pub mod backend {
     #[cfg(feature = "arc-swap-1")]
-    pub use arc_swap;
+    pub use frost_collections_concurrent::backend::arc_swap;
     #[doc(inline)]
     #[allow(
         unused_imports,

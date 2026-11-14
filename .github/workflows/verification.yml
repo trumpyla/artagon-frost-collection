@@ -141,7 +141,7 @@ jobs:
         run: |
           cargo mutants --config .config/mutants.toml \
             --file crates/frost-collections-core/src/adaptive/seq/buf.rs \
-            --file crates/frost-collections/src/concurrent/publication.rs \
+            --file crates/frost-collections-concurrent/src/concurrent/publication.rs \
             --file crates/frost-collections-core/src/family/ordered/set_ops.rs \
             --output target/mutants
       - name: Upload cargo-mutants results

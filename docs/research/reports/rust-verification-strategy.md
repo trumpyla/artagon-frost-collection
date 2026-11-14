@@ -211,7 +211,7 @@ Neither concurrency models nor bounded proofs may verify a detached copy of an
 algorithm:
 
 - **Retry scheduler model ([`tests/publication_model.rs`](../../../crates/frost-collections/tests/publication_model.rs))**:
-  Includes [`src/concurrent/publication.rs`](../../../crates/frost-collections/src/concurrent/publication.rs)
+  Includes [`src/concurrent/publication.rs`](../../../crates/frost-collections-concurrent/src/concurrent/publication.rs)
   directly and explores all 6 terminal schedules for 2 writers and all 198
   terminal schedules for 3 writers under noncommuting updates `4*x + k`,
   asserting the exact bound of `n + n(n+1)/2` atomic steps (at most 9 for 3

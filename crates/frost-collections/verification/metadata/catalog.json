@@ -7760,7 +7760,7 @@
       ],
       "oracle": "First operand holding each key, over sampled triples of sets on 64 keys",
       "scenario": "Union associates and keeps the first representative; the right-biased rule fails and shrinks to at most two members",
-      "seed": "proptest",
+      "seed": "fixed",
       "target": "tests/formal_models/main.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "fast"

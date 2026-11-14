@@ -1,0 +1,34 @@
+{
+  "schema": "frost-verification-catalog/1",
+  "contracts": [],
+  "targets": [
+    {
+      "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "T-LIB-047",
+      "file": "src/lib.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg))",
+      "cost": "unreviewed"
+    }
+  ]
+}

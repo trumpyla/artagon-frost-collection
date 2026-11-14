@@ -2,7 +2,7 @@
 //! instrumented atomic store. This does not model arc-swap's implementation.
 
 #[cfg(test)]
-#[path = "../../../crates/frost-collections/src/concurrent/publication.rs"]
+#[path = "../../../crates/frost-collections-concurrent/src/concurrent/publication.rs"]
 mod publication;
 
 #[cfg(test)]

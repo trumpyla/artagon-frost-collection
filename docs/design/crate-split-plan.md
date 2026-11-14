@@ -182,6 +182,13 @@ and every edit to a moved test other than its alias line.
 | `.11` | Six integer doctests gained the hidden alias. `roaring` is no longer a dependency of the facade, only a dev-dependency for `tests/advanced.rs`. | D7. |
 | `.11` | The 32-bit Miri lanes that select integer unit tests by name select the integer package; the names are unchanged. | T10. |
 | `.11` | New record `T-LIB-046` marks the facade's library target, which no longer has unit tests. Records `T-LIB-004`–`024` moved to the integer package's catalog. | CR-META-2, D11. |
+| `.12` | `src/concurrent/` moved to `crates/frost-collections-concurrent/src/concurrent/`. The package root re-exports core (and `integer` under `int-set`) and defines `backend` (core's plus `arc_swap`) and `prelude`. The facade re-exports `concurrent` under `std` and `backend::arc_swap` from it. | Concurrent extraction; D6, D9. |
+| `.12` | The facade's `src/lib.rs` now holds only named re-exports, `backend`, `prelude` and crate documentation. It has no `extern crate alloc` or `std`. `dashmap`, `scc`, `crossbeam-skiplist` and `arc-swap` are no longer its dependencies; `arc-swap` is a dev-dependency for `benches/snapshots.rs`. | CR-BOUND-2. |
+| `.12` | The concurrent package's `alloc` and `std` features are empty; it always builds core with `std`. The facade enables it only under `std`. | D14, T07. |
+| `.12` | Eighteen concurrent doctests gained the hidden alias. The four `compile_fail` doctests without an error code were re-run as ordinary doctests and fail with the recorded error. | D7, T09. |
+| `.12` | The crate documentation of `frost` gained a short "Internal packages" section with one `compile_fail,E0432` doctest showing that `frost::__private` does not resolve. Doctest total under all features: 61 (baseline 60). | `.12` acceptance. |
+| `.12` | `tests/publication_model.rs` and the Loom package include `publication.rs` from the concurrent package. New record `T-LIB-047` marks the concurrent package's library target. | CR-LAYOUT-7, CR-META-2. |
+| `.12` | Workspace lints deny `ambiguous_glob_reexports` and `hidden_glob_reexports`. `make feature-forwarding` fails when a library package does not declare a feature of a workspace package it depends on. | T03; plan section 4. |
 
 ## 8. Risks accepted
 

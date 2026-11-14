@@ -292,8 +292,8 @@ and displaced or rejected values run their destructors wherever their last
 owner drops them. A snapshot freezes structure, not
 interior state shared by elements.
 
-Sources: [snapshot API](../../crates/frost-collections/src/concurrent/snapshot.rs),
-[retry helper](../../crates/frost-collections/src/concurrent/publication.rs). Tests:
+Sources: [snapshot API](../../crates/frost-collections-concurrent/src/concurrent/snapshot.rs),
+[retry helper](../../crates/frost-collections-concurrent/src/concurrent/publication.rs). Tests:
 [snapshot behavior](../../crates/frost-collections/tests/concurrent/snapshot.rs),
 [retry schedules](../../crates/frost-collections/tests/publication_model.rs). Contract:
 [snapshot publication](snapshots.md); model bounds: [verification](../verification.md).

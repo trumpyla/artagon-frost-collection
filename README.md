@@ -18,13 +18,15 @@ Nothing is published to a registry.
 
 | Package | Directory | Role |
 | --- | --- | --- |
-| `frost-collections` | [`crates/frost-collections`](crates/frost-collections/README.md) | The library and the only supported entry point. It re-exports the packages below and still holds the concurrent module |
+| `frost-collections` | [`crates/frost-collections`](crates/frost-collections/README.md) | The library and the only supported entry point: re-exports of the packages below, feature forwarding, crate documentation, examples |
 | `frost-collections-core` | `crates/frost-collections-core` | Internal. Capability traits, plans, families, adaptive profiles, native backends, framework integrations |
 | `frost-collections-integer` | `crates/frost-collections-integer` | Internal. The typed integer-set profile |
+| `frost-collections-concurrent` | `crates/frost-collections-concurrent` | Internal. Live guarded access and snapshot publication |
 
-The library is being split into internal packages behind this one under
-tracker epic `frost-wlt`; `frost-collections-concurrent` is still to come. The [crate split plan](docs/design/crate-split-plan.md) says what
-moves where and when; this table lists a package once it exists. Depend on
+The code was split into these internal packages under tracker epic
+`frost-wlt`; tests, benches and isolated harnesses are still moving to their
+owners. The [crate split plan](docs/design/crate-split-plan.md) says what
+moves where and when. Depend on
 `frost-collections` only: the other packages are internal.
 
 ## Working in the repository

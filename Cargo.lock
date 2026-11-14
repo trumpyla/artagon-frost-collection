@@ -296,10 +296,9 @@ dependencies = [
  "arbitrary",
  "arc-swap",
  "borsh",
- "crossbeam-skiplist",
- "dashmap",
  "exhaust",
  "fixedbitset",
+ "frost-collections-concurrent",
  "frost-collections-core",
  "frost-collections-integer",
  "hashbrown 0.17.1",
@@ -310,11 +309,22 @@ dependencies = [
  "proptest-state-machine",
  "rayon",
  "roaring",
- "scc",
  "schemars",
  "serde",
  "serde_json",
  "slotmap",
+]
+
+[[package]]
+name = "frost-collections-concurrent"
+version = "0.4.0"
+dependencies = [
+ "arc-swap",
+ "crossbeam-skiplist",
+ "dashmap",
+ "frost-collections-core",
+ "frost-collections-integer",
+ "scc",
 ]
 
 [[package]]

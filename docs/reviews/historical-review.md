@@ -196,7 +196,7 @@ adaptive profiles, native mutable collections, and live concurrent collections
 are ineligible. Tests exercise old-version retention, whole-version publication,
 and the new frozen adaptive profiles; compile-fail examples reject mutable
 payloads and guard-lifetime escape. See
-[src/concurrent.rs](../../crates/frost-collections/src/concurrent/mod.rs) and
+[src/concurrent.rs](../../crates/frost-collections-concurrent/src/concurrent/mod.rs) and
 [tests/concurrent.rs](../../crates/frost-collections/tests/concurrent.rs).
 
 This guarantees publication of a whole owned version. It does not make a

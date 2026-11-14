@@ -49,7 +49,7 @@ PACKAGE_CHECK_DIR ?= target/package-check
 REQUIRE_TESTS := "$(SHELL)" scripts/require-tests.sh
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
-	test-examples profiles feature-isolation features integers examples package embedded miri \
+	test-examples profiles feature-isolation feature-forwarding features integers examples package embedded miri \
 	doctest-codes \
 	bounded loom kani verus nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
@@ -126,7 +126,7 @@ test-examples:
 #
 # Profile and feature lanes run once per library package, each in its own Cargo
 # invocation, so one package's features never reach another's build.
-profiles: feature-isolation
+profiles: feature-isolation feature-forwarding
 	@set -euo pipefail; \
 	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
 	packages=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
@@ -172,6 +172,21 @@ feature-isolation:
 	check 'std alloc' --no-default-features; \
 	check 'std' --no-default-features --features alloc; \
 	check 'std' --no-default-features --features int-set
+
+# Every library package declares each feature of the workspace packages it
+# depends on, under the same name, so a feature gate means the same thing in
+# every layer and no layer silently drops a forward.
+feature-forwarding:
+	@set -euo pipefail; \
+	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
+	result=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
+	  '[.packages[] | select(any(.targets // [] | .[]; .kind | index("lib")))] as $$libraries | \
+	   [$$libraries[] | . as $$package | (.dependencies // [])[] | select(.kind == null) | .name as $$lower | \
+	     ($$libraries[] | select(.name == $$lower) | .features | keys | map(select(. != "default"))) - \
+	     ($$package.features | keys) | select(length > 0) | \
+	     "\($$package.name) does not declare \(join(", ")) of \($$lower)"] | \
+	   if length > 0 then error(join("; ")) else "every layer declares the features of the layers below it" end'); \
+	printf '%s\n' "$$result"
 
 features:
 	@set -euo pipefail; \

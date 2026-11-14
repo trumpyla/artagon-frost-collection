@@ -7,7 +7,7 @@
 //! from this test. See `docs/verification.md` for the complete bounds.
 #![cfg(feature = "std")]
 
-#[path = "../src/concurrent/publication.rs"]
+#[path = "../../frost-collections-concurrent/src/concurrent/publication.rs"]
 mod publication;
 
 use core::ops::Deref;

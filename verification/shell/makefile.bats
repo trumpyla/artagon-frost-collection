@@ -266,3 +266,26 @@ STUB
   [ "$status" -ne 0 ]
   [[ "$output" == *'the core package is not in the tree'* ]]
 }
+
+@test "feature forwarding passes when each layer declares the lower layer's features" {
+  FROST_TEST_METADATA='{"packages":[
+    {"name":"lower","features":{"default":["std"],"alloc":[],"std":[]},
+      "targets":[{"name":"lower","kind":["lib"]}],"dependencies":[]},
+    {"name":"upper","features":{"alloc":[],"std":[],"extra":[]},
+      "targets":[{"name":"upper","kind":["lib"]}],
+      "dependencies":[{"name":"lower","kind":null},{"name":"serde","kind":null},
+        {"name":"lower","kind":"dev"}]}]}' run_make feature-forwarding
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'every layer declares the features of the layers below it'* ]]
+}
+
+@test "feature forwarding fails when a layer drops a lower feature" {
+  FROST_TEST_METADATA='{"packages":[
+    {"name":"lower","features":{"alloc":[],"std":[],"int-set":[]},
+      "targets":[{"name":"lower","kind":["lib"]}],"dependencies":[]},
+    {"name":"upper","features":{"alloc":[],"std":[]},
+      "targets":[{"name":"upper","kind":["lib"]}],
+      "dependencies":[{"name":"lower","kind":null}]}]}' run_make feature-forwarding
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'upper does not declare int-set of lower'* ]]
+}

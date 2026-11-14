@@ -10,6 +10,7 @@ use crate::read::{ElementType, MapTypes};
     feature = "dashmap-6",
     doc = r#"
 ```
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::dashmap::DashMap;
 use frost::concurrent::ConcurrentLookup;
 let map = DashMap::new();
@@ -21,6 +22,7 @@ assert_eq!(map.get_cloned("answer"), Some(42));
 A guard-backed reference cannot escape:
 
 ```compile_fail
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::dashmap::DashMap;
 use frost::concurrent::ConcurrentLookup;
 let map = DashMap::new();
@@ -59,6 +61,7 @@ pub trait ConcurrentLookup<Q: ?Sized>: MapTypes {
     feature = "dashmap-6",
     doc = r#"
 ```compile_fail
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::dashmap::DashMap;
 use frost::concurrent::ConcurrentUpdate;
 let map = DashMap::new();
@@ -74,6 +77,7 @@ let leaked: &mut i32 = map.with_entry_mut(&"counter", |_, value| value).unwrap()
 Skip-list entries do not provide exclusive mutable value access:
 
 ```compile_fail,E0599
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::crossbeam_skiplist::SkipMap;
 use frost::concurrent::ConcurrentUpdate;
 let map: SkipMap<i32, i32> = SkipMap::new();
@@ -100,6 +104,7 @@ pub trait ConcurrentUpdate<Q: ?Sized>: ConcurrentLookup<Q> {
     feature = "dashmap-6",
     doc = r#"
 ```compile_fail
+# extern crate frost_collections_concurrent as frost;
 use frost::backend::dashmap::DashSet;
 use frost::concurrent::ConcurrentSetLookup;
 let set = DashSet::new();

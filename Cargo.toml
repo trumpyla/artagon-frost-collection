@@ -18,6 +18,7 @@ publish = false
 [workspace.dependencies]
 frost-collections-core = { path = "crates/frost-collections-core", version = "=0.4.0", default-features = false }
 frost-collections-integer = { path = "crates/frost-collections-integer", version = "=0.4.0", default-features = false }
+frost-collections-concurrent = { path = "crates/frost-collections-concurrent", version = "=0.4.0", default-features = false }
 hashbrown = { version = "0.17", default-features = false }
 indexmap = { version = "2.14", default-features = false }
 serde = { version = "1.0.219", default-features = false }
@@ -45,6 +46,10 @@ missing_docs = "warn"
 missing_debug_implementations = "warn"
 unreachable_pub = "warn"
 rust_2018_idioms = { level = "warn", priority = -1 }
+# Sibling packages re-export the core package with a glob. A name that two
+# globs export, or that a private item hides, must be an error, not a warning.
+ambiguous_glob_reexports = "deny"
+hidden_glob_reexports = "deny"
 
 [workspace.lints.clippy]
 pedantic = { level = "warn", priority = -1 }
