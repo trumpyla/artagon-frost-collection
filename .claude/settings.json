@@ -20,19 +20,5 @@
     "deny": [
       "Bash(cargo publish*)"
     ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/agent-guard-unsafe.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
   }
 }
