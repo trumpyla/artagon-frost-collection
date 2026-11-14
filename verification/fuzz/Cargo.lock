@@ -117,7 +117,7 @@ name = "frost-collections"
 version = "0.4.0"
 dependencies = [
  "frost-collections-core",
- "roaring",
+ "frost-collections-integer",
 ]
 
 [[package]]
@@ -130,6 +130,14 @@ dependencies = [
  "roaring",
  "schemars",
  "serde",
+]
+
+[[package]]
+name = "frost-collections-integer"
+version = "0.4.0"
+dependencies = [
+ "frost-collections-core",
+ "roaring",
 ]
 
 [[package]]

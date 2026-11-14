@@ -98,7 +98,7 @@ exhausted states, cloned iterators, every container kind, and values near
 Miri exercises the same failure without enumerating a full container.
 
 Evidence: [original failure](../../verification/revision2-integration/before/chunked-fold-reproducer.log),
-[`src/integer/chunked.rs`](../../crates/frost-collections/src/integer/chunked.rs).
+[`src/integer/chunked.rs`](../../crates/frost-collections-integer/src/integer/chunked.rs).
 
 ### 3. Targets without pointer atomics stopped compiling: fixed
 
@@ -115,7 +115,7 @@ the GitHub checkout carries that check in `make embedded` and CI.
 
 Evidence: [baseline build](../../verification/revision2-integration/before/baseline-thumbv6m.log),
 [incoming failure](../../verification/revision2-integration/before/revision2-thumbv6m.log),
-[`src/integer/mod.rs`](../../crates/frost-collections/src/integer/mod.rs).
+[`src/integer/mod.rs`](../../crates/frost-collections-integer/src/integer/mod.rs).
 
 ### 4. Unchanged overlapping chunks lost sharing: fixed
 

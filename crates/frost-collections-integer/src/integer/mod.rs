@@ -9,6 +9,7 @@
 //! freeze/thaw partner.
 //!
 //! ```
+//! # extern crate frost_collections_integer as frost;
 //! use frost::integer::{FrozenIntSet, IntSetPolicy};
 //! let left = FrozenIntSet::try_from_iter([-3_i64, -1, 0, 1], IntSetPolicy::auto()).unwrap();
 //! let right: FrozenIntSet<i64> = [-1, 1, 7].into_iter().collect();
@@ -20,6 +21,7 @@
 //! Domain types do not mix implicitly, even when their encoded words match:
 //!
 //! ```compile_fail,E0308
+//! # extern crate frost_collections_integer as frost;
 //! use frost::integer::{FrozenIntSet, IntKey};
 //! #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 //! struct UserId(u64);
@@ -36,6 +38,7 @@
 //! The set is structurally frozen and has no mutable element view:
 //!
 //! ```compile_fail,E0599
+//! # extern crate frost_collections_integer as frost;
 //! use frost::integer::FrozenIntSet;
 //! let mut set: FrozenIntSet<u32> = [1, 2].into_iter().collect();
 //! set.insert(3);

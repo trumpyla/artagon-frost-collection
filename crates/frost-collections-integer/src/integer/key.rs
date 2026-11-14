@@ -9,6 +9,7 @@ use core::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 /// The private bound keeps associated backend and iterator types out of the API.
 ///
 /// ```compile_fail,E0277
+/// # extern crate frost_collections_integer as frost;
 /// use frost::integer::IntKey;
 /// #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 /// struct TooWide(u128);
@@ -51,6 +52,7 @@ impl IntWord for u64 {}
 /// Use the ordinary frozen set family when stored representative metadata matters.
 ///
 /// ```
+/// # extern crate frost_collections_integer as frost;
 /// use frost::integer::{FrozenIntSet, IntKey};
 /// #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// struct UserId(u64);

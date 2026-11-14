@@ -35,7 +35,7 @@ The frozen ordered map is shared by the ordinary and adaptive ordered families.
 `AdaptiveOrderedMap::from_frozen(frozen, policy)` is the explicit alternative.
 
 Sources: [exact wrapper](../../crates/frost-collections-core/src/frozen.rs), [family modules](../../crates/frost-collections-core/src/family/mod.rs),
-[adaptive profiles](../../crates/frost-collections-core/src/adaptive/mod.rs), [integer profile](../../crates/frost-collections/src/integer/mod.rs).
+[adaptive profiles](../../crates/frost-collections-core/src/adaptive/mod.rs), [integer profile](../../crates/frost-collections-integer/src/integer/mod.rs).
 Tests: [families](../../crates/frost-collections/tests/families.rs), [mutable sets](../../crates/frost-collections/tests/mutable_sets.rs),
 [contracts](../../crates/frost-collections/tests/contracts.rs).
 
@@ -107,7 +107,7 @@ method set, `seal` and `compact`; new plans use `freeze_with` or
 extension traits.
 
 Sources: [plan definitions](../../crates/frost-collections-core/src/plan.rs), [vector plans](../../crates/frost-collections-core/src/backends/std_seq.rs),
-[integer plans](../../crates/frost-collections/src/integer/set.rs). Tests: [contracts](../../crates/frost-collections/tests/contracts.rs),
+[integer plans](../../crates/frost-collections-integer/src/integer/set.rs). Tests: [contracts](../../crates/frost-collections/tests/contracts.rs),
 [core review](../../crates/frost-collections/tests/core_review.rs), [inline ownership](../../crates/frost-collections/tests/inline_safety.rs).
 
 ## 3. Errors decide what you can recover
@@ -134,7 +134,7 @@ a failure. Strict `try_from_unique` builders follow two different protocols:
 With several duplicates, the two protocols can reject different items.
 
 Sources: [`Rejected`](../../crates/frost-collections-core/src/plan.rs), [duplicate errors](../../crates/frost-collections-core/src/family/mod.rs),
-[ordered validation](../../crates/frost-collections-core/src/family/ordered/frozen.rs), [integer errors](../../crates/frost-collections/src/integer/set.rs).
+[ordered validation](../../crates/frost-collections-core/src/family/ordered/frozen.rs), [integer errors](../../crates/frost-collections-integer/src/integer/set.rs).
 
 ## 4. Duplicate and representative laws
 
@@ -229,7 +229,7 @@ implementations. `FrozenIntSet<K>` keeps `K`'s restrictions through
 | Final owner of shared integer storage | Releases every reachable container |
 
 Sources: [plans](../../crates/frost-collections-core/src/plan.rs), [ordered family](../../crates/frost-collections-core/src/family/ordered/frozen.rs),
-[integer storage](../../crates/frost-collections/src/integer/set.rs). The [set operations](../set-operations.md)
+[integer storage](../../crates/frost-collections-integer/src/integer/set.rs). The [set operations](../set-operations.md)
 guide records algebra complexity; the [benchmark method](../maintainers/benchmarks.md)
 governs any timing claim.
 
@@ -265,8 +265,8 @@ not a variant of an ordinary family.
   and predicate kernels stay on canonical codes; some mixed pairs allocate
   temporary conversion storage. There is no lazy integer expression engine.
 
-Sources: [codec laws](../../crates/frost-collections/src/integer/key.rs), [policies](../../crates/frost-collections/src/integer/policy.rs),
-[set and freeze plans](../../crates/frost-collections/src/integer/set.rs), [shared alias](../../crates/frost-collections/src/integer/mod.rs).
+Sources: [codec laws](../../crates/frost-collections-integer/src/integer/key.rs), [policies](../../crates/frost-collections-integer/src/integer/policy.rs),
+[set and freeze plans](../../crates/frost-collections-integer/src/integer/set.rs), [shared alias](../../crates/frost-collections-integer/src/integer/mod.rs).
 Tests: [integer sets](../../crates/frost-collections/tests/integer_sets.rs), [integer output](../../crates/frost-collections/tests/integer_output.rs).
 Design: [integer profile](integer-sets.md).
 

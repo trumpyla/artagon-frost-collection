@@ -303,7 +303,7 @@ Sources: [adaptive architecture](../../crates/frost-collections-core/src/adaptiv
 ## 5. Advanced storage gets honest capabilities
 
 The explicit `int-set` feature adds the typed integer profile in
-[`frost::integer`](../../crates/frost-collections/src/integer/mod.rs). `FrozenIntSet<K>` preserves the
+[`frost::integer`](../../crates/frost-collections-integer/src/integer/mod.rs). `FrozenIntSet<K>` preserves the
 logical key domain while `IntKey::Word` selects sealed `u32` or `u64` machinery.
 Its fixed private candidates are sorted codes, aligned dense windows,
 width-specific Roaring containers, and explicitly selected shared Chunked

@@ -29,7 +29,7 @@ frost-wlt performs the migration under [CRATES.md](../../../CRATES.md).
 
 See inspected [read capabilities](../../../crates/frost-collections-core/src/read.rs),
 [plans](../../../crates/frost-collections-core/src/plan.rs), [wrapper](../../../crates/frost-collections-core/src/frozen.rs), and
-[integer codec](../../../crates/frost-collections/src/integer/key.rs). Query compatibility belongs on
+[integer codec](../../../crates/frost-collections-integer/src/integer/key.rs). Query compatibility belongs on
 implementations: Borrow, Equivalent-style queries, ordered comparison or a
 specific explicit relation. Do not impose Borrow globally and exclude lawful
 backends that supply a different equivalent-query protocol.

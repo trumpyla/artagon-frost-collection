@@ -25,6 +25,8 @@ No public API or behaviour change so far.
   Capability-trait implementations for `dashmap`, `scc` and
   `crossbeam-skiplist` types now live in core's backends. No public path
   changed.
+- Extract `frost-collections-integer`: the `integer` module. The facade
+  re-exports it under `int-set`. No public path changed.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

@@ -152,9 +152,9 @@ considered after their domain, cardinality, and performance contracts are set.
 ## Review anchors
 
 - [Implemented profile design](../design/integer-sets.md)
-- [Public key laws](../../crates/frost-collections/src/integer/key.rs)
-- [Public construction and set API](../../crates/frost-collections/src/integer/set.rs)
-- [Policy and checked errors](../../crates/frost-collections/src/integer/policy.rs)
+- [Public key laws](../../crates/frost-collections-integer/src/integer/key.rs)
+- [Public construction and set API](../../crates/frost-collections-integer/src/integer/set.rs)
+- [Policy and checked errors](../../crates/frost-collections-integer/src/integer/policy.rs)
 - [Benchmark source](../../crates/frost-collections/benches/integer_sets.rs)
 - The current integer validation report records executed results; historical
   snapshot/concurrency results remain separate evidence for the prior revision.

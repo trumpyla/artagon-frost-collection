@@ -96,6 +96,7 @@ impl Default for IntSetLimits {
 /// representation and limits for one result.
 ///
 /// ```
+/// # extern crate frost_collections_integer as frost;
 /// use frost::{TryFreezeWith, integer::IntSetPolicy};
 /// let frozen = vec![3_i32, -1, 3].try_freeze_with(IntSetPolicy::auto()).unwrap();
 /// assert_eq!(frozen.iter().collect::<Vec<_>>(), [-1, 3]);

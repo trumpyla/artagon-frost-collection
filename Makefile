@@ -42,6 +42,8 @@ AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 # The facade package. Recipes name a package with -p; none relies on feature
 # unification across workspace members.
 FACADE ?= frost-collections
+# The package whose unit tests the 32-bit Miri lanes select by name.
+INTEGER ?= frost-collections-integer
 PACKAGE_CHECK_DIR ?= target/package-check
 # Fails a lane whose test selection matched nothing.
 REQUIRE_TESTS := "$(SHELL)" scripts/require-tests.sh
@@ -263,10 +265,10 @@ miri: doctest-codes
 	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1 \
 	    --skip integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey
 	@set -euo pipefail; \
@@ -278,7 +280,7 @@ miri: doctest-codes
 	  integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
 	  integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do \
 	  MIRIFLAGS='-Zmiri-strict-provenance' \
-	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	      --target i686-unknown-linux-gnu --lib "$$case_name" -- --exact --test-threads=1; \
 	done
 	@set -euo pipefail; \
@@ -301,7 +303,7 @@ miri-survey:
 $(MIRI_SURVEY_SHARDS):
 	FROST_MIRI_SURVEY_CASE="$(patsubst miri-survey-%,%,$@)" \
 	  MIRIFLAGS='-Zmiri-strict-provenance -Zmiri-env-forward=FROST_MIRI_SURVEY_CASE' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --lib \
 	    integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey \
 	    -- --exact --test-threads=1

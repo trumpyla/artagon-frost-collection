@@ -20,7 +20,7 @@ or test metadata, this file wins; fix the other document in the same change.
 
 | Scope | State | Where it is decided |
 | --- | --- | --- |
-| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, and the internal `frost-collections-core` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
+| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, and the internal `frost-collections-core` and `frost-collections-integer` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
 | `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **In progress.** The workspace exists (`frost-wlt.8`); the packages are extracted by `frost-wlt.9`–`.13`. Names and boundaries are the author's defaults and may be overruled. | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
@@ -426,8 +426,8 @@ input.
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
 - **CR-META-5.** Counts are not coverage. On this checkout `check` reports 385
-  structural test and proof declarations and 399 case records (77 `curated`,
-  322 `unreviewed`): 361 in the library's catalog and 38 in the root catalog.
+  structural test and proof declarations and 400 case records (77 `curated`,
+  323 `unreviewed`) across the root catalog and one catalog per package.
   There are 12 contracts, and 922 benchmark names in seven targets, with every
   inventory entry `unreviewed`. Every contract has at least one curated case.
   Curating the unreviewed legacy records is part of `frost-wou.6`.

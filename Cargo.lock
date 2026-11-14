@@ -301,6 +301,7 @@ dependencies = [
  "exhaust",
  "fixedbitset",
  "frost-collections-core",
+ "frost-collections-integer",
  "hashbrown 0.17.1",
  "imbl",
  "indexmap",
@@ -339,6 +340,14 @@ dependencies = [
  "serde_json",
  "slotmap",
  "smallvec",
+]
+
+[[package]]
+name = "frost-collections-integer"
+version = "0.4.0"
+dependencies = [
+ "frost-collections-core",
+ "roaring",
 ]
 
 [[package]]

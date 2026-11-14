@@ -3,8 +3,8 @@
 #![forbid(unsafe_code)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-// Of the modules still held here, `integer` and the snapshot store allocate.
-#[cfg(any(feature = "int-set", feature = "arc-swap-1"))]
+// Of the code still held here, only the snapshot store allocates.
+#[cfg(feature = "arc-swap-1")]
 extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
@@ -19,7 +19,7 @@ pub use frost_collections_core::{adaptive, family, iter, mutable};
 pub mod concurrent;
 
 #[cfg(feature = "int-set")]
-pub mod integer;
+pub use frost_collections_integer::integer;
 
 pub use frost_collections_core::{Compact, ExactLen, Retain};
 pub use frost_collections_core::{Eligible, Frozen};

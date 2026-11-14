@@ -177,6 +177,11 @@ and every edit to a moved test other than its alias line.
 | `.9` | Doctest counts split between `frost` and `frost_collections_core`; the sums equal the baseline in every profile. Unit and integration counts are unchanged. | Doctests live with their items. |
 | `.9` | Records `T-LIB-001`–`003` (bitmap unit tests) moved to core's catalog. Contracts stay in the facade's catalog until `.13` settles test ownership. | D11. |
 | `.9` | Profile and isolated-feature lanes run once per library package; `make feature-isolation` asserts the facade's no-`std` profiles resolve core without `std`. Lockfiles of the Kani, fuzz, downstream and `revision2-integration/ab-harness` packages gained the new dependency. | CR-MAKE-4, T08. |
+| `.11` | `src/integer/` moved to `crates/frost-collections-integer/src/integer/`. The package root re-exports the core package and adds `integer` and its own `prelude`. The facade re-exports `integer` from it under `int-set`. | Integer extraction; D6. |
+| `.11` | The integer package always enables `alloc` and `int-set` on core; its own `alloc` and `int-set` features are empty. The 21 integer unit tests are no longer behind `cfg(feature = "int-set")`; their catalog records drop that condition. | D14, T07. |
+| `.11` | Six integer doctests gained the hidden alias. `roaring` is no longer a dependency of the facade, only a dev-dependency for `tests/advanced.rs`. | D7. |
+| `.11` | The 32-bit Miri lanes that select integer unit tests by name select the integer package; the names are unchanged. | T10. |
+| `.11` | New record `T-LIB-046` marks the facade's library target, which no longer has unit tests. Records `T-LIB-004`–`024` moved to the integer package's catalog. | CR-META-2, D11. |
 
 ## 8. Risks accepted
 
