@@ -213,6 +213,10 @@ ShellCheck, shfmt, Bats, ast-grep, cargo-nextest, cargo-llvm-cov,
 cargo-mutants, cargo-fuzz and Verus were available when it ran. A lane whose
 tool is missing is reported as not run and falls under D16.
 
+Miri is not run in the execution session after 2026-11-14, by maintainer
+instruction ([decision](decisions.md#crate-split-execution-2026-11-13)). Its
+lanes are recorded as not run in each later task and remain for CI.
+
 [Tracker](../../.beads/issues.jsonl) ·
 [Crate standard](../../CRATES.md) ·
 [Decisions](decisions.md)

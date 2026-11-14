@@ -90,3 +90,18 @@ profile. Gates that passed: `make check`, `profiles`, `features` (39
 package-feature pairs), `feature-isolation`, `integers`, `examples`, `package`,
 `embedded`, `bounded`, `loom`, `fuzz-check`, `doctest-codes`, `shell-check` (43
 Bats cases), `tools-check`, and the two Miri lanes over `buf.rs`.
+
+## After `frost-wlt.11` (integer extracted)
+
+Public paths, inherent items and trait implementations under `frost::` are
+identical to the baseline in all five profiles, and test counts sum to the
+baseline. The alloc-only integer lane resolves `frost-collections-core` with
+`[alloc,int-set]` and `roaring` with no features. Gates that passed:
+`make check`, `profiles`, `features` (58 package-feature pairs), `integers`,
+`examples`, `package`, `embedded`, `bounded`, `loom`, `fuzz-check`,
+`doctest-codes`, `shell-check`.
+
+Miri: the 32-bit lane `--lib integer::storage::word::tests` passed on the
+integer package (4 tests). The other integer Miri lanes were stopped and are
+not run: the maintainer instructed on 2026-11-14 that Miri is not to be run in
+this session.

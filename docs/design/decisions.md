@@ -403,6 +403,7 @@ it answers. This entry records what is decided and by whom.
 | Publication | Nothing is published; every package is `publish = false`; the facade is the only supported entry point. | Author's default (plan D3). |
 | Contracts | No semantic or safety contract changes. Known defects are tracked as `frost-r0a` and `frost-k4n`, not fixed inside a move. | The API-compatibility decision relaxes no contract. |
 | Unrun lanes | A verification lane that cannot run on the host blocks closing the epic unless waived here. | Plan D16. No waiver has been given. |
+| Miri | The maintainer instructed on 2026-11-14 that Miri is not to be run in the execution session. Miri lanes are recorded as not run from that point; they are left to CI (`make miri`) or a later local run. | Maintainer instruction. Before it, two lanes over `buf.rs` passed after the scaffold and after the core extraction, and the 32-bit word-storage lane passed on the integer package. Whether this waives the Miri lanes for closing the epic is for the maintainer to state. |
 
 Decisions D2–D16 of the plan are defaults taken so that execution is not
 blocked. The maintainer may overrule any of them; the plan states what undoing
