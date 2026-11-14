@@ -218,7 +218,8 @@ and every edit to a moved test other than its alias line.
   this host, so its baseline is re-recorded, not compared.
 - `cargo-mutants` tests the mutated package by default; until `.13` moves the
   tests, core mutants would look unkilled.
-- This host lacks some tools (section 9). CI has not run on the new layout.
+- This host lacks some tools (section 9). GitHub CI runs on every push; the
+  evidence record lists its results.
 - `git mv` keeps blame for moved files; a split file keeps it for one half.
   Bisecting across the scaffold commit needs the old paths.
 - Isolated packages keep their own lockfiles, which are refreshed when their
@@ -237,7 +238,9 @@ tool is missing is reported as not run and falls under D16.
 
 Miri is not run in the execution session after 2026-11-14, by maintainer
 instruction ([decision](decisions.md#crate-split-execution-2026-11-13)). Its
-lanes are recorded as not run in each later task and remain for CI.
+lanes are recorded as not run in each later task and remain for CI. CI ran
+`make miri` on the split layout; the
+[evidence record](../../verification/results/crate-split/README.md) lists the runs.
 
 [Tracker](../../.beads/issues.jsonl) ·
 [Crate standard](../../CRATES.md) ·

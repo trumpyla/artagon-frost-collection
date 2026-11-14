@@ -163,20 +163,133 @@ Linux x86-64 host (4 CPUs, 15 GB). Tools: cargo and rustc 1.99.1,
 | Catalog | 402 records; all 397 baseline IDs present |
 | Dependency trees | No proof, model or fuzz tool in any library package (`dep-trees/`) |
 
-Not run, and therefore not evidence for the final layout:
+Not run on this host for the final layout:
 
 - **Miri**, by maintainer instruction of 2026-11-14. Before that instruction
   the two lanes over `buf.rs` passed after the scaffold and after the core
   extraction, and one 32-bit integer lane passed after the integer extraction.
-  The lanes in `make miri` name the owning packages but were not executed on
-  the final tree.
+  GitHub CI runs `make miri`; the next section records its results.
 - **Kani** `ordered_set_algebra` and `dense_padding_does_not_create_members`,
   which did not finish before the split either (`frost-k4n`).
-- **Verus**, **cargo-fuzz** (`make fuzz-smoke`) and **cargo-mutants**: not
-  installed on this host.
-- **Benchmarks**: listed and matched against their inventories by
-  `make check`, but not measured. Earlier measurements are for the single
-  package.
+- **Verus**: not installed on this host.
 - **The exact coverage ratchet**: it applies only on the reference host
   (aarch64-apple-darwin), and its baseline predates the split.
-- **`make coverage-branch`**, **`make miri-survey`**, and **GitHub CI**.
+- **`make coverage-branch`** and **`make miri-survey`**.
+
+Fuzzing, mutation testing, benchmarks and GitHub CI had not run when this
+section was written. The next section records them.
+
+## After the final layout: fuzzing, mutation testing, benchmarks, CI
+
+Run on 2026-11-14 on the same host, against commit `b28862b` plus the changes
+committed with this section (a fuzz-oracle correction and a recipe fix, both
+described below). Added tools: cargo-fuzz 0.13.2 and cargo-mutants 25.3.1, the
+versions the workflows pin.
+
+### Fuzzing
+
+| Run | Result |
+| --- | --- |
+| `make fuzz-smoke FUZZ_TARGET=ordered_set_algebra` (64 runs) | Pass |
+| `make fuzz-smoke FUZZ_TARGET=integer_set_algebra` (64 runs), first attempt | **Fail**: the oracle panicked on the input `4444` (`final/fuzz/integer_set_algebra.before-fix.log`) |
+| The same input replayed on the pre-split revision `89a38ed` | The same panic at the same assertion, so the defect predates the split |
+| `make fuzz-smoke`, both targets, after the correction | Pass |
+| Both targets with `FUZZ_RUNS=2000000 FUZZ_MAX_TIME=120` | Pass: 1,102,273 and 579,171 executions (`final/fuzz/results.tsv`) |
+
+The defect was in the fuzz oracle, not in the library. The input decodes to
+two empty operands built with a forced `Dense` policy, and an `Auto` output
+policy. The library returns an operand's storage, which is `Dense`. The
+oracle required every empty `Auto` result to be `Sorted`. The library's
+behaviour is the documented one
+([integer-sets.md](../../../crates/frost-collections-integer/docs/integer-sets.md),
+"Shared ownership and changed-version costs"), and the test
+`empty_results_share_an_eligible_empty_operand` pins it. The oracle now
+accepts an empty result that is an empty operand's storage. The input is a
+seed (`seed-empty-dense-operands`). A fuzz-library test replays it and runs
+all 375 policy combinations with one or both operands empty (catalog
+`T-LIB-049`). The nightly workflow runs this target with 256 executions, so it
+was exposed to the same failure before this correction.
+
+### Mutation testing
+
+`cargo mutants --config .config/mutants.toml` ran over one file in each
+library package: `publication.rs` (concurrent), `plan.rs` (core) and
+`policy.rs` (integer). The same three files were mutated on the pre-split
+revision `89a38ed` with its own configuration.
+
+| Tree | Mutants | Caught | Missed | Unviable | Timeout |
+| --- | --- | --- | --- | --- | --- |
+| Pre-split `89a38ed` | 34 | 10 | 8 | 16 | 0 |
+| Split | 34 | 10 | 8 | 16 | 0 |
+
+Every mutant has the same outcome on both trees (compared by file, column and
+description; line numbers differ by one). So each package's own tests catch
+what the single package's tests caught. The eight missed mutants are gaps
+that predate the split: the `Display`, `Debug` and `source` implementations of
+`Rejected`, `LengthMismatch` and `IntSetError`, the `max_roaring_partitions`
+accessor, and one constant in `IntSetPolicy::auto` (`frost-m8d`). The outcome
+lists are in `final/mutants/`. The nightly set (`buf.rs`, `publication.rs`,
+`set_ops.rs`; 183 mutants) and the whole workspace (4,226 mutants) were not
+run.
+
+### Benchmarks
+
+Raw observations are in `final/benchmarks/`, and `bench_compare.py` prints the
+figures below from them. The host is a shared 4-CPU cloud machine, not a
+reference host. These runs compare the two trees with each other; they do not
+replace the measurements recorded in the package documents. Ratios are old
+over new: above 1 the split tree is faster.
+
+Same binary (`make integer-ab`, 630 integer-profile cases, three rounds):
+
+| Comparison | Geometric mean | Median | 5th to 95th percentile | Cases beyond ±10% |
+| --- | --- | --- | --- | --- |
+| Pre-split `89a38ed` against the split tree | 0.997 | 1.000 | 0.924 to 1.043 | 39 |
+| Split tree against an identical copy (control) | 1.003 | 1.001 | 0.925 to 1.125 | 63 |
+
+The control links commit `b28862b` under renamed packages against the working
+tree, whose library sources are identical. It differs from 1 by more than the
+comparison of interest does. The 39 cases beyond ±10% were run again with
+nine rounds against both baselines (`integer-ab.outliers.9-rounds.csv`,
+`integer-aa.outliers.9-rounds.csv`). The largest differences reproduce in the
+control at the same size: sorted equality is 0.729 in both, and
+`series.iterate.chunked.fold_sum` is 1.353 and 1.488. They come from where
+each library sits in the harness binary, not from the split. Five
+`u32.runs.*.is_subset` cases of about 2 ns are 4% to 12% slower against the
+pre-split tree and about 21% faster in the control; this harness does not
+settle them.
+
+Separate binaries (the seven bench targets; 914 cases, each present on both
+trees under the same name):
+
+| Cases | Count | Geometric mean | Median | Cases beyond ±10% |
+| --- | --- | --- | --- | --- |
+| Native controls (standard library, native Roaring, raw slices) | 155 | 0.999 | 1.003 | 50 (32%) |
+| Frost cases | 759 | 0.990 | 1.000 | 121 (16%) |
+
+The native controls run code that the split did not touch, and they vary more
+between the two binaries than the Frost cases do. No difference that can be
+attributed to the split is visible at this resolution. That is a statement
+about these two methods on this host. A difference smaller than the control's
+spread would not be seen.
+
+### GitHub CI
+
+The workflow `Rust verification` runs on every push.
+
+| Commit | Run | Result |
+| --- | --- | --- |
+| `873fcc7` (tests and benches moved) | [29](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43541158365) | All 11 jobs pass: `make check`, profiles and examples on Linux, macOS and Windows; the feature matrix; the packaged-source test; the integer profile; embedded; bounded and Loom; shell tooling; the dependency audit; and `ownership`, which runs `make miri` (36 minutes) |
+| `b28862b` (final layout) | [30](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43545458278) | Nine jobs pass. `host (windows-latest)` fails in `make check` (below). `ownership` (`make miri`) had run for 51 minutes without a result when the commit with this section was pushed, and that push cancels it |
+
+The Windows failure was in `make catalog-inventory`. Commit `b28862b` changed
+the recipe to take each bench target's path from Cargo metadata and to strip
+the package directory with a shell pattern. On Windows the metadata paths use
+backslashes, so the pattern did not match, and the tool received an absolute
+path that is in no inventory. The recipe now computes the package-relative
+path in `jq` with forward slashes. Three Bats cases cover it, one with Windows
+paths; that case fails against the old recipe. `make shell-check` now runs 48
+Bats cases.
+
+After these changes `make check`, `shell-check`, `fuzz-check` and
+`tools-check` pass on this host, and the catalog has 403 records.

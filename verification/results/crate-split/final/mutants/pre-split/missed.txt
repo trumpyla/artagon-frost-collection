@@ -1,0 +1,8 @@
+src/integer/policy.rs:180:9: replace IntSetPolicy::max_roaring_partitions -> usize with 1
+src/integer/policy.rs:244:9: replace <impl fmt::Display for IntSetError>::fmt -> fmt::Result with Ok(Default::default())
+src/plan.rs:119:9: replace <impl core::error::Error for Rejected<S, E>>::source -> Option<&(dyn core::error::Error +'static)> with None
+src/integer/policy.rs:115:32: replace * with + in IntSetPolicy::auto
+src/integer/policy.rs:180:9: replace IntSetPolicy::max_roaring_partitions -> usize with 0
+src/plan.rs:105:9: replace <impl fmt::Debug for Rejected<S, E>>::fmt -> fmt::Result with Ok(Default::default())
+src/plan.rs:135:9: replace <impl fmt::Display for LengthMismatch>::fmt -> fmt::Result with Ok(Default::default())
+src/plan.rs:113:9: replace <impl fmt::Display for Rejected<S, E>>::fmt -> fmt::Result with Ok(Default::default())

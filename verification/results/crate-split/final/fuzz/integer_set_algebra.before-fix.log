@@ -1,0 +1,179 @@
+"cargo" test --manifest-path crates/frost-collections-integer/fuzz/Cargo.toml \
+  --target-dir "target/fuzz" --lib --locked
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (target/fuzz/debug/deps/frost_fuzz-115070671958ee8e)
+
+running 3 tests
+test tests::integer_set_ineligible_policy_limits_are_rejected_and_preserve_input ... ok
+test tests::ordered_set_algebra_seed_corpus_and_edge_cases ... ok
+test tests::integer_set_algebra_seed_corpus_and_policy_combinations ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+"cargo" fuzz --version
+cargo-fuzz 0.13.2
+mkdir -p "target/fuzz-corpus/integer_set_algebra"
+"cargo" "+nightly-2026-11-08" fuzz run --fuzz-dir crates/frost-collections-integer/fuzz \
+  --target-dir "target/fuzz" "integer_set_algebra" \
+  "target/fuzz-corpus/integer_set_algebra" \
+  "crates/frost-collections-integer/fuzz/corpus/integer_set_algebra" -- \
+  -runs="64" -max_total_time="10"
+   Compiling frost-fuzz v0.0.0 (/home/user/artagon-frost-collection/crates/frost-collections-integer/fuzz)
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.21s
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.01s
+     Running `target/fuzz/x86_64-unknown-linux-gnu/release/integer_set_algebra -artifact_prefix=crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/ -runs=64 -max_total_time=10 target/fuzz-corpus/integer_set_algebra crates/frost-collections-integer/fuzz/corpus/integer_set_algebra`
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 294009761
+INFO: Loaded 1 modules   (22171 inline 8-bit counters): 22171 [0x55730f407750, 0x55730f40cdeb), 
+INFO: Loaded 1 PC tables (22171 PCs): 22171 [0x55730f40cdf0,0x55730f4637a0), 
+INFO:        0 files found in target/fuzz-corpus/integer_set_algebra
+INFO:        1 files found in crates/frost-collections-integer/fuzz/corpus/integer_set_algebra
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: seed corpus: files: 1 min: 24b max: 24b total: 24b rss: 34Mb
+#2	INITED cov: 1026 ft: 1026 corp: 1/24b exec/s: 0 rss: 38Mb
+	NEW_FUNC[1/1]: 0x55730f2c1c10 in core::slice::sort::shared::smallsort::insertion_sort_shift_left::<u32, <u32 as core::cmp::PartialOrd>::lt> /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/sort/shared/smallsort.rs:574
+#3	NEW    cov: 1071 ft: 1089 corp: 2/48b lim: 24 exec/s: 0 rss: 39Mb L: 24/24 MS: 1 CopyPart-
+	NEW_FUNC[1/2]: 0x55730f2ef110 in <frost_collections_integer::integer::storage::Storage<u32>>::partitions /home/user/artagon-frost-collection/crates/frost-collections-integer/src/integer/storage.rs:936
+	NEW_FUNC[2/2]: 0x55730f2f32f0 in <frost_collections_integer::integer::storage::Storage<u32>>::share_or_replan /home/user/artagon-frost-collection/crates/frost-collections-integer/src/integer/storage.rs:801
+#4	NEW    cov: 1150 ft: 1402 corp: 3/72b lim: 24 exec/s: 0 rss: 40Mb L: 24/24 MS: 1 ChangeBinInt-
+	NEW_FUNC[1/1]: 0x55730f30d270 in <alloc::vec::Vec<u32> as alloc::vec::spec_from_iter::SpecFromIter<u32, frost_collections_integer::integer::storage::Words<u32>>>::from_iter /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter.rs:32
+#5	NEW    cov: 1200 ft: 1551 corp: 4/90b lim: 24 exec/s: 0 rss: 40Mb L: 18/24 MS: 1 EraseBytes-
+
+thread '<unnamed>' (15899) panicked at src/lib.rs:700:9:
+assertion `left == right` failed
+  left: Dense
+ right: Sorted
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/panicking.rs:676:5
+   1: core::panicking::panic_fmt
+             at /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/core/src/panicking.rs:80:14
+   2: core::panicking::assert_failed_inner
+             at /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/core/src/panicking.rs:452:17
+   3: core::panicking::assert_failed::<frost_collections_integer::integer::policy::IntSetRepr, frost_collections_integer::integer::policy::IntSetRepr>
+             at /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:407:5
+   4: assert_output_policy_repr
+             at ./crates/frost-collections-integer/fuzz/src/lib.rs:700:9
+   5: run_integer_case
+             at ./crates/frost-collections-integer/fuzz/src/lib.rs:575:9
+   6: check_integer_set_algebra
+             at ./crates/frost-collections-integer/fuzz/src/lib.rs:512:9
+   7: rust_fuzzer_test_input
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:276:60
+   8: {closure#0}
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:62:9
+   9: do_call<libfuzzer_sys::test_input_wrap::{closure_env#0}, i32>
+             at /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:573:43
+  10: __rust_try
+  11: catch_unwind<i32, libfuzzer_sys::test_input_wrap::{closure_env#0}>
+             at /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:541:19
+  12: catch_unwind<libfuzzer_sys::test_input_wrap::{closure_env#0}, i32>
+             at /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+  13: test_input_wrap
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:60:22
+  14: _ZN6fuzzer6Fuzzer15ExecuteCallbackEPKhm
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:619:15
+  15: _ZN6fuzzer6Fuzzer6RunOneEPKhmbPNS_9InputInfoEbPb
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:516:22
+  16: _ZN6fuzzer6Fuzzer16MutateAndTestOneEv
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:765:25
+  17: _ZN6fuzzer6Fuzzer4LoopERSt6vectorINS_9SizedFileESaIS2_EE
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:910:21
+  18: _ZN6fuzzer12FuzzerDriverEPiPPPcPFiPKhmE
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerDriver.cpp:923:10
+  19: main
+             at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerMain.cpp:20:30
+  20: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  21: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  22: _start
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+==15899== ERROR: libFuzzer: deadly signal
+    #0 0x55730f14d971 in __sanitizer_print_stack_trace (/home/user/artagon-frost-collection/target/fuzz/x86_64-unknown-linux-gnu/release/integer_set_algebra+0x1d3971) (BuildId: 1f1b5beeb863a28563ee49dafd0b2b8d8062035b)
+    #1 0x55730f24681d in fuzzer::PrintStackTrace() /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerUtil.cpp:210:38
+    #2 0x55730f18eb85 in fuzzer::Fuzzer::CrashCallback() /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:231:18
+    #3 0x55730f18eb85 in fuzzer::Fuzzer::CrashCallback() /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:226:6
+    #4 0x7fcfade4532f  (/lib/x86_64-linux-gnu/libc.so.6+0x4532f) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)
+    #5 0x7fcfade9ec0b in __pthread_kill_implementation nptl/pthread_kill.c:43:17
+    #6 0x7fcfade9ec0b in __pthread_kill_internal nptl/pthread_kill.c:78:10
+    #7 0x7fcfade9ec0b in pthread_kill nptl/pthread_kill.c:89:10
+    #8 0x7fcfade4527d in raise signal/../sysdeps/posix/raise.c:26:13
+    #9 0x7fcfade288fe in abort stdlib/abort.c:79:7
+    #10 0x55730f3c00b9 in std::sys::pal::unix::abort_internal /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/sys/pal/unix/mod.rs:305:14
+    #11 0x55730f3bed68 in std::process::abort /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/process.rs:2639:5
+    #12 0x55730f177c34 in libfuzzer_sys::initialize::{closure#0} /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:94:9
+    #13 0x55730f3beff1 in <alloc::boxed::Box<dyn for<'a, 'b> core::ops::function::Fn<(&'a std::panic::PanicHookInfo<'b>,), Output = ()> + core::marker::Send + core::marker::Sync> as core::ops::function::Fn<(&std::panic::PanicHookInfo,)>>::call /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/alloc/src/boxed.rs:2480:9
+    #14 0x55730f3beff1 in std::panicking::panic_with_hook /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/panicking.rs:819:13
+    #15 0x55730f3ad5a1 in std::panicking::panic_handler::{closure#0} /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/panicking.rs:685:13
+    #16 0x55730f3a7b88 in std::sys::backtrace::__rust_end_short_backtrace::<std::panicking::panic_handler::{closure#0}, !> /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/sys/backtrace.rs:182:18
+    #17 0x55730f3adc8c in __rustc::rust_begin_unwind /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/std/src/panicking.rs:676:5
+    #18 0x55730f3d2f3b in core::panicking::panic_fmt /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/core/src/panicking.rs:80:14
+    #19 0x55730f3d2df2 in core::panicking::assert_failed_inner /rustc/f5cedb83a788ea9581097abc36a2a8503a7f541c/library/core/src/panicking.rs:452:17
+    #20 0x55730f2ab3c4 in core::panicking::assert_failed::<frost_collections_integer::integer::policy::IntSetRepr, frost_collections_integer::integer::policy::IntSetRepr> /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:407:5
+    #21 0x55730f2e5f8a in frost_fuzz::assert_output_policy_repr /home/user/artagon-frost-collection/crates/frost-collections-integer/fuzz/src/lib.rs:700:9
+    #22 0x55730f2daa2c in frost_fuzz::run_integer_case /home/user/artagon-frost-collection/crates/frost-collections-integer/fuzz/src/lib.rs:575:9
+    #23 0x55730f2e61db in frost_fuzz::check_integer_set_algebra /home/user/artagon-frost-collection/crates/frost-collections-integer/fuzz/src/lib.rs:512:9
+    #24 0x55730f1768dc in rust_fuzzer_test_input /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:276:60
+    #25 0x55730f1777c4 in {closure#0} /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:62:9
+    #26 0x55730f1777c4 in std::panicking::catch_unwind::do_call::<libfuzzer_sys::test_input_wrap::{closure#0}, i32> /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:573:43
+    #27 0x55730f17859b in __rust_try libfuzzer_sys.73b1025e1af60353-cgu.0
+    #28 0x55730f176ebd in catch_unwind<i32, libfuzzer_sys::test_input_wrap::{closure_env#0}> /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:541:19
+    #29 0x55730f176ebd in catch_unwind<libfuzzer_sys::test_input_wrap::{closure_env#0}, i32> /root/.rustup/toolchains/nightly-2026-11-08-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+    #30 0x55730f176ebd in LLVMFuzzerTestOneInput /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/src/lib.rs:60:22
+    #31 0x55730f18fa3f in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:619:15
+    #32 0x55730f1aad82 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:516:22
+    #33 0x55730f1aeae4 in fuzzer::Fuzzer::MutateAndTestOne() /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:765:25
+    #34 0x55730f1b335f in fuzzer::Fuzzer::Loop(std::vector<fuzzer::SizedFile, std::allocator<fuzzer::SizedFile>>&) /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerLoop.cpp:910:21
+    #35 0x55730f1e7b4e in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerDriver.cpp:923:10
+    #36 0x55730f294d66 in main /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libfuzzer-sys-0.4.13/libfuzzer/FuzzerMain.cpp:20:30
+    #37 0x7fcfade2a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #38 0x7fcfade2a28a in __libc_start_main csu/../csu/libc-start.c:360:3
+    #39 0x55730f0ae8e4 in _start (/home/user/artagon-frost-collection/target/fuzz/x86_64-unknown-linux-gnu/release/integer_set_algebra+0x1348e4) (BuildId: 1f1b5beeb863a28563ee49dafd0b2b8d8062035b)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+MS: 1 CrossOver-; base unit: b68ad1cd6332daa7be23f025c98b8cabac3f5d83
+0x34,0x34,0x34,0x34,
+4444
+artifact_prefix='crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/'; Test unit written to crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/crash-92f2fd99879b0c2466ab8648afb63c49032379c1
+Base64: NDQ0NA==
+
+────────────────────────────────────────────────────────────────────────────────
+
+Failing input:
+
+	crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/crash-92f2fd99879b0c2466ab8648afb63c49032379c1
+
+Output of `std::fmt::Debug`:
+
+	[52, 52, 52, 52]
+
+Reproduce with:
+
+	cargo fuzz run --target-dir=target/fuzz integer_set_algebra crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/crash-92f2fd99879b0c2466ab8648afb63c49032379c1
+
+Minimize test case with:
+
+	cargo fuzz tmin --target-dir=target/fuzz integer_set_algebra crates/frost-collections-integer/fuzz/artifacts/integer_set_algebra/crash-92f2fd99879b0c2466ab8648afb63c49032379c1
+
+────────────────────────────────────────────────────────────────────────────────
+
+Error: Fuzz target exited with exit status: 77
+
+Stack backtrace:
+   0: <anyhow::Error>::msg::<alloc::string::String>
+   1: <cargo_fuzz::project::FuzzProject>::exec_fuzz
+   2: cargo_fuzz::main
+   3: std::sys::backtrace::__rust_begin_short_backtrace::<fn() -> core::result::Result<(), anyhow::Error>, core::result::Result<(), anyhow::Error>>
+   4: std::rt::lang_start::<core::result::Result<(), anyhow::Error>>::{closure#0}
+   5: std::rt::lang_start_internal
+   6: main
+   7: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+   8: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+   9: _start
+make: *** [Makefile:438: fuzz-smoke] Error 1
+status=2

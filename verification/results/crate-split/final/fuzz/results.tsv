@@ -1,0 +1,5 @@
+target	runs	max_seconds	result
+ordered_set_algebra	64	10	Done 64 runs in 0 second(s)
+ordered_set_algebra	2000000	120	Done 1102273 runs in 121 second(s)
+integer_set_algebra	64	10	Done 64 runs in 0 second(s)
+integer_set_algebra	2000000	120	Done 579171 runs in 121 second(s)

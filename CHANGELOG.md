@@ -44,8 +44,16 @@ No public API or behaviour change so far.
   `docs/`, and give each internal package a README and a changelog.
 - `prepare-baseline.sh` and `make integer-ab` handle a workspace-layout
   baseline. The coverage scope excludes the fuzz and test-support packages.
-- Miri was not run on the final layout, by maintainer instruction; see
-  `verification/results/crate-split/README.md` for what ran and what did not.
+- Miri is not run in the execution session, by maintainer instruction; GitHub
+  CI runs `make miri`. See `verification/results/crate-split/README.md` for
+  what ran and what did not.
+- Correct the integer fuzz oracle: an empty `Auto` result may be an empty
+  operand's storage and keep that operand's representation. libFuzzer found
+  the case; the library was right. The input is now a seed with a replay test.
+- `make catalog-inventory` computes each bench target's package-relative path
+  with forward slashes, so it accepts Windows paths from Cargo metadata.
+- Record fuzzing, mutation-testing and benchmark comparisons of the split
+  tree against the pre-split revision.
 
 ## Unreleased — value-domain algebra documents and rules entry
 
