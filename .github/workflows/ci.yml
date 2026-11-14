@@ -20,7 +20,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # macOS and Windows runners are disabled for now because of their cost
+        # (maintainer decision of 2026-11-14). To restore them, use
+        # [ubuntu-latest, macos-latest, windows-latest]; the Windows step below
+        # is kept for that.
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     defaults:

@@ -60,6 +60,8 @@ No public API or behaviour change so far.
 - CI no longer runs Miri on push or pull request. `ci.yml` keeps the
   error-code check (`make doctest-codes`); `verification.yml` runs `make miri`
   in its nightly and release tiers.
+- CI runs the host job on Linux only. The macOS and Windows runners are
+  disabled for now because of their cost; `ci.yml` says how to restore them.
 
 ## Unreleased — value-domain algebra documents and rules entry
 
