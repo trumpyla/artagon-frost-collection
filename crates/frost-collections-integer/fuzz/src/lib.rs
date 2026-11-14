@@ -572,12 +572,7 @@ pub fn run_integer_case(case: &IntegerAlgebraCase) {
     verify_integer_algebra(&left, &right, &left_oracle, &right_oracle);
 
     if let Ok(forced_union) = left.union_with_policy(&right, out_pol) {
-        assert_output_policy_repr(
-            &forced_union,
-            case.out_policy,
-            left.representation(),
-            right.representation(),
-        );
+        assert_output_policy_repr(&forced_union, case.out_policy, &left, &right);
         let expected_union: Vec<i32> = left_oracle.union(&right_oracle).copied().collect();
         let sorted_reference = FrozenIntSet::try_from_iter(expected_union, IntSetPolicy::sorted())
             .expect("sorted reference succeeds");
@@ -654,12 +649,10 @@ pub fn run_integer_case_strict(case: &IntegerAlgebraCase) {
         .symmetric_difference_with_policy(&right, out_pol)
         .expect("strict eligible case must succeed under symmetric_difference_with_policy");
 
-    let left_repr = left.representation();
-    let right_repr = right.representation();
-    assert_output_policy_repr(&forced_union, case.out_policy, left_repr, right_repr);
-    assert_output_policy_repr(&forced_intersection, case.out_policy, left_repr, right_repr);
-    assert_output_policy_repr(&forced_difference, case.out_policy, left_repr, right_repr);
-    assert_output_policy_repr(&forced_sym_diff, case.out_policy, left_repr, right_repr);
+    assert_output_policy_repr(&forced_union, case.out_policy, &left, &right);
+    assert_output_policy_repr(&forced_intersection, case.out_policy, &left, &right);
+    assert_output_policy_repr(&forced_difference, case.out_policy, &left, &right);
+    assert_output_policy_repr(&forced_sym_diff, case.out_policy, &left, &right);
 
     for (actual, expected) in [
         (&forced_union, expected_union),
@@ -688,17 +681,30 @@ fn assert_construction_repr(set: &FrozenIntSet<i32>, selector: PolicySelector) {
     }
 }
 
+/// Checks the representation of an algebra result against its output policy.
+///
+/// A forced policy gives its own representation. Under `Auto`, an empty result
+/// is `Sorted` unless it is an empty operand's storage: algebra reuses an
+/// operand that equals the result and satisfies the output policy, whatever
+/// representation that operand was built with.
 fn assert_output_policy_repr(
     set: &FrozenIntSet<i32>,
     out_selector: PolicySelector,
-    left_repr: IntSetRepr,
-    right_repr: IntSetRepr,
+    left: &FrozenIntSet<i32>,
+    right: &FrozenIntSet<i32>,
 ) {
     if let Some(expected_repr) = out_selector.expected_forced_repr() {
         assert_eq!(set.representation(), expected_repr);
     } else if set.is_empty() {
-        assert_eq!(set.representation(), IntSetRepr::Sorted);
-    } else if left_repr != IntSetRepr::Chunked && right_repr != IntSetRepr::Chunked {
+        let reuses_empty_operand = [left, right]
+            .into_iter()
+            .any(|operand| operand.is_empty() && set.shares_storage_with(operand));
+        if !reuses_empty_operand {
+            assert_eq!(set.representation(), IntSetRepr::Sorted);
+        }
+    } else if left.representation() != IntSetRepr::Chunked
+        && right.representation() != IntSetRepr::Chunked
+    {
         assert_ne!(
             set.representation(),
             IntSetRepr::Chunked,
@@ -1092,6 +1098,62 @@ mod tests {
         }
         assert_eq!(both_nonempty, 25);
         assert_eq!(overlapping, 25);
+    }
+
+    /// Regression for the libFuzzer input `4444`: two empty operands forced to
+    /// `Dense` and an `Auto` output. The result is an operand's storage, so it
+    /// is `Dense`, not `Sorted`.
+    #[test]
+    fn integer_set_empty_operands_keep_their_representation_under_auto_output() {
+        let seed_bytes = include_bytes!("../corpus/integer_set_algebra/seed-empty-dense-operands");
+        let seed_case = decode_integer_case(seed_bytes).expect("integer seed decodes");
+        assert!(seed_case.left.is_empty() && seed_case.right.is_empty());
+        assert_eq!(seed_case.left_policy, PolicySelector::Dense);
+        assert_eq!(seed_case.right_policy, PolicySelector::Dense);
+        assert_eq!(seed_case.out_policy, PolicySelector::Auto);
+        check_integer_set_algebra(seed_bytes);
+
+        let empty = IntSetPolicy::dense()
+            .with_dense_budget(256)
+            .with_roaring_partition_limit(4);
+        let left = Vec::<i32>::new()
+            .try_freeze_with(empty)
+            .expect("empty is eligible");
+        let right = Vec::<i32>::new()
+            .try_freeze_with(empty)
+            .expect("empty is eligible");
+        let union = left
+            .union_with_policy(&right, IntSetPolicy::auto())
+            .expect("an empty union is eligible");
+        assert!(union.shares_storage_with(&right));
+
+        // Every policy combination, with one or both operands empty.
+        let sample: Vec<i16> = vec![-128, -1, 0, 1, 63, 64, 512];
+        let operands = [
+            (Vec::new(), Vec::new()),
+            (Vec::new(), sample.clone()),
+            (sample.clone(), Vec::new()),
+        ];
+        let mut combinations = 0_usize;
+        for (left, right) in &operands {
+            for &left_policy in &PolicySelector::ALL {
+                for &right_policy in &PolicySelector::ALL {
+                    for &out_policy in &PolicySelector::ALL {
+                        run_integer_case_strict(&IntegerAlgebraCase {
+                            left: left.clone(),
+                            right: right.clone(),
+                            left_policy,
+                            right_policy,
+                            out_policy,
+                            dense_budget: 512,
+                            roaring_partitions: 8,
+                        });
+                        combinations += 1;
+                    }
+                }
+            }
+        }
+        assert_eq!(combinations, 375);
     }
 
     #[test]

@@ -17,7 +17,7 @@ APIs against independent reference oracles.
 
 1. **Deterministic corpus and boundary replay (`make fuzz-check`, stable Rust 1.99.1)**:
    ```sh
-   cargo test --manifest-path verification/fuzz/Cargo.toml --target-dir target/fuzz --lib --locked
+   cargo test --manifest-path crates/frost-collections-integer/fuzz/Cargo.toml --target-dir target/fuzz --lib --locked
    ```
    Verifies that the checked-in seed files under `crates/frost-collections-integer/fuzz/corpus/`
    decode to non-empty overlapping sets (with duplicate keys for ordered sets),
@@ -26,15 +26,18 @@ APIs against independent reference oracles.
    and exact `IntSetRepr` for forced policies with zero `Sorted` construction
    fallback or output-policy skipping), tests ineligible `IntSetLimits`
    rejection (`integer_set_ineligible_policy_limits_are_rejected_and_preserve_input`),
+   replays the seed `seed-empty-dense-operands` and all 375 policy-mode triples
+   with one or both operands empty
+   (`integer_set_empty_operands_keep_their_representation_under_auto_output`),
    and runs bounded synthetic sweeps without requiring a nightly compiler or
    sanitizer runtime.
 
 2. **Coverage-guided libFuzzer smoke (`make fuzz-smoke`, diagnostic nightly)**:
    ```sh
-   cargo +nightly-2026-11-08 fuzz run --fuzz-dir verification/fuzz \
+   cargo +nightly-2026-11-08 fuzz run --fuzz-dir crates/frost-collections-integer/fuzz \
      --target-dir target/fuzz ordered_set_algebra \
      target/fuzz-corpus/ordered_set_algebra \
-     verification/fuzz/corpus/ordered_set_algebra -- -runs=64 -max_total_time=10
+     crates/frost-collections-integer/fuzz/corpus/ordered_set_algebra -- -runs=64 -max_total_time=10
    ```
    Requires `cargo-fuzz` (`0.13.2`), `arbitrary` (`1.5.0` in
    [`Cargo.lock`](Cargo.lock)), and the diagnostic nightly toolchain

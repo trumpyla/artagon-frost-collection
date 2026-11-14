@@ -1818,6 +1818,29 @@
       "cost": "unreviewed"
     },
     {
+      "id": "T-LIB-049",
+      "file": "fuzz/src/lib.rs",
+      "selector": "test:tests::integer_set_empty_operands_keep_their_representation_under_auto_output",
+      "status": "curated",
+      "tags": [
+        "integer",
+        "set-algebra"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "docs/integer-sets.md shared ownership; libFuzzer input 4444",
+      "kind": "regression",
+      "contracts": [
+        "C-INT-SET-ALGEBRA"
+      ],
+      "oracle": "The fuzz oracle: BTreeSet results, exact representation for forced policies, and an empty Auto result that is Sorted unless it is an empty operand's storage",
+      "scenario": "The seed of two empty Dense operands with an Auto output; then all 375 policy triples with one or both operands empty",
+      "seed": "fixed",
+      "target": "fuzz/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "fast"
+    },
+    {
       "id": "T-LIB-020",
       "file": "fuzz/src/lib.rs",
       "selector": "test:tests::ordered_set_algebra_seed_corpus_and_edge_cases",

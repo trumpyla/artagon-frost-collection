@@ -194,6 +194,36 @@ STUB
   [ -f "${scratch[0]}/crates/member dir/src/lib.rs" ]
 }
 
+@test "catalog-inventory names each bench target relative to its package" {
+  FROST_TEST_METADATA='{"packages":[{"name":"frost-collections-core",
+    "manifest_path":"'"$frost_fixture"'/crates/member dir/Cargo.toml",
+    "targets":[{"name":"frost","kind":["lib"],
+      "src_path":"'"$frost_fixture"'/crates/member dir/src/lib.rs"},
+      {"name":"ordered_sets","kind":["bench"],
+      "src_path":"'"$frost_fixture"'/crates/member dir/benches/ordered_sets.rs"}]}]}' \
+    run_make catalog-inventory
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<bench> <-p> <frost-collections-core> <--locked> <--all-features> <--bench> <ordered_sets>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<inventory> <benches/ordered_sets.rs> <target/catalog-inventory/ordered_sets.list> <--root> <'"$frost_fixture"'/crates/member dir>'* ]]
+}
+
+@test "catalog-inventory accepts native Windows paths from Cargo metadata" {
+  FROST_TEST_METADATA='{"packages":[{"name":"frost-collections-core",
+    "manifest_path":"D:\\work\\crates\\core\\Cargo.toml",
+    "targets":[{"name":"ordered_sets","kind":["bench"],
+      "src_path":"D:\\work\\crates\\core\\benches\\ordered_sets.rs"}]}]}' \
+    run_make catalog-inventory
+  [ "$status" -eq 0 ]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<inventory> <benches/ordered_sets.rs> <target/catalog-inventory/ordered_sets.list> <--root>'* ]]
+}
+
+@test "catalog-inventory fails when no package has a bench target" {
+  run_make catalog-inventory
+  [ "$status" -ne 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 1 ]
+}
+
 @test "integer-ab keeps setup diagnostics out of its CSV stream" {
   bats_require_minimum_version 1.5.0
   frost_harness="$frost_fixture/verification/integer-optimizations/ab-harness"

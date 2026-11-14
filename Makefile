@@ -454,17 +454,20 @@ catalog-inventory:
 	mkdir -p "$(CATALOG_INVENTORY_DIR)"; \
 	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
 	benches=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
-	  '[.packages[] | . as $$package | .targets[] | select(.kind | index("bench")) | \
-	    [$$package.name, $$package.manifest_path, .name, .src_path] | @tsv] | \
+	  'def slashes: split("\\") | join("/"); \
+	   [.packages[] | . as $$package | \
+	    ($$package.manifest_path | slashes | rtrimstr("/Cargo.toml")) as $$directory | \
+	    .targets[] | select(.kind | index("bench")) | \
+	    [$$package.name, $$package.manifest_path, .name, \
+	     (.src_path | slashes | ltrimstr($$directory + "/"))] | @tsv] | \
 	   if length == 0 then error("no bench targets found") else .[] end'); \
 	while IFS=$$'\t' read -r package manifest bench source; do \
 	  source=$${source%$$'\r'}; \
-	  package_dir=$$(dirname "$$manifest"); \
 	  list_file="$(CATALOG_INVENTORY_DIR)/$$bench.list"; \
 	  FROST_BENCH_LIST=1 "$(CARGO)" bench -p "$$package" --locked --all-features --bench "$$bench" >"$$list_file"; \
 	  "$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
-	    --target-dir "$(CATALOG_TARGET_DIR)" -- inventory "$${source#"$$package_dir"/}" "$$list_file" \
-	    --root "$$package_dir"; \
+	    --target-dir "$(CATALOG_TARGET_DIR)" -- inventory "$$source" "$$list_file" \
+	    --root "$$(dirname "$$manifest")"; \
 	done <<< "$$benches"
 
 shell-check:
