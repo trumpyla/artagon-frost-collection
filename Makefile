@@ -471,8 +471,8 @@ catalog-inventory:
 	done <<< "$$benches"
 
 shell-check:
-	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh scripts/require-tests.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh" verification/shell/*.bats
-	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh scripts/require-tests.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh"
+	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh scripts/require-tests.sh scripts/agent-guard-unsafe.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh" verification/shell/*.bats
+	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh scripts/require-tests.sh scripts/agent-guard-unsafe.sh "$(AB_HARNESS_DIR)/prepare-baseline.sh"
 	"$(SHFMT)" -ln bats -d -i 2 -ci -bn verification/shell/*.bats
 	+$(MAKE) shell-test
 

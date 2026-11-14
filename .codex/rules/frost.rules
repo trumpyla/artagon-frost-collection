@@ -1,0 +1,26 @@
+# Command rules for Codex in this repository. Codex loads this file when the
+# project is trusted. The match and not_match examples are checked on load.
+
+prefix_rule(
+    pattern = ["make", ["miri", "miri-survey", "kani", "mutants", "fuzz-smoke"]],
+    decision = "prompt",
+    justification = "Slow verification lane. Run it only when the maintainer asks for it.",
+    match = ["make miri", "make kani", "make fuzz-smoke FUZZ_TARGET=integer_set_algebra"],
+    not_match = ["make check", "make nextest"],
+)
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "A push changes a remote branch and needs the maintainer's explicit approval. Do not force-push or push to main without it.",
+    match = ["git push origin main", "git push --force"],
+    not_match = ["git status", "git fetch origin main"],
+)
+
+prefix_rule(
+    pattern = ["cargo", "publish"],
+    decision = "forbidden",
+    justification = "No package is published from this repository; every package sets publish = false. Use `make package` to test the packaged sources.",
+    match = ["cargo publish -p frost-collections"],
+    not_match = ["cargo package --list"],
+)

@@ -132,6 +132,7 @@ change.
 | [Rust verification strategy](research/reports/rust-verification-strategy.md) | Source-backed rationale for the tool choices | Research |
 | [Formal validation tools](research/reports/formal-validation-tools.md) | Established tools for the formal models and law proofs, 2026-11-13 | Research |
 | [GitHub workflow](maintainers/github-workflow.md) | Issue forms and pull requests as intake; tracker records as the work plan | Current |
+| [Agent CLI configuration](maintainers/agent-clis.md) | The repository files that adapt Claude Code, Codex, the Antigravity CLI and Copilot to the agent rules | Current |
 | [Contributor guide](../CONTRIBUTING.md) | How to make and verify changes | Current |
 
 Planned work is tracked with the Beads issue tracker: the standards epic

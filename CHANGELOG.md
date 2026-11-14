@@ -67,6 +67,12 @@ No public API or behaviour change so far.
   `.github/copilot-instructions.md` apply it to Claude Code and Copilot.
 - `TOOLS.md` names the package directories under `crates/` in its navigation
   roots and command examples.
+- Add repository configuration for Claude Code, Codex, the Antigravity CLI and
+  Copilot: rules that ask before a slow lane, a push or a workflow edit, a
+  low-cost agent for mechanical file edits, a gate-running skill, path-specific
+  instructions, review priorities for Copilot, and a pre-edit guard against
+  `unsafe` code outside `buf.rs`. `docs/maintainers/agent-clis.md` lists each
+  file and what a repository file cannot set.
 
 ## Unreleased — value-domain algebra documents and rules entry
 
