@@ -27,7 +27,7 @@ than probing.
 
 | Severity | Finding | Evidence (revision 1) | Resolution (revision 2) |
 | --- | --- | --- | --- |
-| High | Every mixed-representation operation materialized a sorted array; one tiny operand destroyed a compact one, and the snapshot pattern (`current.union(&singleton)`) turned sorted on the first update. | 244 KiB dense ∪ Roaring{1} → 7.8 MiB sorted in 3.3 ms; 6 µs attainable | Promotion matrix in [`storage.rs`](../../src/integer/storage.rs): dense windows are copied and edited for small operands, promoted with `from_lsb0_bytes` for balanced Roaring pairs, Roaring copies are edited for small sorted operands. Measured 83× (dense ∪ singleton), 116× (dense ∖ sorted{4}), 18–39× (dense/Roaring pairs). |
+| High | Every mixed-representation operation materialized a sorted array; one tiny operand destroyed a compact one, and the snapshot pattern (`current.union(&singleton)`) turned sorted on the first update. | 244 KiB dense ∪ Roaring{1} → 7.8 MiB sorted in 3.3 ms; 6 µs attainable | Promotion matrix in [`storage.rs`](../../crates/frost-collections-integer/src/integer/storage.rs): dense windows are copied and edited for small operands, promoted with `from_lsb0_bytes` for balanced Roaring pairs, Roaring copies are edited for small sorted operands. Measured 83× (dense ∪ singleton), 116× (dense ∖ sorted{4}), 18–39× (dense/Roaring pairs). |
 | High | Dense ∪ dense beyond the window cap fell back to sorted, the only representation always larger than the window it refused. | two 512 KiB islands → 64 MiB sorted in 53 ms; Roaring 1.8 KB | Both windows are promoted to Roaring and combined natively (118×). |
 | Medium–High | Budgets were not retained; `Dense::binary` hard-coded the default policy, violating small budgets upward and clamping large ones. | 8-byte budget produced a 128 KiB result | Sets carry their limits (`policy()`); results inherit the larger operand limit; result windows use `max(budget, operand payloads)`. Tested in `budgets_are_inherited_by_results`. |
 | Medium | Same-representation `Eq`/`Ord`/`Hash` walked every element through the iterator enum. | Roaring == Roaring 1,700× slower than native | Native comparisons per representation, allocation-identity check first, chunked hashing. Measured 53–1,950×. |
@@ -58,7 +58,7 @@ above therefore come from a same-binary harness that links both versions of the
 profile, validates every answer and alternates measurements; its CSV, the three
 repository benchmark runs and the harness source are under
 [`verification/int-set/revision2/`](../../verification/int-set/revision2/README.md),
-and [the benchmark report](../integer-benchmarks.md) explains the protocol and
+and [the benchmark report](../../crates/frost-collections-integer/docs/integer-benchmarks.md) explains the protocol and
 lists the cases that remained slower.
 
 ## Open items

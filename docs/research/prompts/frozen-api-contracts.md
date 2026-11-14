@@ -21,7 +21,7 @@ open_questions: [Q-FROZEN-1]
 A ready-to-run handoff produced with the
 [subtopic handoff template](../templates/subtopic-handoff.md). New synthesis
 dated 2026-11-09. The editorial guide to the *current* contracts is
-[docs/design/frozen-api.md](../../design/frozen-api.md); this prompt asks for
+[docs/design/frozen-api.md](../../../crates/frost-collections-core/docs/frozen-api.md); this prompt asks for
 the research that decides what the next contracts should be.
 
 ```yaml

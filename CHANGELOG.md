@@ -1,5 +1,99 @@
 # Changelog
 
+## Unreleased — crate split (`frost-wlt`)
+
+No public API or behaviour change so far.
+
+- Rewrite epic `frost-wlt` and its tasks after two adversarial reviews; the
+  design is `docs/design/crate-split-plan.md`. Tasks `.2`–`.5` are closed as
+  superseded. New issues: `frost-adp`, `frost-r0a`, `frost-k4n`.
+- Record pre-move baselines under `verification/results/crate-split/`: public
+  API paths and executed test counts for five feature profiles.
+- `scripts/require-tests.sh` fails a lane whose test selection executes no
+  test; the Miri, bounded and Loom lanes use it. `make doctest-codes` checks
+  `compile_fail` error codes with the pinned nightly.
+- Four `compile_fail` doctests now name their error code. Every catalog
+  contract has a curated case.
+- The repository is now a Cargo workspace. The package moved unchanged to
+  `crates/frost-collections`; its README moved with it and the root README is
+  a workspace overview. Recipes name the package with `-p`.
+- The catalog tool reads one catalog per package plus a root catalog, with
+  package-relative paths and one namespace of IDs. `make package` tests a
+  scratch copy of each member's packaged file set.
+- Extract `frost-collections-core`: everything except the integer and
+  concurrent modules. `frost-collections` re-exports it at the same paths.
+  Capability-trait implementations for `dashmap`, `scc` and
+  `crossbeam-skiplist` types now live in core's backends. No public path
+  changed.
+- Extract `frost-collections-integer`: the `integer` module. The facade
+  re-exports it under `int-set`. No public path changed.
+- Extract `frost-collections-concurrent`: live access and snapshot
+  publication. `frost-collections` is now re-exports, feature forwarding and
+  documentation only. No public path changed. `make feature-forwarding`
+  checks that every layer declares the features of the layers below it.
+- Move every test and bench target to the package that owns the code it
+  exercises, and the workload factories and benchmark timing helpers to the
+  new dev-only `frost-collections-test-support`. Three test files are split
+  between two packages; no test body changed. Catalog and benchmark-inventory
+  records live with their targets.
+- Move the isolated harnesses to the packages they exercise: Kani and Verus
+  to core, the fuzz package to integer, Loom to concurrent, the downstream
+  codec check to the facade. The nine Kani harnesses that verified before
+  verify again.
+- Move package-specific design and evidence documents into each package's
+  `docs/`, and give each internal package a README and a changelog.
+- `prepare-baseline.sh` and `make integer-ab` handle a workspace-layout
+  baseline. The coverage scope excludes the fuzz and test-support packages.
+- Miri is not run in the execution session, by maintainer instruction; GitHub
+  CI runs `make miri`. See `verification/results/crate-split/README.md` for
+  what ran and what did not.
+- Correct the integer fuzz oracle: an empty `Auto` result may be an empty
+  operand's storage and keep that operand's representation. libFuzzer found
+  the case; the library was right. The input is now a seed with a replay test.
+- `make catalog-inventory` computes each bench target's package-relative path
+  with forward slashes, so it accepts Windows paths from Cargo metadata.
+- Record fuzzing, mutation-testing and benchmark comparisons of the split
+  tree against the pre-split revision.
+- The maintainer approved the crate split plan as executed on 2026-11-14 and
+  waived three lanes that the execution host could not run; they stay tracked
+  as `frost-k4n`, `frost-v3s` and `frost-c7b`. Epic `frost-wlt` is closed.
+- CI no longer runs Miri on push or pull request. `ci.yml` keeps the
+  error-code check (`make doctest-codes`); `verification.yml` runs `make miri`
+  in its nightly and release tiers.
+- CI runs the host job on Linux only. The macOS and Windows runners are
+  disabled for now because of their cost; `ci.yml` says how to restore them.
+
+## Unreleased — value-domain algebra documents and rules entry
+
+Documentation only. No source, feature, or public API change.
+
+- Add proposed contracts for value domains and collection algebras under
+  `docs/design/algebra`, with a research supplement and a finite model under
+  `docs/research/formal-models`. Nothing in them is implemented.
+- `AGENTS.md` is now a symlink to `docs/maintainers/agent-rules.md`. Its
+  previous text is `docs/maintainers/implementation-contracts.md`.
+- Record that public API compatibility is not a constraint for the planned
+  refactor. Semantic contracts, feature additivity, and unsafe confinement are
+  unchanged.
+- Repoint seven verification-catalog contract sources to the implementation
+  contracts. No catalog ID changed.
+- Port the finite formal models from a Node script to the Rust test target
+  `tests/formal_models` (42 catalogued cases). It checks each law against
+  wrong definitions and runs `FrozenOrderedSet`, `FrozenHashSet`,
+  `FrozenOrderedMap`, and `FrozenVec` on the same inputs.
+- `CRATES.md` now requires self-contained packages (CR-LAYOUT-9) that own
+  their formal models and proof harnesses (CR-LAYOUT-10).
+- Generate the formal-model domains with `exhaust`, `itertools`, `proptest`
+  and `proptest-state-machine` (new dev-dependencies) instead of hand-written
+  generators, and add operation-sequence tests of the real mutable set
+  families. The catalog tool now discovers `prop_state_machine!` tests.
+- Add Kani harnesses that check `FrozenOrderedSet` operations against the
+  left-representative rule, and spec-level Verus proofs of the algebra laws
+  under `verification/verus` with a pinned `make verus` target.
+- Record the first Kani solver run: nine of eleven harnesses verify under Kani
+  0.68.0; `ordered_set_algebra` and `dense_padding_does_not_create_members` do
+  not finish on a 15 GB host.
+
 ## Unreleased — emptied adaptive tree ranges
 
 - Fix `AdaptiveOrderedMap::range` and `range_mut` panicking on inverted or
@@ -43,7 +137,7 @@ semantic contract changes.
 
 No public API, feature, representation candidate, policy limit, or Hash event
 stream changes. Measurements and their limits are in
-[the optimization record](docs/integer-optimization-validation.md).
+[the optimization record](crates/frost-collections-integer/docs/integer-optimization-validation.md).
 
 - Forward `fold` from `IntSetIter` and `EncodedValues` to the storage traversal,
   which selects the representation once. `for_each`, `sum`, and other `fold`
@@ -95,7 +189,7 @@ edition 2024 toolchain are unchanged.
 - Add a doctested README example of representative rules with hand-written
   `PartialEq`, `Eq`, and `Hash`, correcting the supplied report's derived-trait
   sketch.
-- Add the [Frozen API guide](docs/design/frozen-api.md): frozen value kinds,
+- Add the [Frozen API guide](crates/frost-collections-core/docs/frozen-api.md): frozen value kinds,
   plans, error recovery, representative laws, access models, costs, the integer
   profile, snapshot admission, and a separate proposal section.
 - Add the curated research corpus under `docs/research/`: index, manifest,

@@ -139,7 +139,7 @@ only a sealed set of frozen payloads and atomically publishes whole owned versio
 A reader retains an Arc or guard to one version. Unconditional publication does
 not make a multiwriter read/derive/publish sequence transactional. The subsequent
 integration adds identity-based conditional publication and retrying update;
-see [snapshot contracts](snapshots.md). Structural freezing does not remove
+see [snapshot contracts](../../crates/frost-collections-concurrent/docs/snapshots.md). Structural freezing does not remove
 element interior mutability.
 
 ## 5. Adopt framework integrations with explicit semantics
@@ -248,7 +248,7 @@ The earlier proposal for a separate `PersistentIntSet` is narrowed to possible
 future directory/path-copying and bounded-sharing contracts. Its APIs are not
 implemented. The current Chunked candidate already provides immutable payload
 sharing within `FrozenIntSet`; the
-[persistent design](persistent-integer-storage.md) records that boundary. Generic
+[persistent design](../../crates/frost-collections-integer/docs/persistent-integer-storage.md) records that boundary. Generic
 borrowed set expressions and lazy integer evaluation remain proposals.
 
 ## Research corpus and rationale, 2026-11-09
@@ -265,7 +265,7 @@ adopted. It changes documentation only; source, features, CI, and the Rust
 | Package layout | Keep one library package, `frost-collections`, imported as `frost`. Record a `frost-api` facade over flat `crates/frost-*` packages as an **unadopted proposal**. | The handoff describes that layout as a user decision, but the maintainer policy and the current task keep one package. Adopting a split needs its own decision, an updated maintainer policy, a migration plan, and feature and CI changes. Installation instructions stay as they are. |
 | Package names | Adopt no naming rule. Preserve Frost1's plural names and Frost2's singular names as alternatives. | No package is created, so a rule would be premature. A future proposal applies one rule to every domain. |
 | Raw inputs | Keep the original reports byte for byte under `docs/reviews/supplied/`. Do not copy them again. Put curated, cited derivatives under `docs/research/`. | Raw files are evidence, not instructions or policy. Only curated files get corrected examples, portable citations, and per-claim status. |
-| Frozen API | Make [the Frozen API guide](frozen-api.md) the canonical guide to current frozen contracts, with proposals in a separate section. | Contracts were scattered across the README, architecture, and rustdoc. The guide links each claim to source and tests. |
+| Frozen API | Make [the Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md) the canonical guide to current frozen contracts, with proposals in a separate section. | Contracts were scattered across the README, architecture, and rustdoc. The guide links each claim to source and tests. |
 | Engine motivations | Describe symbolic execution, authorization, and computed sets in the README as motivating workloads with explicit outside-scope boundaries. | Frost implements no engine, policy language, solver, identity protocol, durable store, or consistency protocol. |
 | Complexity claims | Do not transfer an upstream bound to Frost algorithms. Derived bounds name every variable. | `fst` documents n-ary operations as `O(n1 + n2 + ...)`; its implementation uses a binary heap and byte-key comparisons. See [collection algebra](collection-algebra.md#n-ary-sorted-merge-cost). |
 | Missing artifacts | Import the computed-sets summary under a summary name. Do not reconstruct the full computed-sets report, the original research template, its ZIP, or a standalone algebraic-foundations report. | None of these were supplied or recovered. A summary's statement that a file exists is not evidence that it exists. |
@@ -307,7 +307,7 @@ public APIs, Rust 1.99.1, and edition 2024 are unchanged by it.
 
 This series changes costs, not contracts. No public item, feature, policy
 limit, representation candidate, or Hash event stream changed. The
-[validation record](../integer-optimization-validation.md) holds the
+[validation record](../../crates/frost-collections-integer/docs/integer-optimization-validation.md) holds the
 measurements, their limits, and the gates that ran.
 
 | Area | Decision | Reason and limit |
@@ -326,3 +326,87 @@ measurements, their limits, and the gates that ran.
 | Mutable ordered collection | `from_iter` stages, sorts, and bulk-builds, as the adaptive ordered map already does. | Collection now needs O(n) temporary staging. The duplicate rule is applied by crate code before the tree is built. |
 | Emptied adaptive tree | `range` and `range_mut` return an empty range for an empty tree. | A std tree emptied by removal validates bounds; the Sorted form and the documented contract do not. `MutableOrderedMap` and `MutableOrderedSet` keep native behavior, as documented. |
 | Not changed | The inline buffer's clone, `from_vec`, and `retain` paths; `MutableOrderedMap::append`; the linear table kept by `thaw`. | The first three are in or beside the crate's only `unsafe` module and need Miri, which was unavailable. The others need a size-ratio gate or a policy decision. The validation record lists the measurements. |
+
+## API compatibility is not a constraint, 2026-11-12
+
+The maintainer stated on 2026-11-12 that the public API does not need to stay
+compatible and that the library is to be refactored. This record states what
+that changes. It approves no specific redesign, package boundary, or name.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Public API shape | Names, module paths, signatures, trait bounds, and type parameters of existing public items may change. | The crate is unpublished at 0.4.0 (`publish = false`), and the [release procedure](../maintainers/releasing.md) still gates publication. Compatibility was a self-imposed constraint, not a user commitment. |
+| Semantic contracts | Not relaxed. The representative rules, the structural meaning of frozen, snapshot publication semantics, the integer codec laws, and the other rules in the [implementation contracts](../maintainers/implementation-contracts.md) stay in force. | This is the integrator's reading of the maintainer's statement, which named API compatibility only. Changing one of these contracts needs its own record. |
+| Feature additivity | Not relaxed. Enabling a feature still never changes a type's representation, hasher, bounds, or freeze/thaw partner. | Additivity is a property of one build under Cargo feature unification, not of compatibility between versions. |
+| Safety | Not relaxed. Unsafe stays confined, with its written invariants and Miri coverage. | A refactor that moves `src/adaptive/seq/buf.rs` moves it as a unit. |
+| Crate layout | [Crate layout](crate-layout.md) constraint 5 (every current `frost::` path resolves through the facade) is no longer required, and constraint 1 no longer forces existing set algebra to stay as inherent methods: it can become a trait or an expression layer. Constraints 2, 3, 4, and 6 to 9 follow from Rust's rules or from contracts that remain. | The package list is still the output of `frost-wlt.1`. No package is approved or created by this record. |
+| Value domains | The [formal algebra](algebra/README.md) documents were written under the compatibility constraint. Their statements that no domain parameter or binding is added to existing types are now design positions to be argued on their merits, not requirements. | The merits still weigh against a mandatory parameter on every family: it would inflate bounds for callers that have no runtime-scoped domain. A redesign of `IntKey`, of source bindings, or of snapshot payload admission is now open. |
+| Process | A breaking change carries its design record, changelog entry, rustdoc, tests, and catalog updates in the same change. Existing catalog IDs are kept; a removed public item retires its records explicitly. | [CRATES.md](../../CRATES.md) accounts coverage per public obligation, so a silent removal would leave stale obligations. |
+
+## Value-domain algebra integration and rules entry, 2026-11-12
+
+A supplied delivery added a formal specification of value domains and
+collection algebras, a research supplement with a finite model, and a
+restructure of the agent rules. This record states what the integration
+adopted. Source, features, manifests, CI, and the toolchain are unchanged.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Formal chapters | Add [docs/design/algebra](algebra/README.md) as **proposed contracts**. | They name value domains, key identity, collection carriers, operation partiality, and evaluation context separately. Nothing in them is implemented or accepted design; each chapter says so. |
+| Authority | Source, rustdoc, and tests remain authoritative for implemented behavior; [CRATES.md](../../CRATES.md) for layout, obligations, and metadata. | The chapters were written from three source files and the existing documents. The [destination review](../reviews/value-domain-algebra-destination-review.md) checked their statements about current source against a full checkout and found none wrong. |
+| Recommended spellings | Record `difference_by_key` for map restriction and `absolute_difference` for bag counts as recommendations. | Neither names an implemented item. `Q-MAP-1` and `Q-BAG-1` still own the decision. |
+| Evidence | Keep the finite model as research tooling under `docs/research/formal-models/evidence`, run with Node by hand. *Superseded 2026-11-13: replaced by Rust tests in `tests/formal_models`; see the next record.* | It is not a Make, build, or CI step, imports no Frost code, and is not Rust test evidence. The delivered model overstated its strength; it was revised and is now accompanied by a mutant run. |
+| Research questions | Six seeded questions stay local to the supplement, each tied to the corpus question it refines. | The corpus manifest and its dependency order are unchanged. |
+| Provenance | Record the delivery archive by size and SHA-256 without committing it. | The archive is 1.3 MB, mostly earlier revisions of files already here. Its inventory therefore cannot be verified from this repository alone. |
+| Agent rules | `AGENTS.md` is a relative symlink to [the short entry](../maintainers/agent-rules.md). The previous text is [implementation contracts](../maintainers/implementation-contracts.md), unchanged apart from its header. The entry states inline the rules that hold for every change. | The delivery requested the symlink. A short auto-loaded file is easier to keep current, but an agent that does not follow its link sees fewer rules, so the inline list covers the package, feature, unsafe, and gate rules. A checkout without symlink support shows a one-line file holding the target path. |
+| Stale references | Repoint catalog contract sources, `CRATES.md`, the crate-layout design, the root README, and the research prompt template to the implementation contracts. | The catalog tool checks only that a source path is a file, so the stale paragraphs would not have been reported. No catalog ID changed. |
+
+## Self-contained packages and formal models, 2026-11-13
+
+The maintainer stated on 2026-11-13 that each crate should be self-contained,
+with its formal models and all other artifacts kept with it. This record
+states what that means and what changed now, before any package exists.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Package contents | Everything a package owns lives under its directory: code, tests, benchmarks, examples, fuzz targets, Loom, Kani, and downstream harnesses, formal models, catalog and inventory records, README, changelog, and the design documents for its contracts ([CRATES.md](../../CRATES.md) CR-LAYOUT-9). | Moving or extracting a package then carries all of its evidence. Repository-wide documents (philosophy, architecture, decisions, maintainer guides, research corpus) and historical evidence stay at the root. |
+| Cross-package tests | A test that needs several packages lives in the lowest package that depends on all of them; the facade holds the rest. | A dev-dependency back on a higher package would compile a second copy of the lower one's types. |
+| Formal models | Executable models are Rust test targets in the owning package's `tests/formal_models/`; proof harnesses go in `<package>/verification/<tool>/` (CR-LAYOUT-10). The Node model under `docs/research/formal-models/evidence` was ported to Rust and removed. | The repository builds with Rust and Make only. Rust models run in `make check`, are catalogued, and can run the real types. Today the single package is the owner, so the target is `tests/formal_models`; at the split it moves to `frost-core`. |
+| Tooling | Settled the same day; see [Formal validation tools](#formal-validation-tools-2026-11-13). | The hand-written generators were replaced. |
+| Contract obligations | A catalog contract may name `law:<ID>` obligations for a law in `docs/design/algebra/catalog.json` that has no public item yet. | Curated model cases need a contract, and proposed operations have no public path to cite. |
+
+## Formal validation tools, 2026-11-13
+
+The maintainer approved the three recommendations of the
+[formal validation tools report](../research/reports/formal-validation-tools.md)
+on 2026-11-13.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Finite models and real-type tests | `exhaust` and `itertools` generate the finite domains, `proptest` the sampled ones, and `proptest-state-machine` drives real types against a reference model. They are dev-dependencies; [CRATES.md](../../CRATES.md) CR-DEP-2 counts them as test libraries. | No generator, enumerator, runner or shrinker is hand-written. bolero was rejected because its current release does not resolve with Frost's `indexmap`; quickcheck and arbtest duplicate proptest. |
+| Bounded refinement | Kani harnesses check real operations against the reference definitions of the laws, starting with `SET-REP` and `SET-BOOLEAN` on `FrozenOrderedSet` (`verification/kani/src/set_laws.rs`). | Covers only the stated bounds. A law on a type Frost does not implement has no refinement harness. |
+| Unbounded proofs | Verus, pinned by `VERUS_VERSION` in the root `Makefile`, proves laws for their reference definitions in `verification/verus`, which is not a Cargo package and does not link to Frost. Verifying production code with Verus stays deferred until after `frost-wlt`. | The pinned release uses Rust 1.99.1. A Verus proof says nothing about Frost code (CR-TOOL-5). Lean with Mathlib, Aeneas and Creusot were not adopted. |
+
+## Crate split execution, 2026-11-13
+
+The maintainer asked on 2026-11-13 for the crate-split epic `frost-wlt` to be
+reviewed adversarially, corrected, shown, and executed. The
+[crate split plan](crate-split-plan.md) is the corrected design; the
+[plan review](../reviews/crate-split-plan-review.md) records the 27 findings
+it answers. This entry records what is decided and by whom.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Timing | The split runs now, before the API refactor. | Maintainer instruction. It supersedes the ordering under which `frost-wlt` waited for `frost-wou`; the standards tasks `frost-wou.6`–`.10` stay open. |
+| Packages | Three code packages, a facade and a dev-only support package: `frost-collections-core`, `-integer`, `-concurrent`, `frost-collections`, `frost-collections-test-support`. | Author's default (plan D4, D5). It replaces the `frost-api` facade name recorded on 2026-11-09. `frost-core` is taken on crates.io. |
+| Adaptive profiles | They stay in the core package. | Extracting them would open the serde seal, which relaxes a contract. Only the maintainer can approve that; it is tracked as `frost-adp`. |
+| Publication | Nothing is published; every package is `publish = false`; the facade is the only supported entry point. | Author's default (plan D3). |
+| Contracts | No semantic or safety contract changes. Known defects are tracked as `frost-r0a` and `frost-k4n`, not fixed inside a move. | The API-compatibility decision relaxes no contract. |
+| Unrun lanes | A verification lane that cannot run on the host blocks closing the epic unless waived here. On 2026-11-14 the maintainer waived three for this epic: Verus, the exact coverage ratchet, and the two Kani harnesses of `frost-k4n`. | Plan D16. Each stays tracked: `frost-k4n`, `frost-v3s` and `frost-c7b`. The waiver closes the epic; it is not evidence that those lanes pass. |
+| Miri | The maintainer instructed on 2026-11-14 that Miri is not to be run in the execution session. Miri lanes are recorded as not run from that point; they are left to CI (`make miri`) or a later local run. | Maintainer instruction. Before it, two lanes over `buf.rs` passed after the scaffold and after the core extraction, and the 32-bit word-storage lane passed on the integer package. On 2026-11-14 the maintainer decided that the GitHub CI runs of `make miri` on the split tree are the Miri evidence for the epic, and that CI runs Miri in its nightly and release tiers, not on push or pull request. |
+| CI hosts | From 2026-11-14 the push workflow runs its host job on Linux only. The macOS and Windows runners are disabled for now. | Maintainer decision, for cost. Until they are restored, CI does not exercise macOS or Windows; the last run on all three hosts was green on commit `7439aa1`. |
+| Approval | The maintainer approved the plan as executed on 2026-11-14. Package names and boundaries may be revisited in the API refactor. | Maintainer decision. It approves the executed layout. It does not approve an adaptive package (`frost-adp`) or publishing. |
+
+Decisions D2–D16 of the plan began as defaults taken so that execution was not
+blocked. The maintainer approved them with the plan on 2026-11-14; the plan
+states what undoing each one costs.

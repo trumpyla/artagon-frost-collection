@@ -10,5 +10,5 @@ description = "Same executable comparison of reviewed main and integrated revisi
 [workspace]
 
 [dependencies]
-frost = { package = "frost-collections", path = "../../..", default-features = false, features = ["int-set", "std"] }
+frost = { package = "frost-collections", path = "../../../crates/frost-collections", default-features = false, features = ["int-set", "std"] }
 frost_baseline = { package = "frost-reviewed-baseline", path = "../reviewed-baseline", default-features = false, features = ["int-set", "std"] }

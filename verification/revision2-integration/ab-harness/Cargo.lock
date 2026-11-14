@@ -72,10 +72,35 @@ dependencies = [
 name = "frost-collections"
 version = "0.4.0"
 dependencies = [
+ "frost-collections-concurrent",
+ "frost-collections-core",
+ "frost-collections-integer",
+]
+
+[[package]]
+name = "frost-collections-concurrent"
+version = "0.4.0"
+dependencies = [
+ "frost-collections-core",
+ "frost-collections-integer",
+]
+
+[[package]]
+name = "frost-collections-core"
+version = "0.4.0"
+dependencies = [
  "borsh",
  "indexmap",
  "roaring",
  "schemars",
+]
+
+[[package]]
+name = "frost-collections-integer"
+version = "0.4.0"
+dependencies = [
+ "frost-collections-core",
+ "roaring",
 ]
 
 [[package]]

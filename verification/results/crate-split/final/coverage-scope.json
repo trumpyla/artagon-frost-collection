@@ -1,0 +1,18 @@
+{
+  "schema": "frost-coverage-scope/v1",
+  "host_target": "x86_64-unknown-linux-gnu",
+  "toolchain_version": "1.99.1",
+  "rustc_override": "",
+  "rustup_toolchain_override": "",
+  "tool_version": "cargo-llvm-cov 0.9.1",
+  "features": "all-features",
+  "ignore_filename_regex": "(^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/",
+  "portable_floor": {
+    "lines": 77,
+    "functions": 70,
+    "regions": 77
+  },
+  "ratchet_mode": "portable_adoption_floor_only_cross_target",
+  "baseline_reference": "verification/crate-standards-validation/baseline-coverage.json",
+  "baseline_target": "aarch64-apple-darwin"
+}

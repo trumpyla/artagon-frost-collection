@@ -1,0 +1,701 @@
+{
+  "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "verification/loom/Cargo.toml"
+  ],
+  "contracts": [
+    {
+      "id": "C-SNAPSHOT-PUBLICATION",
+      "title": "publish is unconditional; publish_if_current compares allocation identity; update may repeat the callback and returns the displaced version",
+      "source": "docs/snapshots.md; docs/maintainers/implementation-contracts.md snapshot paragraph",
+      "obligations": [
+        "SnapshotStore"
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    },
+    {
+      "path": "tests/concurrent.rs",
+      "kind": "test",
+      "features": [
+        "dashmap-6",
+        "scc-3",
+        "crossbeam-skiplist-0_1",
+        "arc-swap-1"
+      ]
+    },
+    {
+      "path": "tests/integer_output.rs",
+      "kind": "test",
+      "features": [
+        "int-set"
+      ]
+    },
+    {
+      "path": "tests/integer_sets.rs",
+      "kind": "test",
+      "features": [
+        "int-set"
+      ]
+    },
+    {
+      "path": "tests/publication_model.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "benches/snapshots.rs",
+      "kind": "bench",
+      "features": [
+        "arc-swap-1"
+      ]
+    },
+    {
+      "path": "verification/loom/src/lib.rs",
+      "kind": "lib",
+      "features": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "T-LIB-047",
+      "file": "src/lib.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "B-SNAPSHOTS-001",
+      "file": "benches/snapshots.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/snapshots.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-001",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::dashmap_tests::borrowed_lookup_and_exclusive_updates_under_contention",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borrowed lookup and exclusive updates under contention",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"dashmap-6\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-002",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::skiplist_tests::borrowed_lookup_and_owned_extraction",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borrowed lookup and owned extraction",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"crossbeam-skiplist-0_1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-003",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::skiplist_tests::concurrent_insertions_preserve_order_after_writers_join",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: concurrent insertions preserve order after writers join",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"crossbeam-skiplist-0_1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-004",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::dashmap_tests::set_callbacks_can_return_owned_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: set callbacks can return owned members",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"dashmap-6\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-005",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::built_in_frozen_collections_are_valid_snapshot_payloads",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: built in frozen collections are valid snapshot payloads",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-006",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::competing_updates_have_a_complete_displaced_version_history",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: competing updates have a complete displaced version history",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-007",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::conditional_publication_compares_identity_and_returns_displaced_version",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: conditional publication compares identity and returns displaced version",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-008",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::guard_and_peek_observe_the_selected_version",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: guard and peek observe the selected version",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-009",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::many_guards_remain_valid_after_publication_and_store_drop",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: many guards remain valid after publication and store drop",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-010",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::newly_frozen_mutable_profiles_preserve_older_published_versions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: newly frozen mutable profiles preserve older published versions",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-011",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::panic_on_a_retry_preserves_the_competing_publication",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: panic on a retry preserves the competing publication",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-012",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::peek_unwinding_releases_its_guard_and_calls_the_callback_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: peek unwinding releases its guard and calls the callback once",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-013",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::publication_preserves_owned_versions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: publication preserves owned versions",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-014",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::readers_hold_one_version_across_a_synchronized_publication",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: readers hold one version across a synchronized publication",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-015",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::readers_observe_one_complete_published_version",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: readers observe one complete published version",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-016",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::rejected_non_clone_candidate_keeps_its_storage_and_is_dropped_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rejected non clone candidate keeps its storage and is dropped once",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-017",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::successful_conditional_publication_transfers_non_clone_ownership_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: successful conditional publication transfers non clone ownership once",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-018",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::update_panic_leaves_that_attempt_unpublished_and_the_store_usable",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: update panic leaves that attempt unpublished and the store usable",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-019",
+      "file": "tests/concurrent/snapshot.rs",
+      "selector": "test:snapshot::update_retries_after_a_forced_conflict_and_returns_its_actual_predecessor",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: update retries after a forced conflict and returns its actual predecessor",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"arc-swap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-016",
+      "file": "tests/integer_output.rs",
+      "selector": "test:repeated_snapshot_updates_preserve_dense_storage_and_old_versions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: repeated snapshot updates preserve dense storage and old versions",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "cfg (all (feature = \"int-set\" , feature = \"arc-swap-1\"))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-012",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:concurrent_integer_updates_publish_complete_versions_without_lost_ids",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: concurrent integer updates publish complete versions without lost ids",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (all (feature = \"int-set\" , feature = \"arc-swap-1\"))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-028",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:snapshot_publication_retains_integer_profile_versions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: snapshot publication retains integer profile versions",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "cfg (all (feature = \"int-set\" , feature = \"arc-swap-1\"))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-PUBLICATION_MODEL-001",
+      "file": "tests/publication_model.rs",
+      "selector": "test:equal_contents_still_require_retry_after_identity_changes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: equal contents still require retry after identity changes",
+      "seed": "unreviewed",
+      "target": "tests/publication_model.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-PUBLICATION_MODEL-002",
+      "file": "tests/publication_model.rs",
+      "selector": "test:three_writers_exhaust_all_load_and_compare_exchange_orders",
+      "status": "curated",
+      "tags": [
+        "snapshot",
+        "concurrent",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "docs/verification.md",
+      "kind": "model",
+      "contracts": [
+        "C-SNAPSHOT-PUBLICATION"
+      ],
+      "oracle": "Exhaustive schedule enumeration over a trusted sequentially consistent store of version handles; the explored schedule count, maximum failures and maximum steps are asserted exactly (198, 3, 9)",
+      "scenario": "Three writers run the production retry loop, included by path, through every interleaving of load and compare-exchange; the store model does not cover arc-swap memory ordering or reclamation",
+      "seed": "none",
+      "target": "tests/publication_model.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-CONCURRENT-021",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::scc_tests::borrowed_lookup_and_exclusive_updates_under_contention",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: live::scc tests::borrowed lookup and exclusive updates under contention",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"scc-3\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-022",
+      "file": "tests/concurrent/live.rs",
+      "selector": "test:live::scc_tests::set_callbacks_can_return_owned_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: live::scc tests::set callbacks can return owned members",
+      "seed": "unreviewed",
+      "target": "tests/concurrent.rs",
+      "cfg": "cfg (feature = \"scc-3\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-030",
+      "file": "verification/loom/src/lib.rs",
+      "selector": "test:tests::three_writers_have_no_lost_updates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::three writers have no lost updates",
+      "seed": "unreviewed",
+      "target": "verification/loom/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-031",
+      "file": "verification/loom/src/lib.rs",
+      "selector": "test:tests::two_writers_have_no_lost_updates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::two writers have no lost updates",
+      "seed": "unreviewed",
+      "target": "verification/loom/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    }
+  ]
+}

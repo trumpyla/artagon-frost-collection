@@ -87,7 +87,7 @@ axes.
 | Computed set / query | Description of how to obtain members from sources | Proposal (typed views, `IntSetExpr`) |
 | Persistent collection | Versioned representation sharing unchanged structure | `FrozenIntSet` root sharing and explicit Chunked containers; imbl adapters; generic persistent families proposed |
 | Snapshot | A view at a revision or consistency boundary | `SnapshotStore` whole-value versions; durable snapshots proposed |
-| Materialized answer | An owned result independent of the query | `collect`, eager integer algebra, `into_*` extraction |
+| Materialized answer | A constructed result collection independent of the query; its elements may still borrow from the sources | `collect`, eager integer algebra, `into_*` extraction |
 
 Output modes, adopted from the implementation notes, name what a caller
 receives from each access model:

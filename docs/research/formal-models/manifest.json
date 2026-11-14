@@ -1,0 +1,272 @@
+{
+  "schema": "frost-formal-supplement/v1",
+  "date": "2026-11-12",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "path_base": "repository-root",
+  "scope": "this documentation/refinement supplement, not the full historical corpus",
+  "self_hash": "omitted to avoid recursive hashing",
+  "no_production_api_change": true,
+  "no_package_approval": true,
+  "artifacts": [
+    {
+      "path": "AGENTS.md",
+      "kind": "symlink",
+      "sha256": "95f14cb699ee0a62f3bf7ac87810f09cb33c1ecea8b3ab8286b53c5766a4ca6f",
+      "bytes": 31,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "README.md",
+      "kind": "file",
+      "sha256": "9293f21702705c8e3621a0e3e40dd9546771e7cdf3e8ae7a406a5f8beee2db63",
+      "bytes": 43046,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "file",
+      "sha256": "87a5d4ccf3f56bbb0161ca74646390b8cd60a4b4be579930e2c6ed713e806cac",
+      "bytes": 13563,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/README.md",
+      "kind": "file",
+      "sha256": "4ed4766b9f2eac6d4f186831891813a75b17ff4f88c8c6bb5ca22df5f0b944a3",
+      "bytes": 4534,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/bags.md",
+      "kind": "file",
+      "sha256": "333646f4cdc146db021750b2da2d9ec6233d1e953fa026b43b0088868ace7eb3",
+      "bytes": 4509,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/bimaps.md",
+      "kind": "file",
+      "sha256": "c75f87452e5796485dcb7ed52c3cba0d1c1792a2add722b5fe5563b02ee636ef",
+      "bytes": 5122,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/catalog.json",
+      "kind": "file",
+      "sha256": "475417ca043edf985514818211ce324fcd374aaaa73499e4ea32c876868adc9b",
+      "bytes": 14466,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/collection-models.md",
+      "kind": "file",
+      "sha256": "8f2dbc25cf6f027d980f059ffa4074a56bbd6183dbb6cad0fd01d7990bfe160e",
+      "bytes": 1411,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/domains.md",
+      "kind": "file",
+      "sha256": "bbd9532c41dc4c857dd999aa98cdd248c2b457a19086daa75497944906ccd926",
+      "bytes": 10296,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/execution-and-computed-sets.md",
+      "kind": "file",
+      "sha256": "d6fcf111192e0aa2a55b2b92b6813c3e19a467cc8f0e20928aaaa74eab7c6c28",
+      "bytes": 7446,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/formal-model.md",
+      "kind": "file",
+      "sha256": "d3a9e16ff2af6fa822cabf2688ae61af1a740fc7e3ec7bccbc1df5137dc5b287",
+      "bytes": 9297,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/frozen.md",
+      "kind": "file",
+      "sha256": "814018952f8b2f0d0b6cba2f7fb8ebf43b425566c5a24d3c68576c6dfdd29c09",
+      "bytes": 5665,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/maps.md",
+      "kind": "file",
+      "sha256": "a53cd1f0507e852302300f87b438d6832c7dca28da286e7312fa1c430d42e73e",
+      "bytes": 5831,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/multimaps.md",
+      "kind": "file",
+      "sha256": "4748d8bae14efbf30b6ffa55153086280ce8e80bb9939855a7a2a5be2477ac23",
+      "bytes": 5414,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/proof-obligations.md",
+      "kind": "file",
+      "sha256": "b8490b1b8ee435e6c21179a646ac7f7c1daf4d3485f95d60d2d5b259f1707575",
+      "bytes": 9227,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/rewrite-contracts.md",
+      "kind": "file",
+      "sha256": "8afc8a69f8c53c72dd90d18681ab50084296aa9c969cc50ef98a714def97a1f6",
+      "bytes": 4424,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/rust-integration.md",
+      "kind": "file",
+      "sha256": "71e8edc034610b6a6555106f098cb6471a7993234010dc001b4f864aa6249c5d",
+      "bytes": 7428,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/sequences.md",
+      "kind": "file",
+      "sha256": "13d14781e1746bdeaf9ee8539cd230605a9abeda5ceecf5e1877deb65c63c101",
+      "bytes": 4432,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/sets.md",
+      "kind": "file",
+      "sha256": "941c56e384143e3cc803f4ddaa1fb229e0fa2140672b9a637517ea35233e109b",
+      "bytes": 5464,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/algebra/terminology.md",
+      "kind": "file",
+      "sha256": "5e2a10aec545b5bae29e2f9cca5391c2cf26cda343ae3e303fa5f1aa3ae9cf72",
+      "bytes": 3924,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/collection-algebra.md",
+      "kind": "file",
+      "sha256": "b2d0013ef745d064acc677ceaeea681cf725a93e35cc24aa89d4bac04c3c32ef",
+      "bytes": 19065,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/design/set-algebra.md",
+      "kind": "file",
+      "sha256": "159d87a2451346dd53993c0316327deb1db29f961adc3330303e8a0e44c16017",
+      "bytes": 45582,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/agent-rules.md",
+      "kind": "file",
+      "sha256": "e28f83b130f308145659a7cbab9271efe36375b2c8fb3bfb7a1657042aed96a9",
+      "bytes": 2535,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/documentation-rules.md",
+      "kind": "file",
+      "sha256": "0c5e0bd1f690d92a90b68ce470e9e2c61047d6f9d484379759c07b68c09e8cd1",
+      "bytes": 4146,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/implementation-contracts.md",
+      "kind": "file",
+      "sha256": "e84763928f3feecd2681718e75a7e0983ee18466c27d302eefaa7f3ecdf8a4cd",
+      "bytes": 9618,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/repository-rules.md",
+      "kind": "file",
+      "sha256": "9b26f0f6d4598f0df5d58357f38aa4bc03698d35420d435f8541df98bdc56609",
+      "bytes": 2337,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/maintainers/rules.json",
+      "kind": "file",
+      "sha256": "f5c2f7a5ec81b2d799d97e01cfa71a844d9f23d6f044945421250cc7b7d6cc2b",
+      "bytes": 1023,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/README.md",
+      "kind": "file",
+      "sha256": "577186291f3c7633ed9ebedd7361da284cc863948876974678667eb4a47f16e6",
+      "bytes": 9306,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/README.md",
+      "kind": "file",
+      "sha256": "f8eb72a48ae483118b9856a388b59fe171aba13c6749f6dc1d64a4e72e8362cf",
+      "bytes": 6587,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/SOURCES.md",
+      "kind": "file",
+      "sha256": "d511d64e9f2ed31543b4bf8d1a742cdd450ac50a841aa8559d950a6699394b20",
+      "bytes": 4161,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/evidence/baseline.json",
+      "kind": "file",
+      "sha256": "263bc727129039c577f96381edda44a125a74ef2d4b08f5b7959a39232b9621c",
+      "bytes": 2422,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/input-inventory.json",
+      "kind": "file",
+      "sha256": "d0623b1e42fc69607a9ef200e772436376ca6f4437291c1208bb6d74576fbd67",
+      "bytes": 227755,
+      "status": "research-evidence"
+    },
+    {
+      "path": "docs/research/formal-models/research-prompt.md",
+      "kind": "file",
+      "sha256": "78cebb920de9fede637c723542249f796bf8289ea2e355e6294aef8d3616351e",
+      "bytes": 4524,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/source-map.md",
+      "kind": "file",
+      "sha256": "1219d490a84bfc0b60234ef68d3bddf3a54ab211fb8ea12816ac683e504c4a1d",
+      "bytes": 4911,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/research/formal-models/validation.md",
+      "kind": "file",
+      "sha256": "97ad64edf9e805eeae41bf75b4724b528b6c401f9557d99995ac24f0fdd61af7",
+      "bytes": 6464,
+      "status": "documentation-proposal-or-navigation"
+    },
+    {
+      "path": "docs/reviews/value-domain-algebra-destination-review.md",
+      "kind": "file",
+      "sha256": "d722b5736a1a4ef82b1f5aac7b9f8d53a08fc5520f212f65609b950fba6c9968",
+      "bytes": 10622,
+      "status": "review"
+    },
+    {
+      "path": "docs/reviews/value-domain-algebra-review.md",
+      "kind": "file",
+      "sha256": "34aff8d7830532425dae12a50d6bab0e90e2c803a85157127a3bea7247e02ae6",
+      "bytes": 10329,
+      "status": "documentation-proposal-or-navigation"
+    }
+  ],
+  "regenerated": "2026-11-13; hashes describe the current files"
+}

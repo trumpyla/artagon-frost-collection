@@ -1,0 +1,10 @@
+src/integer/policy.rs:176:9: replace IntSetPolicy::max_dense_bytes -> usize with 1
+src/integer/policy.rs:53:9: replace IntSetLimits::max_dense_bytes -> usize with 1
+src/integer/policy.rs:62:9: replace IntSetLimits::common -> Self with Default::default()
+src/integer/policy.rs:115:39: replace * with / in IntSetPolicy::auto
+src/integer/policy.rs:115:32: replace * with / in IntSetPolicy::auto
+src/integer/policy.rs:58:9: replace IntSetLimits::max_roaring_partitions -> usize with 1
+src/integer/policy.rs:53:9: replace IntSetLimits::max_dense_bytes -> usize with 0
+src/integer/policy.rs:58:9: replace IntSetLimits::max_roaring_partitions -> usize with 0
+src/integer/policy.rs:176:9: replace IntSetPolicy::max_dense_bytes -> usize with 0
+src/integer/policy.rs:115:39: replace * with + in IntSetPolicy::auto

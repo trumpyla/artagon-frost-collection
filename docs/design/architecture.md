@@ -15,17 +15,17 @@ diagnostics, not a library requirement.
 
 [Design decisions](decisions.md) explains the comparison that produced
 this combined design. This document describes the resulting architecture and
-its boundaries. [README.md](../../README.md) contains the rationale, the
+its boundaries. [README.md](../../crates/frost-collections/README.md) contains the rationale, the
 user-facing feature catalog, and tested introductory examples. The
-[Frozen API guide](frozen-api.md) gathers the frozen-value contracts from
+[Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md) gathers the frozen-value contracts from
 sections 1, 3, 5, and 6 below into one reference with source and test links.
 
 Version 0.4.0 adds frozen set algebra without changing the family identities or
-freeze/thaw pairings. [Set operations](../set-operations.md) records the lazy
+freeze/thaw pairings. [Set operations](../../crates/frost-collections-core/docs/set-operations.md) records the lazy
 borrowed family operations, direct scalar kernels, frozen bitmap results, and
 left-representative rule.
 
-The [general set-algebra proposal](set-algebra.md) broadens future expression
+The [general set-algebra proposal](../../crates/frost-collections-core/docs/set-algebra.md) broadens future expression
 composition to mutable/frozen families and compatible native backends, with
 separate borrowed, encoded-value, and lending-stream boundaries. It is a design,
 not an implemented change to the current API or kernels.
@@ -85,8 +85,8 @@ maintenance cost by defining a stable semantic API. There is also no universal
 map enum that imposes ordering bounds on hash-map callers or combines ascending
 and insertion-order traversal into an ambiguous contract.
 
-Sources: [family modules](../../src/family/mod.rs), [mutable reexports](../../src/mutable.rs),
-[public exports](../../src/lib.rs).
+Sources: [family modules](../../crates/frost-collections-core/src/family/mod.rs), [mutable reexports](../../crates/frost-collections-core/src/mutable.rs),
+[public exports](../../crates/frost-collections/src/lib.rs).
 
 ### Entries, iterators, and mutation access
 
@@ -108,9 +108,9 @@ Maps and sets do not dereference to a native mutable backend. Frozen sequences
 can dereference to `[T]`, but never to `&mut [T]`. Owning iteration consumes a
 frozen value and returns owned elements, ending the frozen state explicitly.
 
-Sources: [iterator wrappers](../../src/iter.rs),
-[hash-map entries](../../src/family/hash_map/mutable.rs),
-[ordered-map entries](../../src/family/ordered/mutable.rs).
+Sources: [iterator wrappers](../../crates/frost-collections-core/src/iter.rs),
+[hash-map entries](../../crates/frost-collections-core/src/family/hash_map/mutable.rs),
+[ordered-map entries](../../crates/frost-collections-core/src/family/ordered/mutable.rs).
 
 ## 2. Semantic laws and trait coherence
 
@@ -165,9 +165,9 @@ normal coherence rules. Downstream code cannot use an open capability impl to
 declare a backend eligible for the crate's exact frozen wrapper or snapshot
 store; those two eligibility boundaries are sealed.
 
-Sources: [read capabilities](../../src/read.rs), [write capabilities](../../src/write.rs),
-[duplicate errors](../../src/family/mod.rs),
-[ordered validation](../../src/family/ordered/frozen.rs).
+Sources: [read capabilities](../../crates/frost-collections-core/src/read.rs), [write capabilities](../../crates/frost-collections-core/src/write.rs),
+[duplicate errors](../../crates/frost-collections-core/src/family/mod.rs),
+[ordered validation](../../crates/frost-collections-core/src/family/ordered/frozen.rs).
 
 ## 3. Exact freezing and explicit plans
 
@@ -216,8 +216,8 @@ access is exposed while the value remains frozen. Stored cells, atomics, locks,
 or shared pointers retain their own interior-mutability behavior. Frozen values
 are not deeply immutable and are not pinned.
 
-Sources: [exact wrapper and eligibility](../../src/frozen.rs),
-[plan definitions](../../src/plan.rs), [native adapters](../../src/backends/mod.rs).
+Sources: [exact wrapper and eligibility](../../crates/frost-collections-core/src/frozen.rs),
+[plan definitions](../../crates/frost-collections-core/src/plan.rs), [native adapters](../../crates/frost-collections-core/src/backends/mod.rs).
 
 ## 4. Adaptive profiles, policy, and cost
 
@@ -293,17 +293,17 @@ mutation callbacks likewise do not undo mutations performed before a panic.
 Recoverable validation errors and allocation failures remain distinct from this
 unwinding guarantee.
 
-Sources: [adaptive architecture](../../src/adaptive/mod.rs),
-[inline ownership](../../src/adaptive/seq/buf.rs),
-[inline mutation](../../src/adaptive/seq/mutable.rs),
-[adaptive hashing](../../src/adaptive/hash_map/mutable.rs),
-[adaptive ordering](../../src/adaptive/ordered_map/mutable.rs),
-[core regressions](../../tests/core_review.rs), [ownership regressions](../../tests/inline_safety.rs).
+Sources: [adaptive architecture](../../crates/frost-collections-core/src/adaptive/mod.rs),
+[inline ownership](../../crates/frost-collections-core/src/adaptive/seq/buf.rs),
+[inline mutation](../../crates/frost-collections-core/src/adaptive/seq/mutable.rs),
+[adaptive hashing](../../crates/frost-collections-core/src/adaptive/hash_map/mutable.rs),
+[adaptive ordering](../../crates/frost-collections-core/src/adaptive/ordered_map/mutable.rs),
+[core regressions](../../crates/frost-collections-core/tests/core_review.rs), [ownership regressions](../../crates/frost-collections-core/tests/inline_safety.rs).
 
 ## 5. Advanced storage gets honest capabilities
 
 The explicit `int-set` feature adds the typed integer profile in
-[`frost::integer`](../../src/integer/mod.rs). `FrozenIntSet<K>` preserves the
+[`frost::integer`](../../crates/frost-collections-integer/src/integer/mod.rs). `FrozenIntSet<K>` preserves the
 logical key domain while `IntKey::Word` selects sealed `u32` or `u64` machinery.
 Its fixed private candidates are sorted codes, aligned dense windows,
 width-specific Roaring containers, and explicitly selected shared Chunked
@@ -324,7 +324,7 @@ The merged public API retains `IntSetLimits`, `limits()`, and all four
 `*_with_policy` operations. Commutative algebra takes the smaller limits;
 difference keeps left limits. Identity reuse must satisfy those limits and any
 forced result representation. Canonical Hash events remain independent of
-physical storage and sharing. See [integer design](integer-sets.md),
+physical storage and sharing. See [integer design](../../crates/frost-collections-integer/docs/integer-sets.md),
 [integration review](../reviews/revision2-integration-review.md), and
 [current validation](../revision2-integration-validation.md). Borrowed expression
 views and persistent tree directories remain proposed extensions.
@@ -350,9 +350,9 @@ or extracting the native backend does not rewrite those blocks. Exact FST
 freezing is restricted to audited immutable byte-storage types; an arbitrary
 user-defined `AsRef<[u8]>` is not enough to establish structural immutability.
 
-Sources: [backend exports](../../src/backend.rs), [bitsets](../../src/backends/bitmap.rs),
-[slot maps](../../src/backends/slotmap.rs), [FST](../../src/backends/fst.rs),
-[persistent collections](../../src/backends/persistent.rs).
+Sources: [backend exports](../../crates/frost-collections-core/src/backend.rs), [bitsets](../../crates/frost-collections-core/src/backends/bitmap.rs),
+[slot maps](../../crates/frost-collections-core/src/backends/slotmap.rs), [FST](../../crates/frost-collections-core/src/backends/fst.rs),
+[persistent collections](../../crates/frost-collections-core/src/backends/persistent.rs).
 
 ## 6. Live concurrency and whole-version publication
 
@@ -402,10 +402,10 @@ primitive to retry derivation after conflicts and returns the displaced version.
 Its callback may repeat; the operation has no fairness or bounded-retry promise.
 `Send` and `Sync` follow the payload's actual auto traits. The store preserves
 structural versions; it does not deep-freeze elements or shared interior state.
-See [the complete snapshot contract](snapshots.md) and
+See [the complete snapshot contract](../../crates/frost-collections-concurrent/docs/snapshots.md) and
 [verification scope](../verification.md) for the linearization and model boundary.
 
-Source: [concurrent access and snapshot publication](../../src/concurrent/mod.rs).
+Source: [concurrent access and snapshot publication](../../crates/frost-collections-concurrent/src/concurrent/mod.rs).
 
 ## 7. Five framework contracts
 
@@ -474,9 +474,9 @@ sequence, map, or set schema. They do not describe private enum tags, native tab
 layout, capacity, hasher state, or adaptive thresholds. Schema generation adds
 no implication that the internal representation or runtime policy will round-trip.
 
-Sources: [framework overview](../../src/adapters/mod.rs), [Serde](../../src/adapters/serde.rs),
-[Borsh](../../src/adapters/borsh.rs), [Rayon](../../src/adapters/rayon.rs),
-[Arbitrary](../../src/adapters/arbitrary.rs), [Schemars](../../src/adapters/schemars.rs).
+Sources: [framework overview](../../crates/frost-collections-core/src/adapters/mod.rs), [Serde](../../crates/frost-collections-core/src/adapters/serde.rs),
+[Borsh](../../crates/frost-collections-core/src/adapters/borsh.rs), [Rayon](../../crates/frost-collections-core/src/adapters/rayon.rs),
+[Arbitrary](../../crates/frost-collections-core/src/adapters/arbitrary.rs), [Schemars](../../crates/frost-collections-core/src/adapters/schemars.rs).
 
 ## 8. Evolution and verification boundaries
 

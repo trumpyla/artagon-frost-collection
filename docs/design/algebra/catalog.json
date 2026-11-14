@@ -1,0 +1,495 @@
+{
+  "schema": "frost-formal-algebra-catalog/v1",
+  "repository_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "status": "proposed-contract",
+  "production_api_changed": false,
+  "authority": {
+    "implementation": "source/rustdoc/contracts at pinned revision",
+    "layout": "CRATES.md",
+    "current_names": "docs/design/collection-algebra.md#naming-dispositions (current selections; a recorded decision may change them)",
+    "this_proposal": "docs/design/algebra/README.md",
+    "api_compatibility": "docs/design/decisions.md#api-compatibility-is-not-a-constraint-2026-11-12"
+  },
+  "concepts": [
+    {
+      "name": "Value domain",
+      "model": "D=(T,P)",
+      "role": "admissibility; equality and enumeration are separate"
+    },
+    {
+      "name": "Key domain",
+      "model": "(D, equivalence)",
+      "role": "logical identity with observable representatives"
+    },
+    {
+      "name": "Set",
+      "model": "finite subsets of quotient keys",
+      "implemented": [
+        "MutableOrderedSet",
+        "FrozenOrderedSet",
+        "MutableHashSet",
+        "FrozenHashSet"
+      ],
+      "proposed": [
+        "SetView"
+      ]
+    },
+    {
+      "name": "Encoded set",
+      "implemented": [
+        "FrozenIntSet"
+      ],
+      "distinct_proposals": [
+        "IntSetExpr",
+        "FrozenIntSetView",
+        "PersistentIntSet"
+      ]
+    },
+    {
+      "name": "Map",
+      "model": "finite partial function",
+      "implemented": [
+        "MutableOrderedMap",
+        "FrozenOrderedMap",
+        "MutableHashMap",
+        "FrozenHashMap"
+      ],
+      "proposed": [
+        "MapView"
+      ]
+    },
+    {
+      "name": "Sequence",
+      "aliases": [
+        "mathematical list"
+      ],
+      "model": "finite words",
+      "implemented": [
+        "MutableVec",
+        "FrozenVec",
+        "InlineVec",
+        "InlineFrozenVec"
+      ],
+      "candidate": [
+        "SequenceView"
+      ]
+    },
+    {
+      "name": "Bag",
+      "aliases": [
+        "multiset"
+      ],
+      "model": "finite-support natural counts",
+      "candidate": [
+        "MutableBag",
+        "FrozenBag",
+        "BagView"
+      ]
+    },
+    {
+      "name": "Multimap",
+      "model": "finite-support fiber map",
+      "selected_proposed_names": [
+        "SeqMultiMap",
+        "SetMultiMap",
+        "BagMultiMap"
+      ],
+      "lifecycle_partners": "not decided by this refinement"
+    },
+    {
+      "name": "BiMap",
+      "model": "finite partial bijection",
+      "selected_proposed_names": [
+        "MutableBiMap",
+        "FrozenBiMap"
+      ]
+    },
+    {
+      "name": "Frozen",
+      "model": "structural access/lifecycle refinement, not separate collection carrier",
+      "implemented": [
+        "Frozen"
+      ],
+      "not_introduced": [
+        "FrozenValue",
+        "FrozenCollection",
+        "FrozenList",
+        "FrozenValueDomain"
+      ]
+    }
+  ],
+  "laws": [
+    {
+      "id": "FM-REFINE",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Representation refinement",
+      "statement": "Safety implication with typed preconditions; separate progress and error obligations",
+      "evidence": "definition; no generic executable implementation",
+      "cases": []
+    },
+    {
+      "id": "FM-OBS",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Observable refinement",
+      "statement": "Allowed-trace sets model unspecified order; equality is stronger than refinement",
+      "evidence": "definition; effect/representation counterexamples",
+      "cases": []
+    },
+    {
+      "id": "FM-PREFIX",
+      "document": "docs/design/algebra/formal-model.md",
+      "name": "Stream prefix soundness",
+      "statement": "Every emitted item justified; completeness must be separately established",
+      "evidence": "definition; not exercised by the finite model",
+      "cases": []
+    },
+    {
+      "id": "DOM-EQ",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Stable key equivalence",
+      "statement": "Equivalence classes require reflexivity, symmetry, transitivity and stability",
+      "evidence": "obligation; the model generates equivalences by construction and does not test this law",
+      "cases": []
+    },
+    {
+      "id": "DOM-CONGRUENCE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Quotient congruence",
+      "statement": "Key-only operations constant on each equivalence class",
+      "evidence": "finite functions/filters and representative counterexample",
+      "cases": [
+        "T-FORMAL_MODELS-017"
+      ]
+    },
+    {
+      "id": "DOM-VALID",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Validation soundness",
+      "statement": "Successful admission implies predicate; completeness/termination not inferred",
+      "evidence": "table of percentage boundary cases; general obligation",
+      "cases": [
+        "T-FORMAL_MODELS-021"
+      ]
+    },
+    {
+      "id": "DOM-NORMALIZE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Typed normalization",
+      "statement": "Separate raw meaning from valid-output equivalence; explicit embedding for idempotence",
+      "evidence": "proof obligation; raw-to-integer example and constant-normalizer counterexample",
+      "cases": [
+        "T-FORMAL_MODELS-020"
+      ]
+    },
+    {
+      "id": "DOM-CODE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Code injectivity",
+      "statement": "Key-code inverse on image; existing IntKey has stronger full-value laws",
+      "evidence": "proof obligation; current source mapping, no codec implementation executed",
+      "cases": []
+    },
+    {
+      "id": "DOM-IMAGE",
+      "document": "docs/design/algebra/domains.md",
+      "name": "Conversion homomorphisms",
+      "statement": "Total direct image preserves union; injection necessary/sufficient for intersection/difference/XOR; inclusion directions otherwise",
+      "evidence": "proof argument plus all functions on three keys, each operation separately; bag pushforward of sum",
+      "cases": [
+        "T-FORMAL_MODELS-019",
+        "T-FORMAL_MODELS-018",
+        "T-FORMAL_MODELS-016"
+      ],
+      "verus": [
+        "image_preserves_union_and_bounds_intersection",
+        "preimage_preserves_the_boolean_operations"
+      ]
+    },
+    {
+      "id": "SET-BOOLEAN",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Finite set laws",
+      "statement": "Membership laws, explicit universe and count formulas",
+      "evidence": "bounded exhaustive equations and independent sorted merge",
+      "cases": [
+        "T-FORMAL_MODELS-040",
+        "T-FORMAL_MODELS-038",
+        "T-FORMAL_MODELS-037",
+        "T-FORMAL_MODELS-044",
+        "T-FORMAL_MODELS-045"
+      ],
+      "kani": [
+        "proofs::ordered_set_algebra",
+        "set_laws::proofs::ordered_union_refines_the_representative_rule",
+        "set_laws::proofs::ordered_intersection_refines_the_representative_rule",
+        "set_laws::proofs::ordered_difference_refines_the_representative_rule",
+        "set_laws::proofs::ordered_symmetric_difference_refines_the_representative_rule"
+      ],
+      "verus": [
+        "set_union_and_intersection_form_semilattices",
+        "set_lattice_is_distributive",
+        "symmetric_difference_is_a_group_operation"
+      ]
+    },
+    {
+      "id": "SET-REP",
+      "document": "docs/design/algebra/sets.md",
+      "name": "Representative refinement",
+      "statement": "Left union/intersection associate; commutation, XOR reassociation, and two absorption/distribution orientations can fail",
+      "evidence": "pointwise argument, metadata enumeration, pinned left rule",
+      "cases": [
+        "T-FORMAL_MODELS-038",
+        "T-FORMAL_MODELS-041",
+        "T-FORMAL_MODELS-042",
+        "T-FORMAL_MODELS-039",
+        "T-FORMAL_MODELS-036",
+        "T-FORMAL_MODELS-046"
+      ],
+      "kani": [
+        "set_laws::proofs::ordered_union_refines_the_representative_rule",
+        "set_laws::proofs::ordered_intersection_refines_the_representative_rule",
+        "set_laws::proofs::ordered_difference_refines_the_representative_rule",
+        "set_laws::proofs::ordered_symmetric_difference_refines_the_representative_rule",
+        "set_laws::proofs::nested_ordered_union_keeps_the_first_representative"
+      ],
+      "verus": [
+        "left_representatives_associate"
+      ]
+    },
+    {
+      "id": "MAP-LIFT",
+      "document": "docs/design/algebra/maps.md",
+      "name": "Map merge lifting",
+      "statement": "Lift collision resolver through absence and check totality/definedness",
+      "evidence": "pointwise proof argument; finite overrides/sum/deletion counterexample",
+      "cases": [
+        "T-FORMAL_MODELS-027",
+        "T-FORMAL_MODELS-025",
+        "T-FORMAL_MODELS-028"
+      ]
+    },
+    {
+      "id": "BAG-LAWS",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Count algebras",
+      "statement": "Natural sum versus max/min/monus/absolute difference",
+      "evidence": "pointwise argument, exhaustive small counts and counterexamples",
+      "cases": [
+        "T-FORMAL_MODELS-002",
+        "T-FORMAL_MODELS-003",
+        "T-FORMAL_MODELS-004"
+      ],
+      "verus": [
+        "count_operations_satisfy_their_laws"
+      ]
+    },
+    {
+      "id": "COUNT-PARTIAL",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Bounded count addition",
+      "statement": "Either association succeeds iff total fits; errors/traces separate",
+      "evidence": "nonnegative arithmetic argument and a model with bound M=3",
+      "cases": [
+        "T-FORMAL_MODELS-001"
+      ],
+      "verus": [
+        "checked_sum_associates"
+      ]
+    },
+    {
+      "id": "BAG-SUPPORT",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Support projection",
+      "statement": "Preserves sum/max as union and min as intersection; not monus/XOR",
+      "evidence": "pointwise proof and finite model",
+      "cases": [
+        "T-FORMAL_MODELS-005"
+      ],
+      "verus": [
+        "support_follows_the_lattice"
+      ]
+    },
+    {
+      "id": "SEQ-MONOID",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Free monoid",
+      "statement": "Concatenation identity/association, occurrence preservation",
+      "evidence": "word argument and finite words",
+      "cases": [
+        "T-FORMAL_MODELS-033",
+        "T-FORMAL_MODELS-035",
+        "T-FORMAL_MODELS-034"
+      ],
+      "verus": [
+        "concatenation_is_a_monoid"
+      ]
+    },
+    {
+      "id": "SEQ-EFFECT",
+      "document": "docs/design/algebra/sequences.md",
+      "name": "Execution effects",
+      "statement": "Pure equations do not establish callback/error/drop equivalence",
+      "evidence": "design obligation; future Rust effect/drop tests required",
+      "cases": []
+    },
+    {
+      "id": "MM-SUPPORT",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Empty-fiber normalization",
+      "statement": "Canonical proposed multimap absent iff fiber empty; native maps may differ",
+      "evidence": "definition and present-empty counterexample",
+      "cases": [
+        "T-FORMAL_MODELS-030"
+      ]
+    },
+    {
+      "id": "REL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Boolean relation composition",
+      "statement": "Existential witnesses; associative and union-distributive",
+      "evidence": "witness proof argument and finite Boolean matrices",
+      "cases": [
+        "T-FORMAL_MODELS-029",
+        "T-FORMAL_MODELS-032"
+      ]
+    },
+    {
+      "id": "BAGREL-COMP",
+      "document": "docs/design/algebra/multimaps.md",
+      "name": "Weighted composition",
+      "statement": "Sum of products counts derivations; cycle convergence is a separate question in computed sets",
+      "evidence": "finite double-sum argument; 2×2 matrices with weights 0..2, cross-checked against Boolean composition",
+      "cases": [
+        "T-FORMAL_MODELS-031",
+        "T-FORMAL_MODELS-032"
+      ]
+    },
+    {
+      "id": "BIMAP-CLOSED",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Partial-bijection closure",
+      "statement": "Subsets/inverse/composition preserve both uniqueness projections",
+      "evidence": "proof argument and all small partial bijections",
+      "cases": [
+        "T-FORMAL_MODELS-008",
+        "T-FORMAL_MODELS-009",
+        "T-FORMAL_MODELS-006",
+        "T-FORMAL_MODELS-043"
+      ]
+    },
+    {
+      "id": "BIMAP-IDENTITY",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Local inverse identities",
+      "statement": "Identities on domain/range; global finite identity requires finite universe",
+      "evidence": "proof argument and finite model",
+      "cases": [
+        "T-FORMAL_MODELS-008"
+      ]
+    },
+    {
+      "id": "BIMAP-PARTIAL",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Checked operations",
+      "statement": "Union partial definedness associates; checked XOR does not",
+      "evidence": "subset proof argument; enumeration against validity of the three-way union; explicit conflict counterexample",
+      "cases": [
+        "T-FORMAL_MODELS-007",
+        "T-FORMAL_MODELS-006"
+      ],
+      "verus": [
+        "partial_bijections_are_downward_closed",
+        "checked_union_succeeds_exactly_when_the_whole_union_is_valid"
+      ]
+    },
+    {
+      "id": "FROZEN-DENOTE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Phase transition",
+      "statement": "Successful freeze of lawful family preserves denotation, not all representation details",
+      "evidence": "typed contract; actual Rust transitions not executed",
+      "cases": [
+        "T-FORMAL_MODELS-044",
+        "T-FORMAL_MODELS-045"
+      ]
+    },
+    {
+      "id": "FROZEN-STABLE",
+      "document": "docs/design/algebra/frozen.md",
+      "name": "Structural versus deep stability",
+      "statement": "Fixed structure is not fixed heap payload or source revision",
+      "evidence": "abstract heap counterexample; no Rust aliasing proof",
+      "cases": [
+        "T-FORMAL_MODELS-023",
+        "T-FORMAL_MODELS-024"
+      ]
+    },
+    {
+      "id": "KNOW-BOUNDS",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Incomplete set knowledge",
+      "statement": "Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption",
+      "evidence": "inclusion proof; soundness and tightness over all interval realizations on three keys",
+      "cases": [
+        "T-FORMAL_MODELS-011",
+        "T-FORMAL_MODELS-014"
+      ],
+      "verus": [
+        "knowledge_bounds_are_sound"
+      ]
+    },
+    {
+      "id": "DELTA-REPLAY",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Revisioned overlays",
+      "statement": "Exact base plus ordered complete suffix; ordered compaction preserves result",
+      "evidence": "fold decomposition argument; short histories against a last-event-wins reference",
+      "cases": [
+        "T-FORMAL_MODELS-012",
+        "T-FORMAL_MODELS-015"
+      ]
+    }
+  ],
+  "implementation_plan": "docs/design/algebra/rust-integration.md",
+  "package_decision": "frost-wlt.1; no package list approved by this patch",
+  "checks": {
+    "target": "tests/formal_models/main.rs",
+    "contract": "C-ALGEBRA-FORMAL-MODELS",
+    "catalog": "verification/metadata/catalog.json",
+    "unmapped_cases": [
+      "T-FORMAL_MODELS-010",
+      "T-FORMAL_MODELS-013",
+      "T-FORMAL_MODELS-022",
+      "T-FORMAL_MODELS-026"
+    ],
+    "kani": "verification/kani/src/lib.rs",
+    "verus": "verification/verus/src/lib.rs"
+  },
+  "historical_aliases": [
+    {
+      "old": "ListMultiMap",
+      "current": "SeqMultiMap",
+      "reason": "selected on current main; no linked-list implication"
+    },
+    {
+      "old": "MapGet/Get for maps",
+      "current": "LookupRef",
+      "reason": "existing capability retained"
+    },
+    {
+      "old": "SortedMapEntries",
+      "current": "Entries plus OrderedEntries",
+      "reason": "existing split retained"
+    },
+    {
+      "old": "bag symmetric_difference",
+      "current": "absolute_difference",
+      "reason": "new proposal spelling; no Boolean XOR associativity"
+    },
+    {
+      "old": "difference_keys",
+      "current": "difference_by_key",
+      "reason": "recommendation, not an implemented rename"
+    }
+  ]
+}

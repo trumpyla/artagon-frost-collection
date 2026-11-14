@@ -1,0 +1,297 @@
+{
+  "schema": "frost-bench-inventory/1",
+  "targets": {
+    "benches/snapshots.rs": [
+      {
+        "name": "snapshot.owned_load.1_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.owned_load.1_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.guard_load.1_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.guard_load.1_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.peek.1_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.peek.1_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.raw_arc_swap_guard.1_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.raw_arc_swap_guard.1_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.owned_load.2_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.owned_load.2_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.guard_load.2_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.guard_load.2_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.peek.2_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.peek.2_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.raw_arc_swap_guard.2_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.raw_arc_swap_guard.2_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.owned_load.3_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.owned_load.3_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.guard_load.3_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.guard_load.3_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.peek.3_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.peek.3_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "name": "snapshot.raw_arc_swap_guard.3_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "scenario": "benchmark case snapshot.raw_arc_swap_guard.3_readers.aggregate_ns_per_read",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": [],
+        "control": "unreviewed: no equivalent native control established"
+      },
+      {
+        "name": "snapshot.owned_load.4_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.owned_load.4_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.guard_load.4_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.guard_load.4_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.peek.4_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.peek.4_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "snapshot.raw_arc_swap_guard.4_readers.aggregate_ns_per_read",
+        "timing": "aggregate-readers",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "snapshot",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case snapshot.raw_arc_swap_guard.4_readers.aggregate_ns_per_read",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "concurrent",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      }
+    ]
+  }
+}

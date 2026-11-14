@@ -1,7 +1,7 @@
 # Proposal: further frozen integer collections
 
 > Supplied design proposal, preserved for comparison. The implemented profile is
-> described in [the current integer-set contract](../integer-sets.md); this proposal
+> described in [the current integer-set contract](../../../crates/frost-collections-integer/docs/integer-sets.md); this proposal
 > does not override that contract or the general set-algebra design.
 
 Status: proposal. Revision 2 of the integer profile implemented the first item

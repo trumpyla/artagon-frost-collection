@@ -21,17 +21,17 @@ harnesses:
 
 | Path | Role | Dependency boundary |
 | --- | --- | --- |
-| `src/**/*.rs` | Library implementation; `#![no_std]` with additive `alloc` and `std` features; inline `#[cfg(test)]` modules only for private kernel invariants (`src/integer/**`) | Production dependencies only (`Cargo.toml` `[dependencies]`) |
-| `tests/*.rs` | Public API contract, differential, property, exhaustive finite-domain, and concurrency integration suites (`tests/concurrent/*.rs` are submodules of `tests/concurrent.rs`) | Library public surface plus `[dev-dependencies]` (`proptest`, reference crates) |
-| `examples/*.rs` | User-facing executable scenarios with `test = true` and explicit `required-features` | Library public surface |
-| `benches/*.rs` | Calibrated `harness = false` wall-clock benchmarks sharing `benches/support/mod.rs` | Library public surface; never run as pass/fail CI speed gates |
-| `verification/loom` | Standalone `[workspace]` exploring `src/concurrent/publication.rs` via `#[path]` under `loom = "=0.7.3"` | Isolated `Cargo.lock`; zero impact on root `Cargo.toml` |
-| `verification/kani` | Standalone `[workspace]` proving six bounded harnesses over public APIs and `#[path]`-included `src/adaptive/seq/buf.rs` | Isolated `Cargo.lock`; native helper smoke runs in `make bounded` |
-| `verification/fuzz` | Standalone `[workspace]` (`cargo-fuzz` / `libfuzzer-sys 0.4.13`) with shared differential oracles in [`verification/fuzz/src/lib.rs`](../../verification/fuzz/src/lib.rs) | Isolated `Cargo.lock`; native corpus replay runs in `make fuzz-check` |
-| `verification/int-key-downstream` | Standalone downstream crate testing `IntKey` coherence and compile-fail domain separation | Isolated `Cargo.lock`; runs in `make integers` |
+| `src/**/*.rs` | Library implementation; `#![no_std]` with additive `alloc` and `std` features; inline `#[cfg(test)]` modules only for private kernel invariants (`crates/frost-collections-integer/src/integer/**`) | Production dependencies only (`Cargo.toml` `[dependencies]`) |
+| `crates/*/tests/*.rs` | Public API contract, differential, property, exhaustive finite-domain, and concurrency integration suites (`crates/frost-collections-concurrent/tests/concurrent/*.rs` are submodules of `crates/frost-collections-concurrent/tests/concurrent.rs`) | Library public surface plus `[dev-dependencies]` (`proptest`, reference crates) |
+| `crates/frost-collections/examples/*.rs` | User-facing executable scenarios with `test = true` and explicit `required-features` | Library public surface |
+| `crates/*/benches/*.rs` | Calibrated `harness = false` wall-clock benchmarks sharing `crates/frost-collections-test-support/src/bench.rs` | Library public surface; never run as pass/fail CI speed gates |
+| `crates/frost-collections-concurrent/verification/loom` | Standalone `[workspace]` exploring `crates/frost-collections-concurrent/src/concurrent/publication.rs` via `#[path]` under `loom = "=0.7.3"` | Isolated `Cargo.lock`; zero impact on root `Cargo.toml` |
+| `crates/frost-collections-core/verification/kani` | Standalone `[workspace]` proving six bounded harnesses over public APIs and `#[path]`-included `crates/frost-collections-core/src/adaptive/seq/buf.rs` | Isolated `Cargo.lock`; native helper smoke runs in `make bounded` |
+| `crates/frost-collections-integer/fuzz` | Standalone `[workspace]` (`cargo-fuzz` / `libfuzzer-sys 0.4.13`) with shared differential oracles in [`crates/frost-collections-integer/fuzz/src/lib.rs`](../../crates/frost-collections-integer/fuzz/src/lib.rs) | Isolated `Cargo.lock`; native corpus replay runs in `make fuzz-check` |
+| `crates/frost-collections/verification/int-key-downstream` | Standalone downstream crate testing `IntKey` coherence and compile-fail domain separation | Isolated `Cargo.lock`; runs in `make integers` |
 | `verification/coverage` | Source-coverage policy ([`coverage-policy.json`](../../verification/coverage/coverage-policy.json)) and denominator documentation ([`README.md`](../../verification/coverage/README.md)) | Executed via `cargo-llvm-cov` (`make coverage`, `make coverage-gate`) |
 | `verification/mutation` | Mutation policy and survivor triage ledger ([`survivor-triage.json`](../../verification/mutation/survivor-triage.json), [`README.md`](../../verification/mutation/README.md)) | Executed via `cargo-mutants` and [`.config/mutants.toml`](../../.config/mutants.toml) (`make mutants`) |
-| `verification/catalog` | Structural test/proof metadata, contract references, and live benchmark inventory checks ([`verification/metadata/catalog.json`](../../verification/metadata/catalog.json), [`verification/metadata/bench-inventory.json`](../../verification/metadata/bench-inventory.json)); semantic obligation coverage remains unmeasured | Executed via `make catalog` and `make catalog-inventory` |
+| `verification/catalog` | Structural test/proof metadata, contract references, and live benchmark inventory checks ([`verification/metadata/catalog.json`](../../verification/metadata/catalog.json), [`verification/metadata/bench-inventory.json`](../../crates/frost-collections-core/verification/metadata/bench-inventory.json)); semantic obligation coverage remains unmeasured | Executed via `make catalog` and `make catalog-inventory` |
 
 ## 2. Public API semantic obligations beyond percentages
 
@@ -47,8 +47,8 @@ obligations:
    - Set `union` and `intersection` retain the **left** representative.
    - Tests must use composite keys whose `Eq`/`Ord`/`Hash` inspect an identifier
      while carrying a distinct observable tag (as in
-     [`tests/api_contracts.rs`](../../tests/api_contracts.rs) and
-     [`verification/fuzz/src/lib.rs`](../../verification/fuzz/src/lib.rs)),
+     [`crates/frost-collections-core/tests/api_contracts.rs`](../../crates/frost-collections-core/tests/api_contracts.rs) and
+     [`crates/frost-collections-integer/fuzz/src/lib.rs`](../../crates/frost-collections-integer/fuzz/src/lib.rs)),
      never only primitive integers where all equal values are identical.
 2. **Ownership and drop accounting**:
    - Consuming transitions (`freeze`, `thaw`, `into_vec`, `into_map`, `into_set`,
@@ -93,7 +93,7 @@ This exclusion regex is a **file-scoped library-source denominator** over
 `src/**/*.rs`—not a test-free production-code denominator. Because `cargo
 llvm-cov --all-features --locked` compiles the library target with `cfg(test)`,
 inline `#[cfg(test)]` modules inside `src/**/*.rs` (such as unit test modules
-under `src/integer/**`) remain in `src/**/*.rs` and are included in both the
+under `crates/frost-collections-integer/src/integer/**`) remain in `src/**/*.rs` and are included in both the
 numerator and denominator unless refactored or filtered separately. Default
 `cargo llvm-cov --all-features --locked` runs unit, integration, and example
 test targets; custom `harness = false` benchmark targets (`benches/`) do not
@@ -133,11 +133,11 @@ The authoritative `aarch64-apple-darwin` baseline at commit
   Follow-up Beads tasks (`frost-wou.6` through `frost-wou.10`, preceding the
   multi-crate migration in `frost-wlt.1` through `frost-wlt.6`) own raising the
   floor toward the `CRATES.md` §5 targets as subsystem tests land (beginning
-  with [`tests/api_contracts.rs`](../../tests/api_contracts.rs), mapped in
+  with [`crates/frost-collections-core/tests/api_contracts.rs`](../../crates/frost-collections-core/tests/api_contracts.rs), mapped in
   [`verification/crate-standards-validation/api-contracts.md`](../../verification/crate-standards-validation/api-contracts.md)).
 - **Exclusions**: Never sprinkle `#[coverage(off)]` on production functions to
   inflate percentages. Target-specific branches (such as the non-atomic `Rc`
-  branch in `src/integer/mod.rs`) are verified by `make embedded`
+  branch in `crates/frost-collections-integer/src/integer/mod.rs`) are verified by `make embedded`
   (`thumbv6m-none-eabi`) and documented in
   [`verification/coverage/README.md`](../../verification/coverage/README.md).
 
@@ -162,16 +162,16 @@ Mutation testing runs via `make mutants` using
 
 - **No timing assertions or sleeps**: Correctness tests must never call
   `thread::sleep` or assert wall-clock durations. Concurrency tests use explicit
-  barriers or deterministic schedule exploration ([`tests/publication_model.rs`](../../tests/publication_model.rs)
-  and [`verification/loom/src/lib.rs`](../../verification/loom/src/lib.rs)).
+  barriers or deterministic schedule exploration ([`crates/frost-collections-concurrent/tests/publication_model.rs`](../../crates/frost-collections-concurrent/tests/publication_model.rs)
+  and [`crates/frost-collections-concurrent/verification/loom/src/lib.rs`](../../crates/frost-collections-concurrent/verification/loom/src/lib.rs)).
 - **Nextest profile ([`.config/nextest.toml`](../../.config/nextest.toml))**:
   `retries = 0` is mandatory in all profiles (`default`, `ci`, `mutants`).
 - **Property tests (`proptest 1.12`)**:
-  Commit any `.proptest-regressions` file (such as `tests/integer_sets.proptest-regressions`)
+  Commit any `.proptest-regressions` file (such as `crates/frost-collections-integer/tests/integer_sets.proptest-regressions`)
   to Git so discovered counterexamples replay deterministically before random
   generation on every `make test` and `make nextest` run. Override case counts in
   deep nightly runs with `PROPTEST_CASES=1024`.
-- **Isolated fuzzing ([`verification/fuzz`](../../verification/fuzz/README.md))**:
+- **Isolated fuzzing ([`crates/frost-collections-integer/fuzz`](../../crates/frost-collections-integer/fuzz/README.md))**:
   `make fuzz-check` replays the checked-in seed corpus deterministically on
   stable Rust `1.99.1`. `make fuzz-smoke` runs bounded `libFuzzer` exploration
   on `nightly-2026-11-08` using an ephemeral working corpus directory
@@ -182,5 +182,5 @@ Mutation testing runs via `make mutants` using
 | Tier | When to run | Make targets / workflows | Tooling failure policy |
 | --- | --- | --- | --- |
 | **Tier 1: PR / pre-review gate** | Every code or doc change before review; every pull request | `make check`, `make nextest`, `make fuzz-check`, `make coverage-gate` ([`.github/workflows/ci.yml`](../../.github/workflows/ci.yml), [`.github/workflows/verification.yml`](../../.github/workflows/verification.yml)) | Missing required tools (`cargo`, `jq`, `cargo-nextest`, `cargo-llvm-cov` in coverage job) fail the command with a non-zero exit code. |
-| **Tier 2: Nightly / deep exploration** | Scheduled nightly CI or after touching set kernels, adaptive promotion, or integer storage | `make coverage-branch`, `make fuzz-smoke`, `PROPTEST_CASES=1024 make test`, `make bounded`, `make loom`, `make mutants` | Each optional Make target checks `"$(CARGO)" <tool> --version` first and exits non-zero if the tool is absent—never faking a skip or pass. |
+| **Tier 2: Nightly / deep exploration** | Scheduled nightly CI or after touching set kernels, adaptive promotion, or integer storage | `make coverage-branch`, `make fuzz-smoke`, `PROPTEST_CASES=1024 make test`, `make bounded`, `make loom`, `make mutants`, `make miri` (not on push or pull request) | Each optional Make target checks `"$(CARGO)" <tool> --version` first and exits non-zero if the tool is absent—never faking a skip or pass. |
 | **Tier 3: Release candidate gate** | Before tagging or completing a milestone ([`releasing.md`](releasing.md)) | `make verify`, `make embedded`, `make miri`, `make bounded`, `make loom`, `make coverage-gate`, `make fuzz-smoke`, `make shell-check`, `make tools-check`, and `make kani` ([`.github/workflows/proofs.yml`](../../.github/workflows/proofs.yml)) | Any unrun or tool-blocked gate (such as Kani when its bundled nightly compiler lags `rust-version = "1.99.1"`) must be recorded as an open gate, never a pass. |

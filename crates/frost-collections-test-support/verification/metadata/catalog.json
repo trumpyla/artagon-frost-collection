@@ -1,0 +1,41 @@
+{
+  "schema": "frost-verification-catalog/1",
+  "contracts": [
+    {
+      "id": "C-WORKLOAD-FACTORY",
+      "title": "Test/bench workload factories are deterministic in their spec, give exact structural guarantees, reject invalid parameters before generation, and keep oracles outside timing",
+      "source": "src/workload.rs module documentation; docs/design/philosophy.md 'Optimize work, then verify the tradeoff'",
+      "obligations": []
+    }
+  ],
+  "targets": [
+    {
+      "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "T-LIB-048",
+      "file": "src/lib.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    }
+  ]
+}

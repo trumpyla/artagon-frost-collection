@@ -14,9 +14,9 @@ available; this checkout's commands also work without those plugins.
 | Find Rust syntax shapes or preview a structural rewrite | `ast-grep` | Parses syntax, not receiver types, macro expansions, or feature combinations. |
 | Search text, current edits, feature declarations, CI, or prose | `rtk rg` | Reads current files; respect exit 1 for no match and exit 2 for errors. |
 
-Use `src/` for production code, `tests/` for contracts, and `examples/` and
-`benches/` for consumers. The isolated `verification/loom`, `verification/kani`,
-and `verification/int-key-downstream` packages need separate attention when
+Use `src/` for production code, `tests/` for contracts, and `crates/frost-collections/examples/` and
+`benches/` for consumers. The isolated `crates/frost-collections-concurrent/verification/loom`, `crates/frost-collections-core/verification/kani`,
+and `crates/frost-collections/verification/int-key-downstream` packages need separate attention when
 their included production sources or dependency contracts change.
 
 [.ignore](.ignore) keeps historical runs and supplied source copies out of
@@ -74,13 +74,13 @@ language explicitly; configured rules declare `language: Rust` in YAML.
 
 ```sh
 ast-grep --version
-ast-grep run --lang rust --pattern '$VALUE.freeze()' src
+ast-grep run --lang rust --pattern '$VALUE.freeze()' crates
 ast-grep test --config sgconfig.yml
-ast-grep scan --config sgconfig.yml --inspect summary src
+ast-grep scan --config sgconfig.yml --inspect summary crates
 ```
 
 The `rust-unsafe-block-scope` rule flags unsafe blocks in production source
-outside `src/adaptive/seq/buf.rs`, matching the existing project boundary.
+outside `crates/frost-collections-core/src/adaptive/seq/buf.rs`, matching the existing project boundary.
 Its fixtures cover real blocks and near misses in strings/comments. Path
 scoping is checked by scanning the production tree; fixture tests exercise
 the matcher. The rule does not audit unsafe functions, trait implementations,

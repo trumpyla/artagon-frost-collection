@@ -21,8 +21,10 @@ as unreviewed; it does not remove stale names.
 
 ## Structural discovery
 
-Cargo metadata supplies roots for the library, integration tests, examples,
-benches, and the isolated catalog, fuzz, Kani, Loom and downstream packages.
+Cargo metadata supplies roots for every package of the root manifest (library,
+integration tests, examples, benches) and for each isolated package a catalog
+lists under `isolated[]`: today the catalog, fuzz, Kani, Loom and downstream
+packages.
 The parser follows inline and external modules, including `#[path]`, and uses
 fully qualified module names. It records `#[test]`, `#[kani::proof]`, proptest
 declarations, fuzz entry macros, and benchmark targets. Target roots without a
@@ -36,8 +38,18 @@ evaluation of feature or target eligibility.
 
 ## Catalog schema `frost-verification-catalog/1`
 
-`verification/metadata/catalog.json` contains `schema`, `contracts[]`,
-`targets[]`, and `cases[]`. Contracts have `id`, `title`, `source` paths, and
+A catalog file is `<base>/verification/metadata/catalog.json`. The repository
+root has one; each package of the root manifest may have its own. `check` and
+`scaffold` read them all from `--root <repository root>`. Target paths, case
+`file` and `target`, and `isolated[]` manifests are relative to the file's
+base. A `provenance` or contract `source` path names a file under the base if
+one exists there, and otherwise a file relative to the repository root.
+Contract and case IDs share one namespace across files. `scaffold` writes a
+new record to the file whose base owns the target. The benchmark inventory
+follows the same rule; `inventory` takes `--root <package directory>`.
+
+A file contains `schema`, `contracts[]`, `targets[]`, `cases[]`, and
+optionally `isolated[]`. Contracts have `id`, `title`, `source` paths, and
 `obligations[]`. Names are traceability references: the tool does not resolve
 `Type::method` or measure public API obligation coverage.
 

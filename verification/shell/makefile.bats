@@ -7,12 +7,22 @@ setup() {
   frost_cargo="$BATS_TEST_TMPDIR/cargo stub"
   mkdir -p "$frost_fixture"
   cp "$BATS_TEST_DIRNAME/../../Makefile" "$frost_fixture/Makefile"
+  mkdir -p "$frost_fixture/scripts"
+  cp "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" "$frost_fixture/scripts/"
+  export FROST_TEST_RESULT='test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out'
   export FROST_TEST_LOG="$BATS_TEST_TMPDIR/calls"
   export FROST_TEST_FAIL_COMMAND=
   unset RUSTDOCFLAGS
   unset FROST_MIRI_SURVEY_CASE
+  mkdir -p "$frost_fixture/crates/member dir/src"
+  touch "$frost_fixture/Cargo.toml" "$frost_fixture/Cargo.lock" \
+    "$frost_fixture/rust-toolchain.toml" "$frost_fixture/crates/member dir/Cargo.toml" \
+    "$frost_fixture/crates/member dir/src/lib.rs" "$frost_fixture/crates/member dir/unlisted.txt"
+  export FROST_TEST_TREE='frost-collections-core v0.4.0 (/work/core) []'
+  export FROST_TEST_PACKAGE_FILES=$'Cargo.toml\nCargo.toml.orig\nCargo.lock\nsrc/lib.rs'
   export FROST_TEST_METADATA='{"target_directory":"build area","packages":[{
     "name":"frost-collections","version":"0.4.0",
+    "manifest_path":"'"$frost_fixture"'/crates/member dir/Cargo.toml",
     "features":{"default":[],"alloc":[],"std":[],"advanced":[],
       "concurrent":[],"frameworks":[],"alpha-feature":[],"zeta-feature":[]},
     "targets":[{"name":"frost","kind":["lib"]},
@@ -35,6 +45,18 @@ fi
 if [[ $1 == metadata ]]; then
   printf '%s\n' "$FROST_TEST_METADATA"
 fi
+if [[ $1 == package ]]; then
+  printf '%s\n' "$FROST_TEST_PACKAGE_FILES"
+fi
+if [[ $1 == tree ]]; then
+  printf '%s\n' "$FROST_TEST_TREE"
+fi
+for argument in "$@"; do
+  if [[ $argument == test ]]; then
+    printf '%s\n' "$FROST_TEST_RESULT"
+    break
+  fi
+done
 STUB
   chmod +x "$frost_cargo"
 }
@@ -100,8 +122,8 @@ STUB
   run_make features
   [ "$status" -eq 0 ]
   [ "$(wc -l <"$FROST_TEST_LOG")" -eq 7 ]
-  [[ "$(<"$FROST_TEST_LOG")" == *'<clippy> <--lib> <--no-default-features> <--features> <alpha-feature>'* ]]
-  [[ "$(<"$FROST_TEST_LOG")" == *'<test> <--no-default-features> <--features> <zeta-feature>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<clippy> <-p> <frost-collections> <--lib> <--no-default-features> <--features> <alpha-feature>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<test> <-p> <frost-collections> <--no-default-features> <--features> <zeta-feature>'* ]]
   [[ "$(<"$FROST_TEST_LOG")" != *'<--features> <default>'* ]]
 }
 
@@ -116,15 +138,23 @@ STUB
   FROST_TEST_FAIL_COMMAND=run run_make examples
   [ "$status" -ne 0 ]
   [ "$(wc -l <"$FROST_TEST_LOG")" -eq 2 ]
-  [[ "$(<"$FROST_TEST_LOG")" == *'<run> <--example> <first> <--all-features> <--locked>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<run> <-p> <frost-collections> <--example> <first> <--all-features> <--locked>'* ]]
   [[ "$(<"$FROST_TEST_LOG")" != *'<second>'* ]]
 }
 
-@test "package tests preserve the manifest path as one argument" {
+@test "package tests run on a scratch copy of the packaged file set" {
   run_make package
   [ "$status" -eq 0 ]
-  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 4 ]
-  [[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.toml>'* ]]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+  [[ "$(<"$FROST_TEST_LOG")" == *'CALL <package> <--list> <--locked> <--allow-dirty> <-p> <frost-collections>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'CALL <test> <--manifest-path> <target/package-check/workspace.'*'/Cargo.toml> <--target-dir> <target/package-check/target> <--workspace> <--all-features> <--locked>'* ]]
+  scratch=("$frost_fixture"/target/package-check/workspace.*)
+  [ "${#scratch[@]}" -eq 1 ]
+  [ -f "${scratch[0]}/Cargo.lock" ]
+  [ -f "${scratch[0]}/crates/member dir/src/lib.rs" ]
+  [ -f "${scratch[0]}/crates/member dir/Cargo.toml" ]
+  [ ! -e "${scratch[0]}/crates/member dir/unlisted.txt" ]
+  [ ! -e "${scratch[0]}/crates/member dir/Cargo.lock" ]
 }
 
 @test "failed packaging never runs tests on an old extracted package" {
@@ -158,9 +188,40 @@ STUB
   use_crlf_jq
   run_make package "JQ=$frost_jq"
   [ "$status" -eq 0 ]
-  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 4 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
   [[ "$(<"$FROST_TEST_LOG")" != *$'\r'* ]]
-  [[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.toml>'* ]]
+  scratch=("$frost_fixture"/target/package-check/workspace.*)
+  [ -f "${scratch[0]}/crates/member dir/src/lib.rs" ]
+}
+
+@test "catalog-inventory names each bench target relative to its package" {
+  FROST_TEST_METADATA='{"packages":[{"name":"frost-collections-core",
+    "manifest_path":"'"$frost_fixture"'/crates/member dir/Cargo.toml",
+    "targets":[{"name":"frost","kind":["lib"],
+      "src_path":"'"$frost_fixture"'/crates/member dir/src/lib.rs"},
+      {"name":"ordered_sets","kind":["bench"],
+      "src_path":"'"$frost_fixture"'/crates/member dir/benches/ordered_sets.rs"}]}]}' \
+    run_make catalog-inventory
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<bench> <-p> <frost-collections-core> <--locked> <--all-features> <--bench> <ordered_sets>'* ]]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<inventory> <benches/ordered_sets.rs> <target/catalog-inventory/ordered_sets.list> <--root> <'"$frost_fixture"'/crates/member dir>'* ]]
+}
+
+@test "catalog-inventory accepts native Windows paths from Cargo metadata" {
+  FROST_TEST_METADATA='{"packages":[{"name":"frost-collections-core",
+    "manifest_path":"D:\\work\\crates\\core\\Cargo.toml",
+    "targets":[{"name":"ordered_sets","kind":["bench"],
+      "src_path":"D:\\work\\crates\\core\\benches\\ordered_sets.rs"}]}]}' \
+    run_make catalog-inventory
+  [ "$status" -eq 0 ]
+  [[ "$(<"$FROST_TEST_LOG")" == *'<inventory> <benches/ordered_sets.rs> <target/catalog-inventory/ordered_sets.list> <--root>'* ]]
+}
+
+@test "catalog-inventory fails when no package has a bench target" {
+  run_make catalog-inventory
+  [ "$status" -ne 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 1 ]
 }
 
 @test "integer-ab keeps setup diagnostics out of its CSV stream" {
@@ -178,6 +239,7 @@ STUB
     "SHELL=$frost_bash" "CARGO=$frost_cargo" integer-ab
   [ "$status" -eq 0 ]
   [ "$output" = $'case,old_min_ns,new_min_ns,old_over_new,old_repr,new_repr\nfixture,2,1,2,Sorted,Sorted' ]
+  # shellcheck disable=SC2154 # set by Bats `run --separate-stderr`
   [[ "$stderr" == *'prepared baseline fixture'* ]]
 }
 
@@ -192,4 +254,68 @@ STUB
       done
     done
   done
+}
+
+@test "a lane that selects tests by name fails when it executes none" {
+  export FROST_TEST_RESULT='test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out'
+  run_make bounded
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'a selected test binary executed no test'* ]]
+}
+
+@test "the empty-selection guard checks each test binary" {
+  frost_two="$BATS_TEST_TMPDIR/two binaries"
+  cat >"$frost_two" <<'STUB'
+#!/usr/bin/env bash
+printf 'test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\n'
+printf 'test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out\n'
+STUB
+  chmod +x "$frost_two"
+  run "$frost_bash" "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" "$frost_two"
+  [ "$status" -eq 1 ]
+  run "$frost_bash" "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" --total "$frost_two"
+  [ "$status" -eq 0 ]
+}
+
+@test "feature isolation passes when the core package resolves without std" {
+  run_make feature-isolation
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+}
+
+@test "feature isolation fails when a no-std profile resolves std" {
+  FROST_TEST_TREE='frost-collections-core v0.4.0 (/work/core) [alloc,std]' \
+    run_make feature-isolation
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'resolves the core package with std'* ]]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 1 ]
+}
+
+@test "feature isolation fails when the core package is not in the tree" {
+  FROST_TEST_TREE='other v1.0.0 []' run_make feature-isolation
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'the core package is not in the tree'* ]]
+}
+
+@test "feature forwarding passes when each layer declares the lower layer's features" {
+  FROST_TEST_METADATA='{"packages":[
+    {"name":"lower","features":{"default":["std"],"alloc":[],"std":[]},
+      "targets":[{"name":"lower","kind":["lib"]}],"dependencies":[]},
+    {"name":"upper","features":{"alloc":[],"std":[],"extra":[]},
+      "targets":[{"name":"upper","kind":["lib"]}],
+      "dependencies":[{"name":"lower","kind":null},{"name":"serde","kind":null},
+        {"name":"lower","kind":"dev"}]}]}' run_make feature-forwarding
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'every layer declares the features of the layers below it'* ]]
+}
+
+@test "feature forwarding fails when a layer drops a lower feature" {
+  FROST_TEST_METADATA='{"packages":[
+    {"name":"lower","features":{"alloc":[],"std":[],"int-set":[]},
+      "targets":[{"name":"lower","kind":["lib"]}],"dependencies":[]},
+    {"name":"upper","features":{"alloc":[],"std":[]},
+      "targets":[{"name":"upper","kind":["lib"]}],
+      "dependencies":[{"name":"lower","kind":null}]}]}' run_make feature-forwarding
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'upper does not declare int-set of lower'* ]]
 }

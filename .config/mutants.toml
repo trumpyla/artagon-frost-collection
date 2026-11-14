@@ -5,14 +5,15 @@
 # (or `make mutants`).
 
 examine_globs = [
-    "src/**/*.rs",
+    "crates/*/src/**/*.rs",
 ]
 
 exclude_globs = [
-    "tests/**",
-    "benches/**",
-    "examples/**",
+    "crates/*/tests/**",
+    "crates/*/benches/**",
+    "crates/*/examples/**",
     "verification/**",
+    "crates/*/verification/**",
 ]
 
 # Run the complete feature set against the committed lockfile so feature-gated

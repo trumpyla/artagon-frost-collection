@@ -1,0 +1,399 @@
+{
+  "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "verification/int-key-downstream/Cargo.toml"
+  ],
+  "contracts": [],
+  "targets": [
+    {
+      "path": "examples/adaptive.rs",
+      "kind": "example",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "examples/advanced.rs",
+      "kind": "example",
+      "features": [
+        "imbl-7",
+        "roaring-0_12",
+        "fixedbitset-0_5",
+        "slotmap-1"
+      ]
+    },
+    {
+      "path": "examples/concurrent.rs",
+      "kind": "example",
+      "features": [
+        "dashmap-6"
+      ]
+    },
+    {
+      "path": "examples/core.rs",
+      "kind": "example",
+      "features": []
+    },
+    {
+      "path": "examples/frameworks.rs",
+      "kind": "example",
+      "features": [
+        "serde-1",
+        "rayon-1",
+        "arbitrary-1",
+        "borsh-1",
+        "schemars-1"
+      ]
+    },
+    {
+      "path": "examples/integer_sets.rs",
+      "kind": "example",
+      "features": [
+        "int-set"
+      ]
+    },
+    {
+      "path": "examples/mutable.rs",
+      "kind": "example",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "examples/sequences.rs",
+      "kind": "example",
+      "features": [
+        "smallvec-1",
+        "arrayvec-0_7"
+      ]
+    },
+    {
+      "path": "examples/set_operations.rs",
+      "kind": "example",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "examples/snapshots.rs",
+      "kind": "example",
+      "features": [
+        "arc-swap-1"
+      ]
+    },
+    {
+      "path": "examples/static_maps.rs",
+      "kind": "example",
+      "features": [
+        "phf-0_14",
+        "fst-0_4"
+      ]
+    },
+    {
+      "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    },
+    {
+      "path": "verification/int-key-downstream/src/lib.rs",
+      "kind": "lib",
+      "features": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "T-ADAPTIVE-001",
+      "file": "examples/adaptive.rs",
+      "selector": "test:tests::runs_adaptive_example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::runs adaptive example",
+      "seed": "unreviewed",
+      "target": "examples/adaptive.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-015",
+      "file": "examples/advanced.rs",
+      "selector": "test:tests::executes_advanced_example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::executes advanced example",
+      "seed": "unreviewed",
+      "target": "examples/advanced.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONCURRENT-020",
+      "file": "examples/concurrent.rs",
+      "selector": "test:tests::example_runs",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::example runs",
+      "seed": "unreviewed",
+      "target": "examples/concurrent.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE-001",
+      "file": "examples/core.rs",
+      "selector": "test:example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: example",
+      "seed": "unreviewed",
+      "target": "examples/core.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FRAMEWORKS-001",
+      "file": "examples/frameworks.rs",
+      "selector": "test:tests::executes_all_framework_scenarios",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::executes all framework scenarios",
+      "seed": "unreviewed",
+      "target": "examples/frameworks.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-031",
+      "file": "examples/integer_sets.rs",
+      "selector": "test:tests::integer_example_executes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::integer example executes",
+      "seed": "unreviewed",
+      "target": "examples/integer_sets.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE-001",
+      "file": "examples/mutable.rs",
+      "selector": "test:complete_example_is_tested",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: complete example is tested",
+      "seed": "unreviewed",
+      "target": "examples/mutable.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SEQUENCES-001",
+      "file": "examples/sequences.rs",
+      "selector": "test:example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: example",
+      "seed": "unreviewed",
+      "target": "examples/sequences.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SET_OPERATIONS-001",
+      "file": "examples/set_operations.rs",
+      "selector": "test:tests::executes_set_operations_example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::executes set operations example",
+      "seed": "unreviewed",
+      "target": "examples/set_operations.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SNAPSHOTS-001",
+      "file": "examples/snapshots.rs",
+      "selector": "test:tests::example_runs",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "concurrent",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::example runs",
+      "seed": "unreviewed",
+      "target": "examples/snapshots.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-STATIC_MAPS-001",
+      "file": "examples/static_maps.rs",
+      "selector": "test:example",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: example",
+      "seed": "unreviewed",
+      "target": "examples/static_maps.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-046",
+      "file": "src/lib.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "cfg_attr (docsrs , feature (doc_cfg))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-021",
+      "file": "verification/int-key-downstream/src/lib.rs",
+      "selector": "test:tests::downstream_freeze_plan_and_forced_backends_agree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::downstream freeze plan and forced backends agree",
+      "seed": "unreviewed",
+      "target": "verification/int-key-downstream/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-022",
+      "file": "verification/int-key-downstream/src/lib.rs",
+      "selector": "test:tests::downstream_keys_and_private_width_mapping_are_usable_generically",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::downstream keys and private width mapping are usable generically",
+      "seed": "unreviewed",
+      "target": "verification/int-key-downstream/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    }
+  ]
+}

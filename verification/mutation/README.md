@@ -23,9 +23,9 @@ $$\text{Mutation Score}(S) = \frac{\text{Killed}}{\text{Killed} + \text{Survived
 
 | Tier | Modules | Target score | Rationale |
 | --- | --- | --- | --- |
-| Tier 1: Critical invariants & unsafe ownership | `src/adaptive/seq/buf.rs`, `src/concurrent/publication.rs`, `src/family/ordered/set_ops.rs`, `src/integer/{key,policy,set,storage,dense,chunked}.rs`, `src/backends/bitmap.rs` | `>= 90%` (0 unexplained survivors in `buf.rs` and `publication.rs`) | Off-by-one, padding-mask, representative-choice, or pointer-identity mutations here directly violate safety or core algebraic laws. |
-| Tier 2: Mutable/frozen families & adaptive policies | `src/family/**`, `src/adaptive/**`, `src/frozen.rs`, `src/plan.rs`, `src/concurrent/snapshot.rs` | `>= 85%` | Entry APIs, duplicate policies, promotion thresholds, and freeze/thaw round-trips. |
-| Tier 3: Native backend & framework forwarding | `src/backends/**` (excluding `bitmap.rs`), `src/adapters/**`, `src/iter.rs`, `src/read.rs`, `src/write.rs` | `>= 75%` | Thin delegation layers where capacity hints or `Debug`/`Display` formatting produce benign survivors. |
+| Tier 1: Critical invariants & unsafe ownership | `crates/frost-collections-core/src/adaptive/seq/buf.rs`, `crates/frost-collections-concurrent/src/concurrent/publication.rs`, `crates/frost-collections-core/src/family/ordered/set_ops.rs`, `crates/frost-collections-integer/src/integer/{key,policy,set,storage,dense,chunked}.rs`, `crates/frost-collections-core/src/backends/bitmap.rs` | `>= 90%` (0 unexplained survivors in `buf.rs` and `publication.rs`) | Off-by-one, padding-mask, representative-choice, or pointer-identity mutations here directly violate safety or core algebraic laws. |
+| Tier 2: Mutable/frozen families & adaptive policies | `crates/frost-collections-core/src/family/**`, `crates/frost-collections-core/src/adaptive/**`, `crates/frost-collections-core/src/frozen.rs`, `crates/frost-collections-core/src/plan.rs`, `crates/frost-collections-concurrent/src/concurrent/snapshot.rs` | `>= 85%` | Entry APIs, duplicate policies, promotion thresholds, and freeze/thaw round-trips. |
+| Tier 3: Native backend & framework forwarding | `crates/frost-collections-core/src/backends/**` (excluding `bitmap.rs`), `crates/frost-collections-core/src/adapters/**`, `crates/frost-collections-core/src/iter.rs`, `crates/frost-collections-core/src/read.rs`, `crates/frost-collections-core/src/write.rs` | `>= 75%` | Thin delegation layers where capacity hints or `Debug`/`Display` formatting produce benign survivors. |
 
 ## Survivor triage taxonomy
 
@@ -42,7 +42,7 @@ Every surviving mutant in a reviewed run must be recorded in
    as an `Arc::ptr_eq` self-operation fast path or a capacity pre-reservation
    hint) while the fallback path computes the exact same logical result.
    **Action**: Where observable (such as allocation identity sharing in
-   `FrozenIntSet` or comparison counts in `tests/ordered_performance.rs`), add
+   `FrozenIntSet` or comparison counts in `crates/frost-collections-core/tests/ordered_performance.rs`), add
    an identity or operation-count assertion; if purely internal (`Vec::with_capacity`
    hint), record the justification.
 4. `defensive-overflow-guard`: Checked arithmetic or invariant fallback that is

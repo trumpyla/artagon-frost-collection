@@ -12,4 +12,4 @@ name = "frost-policy-oracle"
 path = "../policy-oracle.rs"
 
 [dependencies]
-frost = { package = "frost-collections", path = "../../..", features = ["int-set"] }
+frost = { package = "frost-collections", path = "../../../crates/frost-collections", features = ["int-set"] }

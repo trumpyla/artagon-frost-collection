@@ -1,7 +1,7 @@
 # Generic set algebra: design evidence
 
 This directory contains an independent finite semantics model and the executed
-baseline verification log for the [general set-algebra design](../../docs/design/set-algebra.md).
+baseline verification log for the [general set-algebra design](../../crates/frost-collections-core/docs/set-algebra.md).
 It does not implement or test a production generic expression API.
 
 ## Reproduce the model

@@ -2,7 +2,7 @@
 
 This folder holds the comparison harness and the raw results for the series
 recorded in the
-[validation record](../../docs/integer-optimization-validation.md). Read that
+[validation record](../../crates/frost-collections-integer/docs/integer-optimization-validation.md). Read that
 record first; it states what the figures support and what they do not.
 
 ## Scope
@@ -27,7 +27,7 @@ correctness obligations.
 | Path | Content |
 | --- | --- |
 | `ab-harness/` | Isolated package with its own manifest and lockfile. It is excluded from the published crate with the rest of `verification/`. |
-| `ab-harness/prepare-baseline.sh` | Archives a revision into `ab-harness/baseline/` under the package name `frost-baseline`. The folder is not tracked. |
+| `ab-harness/prepare-baseline.sh` | Archives a revision into `ab-harness/baseline-workspace/` with its packages renamed `frost-baseline*`. A workspace revision is extracted whole; a revision from before the workspace layout is extracted as the facade package alone. The folder is not tracked. The committed lockfile matches a workspace baseline; for an older one run `make integer-ab AB_LOCKED=`. |
 | `results/ab-main-vs-90f2a4f-run{1,2}.csv` | Final runs: `main` at `22697a8` against the final tree, nine rounds. |
 | `results/aa-82f4d5c-vs-82f4d5c.csv` | Control: one revision against itself, nine rounds. |
 | `results/at-82f4d5c/` | The two full runs before the score field was narrowed. |
