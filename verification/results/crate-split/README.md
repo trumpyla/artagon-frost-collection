@@ -281,6 +281,12 @@ The workflow `Rust verification` runs on every push.
 | --- | --- | --- |
 | `873fcc7` (tests and benches moved) | [29](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43541158365) | All 11 jobs pass: `make check`, profiles and examples on Linux, macOS and Windows; the feature matrix; the packaged-source test; the integer profile; embedded; bounded and Loom; shell tooling; the dependency audit; and `ownership`, which runs `make miri` (36 minutes) |
 | `b28862b` (final layout) | [30](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43545458278) | Nine jobs pass. `host (windows-latest)` fails in `make check` (below). `ownership` (`make miri`) had run for 51 minutes without a result when the commit with this section was pushed, and that push cancels it |
+| `237b3c6` (the two fixes and this record) | [31](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43550135598) | All 11 jobs pass, including `host (windows-latest)` and `ownership` (`make miri`) |
+
+`make miri` took 36 minutes in run 29 and 79 minutes in run 31, against a job
+limit of 90. No Miri lane and no source under Miri changed between those
+commits except one doc comment, which points to the runners. The limit leaves
+little margin.
 
 The Windows failure was in `make catalog-inventory`. Commit `b28862b` changed
 the recipe to take each bench target's path from Cargo metadata and to strip
