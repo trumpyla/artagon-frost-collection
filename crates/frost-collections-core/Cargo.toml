@@ -1,0 +1,74 @@
+[package]
+name = "frost-collections-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Capability traits, freeze plans, collection families, adaptive profiles and native backends of Frost. Internal: depend on frost-collections"
+license.workspace = true
+publish.workspace = true
+exclude = ["verification/**"]
+
+[features]
+default = ["std"]
+# `alloc` enables Vec/Box/VecDeque/LinkedList/BinaryHeap/BTree* backends and
+# the allocating families. `std` adds std::collections::{HashMap, HashSet} and
+# the hash families. Every feature is additive: enabling one never changes the
+# representation or bounds of an existing public type.
+alloc = []
+std = ["alloc", "indexmap?/std", "borsh?/std", "schemars?/std", "roaring?/std"]
+# Public dependency features name compatibility lines. Supporting a future
+# incompatible line additively needs a separately named dependency and adapter.
+hashbrown-0_17 = ["alloc", "dep:hashbrown"]
+indexmap-2 = ["alloc", "dep:indexmap"]
+
+# Framework adapters also name compatibility lines. Future incompatible
+# integrations need separately named dependencies to coexist additively.
+serde-1 = ["alloc", "dep:serde", "serde/alloc"]
+rayon-1 = ["std", "dep:rayon"]
+arbitrary-1 = ["std", "dep:arbitrary"]
+borsh-1 = ["alloc", "dep:borsh"]
+schemars-1 = ["alloc", "dep:schemars"]
+
+smallvec-1 = ["alloc", "dep:smallvec"]
+arrayvec-0_7 = ["dep:arrayvec"]
+imbl-7 = ["std", "dep:imbl"]
+roaring-0_12 = ["std", "dep:roaring"]
+# The integer profile lives in frost-collections-integer. Here `int-set` only
+# keeps today's surface: the Roaring adapter is exposed under it as well as
+# under `roaring-0_12` (tracked as frost-r0a).
+int-set = ["alloc", "dep:roaring"]
+fixedbitset-0_5 = ["alloc", "dep:fixedbitset"]
+slotmap-1 = ["alloc", "dep:slotmap"]
+phf-0_14 = ["dep:phf"]
+fst-0_4 = ["std", "dep:fst"]
+dashmap-6 = ["std", "dep:dashmap"]
+scc-3 = ["std", "dep:scc"]
+crossbeam-skiplist-0_1 = ["std", "dep:crossbeam-skiplist"]
+
+[dependencies]
+hashbrown = { workspace = true, optional = true }
+indexmap = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+rayon = { workspace = true, optional = true }
+arbitrary = { workspace = true, optional = true }
+borsh = { workspace = true, optional = true }
+schemars = { workspace = true, optional = true }
+smallvec = { workspace = true, optional = true }
+arrayvec = { workspace = true, optional = true }
+imbl = { workspace = true, optional = true }
+roaring = { workspace = true, optional = true }
+fixedbitset = { workspace = true, optional = true }
+slotmap = { workspace = true, optional = true }
+phf = { workspace = true, optional = true }
+fst = { workspace = true, optional = true }
+dashmap = { workspace = true, optional = true }
+scc = { workspace = true, optional = true }
+crossbeam-skiplist = { workspace = true, optional = true }
+
+[dev-dependencies]
+# For the serde doctest in `src/adapters/serde.rs`.
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[lints]
+workspace = true

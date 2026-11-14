@@ -16,7 +16,9 @@ path: `<kind> <path>`. With --methods, each struct, enum, union and trait is
 followed by its inherent method and associated item names and by the traits it
 implements, so two layouts can be compared beyond paths.
 
-`#[doc(hidden)]` items are omitted because rustdoc strips them.
+Trait impls written in a crate other than the type's are collected from every
+JSON file in <doc-dir>. `#[doc(hidden)]` items are omitted because rustdoc
+strips them.
 """
 import json
 import os
@@ -49,6 +51,41 @@ class Walker:
         self.methods = methods
         self.lines = set()
         self.unresolved = set()
+        self.impl_map = None
+
+    def foreign_impls(self):
+        """Trait impls keyed by the implementing type's defining crate and path.
+
+        rustdoc attaches an impl to a type only in the type's own crate. An
+        impl written in another crate for that type appears only as an impl
+        item there, so every crate's JSON in the directory is scanned.
+        """
+        if self.impl_map is not None:
+            return self.impl_map
+        self.impl_map = {}
+        for name in sorted(os.listdir(self.doc_dir)):
+            if not name.endswith(".json"):
+                continue
+            crate_name = name[: -len(".json")]
+            crate = self.crate(crate_name)
+            for item in crate.index.values():
+                impl = item["inner"].get("impl")
+                if not impl or impl["trait"] is None:
+                    continue
+                if impl.get("is_synthetic") or impl.get("blanket_impl") is not None:
+                    continue
+                target = impl["for"].get("resolved_path")
+                if not target:
+                    continue
+                entry = crate.paths.get(str(target["id"]))
+                if entry is None:
+                    continue
+                owner = crate.external.get(str(entry["crate_id"]), {}).get("name")
+                if entry["crate_id"] == 0:
+                    owner = crate_name
+                key = (owner, tuple(entry["path"]))
+                self.impl_map.setdefault(key, set()).add(impl["trait"]["path"])
+        return self.impl_map
 
     def crate(self, name):
         if name not in self.crates:
@@ -158,6 +195,11 @@ class Walker:
                         self.lines.add("  item " + text + " :: " + entry["name"])
             else:
                 self.lines.add("  impl " + text + " : " + impl["trait"]["path"])
+        defined = crate.paths.get(ident)
+        if defined is not None:
+            key = (crate_name, tuple(defined["path"]))
+            for trait in self.foreign_impls().get(key, ()):
+                self.lines.add("  impl " + text + " : " + trait)
 
 
 def main():

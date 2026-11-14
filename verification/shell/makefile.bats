@@ -18,6 +18,7 @@ setup() {
   touch "$frost_fixture/Cargo.toml" "$frost_fixture/Cargo.lock" \
     "$frost_fixture/rust-toolchain.toml" "$frost_fixture/crates/member dir/Cargo.toml" \
     "$frost_fixture/crates/member dir/src/lib.rs" "$frost_fixture/crates/member dir/unlisted.txt"
+  export FROST_TEST_TREE='frost-collections-core v0.4.0 (/work/core) []'
   export FROST_TEST_PACKAGE_FILES=$'Cargo.toml\nCargo.toml.orig\nCargo.lock\nsrc/lib.rs'
   export FROST_TEST_METADATA='{"target_directory":"build area","packages":[{
     "name":"frost-collections","version":"0.4.0",
@@ -46,6 +47,9 @@ if [[ $1 == metadata ]]; then
 fi
 if [[ $1 == package ]]; then
   printf '%s\n' "$FROST_TEST_PACKAGE_FILES"
+fi
+if [[ $1 == tree ]]; then
+  printf '%s\n' "$FROST_TEST_TREE"
 fi
 for argument in "$@"; do
   if [[ $argument == test ]]; then
@@ -241,4 +245,24 @@ STUB
   [ "$status" -eq 1 ]
   run "$frost_bash" "$BATS_TEST_DIRNAME/../../scripts/require-tests.sh" --total "$frost_two"
   [ "$status" -eq 0 ]
+}
+
+@test "feature isolation passes when the core package resolves without std" {
+  run_make feature-isolation
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 3 ]
+}
+
+@test "feature isolation fails when a no-std profile resolves std" {
+  FROST_TEST_TREE='frost-collections-core v0.4.0 (/work/core) [alloc,std]' \
+    run_make feature-isolation
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'resolves the core package with std'* ]]
+  [ "$(wc -l <"$FROST_TEST_LOG")" -eq 1 ]
+}
+
+@test "feature isolation fails when the core package is not in the tree" {
+  FROST_TEST_TREE='other v1.0.0 []' run_make feature-isolation
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'the core package is not in the tree'* ]]
 }

@@ -6422,69 +6422,6 @@
       "cost": "unreviewed"
     },
     {
-      "id": "T-LIB-001",
-      "file": "src/backends/bitmap.rs",
-      "selector": "test:backends::bitmap::cardinality_tests::overlap_prevents_spurious_intermediate_overflow",
-      "status": "unreviewed",
-      "tags": [
-        "unreviewed",
-        "integration"
-      ],
-      "features": "inherit",
-      "area": "backends",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: backends::bitmap::cardinality tests::overlap prevents spurious intermediate overflow",
-      "seed": "unreviewed",
-      "target": "src/lib.rs",
-      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (any (feature = \"roaring-0_12\" , feature = \"int-set\" , feature = \"fixedbitset-0_5\")); cfg (all (test , any (feature = \"roaring-0_12\" , feature = \"int-set\")))",
-      "cost": "unreviewed"
-    },
-    {
-      "id": "T-LIB-002",
-      "file": "src/backends/bitmap.rs",
-      "selector": "test:backends::bitmap::cardinality_tests::symmetric_difference_rejects_actual_cardinality_overflow",
-      "status": "unreviewed",
-      "tags": [
-        "unreviewed",
-        "integration"
-      ],
-      "features": "inherit",
-      "area": "backends",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: backends::bitmap::cardinality tests::symmetric difference rejects actual cardinality overflow",
-      "seed": "unreviewed",
-      "target": "src/lib.rs",
-      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (any (feature = \"roaring-0_12\" , feature = \"int-set\" , feature = \"fixedbitset-0_5\")); cfg (all (test , any (feature = \"roaring-0_12\" , feature = \"int-set\")))",
-      "cost": "unreviewed"
-    },
-    {
-      "id": "T-LIB-003",
-      "file": "src/backends/bitmap.rs",
-      "selector": "test:backends::bitmap::cardinality_tests::union_rejects_actual_cardinality_overflow",
-      "status": "unreviewed",
-      "tags": [
-        "unreviewed",
-        "integration"
-      ],
-      "features": "inherit",
-      "area": "backends",
-      "provenance": "discovery:scaffold",
-      "kind": "unreviewed",
-      "contracts": [],
-      "oracle": "unreviewed",
-      "scenario": "scaffold: backends::bitmap::cardinality tests::union rejects actual cardinality overflow",
-      "seed": "unreviewed",
-      "target": "src/lib.rs",
-      "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (any (feature = \"roaring-0_12\" , feature = \"int-set\" , feature = \"fixedbitset-0_5\")); cfg (all (test , any (feature = \"roaring-0_12\" , feature = \"int-set\")))",
-      "cost": "unreviewed"
-    },
-    {
       "id": "T-LIB-004",
       "file": "src/integer/chunked.rs",
       "selector": "test:integer::chunked::tests::containers_normalize_at_both_thresholds",

@@ -15,6 +15,7 @@ use super::{
 use crate::family::{FrozenOrderedSet, MutableOrderedSet};
 use crate::read::{Cardinality, ElementType, SetContains, ValueElements};
 use crate::{Rejected, TryFreezeWith};
+use frost_collections_core::__private::rejected;
 
 /// Smallest input for which a temporary bitmap replaces a comparison sort.
 const BITMAP_SORT_MIN: usize = 64;
@@ -721,7 +722,7 @@ macro_rules! integer_freeze_plan {
             fn try_freeze_with(self, policy: IntSetPolicy) -> Result<Self::Output, Self::Error> {
                 match FrozenIntSet::try_from_iter(self.iter().copied(), policy) {
                     Ok(set) => Ok(set),
-                    Err(error) => Err(Rejected { input: self, error }),
+                    Err(error) => Err(rejected(self, error)),
                 }
             }
         }

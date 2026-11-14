@@ -79,3 +79,14 @@ Gates that passed: `make check`, `profiles`, `features` (20 features),
 `loom`, `fuzz-check`, `doctest-codes`, `shell-check` (40 Bats cases),
 `tools-check`, and the two Miri lanes over `buf.rs` named above. Not run: the
 other `make miri` lanes, `kani`, `nextest`, coverage, mutation, `fuzz-smoke`.
+
+## After `frost-wlt.9` (core extracted)
+
+Public paths, inherent items and trait implementations under `frost::` are
+identical to the baseline in all five profiles. Integration and unit test
+counts are identical; the 60 doctests under all features are now 36 in `frost`
+and 24 in `frost_collections_core`, and the sums match the baseline in every
+profile. Gates that passed: `make check`, `profiles`, `features` (39
+package-feature pairs), `feature-isolation`, `integers`, `examples`, `package`,
+`embedded`, `bounded`, `loom`, `fuzz-check`, `doctest-codes`, `shell-check` (43
+Bats cases), `tools-check`, and the two Miri lanes over `buf.rs`.

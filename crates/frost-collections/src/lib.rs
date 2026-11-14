@@ -1,67 +1,54 @@
 #![doc = include_str!("../README.md")]
 #![no_std]
+#![forbid(unsafe_code)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-#[cfg(feature = "alloc")]
+// Of the modules still held here, `integer` and the snapshot store allocate.
+#[cfg(any(feature = "int-set", feature = "arc-swap-1"))]
 extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
-mod frozen;
+// The facade names every re-export. It adds no algorithm and does not
+// re-export the core package's hidden `__private` module.
+pub use frost_collections_core::{adapters, plan, read, write};
 #[cfg(feature = "alloc")]
-pub mod iter;
-pub mod plan;
-pub mod read;
-pub mod write;
+pub use frost_collections_core::{adaptive, family, iter, mutable};
 
-pub mod backend;
-mod backends;
 #[cfg(feature = "std")]
 pub mod concurrent;
-#[cfg(feature = "alloc")]
-pub mod mutable;
-
-pub mod adapters;
 
 #[cfg(feature = "int-set")]
 pub mod integer;
 
-#[cfg(feature = "alloc")]
-pub mod family;
+pub use frost_collections_core::{Compact, ExactLen, Retain};
+pub use frost_collections_core::{Eligible, Frozen};
+pub use frost_collections_core::{FreezeExt, FreezeWith, Rejected, TryFreezeWith};
 
-#[cfg(feature = "alloc")]
-pub mod adaptive;
-
-pub use frozen::{Eligible, Frozen};
-pub use plan::{Compact, ExactLen, Retain};
-pub use plan::{FreezeExt, FreezeWith, Rejected, TryFreezeWith};
+/// Public backend and framework dependencies, gated by versioned features.
+///
+/// Use these reexports to ensure that the native collection and its Frost
+/// adapter use the same dependency version. Frozen bitmap adapters also expose
+/// set algebra and result-free count queries. Specialized operations, such as
+/// FST automata and native concurrent entry APIs, remain available on the native
+/// backend. Their synchronization and ordering
+/// contracts are documented by the corresponding upstream crate.
+pub mod backend {
+    #[cfg(feature = "arc-swap-1")]
+    pub use arc_swap;
+    #[doc(inline)]
+    #[allow(
+        unused_imports,
+        unreachable_pub,
+        reason = "the glob is empty when no backend or framework feature is enabled"
+    )]
+    pub use frost_collections_core::backend::*;
+}
 
 /// Glob-importable names for everyday use.
 pub mod prelude {
-    pub use crate::Frozen;
-    pub use crate::plan::{Compact, ExactLen, FreezeExt, FreezeWith, Retain, TryFreezeWith};
-    pub use crate::read::{
-        Cardinality, DequeRead, ElementType, Elements, Entries, IndexOf, IndexedEntries, Len,
-        LookupRef, LookupValue, MapTypes, OrderedElements, OrderedEntries, PriorityRead,
-        RangeElements, RangeEntries, SetContains, SetGet, TwoSlices, ValueElements, ValueRef,
-    };
-
-    #[cfg(feature = "alloc")]
-    pub use crate::adaptive::{
-        AdaptiveOrdered, AdaptiveOrderedMap, Inline, InlineFrozenVec, InlineVec,
-    };
-    #[cfg(feature = "alloc")]
-    pub use crate::family::{
-        FrozenOrderedMap, FrozenOrderedSet, FrozenVec, MutableOrderedMap, MutableOrderedSet,
-        MutableVec,
-    };
-    #[cfg(feature = "alloc")]
-    pub use crate::plan::Sorted;
-
-    #[cfg(feature = "std")]
-    pub use crate::adaptive::{AdaptiveFrozenHashMap, AdaptiveHash, AdaptiveHashMap};
-    #[cfg(feature = "std")]
-    pub use crate::family::{FrozenHashMap, FrozenHashSet, MutableHashMap, MutableHashSet};
+    #[doc(inline)]
+    pub use frost_collections_core::prelude::*;
 
     #[cfg(feature = "int-set")]
     pub use crate::integer::{FrozenIntSet, IntKey, IntSetPolicy};

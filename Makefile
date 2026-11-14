@@ -47,7 +47,7 @@ PACKAGE_CHECK_DIR ?= target/package-check
 REQUIRE_TESTS := "$(SHELL)" scripts/require-tests.sh
 
 .PHONY: all build help check verify fmt fmt-check doc-links clippy docs test \
-	test-examples profiles features integers examples package embedded miri \
+	test-examples profiles feature-isolation features integers examples package embedded miri \
 	doctest-codes \
 	bounded loom kani verus nextest coverage coverage-gate coverage-branch mutants \
 	fuzz-check fuzz-smoke catalog catalog-inventory shell-check shell-test \
@@ -117,38 +117,78 @@ test:
 test-examples:
 	"$(CARGO)" test -p "$(FACADE)" --examples --all-features --locked
 
-profiles:
-	"$(CARGO)" clippy -p "$(FACADE)" --lib --no-default-features --locked -- -D warnings
-	"$(CARGO)" test -p "$(FACADE)" --no-default-features --locked
-	RUSTDOCFLAGS="$${RUSTDOCFLAGS:+$${RUSTDOCFLAGS} }-D warnings" \
-	  "$(CARGO)" doc -p "$(FACADE)" --no-default-features --no-deps --locked
-	"$(CARGO)" clippy -p "$(FACADE)" --lib --no-default-features --features alloc --locked -- -D warnings
-	"$(CARGO)" test -p "$(FACADE)" --no-default-features --features alloc --locked
-	RUSTDOCFLAGS="$${RUSTDOCFLAGS:+$${RUSTDOCFLAGS} }-D warnings" \
-	  "$(CARGO)" doc -p "$(FACADE)" --no-default-features --features alloc --no-deps --locked
-	"$(CARGO)" test -p "$(FACADE)" --locked
-
 # Keep metadata discovery in recipes: make help/-n never executes Cargo.
 # GNU Make 3.81 ignores .SHELLFLAGS, so compound recipes set strict options too.
 # Native Windows jq emits CRLF. Strip only each record's trailing carriage return
 # before passing feature names, example names, or package paths to Cargo.
+#
+# Profile and feature lanes run once per library package, each in its own Cargo
+# invocation, so one package's features never reach another's build.
+profiles: feature-isolation
+	@set -euo pipefail; \
+	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
+	packages=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
+	  '[.packages[] | select(any(.targets // [] | .[]; .kind | index("lib"))) | \
+	    select(.features | has("alloc")) | .name] | \
+	   if length == 0 then error("no library packages found") else .[] end'); \
+	while IFS= read -r package; do \
+	  package=$${package%$$'\r'}; \
+	  printf '\nChecking profiles of package: %s\n' "$$package"; \
+	  "$(CARGO)" clippy -p "$$package" --lib --no-default-features --locked -- -D warnings; \
+	  "$(CARGO)" test -p "$$package" --no-default-features --locked; \
+	  RUSTDOCFLAGS="$${RUSTDOCFLAGS:+$${RUSTDOCFLAGS} }-D warnings" \
+	    "$(CARGO)" doc -p "$$package" --no-default-features --no-deps --locked; \
+	  "$(CARGO)" clippy -p "$$package" --lib --no-default-features --features alloc --locked -- -D warnings; \
+	  "$(CARGO)" test -p "$$package" --no-default-features --features alloc --locked; \
+	  RUSTDOCFLAGS="$${RUSTDOCFLAGS:+$${RUSTDOCFLAGS} }-D warnings" \
+	    "$(CARGO)" doc -p "$$package" --no-default-features --features alloc --no-deps --locked; \
+	  "$(CARGO)" test -p "$$package" --locked; \
+	done <<< "$$packages"
+
+# The core-only, alloc-only and integer profiles of the facade must resolve the
+# core package without `std`, and the core-only profile without `alloc`. A
+# package that always enables `std` is never selected together with them.
+feature-isolation:
+	@set -euo pipefail; \
+	check() { \
+	  forbidden=$$1; shift; \
+	  line=$$("$(CARGO)" tree -p "$(FACADE)" -e normal --prefix none -f '{p} [{f}]' --locked "$$@" \
+	    | { grep '^frost-collections-core ' || true; } | sort -u); \
+	  if [[ -z $$line ]]; then \
+	    printf 'error: the core package is not in the tree of %s\n' "$$*" >&2; \
+	    exit 1; \
+	  fi; \
+	  resolved=$${line##*[}; \
+	  resolved=",$${resolved%]},"; \
+	  for feature in $$forbidden; do \
+	    if [[ $$resolved == *",$$feature,"* ]]; then \
+	      printf 'error: %s resolves the core package with %s\n' "$$*" "$$feature" >&2; \
+	      exit 1; \
+	    fi; \
+	  done; \
+	}; \
+	check 'std alloc' --no-default-features; \
+	check 'std' --no-default-features --features alloc; \
+	check 'std' --no-default-features --features int-set
+
 features:
 	@set -euo pipefail; \
 	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
-	features=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
-	  '[.packages[] | select(.name == "$(FACADE)")] | \
-	   if length != 1 then error("expected one Frost package") else .[0] end | \
-	   .features | keys | map(select(. != "default" and . != "alloc" and \
-	   . != "std" and . != "advanced" and . != "concurrent" and . != "frameworks")) | \
+	pairs=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
+	  '[.packages[] | select(any(.targets // [] | .[]; .kind | index("lib"))) | \
+	    .name as $$package | .features | keys | \
+	    map(select(. != "default" and . != "alloc" and . != "std" and \
+	      . != "advanced" and . != "concurrent" and . != "frameworks")) | \
+	    .[] | [$$package, .] | @tsv] | \
 	   if length == 0 then error("no isolated features found") else .[] end'); \
-	while IFS= read -r feature; do \
+	while IFS=$$'\t' read -r package feature; do \
 	  feature=$${feature%$$'\r'}; \
-	  printf '\nChecking isolated feature: %s\n' "$$feature"; \
-	  "$(CARGO)" clippy -p "$(FACADE)" --lib --no-default-features --features "$$feature" --locked -- -D warnings; \
-	  "$(CARGO)" test -p "$(FACADE)" --no-default-features --features "$$feature" --locked; \
+	  printf '\nChecking isolated feature: %s of %s\n' "$$feature" "$$package"; \
+	  "$(CARGO)" clippy -p "$$package" --lib --no-default-features --features "$$feature" --locked -- -D warnings; \
+	  "$(CARGO)" test -p "$$package" --no-default-features --features "$$feature" --locked; \
 	  RUSTDOCFLAGS="$${RUSTDOCFLAGS:+$${RUSTDOCFLAGS} }-D warnings" \
-	    "$(CARGO)" doc -p "$(FACADE)" --no-default-features --features "$$feature" --no-deps --locked; \
-	done <<< "$$features"
+	    "$(CARGO)" doc -p "$$package" --no-default-features --features "$$feature" --no-deps --locked; \
+	done <<< "$$pairs"
 
 examples:
 	@set -euo pipefail; \

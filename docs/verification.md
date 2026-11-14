@@ -185,7 +185,7 @@ under an atomic-store assumption. See the [Loom documentation][loom] and
 ## Unsafe storage under Miri
 
 The only runtime module allowed to use `unsafe` is
-[`src/adaptive/seq/buf.rs`](../crates/frost-collections/src/adaptive/seq/buf.rs). Its invariant is that an
+[`src/adaptive/seq/buf.rs`](../crates/frost-collections-core/src/adaptive/seq/buf.rs). Its invariant is that an
 inline buffer owns exactly the initialized prefix, and an owning iterator owns
 exactly its remaining contiguous range. Moving storage must transfer that
 ownership before any destructor can run.

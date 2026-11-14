@@ -298,7 +298,7 @@ Borrowed wrappers retain the source lifetime, including boxed-slice storage.
 Mutable map iteration yields immutable key references and disjoint mutable value
 references. Owned iteration transfers values into the owning native iterator.
 There is no lifetime widening or new unsafe code in these wrappers.
-[src/adapters/rayon.rs](../../crates/frost-collections/src/adapters/rayon.rs).
+[src/adapters/rayon.rs](../../crates/frost-collections-core/src/adapters/rayon.rs).
 
 ## 6. Framework guarantees and verification limits
 
@@ -321,7 +321,7 @@ contracts are narrowed where representation independence alone was insufficient:
   private representation fields. Generators deliberately vary adaptive
   thresholds and growth states to exercise invariants; those choices are not
   performance recommendations. See
-  [src/adapters/arbitrary.rs](../../crates/frost-collections/src/adapters/arbitrary.rs).
+  [src/adapters/arbitrary.rs](../../crates/frost-collections-core/src/adapters/arbitrary.rs).
 
 The attachment's framework test file was gated on all five framework features
 together. A successful all-features run therefore did not demonstrate that each

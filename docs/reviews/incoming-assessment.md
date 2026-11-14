@@ -132,7 +132,7 @@ its subset answers now also come from the independent B-tree reference.
 
 ### Adaptive deque storage and bulk extension
 
-The current [sorted representation](../../crates/frost-collections/src/adaptive/ordered_map/mutable.rs)
+The current [sorted representation](../../crates/frost-collections-core/src/adaptive/ordered_map/mutable.rs)
 has linear middle insertion/removal; draining it through repeated `pop_first`
 can be quadratic at a large custom threshold. Consuming `into_iter()` avoids
 those shifts for a complete ascending drain. A tree policy is suitable when

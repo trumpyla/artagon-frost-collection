@@ -20,7 +20,7 @@ or test metadata, this file wins; fix the other document in the same change.
 
 | Scope | State | Where it is decided |
 | --- | --- | --- |
-| A Cargo workspace whose members live under `crates/`. One member today: `frost-collections`, imported as `frost`, which holds all the code | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
+| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, and the internal `frost-collections-core` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
 | `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **In progress.** The workspace exists (`frost-wlt.8`); the packages are extracted by `frost-wlt.9`–`.13`. Names and boundaries are the author's defaults and may be overruled. | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
@@ -151,10 +151,12 @@ packages.
   types.
 - **CR-BOUND-2.** The facade package re-exports and forwards features; it holds
   no algorithms. Public paths under `frost::` are part of the API contract.
-- **CR-BOUND-3.** Unsafe code stays in `src/adaptive/seq/buf.rs` (or the one
-  package that inherits it), with its safety comments, Miri coverage, and Kani
-  harness. A new unsafe location needs a written invariant and an ownership
-  review first.
+- **CR-BOUND-3.** Unsafe code stays in
+  `crates/frost-collections-core/src/adaptive/seq/buf.rs`, with its safety
+  comments, Miri coverage, and Kani harness. The workspace denies
+  `unsafe_code`; that file alone allows it, and every other package forbids
+  it. A new unsafe location needs a written invariant and an ownership review
+  first.
 
 ## 3. Dependency placement and leakage
 

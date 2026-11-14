@@ -20,6 +20,11 @@ No public API or behaviour change so far.
 - The catalog tool reads one catalog per package plus a root catalog, with
   package-relative paths and one namespace of IDs. `make package` tests a
   scratch copy of each member's packaged file set.
+- Extract `frost-collections-core`: everything except the integer and
+  concurrent modules. `frost-collections` re-exports it at the same paths.
+  Capability-trait implementations for `dashmap`, `scc` and
+  `crossbeam-skiplist` types now live in core's backends. No public path
+  changed.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

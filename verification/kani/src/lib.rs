@@ -8,7 +8,7 @@ extern crate alloc;
 // public collection properties below also call the normal Frost dependency.
 #[cfg(any(kani, test))]
 #[allow(dead_code)]
-#[path = "../../../crates/frost-collections/src/adaptive/seq/buf.rs"]
+#[path = "../../../crates/frost-collections-core/src/adaptive/seq/buf.rs"]
 mod inline_buf;
 
 // `SET-REP` and `SET-BOOLEAN` refinement on the real ordered merge kernels.

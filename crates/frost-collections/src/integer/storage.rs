@@ -21,7 +21,7 @@ use core::ops::ControlFlow;
 use super::chunked::{Chunked, ChunkedIter};
 use super::dense::{Dense, DenseIter, dense_bytes};
 use super::{IntSetBackend, IntSetError, IntSetPolicy, IntSetRepr};
-use crate::family::ordered::set_ops;
+use frost_collections_core::__private::set_ops;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Operation {
@@ -1335,7 +1335,7 @@ fn accept_dense_result<W: Word>(window_bytes: u128, members: u64, limit: usize) 
 /// one element at a time through a lazy cursor.
 fn sorted_binary<W: Word>(left: &[W], right: &[W], op: Operation) -> Vec<W> {
     match op {
-        Operation::Intersection => set_ops::SetIntersection::new(left, right).fold(
+        Operation::Intersection => set_ops::intersection(left, right).fold(
             Vec::with_capacity(left.len().min(right.len())),
             |mut out, &word| {
                 out.push(word);

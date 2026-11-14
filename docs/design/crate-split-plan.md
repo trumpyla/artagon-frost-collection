@@ -168,6 +168,15 @@ and every edit to a moved test other than its alias line.
 | `.8` | The catalog is split: 361 records and all 12 contracts in `crates/frost-collections/verification/metadata/catalog.json`, 36 harness and tooling records in the root file, which also lists the isolated manifests. The benchmark inventory moved with the package. Two new records, `T-MAIN-015` and `T-MAIN-016`, cover the catalog tool's workspace tests. | D11. |
 | `.8` | `make package` tests a scratch workspace instead of an extracted `.crate`. | D13. |
 | `.8` | `make integer-ab` accepts only baselines from before this change until `.15` teaches `prepare-baseline.sh` the workspace layout. | The script archives a root package. |
+| `.9` | Everything in `src/` except `integer/`, `concurrent/` and a new facade root moved to `crates/frost-collections-core/src/`. `lib.rs` moved with it and lost the integer and concurrent modules, the `int-set` prelude names and the README include. | Core extraction. |
+| `.9` | `frost::backend::arc_swap` is re-exported by the facade's own `backend` module; core's `backend` no longer names `arc_swap`. The path is unchanged for users. | `arc-swap` is a dependency of the concurrent code only. |
+| `.9` | The `MapTypes`, `ElementType` and `SetContains` implementations for `dashmap`, `scc` and `crossbeam-skiplist` types moved from `concurrent/{dashmap,scc,skiplist}.rs` to `backends/` of core. Bodies unchanged. | D9; the orphan rule. |
+| `.9` | New hidden interface `frost_collections_core::__private`: `rejected(input, error)` builds a `Rejected`; `set_ops::{union, intersection, difference, symmetric_difference, intersection_len, is_disjoint, is_subset}` wrap the ordered kernels. Nothing became `pub` at its definition and no seal changed. Eleven call sites in `integer/{storage,chunked,set}.rs` use them. | D8. |
+| `.9` | 24 doctests in core gained the hidden line `# extern crate frost_collections_core as frost;`. Core has `serde` (derive) and `serde_json` as dev-dependencies for one doctest. | D7. |
+| `.9` | The facade gained dev-dependencies `imbl`, `slotmap` and `fixedbitset`, which `tests/advanced.rs` names directly. | D7, T02. |
+| `.9` | Doctest counts split between `frost` and `frost_collections_core`; the sums equal the baseline in every profile. Unit and integration counts are unchanged. | Doctests live with their items. |
+| `.9` | Records `T-LIB-001`–`003` (bitmap unit tests) moved to core's catalog. Contracts stay in the facade's catalog until `.13` settles test ownership. | D11. |
+| `.9` | Profile and isolated-feature lanes run once per library package; `make feature-isolation` asserts the facade's no-`std` profiles resolve core without `std`. Lockfiles of the Kani, fuzz, downstream and `revision2-integration/ab-harness` packages gained the new dependency. | CR-MAKE-4, T08. |
 
 ## 8. Risks accepted
 

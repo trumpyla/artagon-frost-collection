@@ -26,6 +26,14 @@ dependencies = [
 name = "frost-collections"
 version = "0.4.0"
 dependencies = [
+ "frost-collections-core",
+ "roaring",
+]
+
+[[package]]
+name = "frost-collections-core"
+version = "0.4.0"
+dependencies = [
  "roaring",
 ]
 

@@ -23,7 +23,7 @@ use core::marker::PhantomData;
 use core::ops::ControlFlow;
 
 use super::storage::{Operation, Word};
-use crate::family::ordered::set_ops;
+use frost_collections_core::__private::set_ops;
 
 const LOW_BITS: u32 = 16;
 const SPAN: u32 = 1 << LOW_BITS;
@@ -160,18 +160,14 @@ impl Container {
             (_, Full, Operation::Difference) => None,
             (Array(a), Array(b), op) => {
                 let lows: Vec<u16> = match op {
-                    Operation::Union => set_ops::SetUnion::new(&a[..], &b[..]).copied().collect(),
-                    Operation::Intersection => set_ops::SetIntersection::new(&a[..], &b[..])
-                        .copied()
-                        .collect(),
-                    Operation::Difference => set_ops::SetDifference::new(&a[..], &b[..])
-                        .copied()
-                        .collect(),
-                    Operation::SymmetricDifference => {
-                        set_ops::SetSymmetricDifference::new(&a[..], &b[..])
-                            .copied()
-                            .collect()
+                    Operation::Union => set_ops::union(&a[..], &b[..]).copied().collect(),
+                    Operation::Intersection => {
+                        set_ops::intersection(&a[..], &b[..]).copied().collect()
                     }
+                    Operation::Difference => set_ops::difference(&a[..], &b[..]).copied().collect(),
+                    Operation::SymmetricDifference => set_ops::symmetric_difference(&a[..], &b[..])
+                        .copied()
+                        .collect(),
                 };
                 Self::from_lows(lows)
             }

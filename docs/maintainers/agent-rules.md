@@ -42,7 +42,8 @@ full:
 - Features are additive: enabling one never changes an existing type's
   representation, hasher, bounds or freeze/thaw partner.
 - No new `unsafe` block or manual `Send`/`Sync` implementation without a written
-  invariant and an ownership review. Unsafe stays in `src/adaptive/seq/buf.rs`.
+  invariant and an ownership review. Unsafe stays in
+  `crates/frost-collections-core/src/adaptive/seq/buf.rs`.
 - Run `make check` before review. A new test or benchmark needs its catalog or
   inventory record in the same change. Keep existing catalog IDs.
 

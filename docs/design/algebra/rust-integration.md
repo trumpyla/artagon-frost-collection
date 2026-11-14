@@ -27,8 +27,8 @@ frost-wlt performs the migration under [CRATES.md](../../../CRATES.md).
 | FreezeWith / TryFreezeWith | Source/plan-specific typed transitions | Universal thaw or zero allocation |
 | Eligible / SnapshotValue | Sealed admission under an owner | User-extensible safety proof from a domain marker |
 
-See inspected [read capabilities](../../../crates/frost-collections/src/read.rs),
-[plans](../../../crates/frost-collections/src/plan.rs), [wrapper](../../../crates/frost-collections/src/frozen.rs), and
+See inspected [read capabilities](../../../crates/frost-collections-core/src/read.rs),
+[plans](../../../crates/frost-collections-core/src/plan.rs), [wrapper](../../../crates/frost-collections-core/src/frozen.rs), and
 [integer codec](../../../crates/frost-collections/src/integer/key.rs). Query compatibility belongs on
 implementations: Borrow, Equivalent-style queries, ordered comparison or a
 specific explicit relation. Do not impose Borrow globally and exclude lawful

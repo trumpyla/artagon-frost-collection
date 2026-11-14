@@ -16,66 +16,55 @@ name = "frost"
 
 [features]
 default = ["std"]
-# `alloc` enables Vec/Box/VecDeque/LinkedList/BinaryHeap/BTree* backends and
-# the allocating families. `std` adds std::collections::{HashMap, HashSet} and
-# the hash families. Every feature is additive: enabling one never changes the
-# representation or bounds of an existing public type.
-alloc = []
-std = ["alloc", "indexmap?/std", "borsh?/std", "schemars?/std", "roaring?/std"]
+# Every feature forwards to the package that owns its code, under the same
+# name. `alloc` enables Vec/Box/VecDeque/LinkedList/BinaryHeap/BTree* backends
+# and the allocating families. `std` adds std::collections::{HashMap, HashSet}
+# and the hash families. Every feature is additive: enabling one never changes
+# the representation or bounds of an existing public type.
+alloc = ["frost-collections-core/alloc"]
+std = ["alloc", "frost-collections-core/std", "roaring?/std"]
 # Public dependency features name compatibility lines. Supporting a future
 # incompatible line additively needs a separately named dependency and adapter.
-hashbrown-0_17 = ["alloc", "dep:hashbrown"]
-indexmap-2 = ["alloc", "dep:indexmap"]
+hashbrown-0_17 = ["alloc", "frost-collections-core/hashbrown-0_17"]
+indexmap-2 = ["alloc", "frost-collections-core/indexmap-2"]
 
 # Framework adapters also name compatibility lines. Future incompatible
 # integrations need separately named dependencies to coexist additively.
-serde-1 = ["alloc", "dep:serde", "serde/alloc"]
-rayon-1 = ["std", "dep:rayon"]
-arbitrary-1 = ["std", "dep:arbitrary"]
-borsh-1 = ["alloc", "dep:borsh"]
-schemars-1 = ["alloc", "dep:schemars"]
+serde-1 = ["alloc", "frost-collections-core/serde-1"]
+rayon-1 = ["std", "frost-collections-core/rayon-1"]
+arbitrary-1 = ["std", "frost-collections-core/arbitrary-1"]
+borsh-1 = ["alloc", "frost-collections-core/borsh-1"]
+schemars-1 = ["alloc", "frost-collections-core/schemars-1"]
 
-smallvec-1 = ["alloc", "dep:smallvec"]
-arrayvec-0_7 = ["dep:arrayvec"]
-imbl-7 = ["std", "dep:imbl"]
-roaring-0_12 = ["std", "dep:roaring"]
+smallvec-1 = ["alloc", "frost-collections-core/smallvec-1"]
+arrayvec-0_7 = ["frost-collections-core/arrayvec-0_7"]
+imbl-7 = ["std", "frost-collections-core/imbl-7"]
+roaring-0_12 = ["std", "frost-collections-core/roaring-0_12"]
 # The complete integer profile has fixed sorted, dense, Roaring, and explicit
 # chunked candidates. Automatic construction does not select chunked storage.
 # Other integration features never change its representation alternatives.
-int-set = ["alloc", "dep:roaring"]
-fixedbitset-0_5 = ["alloc", "dep:fixedbitset"]
-slotmap-1 = ["alloc", "dep:slotmap"]
-phf-0_14 = ["dep:phf"]
-fst-0_4 = ["std", "dep:fst"]
-dashmap-6 = ["std", "dep:dashmap"]
-scc-3 = ["std", "dep:scc"]
-crossbeam-skiplist-0_1 = ["std", "dep:crossbeam-skiplist"]
+int-set = ["alloc", "frost-collections-core/int-set", "dep:roaring"]
+fixedbitset-0_5 = ["alloc", "frost-collections-core/fixedbitset-0_5"]
+slotmap-1 = ["alloc", "frost-collections-core/slotmap-1"]
+phf-0_14 = ["frost-collections-core/phf-0_14"]
+fst-0_4 = ["std", "frost-collections-core/fst-0_4"]
+dashmap-6 = ["std", "frost-collections-core/dashmap-6", "dep:dashmap"]
+scc-3 = ["std", "frost-collections-core/scc-3", "dep:scc"]
+crossbeam-skiplist-0_1 = ["std", "frost-collections-core/crossbeam-skiplist-0_1", "dep:crossbeam-skiplist"]
 arc-swap-1 = ["std", "dep:arc-swap"]
 concurrent = ["dashmap-6", "scc-3", "crossbeam-skiplist-0_1", "arc-swap-1"]
 advanced = ["smallvec-1", "arrayvec-0_7", "imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1", "phf-0_14", "fst-0_4"]
 frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
 
 [dependencies]
-hashbrown = { version = "0.17", optional = true, default-features = false }
-indexmap = { version = "2.14", optional = true, default-features = false }
-serde = { version = "1.0.219", optional = true, default-features = false }
-rayon = { version = "1.11", optional = true }
-arbitrary = { version = "1.4", optional = true }
-borsh = { version = "1.5", optional = true, default-features = false }
-schemars = { version = "1.0", optional = true, default-features = false }
-
-smallvec = { version = "1.16", optional = true, default-features = false, features = ["const_generics"] }
-arrayvec = { version = "0.7.6", optional = true, default-features = false }
-imbl = { version = "7.0", optional = true, default-features = false }
-roaring = { version = "0.12.0", optional = true, default-features = false }
-fixedbitset = { version = "0.5", optional = true, default-features = false }
-slotmap = { version = "1.0", optional = true, default-features = false }
-phf = { version = "0.14", optional = true, default-features = false, features = ["macros"] }
-fst = { version = "0.4.7", optional = true }
-dashmap = { version = "6.2", optional = true }
-scc = { version = "3.8", optional = true }
-crossbeam-skiplist = { version = "0.1", optional = true }
-arc-swap = { version = "1.7", optional = true }
+frost-collections-core = { workspace = true }
+# Used directly by the modules this package still holds: `integer` (roaring)
+# and `concurrent` (the live backends and arc-swap).
+roaring = { workspace = true, optional = true }
+dashmap = { workspace = true, optional = true }
+scc = { workspace = true, optional = true }
+crossbeam-skiplist = { workspace = true, optional = true }
+arc-swap = { workspace = true, optional = true }
 
 [dev-dependencies]
 proptest = "1.12"
@@ -90,6 +79,12 @@ borsh = "1.5"
 arbitrary = "1.4"
 rayon = "1.11"
 schemars = "1"
+# Optional backends that tests name directly instead of through
+# `frost::backend`. The library reaches them only through the core package.
+imbl = { workspace = true }
+slotmap = { workspace = true }
+fixedbitset = { workspace = true }
+roaring = { workspace = true }
 
 [lints]
 workspace = true

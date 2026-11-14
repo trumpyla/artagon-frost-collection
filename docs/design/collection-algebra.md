@@ -132,7 +132,7 @@ the value. Stable insertion order does not authorize a sorted merge. Borrowed
 lookup must remain available without imposing `Clone` or `Default` on elements.
 
 The reports invent capability names. Proposals must map them to the existing
-traits in [`read`](../../crates/frost-collections/src/read.rs) rather than silently renaming public APIs:
+traits in [`read`](../../crates/frost-collections-core/src/read.rs) rather than silently renaming public APIs:
 
 | Report name | Existing Frost capability | Note |
 | --- | --- | --- |
