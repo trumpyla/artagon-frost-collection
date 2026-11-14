@@ -5669,6 +5669,282 @@
       "cost": "fast"
     },
     {
+      "id": "T-FORMAL_MODELS-047",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::bag_difference_satisfies_the_monus_identities",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Counts 0..=6, all triples",
+      "scenario": "Ten identities of truncated subtraction hold; absolute difference fails them",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-048",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::set_difference_identities_fail_for_bags",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All triples of subsets of three keys; counts 0..=6 in lexicographic order",
+      "scenario": "Four set-difference identities hold for sets and first fail for bags at the recorded triples",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-049",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::product_does_not_distribute_over_monus_on_the_max_min_chain",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "The chain 0 < 1 < 2 with max as sum and min as product, all triples",
+      "scenario": "The chain monus is the least z with max(a, z) >= b, numeric subtraction is not, and product does not distribute over it",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-050",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::compatibility_is_the_inverse_semigroup_relation",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 34 partial bijections on three keys, all pairs",
+      "scenario": "A valid union means both mixed products are partial identities; orthogonal means disjoint domains and ranges",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-051",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::wrong_compatibility_definitions_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Left-only validity and a one-product compatibility test",
+      "scenario": "Both wrong definitions disagree with the reference on some pair",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-052",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::pairwise_compatibility_decides_the_three_way_union",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 34 partial bijections on three keys, all triples",
+      "scenario": "A three-way union is valid exactly when the operands are pairwise compatible; composition distributes over a compatible union",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-053",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::compatibility_is_not_transitive",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed relations",
+      "scenario": "Two bijections each compatible with the empty one are not compatible with each other",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-054",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::knowledge_rules_are_the_strong_kleene_connectives",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 intervals on three keys, all pairs, per key",
+      "scenario": "Each transfer rule equals the strong Kleene connective on three-valued membership; a deny-lower-bound difference does not",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-055",
+      "file": "tests/formal_models/weighted.rs",
+      "selector": "test:weighted::stability_separates_the_weight_algebras",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Elements 0..=4, exponents 0..=30; caps 1..=5",
+      "scenario": "Positive naturals never stabilize, Booleans and min-plus are 0-stable, a count capped at M is stable by M; bitwise or as the sum is rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-056",
+      "file": "tests/formal_models/weighted.rs",
+      "selector": "test:weighted::capping_commutes_with_sum_and_product",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Caps 1..=5, operands 0..=20, all pairs",
+      "scenario": "Capping commutes with sum and product; a product that is not capped again is rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-057",
+      "file": "tests/formal_models/weighted.rs",
+      "selector": "test:weighted::weighted_closure_diverges_on_a_cycle_over_the_naturals",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Three-node cycle and chain, unit weights, 24 naive rounds",
+      "scenario": "Path counts on a cycle grow every round over the naturals; Boolean reachability and an acyclic chain are fixed within n + 1 rounds",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-058",
+      "file": "tests/formal_models/weighted.rs",
+      "selector": "test:weighted::a_cache_key_must_include_the_request_context",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Two subjects, three request contexts, all ordered request pairs",
+      "scenario": "A memo keyed by the whole request returns the direct answer; one keyed by the subject returns a stale answer",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
       "id": "T-LIB-023",
       "file": "verification/kani/src/lib.rs",
       "selector": "test:proofs::dense_padding_does_not_create_members",

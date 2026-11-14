@@ -1,6 +1,7 @@
 //! `KNOW-BOUNDS` and `DELTA-REPLAY` from
 //! `docs/design/algebra/execution-and-computed-sets.md`, plus positive
 //! recursion and context compatibility. Frost implements none of these yet.
+//! `weighted.rs` holds the chapter's `CLOSURE-STABLE` and `CTX-KEY`.
 
 use super::common::is_subset;
 use core::iter::repeat_n;
@@ -83,6 +84,45 @@ fn wrong_knowledge_rules_are_rejected() {
     let loose_xor: Rule = |(_, ua), (_, ub)| (0, ua | ub);
     assert!(!check(deny_lower, |a, b| a & !b).0);
     assert_eq!(check(loose_xor, |a, b| a ^ b), (true, false));
+}
+
+/// A key's state under bounds `(lower, upper)`: 2 for a certain member, 1 for
+/// a possible member only, 0 for a certain non-member.
+fn state((lower, upper): (u32, u32), key: u32) -> u8 {
+    u8::from(lower & (1 << key) != 0) + u8::from(upper & (1 << key) != 0)
+}
+
+type Connective = fn(u8, u8) -> u8;
+
+/// Whether `rule` yields valid bounds and equals `connective` on every key's
+/// three-valued state, for every pair of bounds over three keys.
+fn is_kleene(rule: Rule, connective: Connective) -> bool {
+    intervals().into_iter().all(|a| {
+        intervals().into_iter().all(|b| {
+            let out = rule(a, b);
+            is_subset(out.0, out.1)
+                && (0..N).all(|key| state(out, key) == connective(state(a, key), state(b, key)))
+        })
+    })
+}
+
+/// `KNOW-BOUNDS` read per key: each transfer rule is the strong Kleene
+/// connective on three-valued membership, with negation `2 - v`.
+#[test]
+fn knowledge_rules_are_the_strong_kleene_connectives() {
+    let connectives: [Connective; 4] = [
+        |x, y| x.max(y),
+        |x, y| x.min(y),
+        |x, y| x.min(2 - y),
+        |x, y| x.min(2 - y).max(y.min(2 - x)),
+    ];
+    for ((rule, _), connective) in RULES.into_iter().zip(connectives) {
+        assert!(is_kleene(rule, connective));
+    }
+    // A difference whose lower bound removes only the certain members of the
+    // right operand claims members it cannot know.
+    let optimistic: Rule = |(la, ua), (lb, _)| (la & !lb, ua & !lb);
+    assert!(!is_kleene(optimistic, connectives[2]));
 }
 
 #[derive(Clone, Copy, Debug)]

@@ -432,7 +432,8 @@
       "evidence": "inclusion proof; soundness and tightness over all interval realizations on three keys",
       "cases": [
         "T-FORMAL_MODELS-011",
-        "T-FORMAL_MODELS-014"
+        "T-FORMAL_MODELS-014",
+        "T-FORMAL_MODELS-054"
       ],
       "verus": [
         "knowledge_bounds_are_sound"
@@ -447,6 +448,53 @@
       "cases": [
         "T-FORMAL_MODELS-012",
         "T-FORMAL_MODELS-015"
+      ]
+    },
+    {
+      "id": "BAG-MONUS",
+      "document": "docs/design/algebra/bags.md",
+      "name": "Difference identities",
+      "statement": "Ten identities of natural-number monus hold; four set-difference identities fail under the sum and min reading; no finite complete rule set",
+      "evidence": "case argument; finite checks on counts 0..6 and on all subsets of three keys; non-axiomatizability cited from SRC-PRIOR-SUCIU-DIFFERENCES, not proved",
+      "cases": [
+        "T-FORMAL_MODELS-047",
+        "T-FORMAL_MODELS-048",
+        "T-FORMAL_MODELS-049"
+      ]
+    },
+    {
+      "id": "BIMAP-COMPAT",
+      "document": "docs/design/algebra/bimaps.md",
+      "name": "Compatibility",
+      "statement": "Functional pair union iff both mixed products are partial identities; orthogonal implies compatible; not transitive; composition distributes over compatible union",
+      "evidence": "proof argument; finite checks on all 34 partial bijections on three keys",
+      "cases": [
+        "T-FORMAL_MODELS-050",
+        "T-FORMAL_MODELS-051",
+        "T-FORMAL_MODELS-052",
+        "T-FORMAL_MODELS-053"
+      ]
+    },
+    {
+      "id": "CLOSURE-STABLE",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Recursive weighted composition",
+      "statement": "Converges for every program iff the weight semiring is stable; N is not stable; capping commutes with sum and product",
+      "evidence": "theorem cited from SRC-PRIOR-DATALOGO, not re-proved; instances checked on small weight algebras and three-node graphs",
+      "cases": [
+        "T-FORMAL_MODELS-055",
+        "T-FORMAL_MODELS-056",
+        "T-FORMAL_MODELS-057"
+      ]
+    },
+    {
+      "id": "CTX-KEY",
+      "document": "docs/design/algebra/execution-and-computed-sets.md",
+      "name": "Context in result keys",
+      "statement": "A reused result is keyed by every context component it depends on; reuse never upgrades a status",
+      "evidence": "argument from FM-REFINE; three-outcome toy model; incident SRC-PRIOR-SPICEDB-CVE-2026-55866",
+      "cases": [
+        "T-FORMAL_MODELS-058"
       ]
     }
   ],
@@ -491,5 +539,122 @@
       "current": "difference_by_key",
       "reason": "recommendation, not an implemented rename"
     }
-  ]
+  ],
+  "counterexamples": [
+    {
+      "id": "CX-BAG-MONUS-SUM-CANCEL",
+      "kind": "computed",
+      "why": "(A sum B) monus B is A, not A monus B",
+      "case": "T-FORMAL_MODELS-048"
+    },
+    {
+      "id": "CX-BAG-MONUS-SUM-DIST",
+      "kind": "computed",
+      "why": "monus does not distribute over bag sum",
+      "case": "T-FORMAL_MODELS-048"
+    },
+    {
+      "id": "CX-BAG-MONUS-MIN",
+      "kind": "computed",
+      "why": "min with a difference is not the difference of the min",
+      "case": "T-FORMAL_MODELS-048"
+    },
+    {
+      "id": "CX-BAG-MONUS-NESTED",
+      "kind": "computed",
+      "why": "nested difference does not split into difference and min",
+      "case": "T-FORMAL_MODELS-048"
+    },
+    {
+      "id": "CX-MSEMIRING-A5",
+      "kind": "computed",
+      "why": "product does not distribute over monus in the max/min chain on three values",
+      "case": "T-FORMAL_MODELS-049"
+    },
+    {
+      "id": "CX-BIMAP-COMPAT-TRANSITIVE",
+      "kind": "computed",
+      "why": "two BiMaps compatible with the empty BiMap need not be compatible with each other",
+      "case": "T-FORMAL_MODELS-053"
+    },
+    {
+      "id": "CX-CLOSURE-N-DIVERGES",
+      "kind": "computed",
+      "why": "weighted closure over N keeps growing on a cycle; the Boolean closure of the same graph is fixed",
+      "case": "T-FORMAL_MODELS-057"
+    },
+    {
+      "id": "CX-CTX-CACHE-KEY",
+      "kind": "computed",
+      "why": "a memo key without the caveat input returns Member where the direct answer is Conditional",
+      "case": "T-FORMAL_MODELS-058"
+    }
+  ],
+  "established_aliases": [
+    {
+      "here": "representation invariant I_R",
+      "established": "well-formedness predicate",
+      "source": "SRC-PRIOR-LEAN-MAPS",
+      "level": "integration-checked"
+    },
+    {
+      "here": "bag difference",
+      "established": "monus",
+      "source": "SRC-PRIOR-GEERTS-POGGI",
+      "level": "integration-checked"
+    },
+    {
+      "here": "signed carrier Z^(K)",
+      "established": "Z-set",
+      "source": "SRC-PRIOR-DBSP",
+      "level": "integration-checked"
+    },
+    {
+      "here": "compatible(R,S), try_union",
+      "established": "compatibility relation, compatible join",
+      "source": "SRC-PRIOR-LAWSON-PRIMER",
+      "level": "integration-checked"
+    },
+    {
+      "here": "union with disjoint endpoint sets",
+      "established": "orthogonal join",
+      "source": "SRC-PRIOR-LAWSON-PRIMER",
+      "level": "integration-checked"
+    },
+    {
+      "here": "weight algebra with terminating closure",
+      "established": "stable semiring",
+      "source": "SRC-PRIOR-DATALOGO",
+      "level": "integration-checked"
+    },
+    {
+      "here": "knowledge bounds [L,U]",
+      "established": "certain answers for L; possible answers for U",
+      "source": "SRC-PRIOR-LIBKIN-2016",
+      "level": "integration-checked for L and its criterion; the term for U is unread"
+    },
+    {
+      "here": "Seq, Bag, Set",
+      "established": "free monoid and its commutative and idempotent quotients",
+      "source": "SRC-PRIOR-BIRD-PRG69",
+      "level": "integration-checked"
+    },
+    {
+      "here": "left representative",
+      "established": "left-biased union",
+      "source": "none read",
+      "level": "unread"
+    },
+    {
+      "here": "align_with tags",
+      "established": "These, Ior, EitherOrBoth",
+      "source": "SRC-PRIOR-SEMIALIGN",
+      "level": "survey-read"
+    }
+  ],
+  "prior_art": {
+    "report": "docs/research/reports/value-domain-algebra-prior-art.md",
+    "sources": "docs/research/SOURCES.md#prior-art-survey-sources-2026-11-12",
+    "renames": "none; aliases only"
+  }
 }

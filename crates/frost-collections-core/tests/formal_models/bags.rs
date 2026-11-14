@@ -207,3 +207,121 @@ fn left_present_representatives_associate_for_sum_max_and_min() {
         }
     }
 }
+
+/// `BAG-MONUS`: the ten identities of bag difference, as a function of the
+/// difference operation, over every triple of counts 0..=6.
+fn monus_identities_hold(monus: CountOp) -> bool {
+    (0..7).all(|a| {
+        (0..7).all(|b| {
+            (0..7).all(|c| {
+                monus(a + b, b) == a
+                    && monus(a, b + c) == monus(monus(a, b), c)
+                    && monus(a, b) + b == a.max(b)
+                    && monus(a, b) + a.min(b) == a
+                    && monus(a, monus(a, b)) == a.min(b)
+                    && monus(a.max(b), c) == monus(a, c).max(monus(b, c))
+                    && monus(a.min(b), c) == monus(a, c).min(monus(b, c))
+                    && monus(a, b.max(c)) == monus(a, b).min(monus(a, c))
+                    && monus(a, b.min(c)) == monus(a, b).max(monus(a, c))
+                    && monus(b, a) * c == monus(b * c, a * c)
+            })
+        })
+    })
+}
+
+/// The identities hold for truncated subtraction and reject absolute difference.
+#[test]
+fn bag_difference_satisfies_the_monus_identities() {
+    assert!(monus_identities_hold(difference));
+    assert!(!monus_identities_hold(absolute_difference));
+}
+
+type Ternary = fn(u32, u32, u32) -> u32;
+
+/// A triple of inputs with the differing left and right values.
+type Difference = ([u32; 3], u32, u32);
+
+/// The first triple below `n`, in lexicographic order, on which the two sides
+/// differ, with both values.
+fn first_difference(n: u32, lhs: Ternary, rhs: Ternary) -> Option<Difference> {
+    repeat_n(0..n, 3)
+        .multi_cartesian_product()
+        .map(|t| {
+            (
+                [t[0], t[1], t[2]],
+                lhs(t[0], t[1], t[2]),
+                rhs(t[0], t[1], t[2]),
+            )
+        })
+        .find(|(_, left, right)| left != right)
+}
+
+/// `BAG-MONUS`: four identities of set difference hold on every triple of
+/// subsets of three keys, and fail for bags when union is read as sum and
+/// intersection as min. The first failing triple of counts is recorded.
+#[test]
+fn set_difference_identities_fail_for_bags() {
+    let set_forms: [(Ternary, Ternary); 4] = [
+        (|a, b, _| (a | b) & !b, |a, b, _| a & !b),
+        (|a, b, c| (a | b) & !c, |a, b, c| (a & !c) | (b & !c)),
+        (|a, b, c| a & (b & !c), |a, b, c| (a & b) & !c),
+        (|a, b, c| a & !(b & !c), |a, b, c| (a & !b) | (a & c)),
+    ];
+    for (lhs, rhs) in set_forms {
+        assert_eq!(first_difference(8, lhs, rhs), None);
+    }
+
+    let bag_forms: [(Ternary, Ternary, Difference); 4] = [
+        // (A sum B) monus B is A, not A monus B.
+        (
+            |a, b, _| difference(a + b, b),
+            |a, b, _| difference(a, b),
+            ([1, 1, 0], 1, 0),
+        ),
+        // Monus does not distribute over bag sum.
+        (
+            |a, b, c| difference(a + b, c),
+            |a, b, c| difference(a, c) + difference(b, c),
+            ([1, 1, 1], 1, 0),
+        ),
+        // Min with a difference is not the difference of the min.
+        (
+            |a, b, c| a.min(difference(b, c)),
+            |a, b, c| difference(a.min(b), c),
+            ([1, 2, 1], 1, 0),
+        ),
+        // Nested difference does not split into difference and min.
+        (
+            |a, b, c| difference(a, difference(b, c)),
+            |a, b, c| difference(a, b).max(a.min(c)),
+            ([1, 2, 1], 0, 1),
+        ),
+    ];
+    for (lhs, rhs, expected) in bag_forms {
+        assert_eq!(first_difference(7, lhs, rhs), Some(expected));
+    }
+}
+
+/// Whether `monus(b, a)` is the least `z` with `max(a, z) >= b` on the chain
+/// `0 < 1 < 2`, where max is the sum.
+fn is_chain_monus(monus: CountOp) -> bool {
+    (0..3).all(|a| (0..3).all(|b| (0..3).all(|z| (a.max(z) >= b) == (z >= monus(b, a)))))
+}
+
+/// A different weight algebra: the chain `0 < 1 < 2` with max as sum and min
+/// as product. Its monus is not numeric subtraction, and product does not
+/// distribute over it, so that identity of `BAG-MONUS` is specific to counts.
+#[test]
+fn product_does_not_distribute_over_monus_on_the_max_min_chain() {
+    let chain_monus: CountOp = |b, a| if b <= a { 0 } else { b };
+    assert!(is_chain_monus(chain_monus));
+    assert!(!is_chain_monus(difference));
+    assert_eq!(
+        first_difference(
+            3,
+            |a, b, c| (if b <= a { 0 } else { b }).min(c),
+            |a, b, c| if b.min(c) <= a.min(c) { 0 } else { b.min(c) },
+        ),
+        Some(([1, 2, 1], 1, 0))
+    );
+}

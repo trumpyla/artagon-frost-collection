@@ -130,6 +130,10 @@ derived reasoning; **P** proposal; **H** historical; **X** unverified.
 | CL-SYM-1 | Union of symbolic environments is not a sound program-state merge; partial evaluation preserves unknowns | D | Section 6 |
 | CL-ROAR-1 | Roaring 0.12.0 exposes count kernels and rank/select | U (source) | `SRC-ROARING-0_12_0-SRC` |
 | CL-PKG-1 | Frost is one package, `frost-collections` 0.4.0, library `frost`, Rust 1.99.1, edition 2024 | I | `SRC-FROST-CARGO` |
+| CL-PRIOR-1 | Bag difference is monus on natural counts; product distributes over it there and not in every weight algebra; its identities have no finite complete axiom set | U | `SRC-PRIOR-GEERTS-POGGI`, `SRC-PRIOR-SUCIU-DIFFERENCES` (read 2026-11-12) |
+| CL-PRIOR-2 | A union of partial bijections is a partial bijection exactly when they are compatible in the inverse-semigroup sense; compatibility is not transitive | D, with the definition from U | [BiMap chapter](../../design/algebra/bimaps.md), `SRC-PRIOR-LAWSON-PRIMER` |
+| CL-PRIOR-3 | Recursive composition over weights converges for every program iff the weight semiring is stable; natural numbers are not | U | `SRC-PRIOR-DATALOGO`, Theorem 1.2 |
+| CL-PRIOR-4 | A result reused under a key that omits a context component can answer a different request | D, with one reported incident | [Computed sets chapter](../../design/algebra/execution-and-computed-sets.md), `SRC-PRIOR-SPICEDB-CVE-2026-55866` |
 
 ## 4. Conflicting recommendations
 
@@ -241,6 +245,21 @@ heading is the brief location recorded in `manifest.json` for questions
 without a dedicated prompt. A fuller brief can be produced with the
 [subtopic handoff template](../templates/subtopic-handoff.md) once a
 question's dependencies are answered. Stable ids are reserved here.
+
+**Feedback from the prior-art survey, 2026-11-12.** The
+[prior-art report](../reports/value-domain-algebra-prior-art.md) narrows the
+"literature unread" gap named for `Q-ALG-1` and `Q-BAG-1`: fifteen pages were
+read, and four laws were added to the formal chapters (claims CL-PRIOR-1 to
+CL-PRIOR-4 in section 3). No question above is answered or reordered, because
+about half of the survey's sources are still unread and the laws are proposed
+contracts. One conflict was resolved against the survey: it said bag
+difference fails the product-distribution axiom, and the source it cites says
+the axiom holds for natural numbers. Section 4's table compares the three
+supplied inputs and has no row for it; the report's correction table does.
+Section 7 is unchanged, since nothing was implemented. Five follow-up
+questions are seeded in the supplement's
+[research prompt](../formal-models/research-prompt.md#seeded-child-questions)
+and stay local to it.
 
 ### 8.1 Seeded follow-up blocks
 
@@ -396,5 +415,7 @@ consumer workload demonstrating that typed views cannot express its queries
 
 Source ids resolve in [SOURCES.md](../SOURCES.md). Hazards and corrections are
 in the [integration audit](../integration-audit.md). Parents: the three
-curated reports. Children: the four prompts. Next review trigger: completion
+curated reports. Children: the four prompts and the
+[prior-art report](../reports/value-domain-algebra-prior-art.md) of
+2026-11-12. Next review trigger: completion
 of any child report, which must update sections 3, 4, 7, and 8 here.

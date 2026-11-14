@@ -57,3 +57,19 @@ The Zanzibar/Leopard and symbolic-engine motivations come from the already
 integrated corpus. New computed-set equations here are proposed contracts and
 proof arguments, not claims of undocumented Zanzibar internals or implemented
 Frost compatibility. No new external PDF was analyzed for this refinement.
+
+## Prior-art survey, 2026-11-12
+
+The paragraph above describes the delivery. After it, a prior-art survey was
+run against these chapters and integrated as a
+[curated report](../reports/value-domain-algebra-prior-art.md). Its external
+sources are registered in the corpus catalog under
+[Prior-art survey sources](../SOURCES.md#prior-art-survey-sources-2026-11-12)
+with `SRC-PRIOR-…` ids and one of three check levels. Fifteen pages were read
+at integration; the chapters cite only those, or say that a source was not
+reread. `SRC-BIMAP-063` above was reread on the same day for `insert` and
+`insert_no_overwrite`.
+
+The four laws added from the survey are Frost statements. Two rest on a cited
+theorem that is not re-proved here: the non-axiomatizability behind
+`BAG-MONUS` and the convergence criterion behind `CLOSURE-STABLE`.

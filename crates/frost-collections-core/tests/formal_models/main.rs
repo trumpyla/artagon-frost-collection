@@ -29,3 +29,4 @@ mod relations;
 mod sequences;
 mod sets;
 mod stateful;
+mod weighted;

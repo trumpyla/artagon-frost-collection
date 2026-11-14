@@ -31,6 +31,7 @@ bindings. Existing Frost families do not acquire mandatory domain parameters.
 | [Adversarial review](../../reviews/value-domain-algebra-review.md) | Four same-author passes and concrete dispositions |
 | [Proof ledger](../../design/algebra/proof-obligations.md) | Proof arguments, finite checks and unexecuted implementation gates |
 | [Finite models](../../../crates/frost-collections-core/tests/formal_models/main.rs) | Rust tests of the laws, with wrong-definition checks and differential checks of implemented types |
+| [Prior-art report](../reports/value-domain-algebra-prior-art.md) | Established theory per construct, per-source check levels, corrections to the survey, and the four laws added from it |
 | [Destination review](../../reviews/value-domain-algebra-destination-review.md) | Independent review at integration, corrections, and the gates that ran |
 | [Validation](validation.md) | Commands, patch checks and unavailable gates |
 | [Research prompt](research-prompt.md) | Focused child investigations using the existing project templates |
@@ -90,6 +91,17 @@ runtime could not exercise the real types. Its results are recorded in the
 [validation record](validation.md) as history. Which established verification
 tools replace the hand-written generators is an open question; see the
 [destination review](../../reviews/value-domain-algebra-destination-review.md).
+
+The laws added with the prior-art survey of 2026-11-12 are checked in the
+same target, by twelve cases in `bags.rs`, `bimaps.rs`, `computed.rs` and
+`weighted.rs`. They check monus identities on counts 0..6, compatibility on
+all 34 partial bijections on three keys, instances of the stability theorem,
+the three-valued reading of the knowledge bounds, and a toy model of a result
+cache. They assert the survey's eight counterexamples and reject its eight
+wrong definitions. They do not prove the cited stability theorem, and the
+cache model is not a model of any engine. These checks were first a script
+with its own mutant runner; the [validation record](validation.md) keeps
+that run as history.
 
 The checks cover logical membership, representatives, conversion/closure,
 map presence and joins, bag counts, sequence occurrences, relation/BiMap

@@ -114,6 +114,90 @@ recorded exactly as supplied.
 The license and "maintenance signal" columns in Frost2's ecosystem table are
 likewise unverified; they are dated claims of unknown date.
 
+## Prior-art survey sources (2026-11-12)
+
+These rows come from the
+[prior-art survey](reports/value-domain-algebra-prior-art.md) of the
+value-domain algebra. Three check levels apply, and a row never claims a
+level it did not reach:
+
+- **Integration-checked**: the integrator fetched the page on 2026-11-12 (UTC)
+  and read the stated passage through a text extraction of the page. Section
+  and theorem numbers are as that extraction reported them.
+- **Survey-read**: the survey states that it read the page or abstract. The
+  integrator's fetch failed or was not attempted, as the row says.
+- **Unread**: the survey cites the work from prior knowledge. Nothing may be
+  stated from it as fact.
+
+### Integration-checked
+
+| ID | Source | Supports | Limits |
+| --- | --- | --- | --- |
+| `SRC-PRIOR-LAWSON-PRIMER` | Lawson, "Primer on Inverse Semigroups I", [arXiv:2006.01628](https://arxiv.org/pdf/2006.01628) | Section 2.3: `s ~ t` iff `s⁻¹t` and `st⁻¹` are idempotents; the relation is reflexive and symmetric, and transitive exactly for E-unitary semigroups (Proposition 2.17). Compatible partial bijections have a union that is a partial bijection. `s ⊥ t` iff both products are zero; an orthogonal union in I(X) is a disjoint union. Section 2.1: the idempotents of I(X) are the partial identities `1_A`, with `1_A·1_B = 1_(A∩B)`. Theorem 2.8 (Wagner–Preston): every inverse semigroup embeds in a symmetric inverse monoid. | The converse (a partial-bijection union implies compatibility) is not a standalone statement in the part read; the algebra chapter proves it directly and checks it on three keys. No statement that multiplication distributes over compatible joins was found, so the survey's claim to that effect is not attributed to this source. |
+| `SRC-PRIOR-SUCIU-DIFFERENCES` | Suciu, "Different Differences in Semirings", OASIcs, Tannen's Festschrift, article 10, pp. 10:1–10:20, [doi:10.4230/OASIcs.Tannen.10](https://doi.org/10.4230/OASIcs.Tannen.10), [PDF](https://drops.dagstuhl.de/storage/01oasics/oasics-vol119-tannens-festschrift/OASIcs.Tannen.10/OASIcs.Tannen.10.pdf) | Section 4.3: axiom (A5) is `(b ∸ a)·c = b·c ∸ a·c`. It holds in `(N,+,·,0,1,∸)` and in `N[X]` and fails in a three-element max/min m-semiring; the failure is attributed to Amsterdamer, Deutch and Tannen (2011). Where (A5) fails, rewriting `(R − S) ⋈ T` to `R ⋈ T − S ⋈ T` is unsound. Theorem 21: the identities of `(N,+,·,0,1,∸)` are co-r.e. complete, hence not finitely axiomatizable. | Publication year not shown in the text read. **Corrects the survey**, which said that bag difference fails (A5): it holds for natural-number bags. |
+| `SRC-PRIOR-GEERTS-POGGI` | Geerts and Poggi, "On Database Query Languages for K-relations", [author copy](https://adrem.uantwerpen.be/bibrem/pubs/GeertsA.pdf) | An m-semiring is a naturally ordered commutative semiring in which `{z : x ≤ y ⊕ z}` always has a least element; `x ⊖ y` is that element. On `N` it is truncated subtraction; on Boolean algebras it behaves like set difference. | Venue and year not shown in the copy read. |
+| `SRC-PRIOR-DATALOGO` | Abo Khamis, Ngo, Pichler, Suciu and Wang, "Convergence of Datalog over (Pre-) Semirings", [arXiv:2105.14435](https://arxiv.org/pdf/2105.14435) (version dated December 2022) | Theorem 1.2: every datalog° program converges iff the core semiring is stable, and in a number of steps bounded by the active domain iff it is p-stable. `u` is p-stable when `1 ⊕ u ⊕ … ⊕ uᵖ = 1 ⊕ u ⊕ … ⊕ uᵖ⁺¹`. `N` is naturally ordered and not stable; `x := 1 + 2x` diverges. Semi-naive evaluation generalizes under further restrictions. | The first 100,000 characters were read. The exact class for semi-naive evaluation and the journal venue (the survey gives PODS 2022 and JACM 71(2), 2024) were not checked. |
+| `SRC-PRIOR-DBSP` | Budiu, Chajed, McSherry, Ryzhyk and Tannen, "DBSP: Automatic Incremental View Maintenance for Rich Query Languages", PVLDB 16(7), pp. 1601–1614, 2023, [PDF](https://www.vldb.org/pvldb/vol16/p1601-budiu.pdf) | Section 4.1: a Z-set is a finite-support function into the integers; Z-sets form an abelian group. Definition 4.1: sets are Z-sets with all weights one. Definition 4.2: bags are the Z-sets with no negative weight. Definition 4.3: `distinct`. A change is the difference of consecutive snapshots, so deletions carry negative weights. | Says nothing about Frost's representation or about bounded counts. |
+| `SRC-PRIOR-GUAVA-MULTIMAP` | Guava 23.0 [`Multimap`](https://guava.dev/releases/23.0/api/docs/com/google/common/collect/Multimap.html) Javadoc | `asMap()` maps each distinct key to a nonempty collection. `get` on an absent key returns an empty view, not null. Removing a key's last value removes the key from every view. Equality is equality of `asMap()` views; a nonempty `SetMultimap` never equals a nonempty `ListMultimap`; any two empty multimaps are equal. | One release of one library; not a Frost dependency. |
+| `SRC-PRIOR-GUAVA-BIMAP` | Guava 33.0.0-jre [`BiMap`](https://guava.dev/releases/33.0.0-jre/api/docs//com/google/common/collect/BiMap.html) Javadoc | `put` throws when the value is bound to another key and leaves the bimap unchanged. `forcePut` removes the conflicting entry silently. `putAll` can leave earlier entries inserted when a later one throws, and its outcome can depend on input order. | One release of one library; not a Frost dependency. |
+| `SRC-PRIOR-PY-COUNTER` | Python 3.15.2 [`collections.Counter`](https://docs.python.org/3/library/collections.html) | `+` adds counts, `-` subtracts and keeps positive results, `&` is min, `\|` is max, and `^` (added in 3.15) is max minus min. Operator results drop counts of zero or below. `subtract()` keeps zero and negative counts. | A Python type; cited as a design contrast only. |
+| `SRC-PRIOR-LEAN-MAPS` | Lean language reference, [Maps and Sets](https://lean-lang.org/doc/reference/latest/Basic-Types/Maps-and-Sets/) (`latest`, no version shown) | Bundled maps carry their well-formedness invariant; `Raw` variants do not, and each raw operation `T.Raw.f` has a lemma `T.Raw.WF.f`. Basic operations are verified against list models; some, such as `HashMap.partition`, are not yet. `EquivBEq` and `LawfulHashable` state the key laws; with a non-reflexive `BEq`, `isEmpty` can be false while nothing can be retrieved. | Mutable `latest` page; the first 100,000 characters were read. |
+| `SRC-PRIOR-BIRD-PRG69` | Bird, *Lectures on Constructive Functional Programming*, Technical Monograph PRG-69, Oxford, 1988, [PDF](https://www.cs.ox.ac.uk/files/3390/PRG69.pdf) | Sections 1.2–1.3: lists are the free monoid on singletons; bags add commutativity and sets add idempotence. Section 1.3: the bag size equations fail for sets. Section 1.5: head and last are not defined on bags and sets. Section 2.1: every list homomorphism is a reduction after a map. | The tree level of the hierarchy and the name "Boom hierarchy" (Meertens 1986, per the survey) were not checked here. |
+| `SRC-PRIOR-LIBKIN-2016` | Libkin, "SQL's Three-Valued Logic and Certain Answers", ACM TODS, [author copy](https://homepages.inf.ed.ac.uk/libkin/papers/tods16.pdf) | Certain answers are the correctness standard for incomplete data. SQL's three-valued evaluation can be unrelated to them and can return answers that are not certain. A modified evaluation that classifies answers as certainly true, certainly false or unknown returns no false positives; false negatives remain possible. | Volume and year not shown in the copy read (the survey gives 41(1), 2016). |
+| `SRC-PRIOR-CEDAR-2024` | Cutler et al., "Cedar: A New Language for Expressive, Fast, Safe, and Analyzable Authorization (Extended Version)", [arXiv:2403.04651](https://arxiv.org/pdf/2403.04651) | Cedar's semantics and validator are formalized in Lean with proved properties. The Rust implementation is compared with the compiled Lean model by differential random testing. The SMT encoding is stated to be sound, complete and decidable, proved on paper; the Lean proofs of the encoder were under way at the time of writing. | The first 100,000 characters were read. The phrase "verification-guided development" is not in this paper; the survey also cites Disselkoen et al., FSE 2024, which was not read. |
+| `SRC-PRIOR-SPICEDB-CVE-2026-55866` | [Nixpkgs security tracker issue 563480](https://github.com/NixOS/nixpkgs/issues/563480) (opened 2026-09-15) and the [GitLab advisory database page for SpiceDB](https://advisories.gitlab.com/pkg/golang/github.com/authzed/spicedb/) (generated 2026-11-12) | CVE-2026-55866 (GHSA-4vrg-r928-h5vv, CVSS 3.1 score 3.7): the dispatch cache key for Check requests left out the check hints, so two different checks could share an entry and a check could return full permission where the answer was conditional or negative. It needs an intersection or exclusion over caveated and uncaveated paths, a concurrent lookup with a context, and the dispatch cache. Fixed in 1.54.0. | Secondary pages, not the vendor advisory. The tracker gives the affected range as 1.34.0 through 1.54.0 and the fix as 1.54.0; the survey gives 1.34.0 to 1.53.x. The CWE the survey names is not on either page. |
+| `SRC-PRIOR-SPICEDB-ADVISORIES` | [GitLab advisory database page for SpiceDB](https://advisories.gitlab.com/pkg/golang/github.com/authzed/spicedb/) (generated 2026-11-12) | One-line summaries: CVE-2026-46668 (nested-list caveats and improper cache reuse), CVE-2025-65111 (incomplete lookup results for a union naming one relation twice), CVE-2023-35930 (wrong negative decisions from lookup results), CVE-2022-21646 (lookups ignoring wildcards under an exclusion or intersection). | Summaries only; no advisory text was read. Evidence that these operators are where defects were reported, not a measure of frequency. |
+
+`SRC-BIMAP-063` in the [supplement sources](formal-models/SOURCES.md) was also
+rechecked on 2026-11-12: `insert` reports `Neither`, `Left`, `Right`, `Both` or
+`Pair` and can shrink the map; `insert_no_overwrite` returns the rejected pair
+and leaves the map unchanged. The survey's statement that the `bimap` page
+calls mutation through `Cell` or `RefCell` a logic error was **not** found on
+that page.
+
+### Survey-read, not reread at integration
+
+| ID | Source | The survey reports | Why not reread |
+| --- | --- | --- | --- |
+| `SRC-PRIOR-ICF-2010` | Lammich and Lochbihler, "The Isabelle Collections Framework", ITP 2010, [author copy](https://www21.in.tum.de/~lammich/pub/itp10.pdf) | Abstract sets and maps refined to red-black trees and hash tables by data refinement; refinement relations rather than functions | The fetch returned a client error. |
+| `SRC-PRIOR-SEMIALIGN` | `semialign` 1.3.1, [`Data.Semialign`](https://hackage.haskell.org/package/semialign-1.3.1/docs/Data-Semialign.html) | `align` is commutative up to `swap` and associative up to `assoc`; distribution between `zip` and `align` is listed as not a law | The host disallows automated fetches. |
+| `SRC-PRIOR-CONTAINERS-MERGE` | `containers`, [`Data.Map.Merge.Strict`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html) | `merge` takes two missing-key tactics and one matched-key tactic; union, intersection, difference and symmetric difference are tactic choices; `mergeA` is the effectful form | The host disallows automated fetches. |
+| `SRC-PRIOR-VERUS-3176` | [Verus issue 3176](https://github.com/verus-lang/verus/issues/3176) | A key model is specified for the stored key type and not for the borrowed lookup type | Rate-limited twice. Issue state is unknown. |
+| `SRC-PRIOR-VERUS-VSTD` | Verus `vstd` [`HashMapWithView`](https://verus-lang.github.io/verus/verusdoc/vstd/hash_map/struct.HashMapWithView.html) | A trusted wrapper whose `View` maps a concrete map to a mathematical map, guarded by `obeys_key_model` | Not attempted. |
+| `SRC-PRIOR-AENEAS-2022` | Ho and Protzenko, "Aeneas: Rust verification by functional translation", ICFP 2022, [doi:10.1145/3547647](https://doi.org/10.1145/3547647) | Safe Rust translated to pure functional models | Not attempted. The hash-map case study is unread even by the survey. |
+| `SRC-PRIOR-ZWART-MARSDEN` | Zwart and Marsden, "No-Go Theorems for Distributive Laws", [arXiv:2003.12531](https://arxiv.org/pdf/2003.12531) | Which collection monads compose through distributive laws | Not attempted. |
+| `SRC-PRIOR-FEGARAS-MAIER-2000` | Fegaras and Maier, "Optimizing object queries using an effective calculus", ACM TODS 25(4), 2000, [doi:10.1145/377674.377676](https://doi.org/10.1145/377674.377676) | A monoid comprehension calculus over sets, bags and lists | Not attempted. |
+| `SRC-PRIOR-CHAUDHURI-VARDI-1993` | Chaudhuri and Vardi, "Optimization of real conjunctive queries", PODS 1993, [doi:10.1145/153850.153856](https://doi.org/10.1145/153850.153856) | Bag equivalence of conjunctive queries is isomorphism; a hardness claim for bag containment was later withdrawn and decidability is reported open | Not attempted. The two later papers the survey quotes were not read either. |
+| `SRC-PRIOR-HOTTSQL-2017` | Chu, Weitz, Cheung and Suciu, "HoTTSQL", PLDI 2017, [doi:10.1145/3062341.3062348](https://doi.org/10.1145/3062341.3062348) | Machine-checked semantics and rewrite proofs for SQL with bags | Not attempted. |
+| `SRC-PRIOR-SPES-2022` | Zhou et al., "SPES", ICDE 2022, [doi:10.1109/ICDE53745.2022.00250](https://doi.org/10.1109/ICDE53745.2022.00250) | Bag-semantics equivalence proving; counts of proved rewrite pairs against two earlier provers | Not attempted. The counts are the survey's and are not repeated in design documents. |
+| `SRC-PRIOR-DEMAINE-2000` | Demaine, López-Ortiz and Munro, "Adaptive set intersections, unions, and differences", SODA 2000, [author page](https://erikdemaine.org/papers/SODA2000/) | Adaptive merge algorithms in the comparison model | Not attempted. |
+
+The survey also reports reading `SRC-ZANZIBAR-2019` and `SRC-SPICEDB-SCHEMA`,
+which this catalog already holds. Its statement about operator precedence in
+SpiceDB schemas is not in the existing row and was not rechecked.
+
+### Unread (cited by the survey from prior knowledge)
+
+No claim in a design document rests on these. The survey marks each as
+inferred, or as bibliography confirmed with content from memory.
+
+| ID | Work as the survey cites it |
+| --- | --- |
+| `SRC-PRIOR-HOARE-1972` | Hoare, "Proof of correctness of data representations", Acta Informatica 1(4), 1972 |
+| `SRC-PRIOR-HE-HOARE-SANDERS-1986` | He, Hoare and Sanders, "Data refinement refined", ESOP 1986 |
+| `SRC-PRIOR-LISKOV-GUTTAG-1986` | Liskov and Guttag, *Abstraction and Specification in Program Development*, 1986 |
+| `SRC-PRIOR-GREEN-2007` | Green, Karvounarakis and Tannen, "Provenance semirings", PODS 2007, doi:10.1145/1265530.1265535 (bibliography confirmed by the survey; content from memory) |
+| `SRC-PRIOR-IMIELINSKI-LIPSKI-1984` | Imieliński and Lipski, "Incomplete information in relational databases", JACM 31(4), 1984, doi:10.1145/1634.1886 (bibliography confirmed; content from memory) |
+| `SRC-PRIOR-GRUMBACH-MILO-1996` | Grumbach and Milo, "Towards tractable algebras for bags", JCSS 52(3), 1996, doi:10.1006/jcss.1996.0042 (bibliography confirmed; content from memory) |
+| `SRC-PRIOR-USEMIRING-2018` | Chu, Murphy, Roesch, Cheung and Suciu, PVLDB 11(11), 2018, doi:10.14778/3236187.3236200 (bibliography confirmed; content partly from memory) |
+| `SRC-PRIOR-COSETTE-2017` | Chu, Wang, Weitz and Cheung, "Cosette", CIDR 2017 (bibliography confirmed) |
+| `SRC-PRIOR-UNREAD-OTHER` | Meertens 1986; Buneman, Naqvi, Tannen and Wong 1995; Okasaki's Edison; Coq MSets; Why3, Dafny, VeriFast, Creusot, Prusti and Kani; Java `Comparator` documentation; Haskell `containers` left bias; `hashbrown` and `equivalent`; `ordered-float`; King's "Parse, don't validate"; Liquid Haskell and F*; `nutype`, `garde` and `validator`; Unicode UAX #15; Davey and Priestley; Binnig, Hildenbrand and Färber 2009; Guava `Multiset`, Eclipse Collections, `hashbag`; the SQL standard's bag operators; differential dataflow papers; Apt, Blair and Walker 1988; Apache Commons `BidiMap`; Haskell `bimap`; Foster et al. 2007; cats `Align` and `Ior`; itertools `EitherOrBoth`; Coutts, Leshchinskiy and Stewart 2007; Ellis and Gibbs 1989; Clojure transients; .NET frozen collections; kotlinx immutable collections; `im`, `rpds`, `imbl`; `Object.freeze`; Kleene and Belnap logics; Pawlak rough sets; OpenFGA and Ory Keto; O'Neil et al. 1996; EQUITAS; egg and egglog; Baeza-Yates 2004; Lemire, Boytsov and Kurz 2016; QuickCheck and its law-suite libraries; `proptest` |
+
+`SRC-INPUT-ALBERT-1991` and `SRC-INPUT-ROARING-PAPER` above stay unread. The
+survey confirms Albert's bibliography only, and reports reading the two
+Roaring papers (doi:10.1002/spe.2325 and doi:10.1002/spe.2560) through a
+subagent; neither was reread.
+
 ## Unaudited influences and gaps
 
 The following were named by the task or the inputs but have **no primary
@@ -125,8 +209,8 @@ shapes, or guarantees may be stated from memory.
 | --- | --- | --- |
 | Macaroons, Vanadium blessings and caveats, OAuth, UCAN, ZCAP, Kameo actor system, libp2p beyond peer ids | Task handoff | Influence only; no source read. |
 | OpenFGA userset schema | Frost3 | Unverified; SpiceDB half of the same sentence verified (`SRC-SPICEDB-SCHEMA`). |
-| Differential Dataflow (incremental maintenance, negative differences) | Frost3 | Unverified. |
-| Guava `Multiset`/`Multimap`/`BiMap`, Java `Map.merge`/`ConcurrentHashMap`, C++ `set_union`/`merge`, Haskell `unionWith`, OCaml `Map.merge`, Clojure `merge-with`, Scala `updatedWith`, PostgreSQL `UNION ALL` | Frost1 | Unverified cross-language claims; plausible but unchecked. |
+| Differential Dataflow (incremental maintenance, negative differences) | Frost3 | Unverified. Signed weights in DBSP are covered by `SRC-PRIOR-DBSP`; that is a different paper. |
+| Guava `Multiset`/`Multimap`/`BiMap`, Java `Map.merge`/`ConcurrentHashMap`, C++ `set_union`/`merge`, Haskell `unionWith`, OCaml `Map.merge`, Clojure `merge-with`, Scala `updatedWith`, PostgreSQL `UNION ALL` | Frost1 | Unverified cross-language claims; plausible but unchecked. Guava `Multimap` and `BiMap` Javadoc were read on 2026-11-12 (`SRC-PRIOR-GUAVA-MULTIMAP`, `SRC-PRIOR-GUAVA-BIMAP`); the rest remain unread. |
 | Codd's relational model, Bagwell's HAMT, `proptest`/QuickCheck, Kani, Loom documentation claims | Frost1 | Unverified as cited; Frost's own Loom and Kani harnesses are documented in `SRC-FROST-DOC-VERIFICATION`. |
 | `hashbrown` raw-entry warnings, `indexmap` order semantics, `imbl` persistence claims | Frost1, Frost2 | Partially covered by the set-algebra design's S4, S5, S8 checks; raw-entry warning unverified. |
 | Leopard algorithm details beyond the sections and pages listed | Frost3 | Section- and page-level citations recorded from Opus's read; deeper algorithmic detail unaudited. |

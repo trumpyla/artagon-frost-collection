@@ -22,6 +22,12 @@ the group. This is a proposed normalization rule, not a claim about every native
 multimap or Map<K,Vec<V>>. A native source that distinguishes absent from an
 explicit empty fiber retains that distinction until an explicit conversion.
 
+The same convention is an established library contract: a key is present only
+with at least one value, and removing the last value removes the key
+(`SRC-PRIOR-GUAVA-MULTIMAP`). That library also treats any two empty multimaps
+as equal across fiber kinds. Frost does not adopt that rule: the fiber is part
+of the type's meaning, and the selected families are distinct types.
+
 Count independently: number of nonempty groups; number of distinct pairs;
 number of occurrences (bag/sequence); and size of each fiber. A method named
 len cannot silently switch between them. Per-fiber counts fitting a machine
@@ -56,6 +62,11 @@ using distributivity/associativity of natural arithmetic. Addition represents
 alternative derivations and multiplication combines witnesses along a path.
 Boolean support forgets derivation multiplicity; it must not be used when
 explanations, accounting or duplicate-sensitive queries observe counts.
+
+A BagMultiMap is a relation with natural-number weights, and Z^(K×L) is its
+signed counterpart for changes (see [bags](bags.md)). Iterating weighted
+composition to a fixed point is a separate operation with its own admission
+rule, [CLOSURE-STABLE] in [computed sets](execution-and-computed-sets.md).
 
 A bounded implementation checks every product, sum and aggregate. Error traces
 and resource use do not inherit the natural-number equalities automatically.

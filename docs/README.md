@@ -55,6 +55,7 @@ remain authoritative for implemented behavior.
 | [Crate split review](reviews/crate-split-adversarial-review.md) | Adversarial review of the crate-split proposal: two blockers, compile-tested |
 | [Crate split plan review](reviews/crate-split-plan-review.md) | Adversarial review of the execution plan: 27 findings and their dispositions |
 | [Formal-model research supplement](research/formal-models/README.md) | Input inventory, sources, replayable evidence and follow-up prompt |
+| [Prior-art survey](research/reports/value-domain-algebra-prior-art.md) | Established theory and similar implementations per construct, what was reread, corrections, and the four laws added from it |
 
 ## Research corpus
 
@@ -68,6 +69,7 @@ remain authoritative for implemented behavior.
 | [Collection algebra survey](research/reports/collection-algebra-survey.md) | Curated survey derived from Frost1 | Research |
 | [Collection algebra implementation notes](research/reports/collection-algebra-implementation-notes.md) | Curated implementation notes derived from Frost2, with corrections | Research |
 | [Computed sets summary](research/reports/computed-sets-summary.md) | Curated summary of the computed-sets delivery note; the full report is missing | Research |
+| [Value-domain algebra prior art](research/reports/value-domain-algebra-prior-art.md) | Curated prior-art survey of the formal algebra, with per-source check levels | Research |
 | [Foundations and engine roadmap](research/synthesis/foundations-and-engine-roadmap.md) | Decision map, capability matrix, and prioritized questions | Research synthesis |
 
 Templates for new research:

@@ -43,6 +43,10 @@ performance advantage. A large assertion count is not a coverage percentage.
 | `FROZEN-STABLE` | [Structural versus deep stability](frozen.md) | Fixed structure is not fixed heap payload or source revision | abstract heap counterexample; no Rust aliasing proof |
 | `KNOW-BOUNDS` | [Incomplete set knowledge](execution-and-computed-sets.md) | Sound lower/upper transfer, exact for independent operands; not correlation-complete or error absorption | inclusion proof; soundness and tightness over all interval realizations on three keys |
 | `DELTA-REPLAY` | [Revisioned overlays](execution-and-computed-sets.md) | Exact base plus ordered complete suffix; ordered compaction preserves result | fold decomposition argument; short histories against a last-event-wins reference |
+| `BAG-MONUS` | [Difference identities](bags.md) | Ten identities of natural-number monus hold; four set-difference identities fail under the sum and min reading; no finite complete rule set | case argument; counts 0..6 and subsets of three keys in the model tests; non-axiomatizability cited, not proved |
+| `BIMAP-COMPAT` | [Compatibility](bimaps.md) | Functional pair union iff both mixed products are partial identities; orthogonal implies compatible; not transitive; composition distributes over compatible union | proof argument; all 34 partial bijections on three keys, all pairs and triples, in the model tests |
+| `CLOSURE-STABLE` | [Recursive weighted composition](execution-and-computed-sets.md) | Converges for every program iff the weight semiring is stable; N is not, Booleans are; capping commutes with sum and product | cited theorem, not re-proved; instances for elements 0..4, three-node graphs and caps 1..5 in the model tests |
+| `CTX-KEY` | [Context in result keys](execution-and-computed-sets.md) | A reused result is keyed by every context component it depends on; reuse never upgrades a status | argument from `FM-REFINE`; a three-outcome toy model in the model tests; one reported production defect |
 
 ## Proof sketches beyond the tables
 
@@ -68,6 +72,26 @@ a fact, hence the chain stabilizes. This is not a runtime bound on a whole query
 For bags, `x -> 1+x` already has no finite natural fixed point on one key; a
 finite key set alone supplies no termination theorem.
 
+**Monus identities.** With a∸b equal to a-b when a ≥ b and 0 otherwise, each
+identity of [BAG-MONUS](bags.md) reduces to a case split on the order of its
+arguments. For example (a∸b)+b is a when a ≥ b and b otherwise, which is the
+maximum. The failed set readings each have a counterexample with counts at
+most 2. That no finite list is complete is a cited theorem.
+
+**Compatibility.** The product S∘R⁻¹ contains (l,l') exactly when one left
+endpoint reaches l in R and l' in S, so it is inside the identity iff the
+union is functional from the left; S⁻¹∘R gives the right side. A uniqueness
+conflict in a union of many operands involves two pairs, hence two operands,
+which gives the pairwise criterion. Distribution of composition holds for all
+relations; the composed sides are compatible because their union is a
+composition of partial bijections.
+
+**Stability.** The convergence theorem is cited. The instance for N is direct:
+1+1+…+1 with p+1 terms is p+1, which never equals p+2. Capping at M is a
+homomorphism because min(M,a+b) and min(M,a·b) depend only on min(M,a) and
+min(M,b) for naturals; that general argument is not written out and the check
+covers values 0..20.
+
 **Observational caveat.** A logical equation does not prove equality of all
 possible implementation traces. Representation diagnostics, emitted prefixes,
 first error, suppressed read, callback order, retained allocations and borrowed
@@ -77,14 +101,24 @@ not cause memory unsafety, regardless of the mathematical assumption.
 ## Current executable evidence
 
 The finite models are the Rust test target
-[`crates/frost-collections-core/tests/formal_models`](../../../crates/frost-collections-core/tests/formal_models/main.rs): 46 cases, one
-module per chapter plus one for operation sequences, run by `make check` and
+[`crates/frost-collections-core/tests/formal_models`](../../../crates/frost-collections-core/tests/formal_models/main.rs): 58 cases, one
+module per chapter, a second for the computed-sets chapter, and one for
+operation sequences, run by `make check` and
 recorded in the verification catalog under `C-ALGEBRA-FORMAL-MODELS`. Finite
 domains come from `exhaust` and `itertools`; sampled domains and operation
 sequences from `proptest` and `proptest-state-machine`. Each law checker also
 runs on deliberately wrong definitions, which must fail. Nine cases run real
 Frost types on the same inputs. A passing case covers only its stated finite domain;
 it is not a proof, a coverage measure, or a mutation score for Frost.
+
+Twelve of those cases check the four laws added with the prior-art survey
+(`BAG-MONUS`, `BIMAP-COMPAT`, `CLOSURE-STABLE`, `CTX-KEY`) and the per-key
+reading of `KNOW-BOUNDS`. They assert the survey's eight counterexamples at
+the recorded inputs, and they reject its eight wrong definitions. These checks
+were first a separate script; the
+[validation record](../../research/formal-models/validation.md) keeps that
+script's totals as history. They do not prove the stability theorem that
+`CLOSURE-STABLE` cites, and the cache model is not a model of any engine.
 
 Three obligations have no executable check: `FM-PREFIX` (no stream model
 exists), `DOM-EQ` (the model's relations are equivalences by construction),

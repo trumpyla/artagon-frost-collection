@@ -77,6 +77,24 @@ No public API or behaviour change so far.
   agent CLI, and document it in `TOOLS.md`. An edit names lines by a content
   hash and is refused when the file has changed since it was read.
 
+## Unreleased — prior-art survey of the value-domain algebra
+
+Documentation only. No source, feature, or public API change.
+
+- Add a curated prior-art survey of the proposed algebra as
+  `docs/research/reports/value-domain-algebra-prior-art.md`, with its input
+  under `docs/reviews/supplied` and its sources in the research catalog.
+- Add four proposed laws to `docs/design/algebra`: `BAG-MONUS`,
+  `BIMAP-COMPAT`, `CLOSURE-STABLE`, and `CTX-KEY`. Record established terms
+  as aliases; rename nothing.
+- Check those laws on finite domains in the Rust model tests
+  (`crates/frost-collections-core/tests/formal_models`): twelve cases, which
+  include the eight wrong definitions and the eight counterexamples of the
+  survey's first check script. That JavaScript script and its mutant runner
+  are not kept.
+- Correct the bag chapter: the lack of a finite complete axiom basis does not
+  rule out proving individual rewrites.
+
 ## Unreleased — value-domain algebra documents and rules entry
 
 Documentation only. No source, feature, or public API change.

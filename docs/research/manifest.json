@@ -45,6 +45,34 @@
       "input_role": "Computed-sets summary and delivery note, not the complete linked report.",
       "opaque_citation_groups": 15,
       "session_local_links": 3
+    },
+    {
+      "id": "prior-art-survey-2026-11-12",
+      "original_filename": "none: output of a research tool, written into the repository at integration",
+      "path": "docs/reviews/supplied/value-domain-algebra-prior-art-survey.md",
+      "sha256": "e96cc829088ddb57e3ad1b00c2d8d4ff270a6d9482fffcf3bcf32132c6a17d59",
+      "bytes": 39313,
+      "lines": 250,
+      "title": "Prior-Art Survey for the Frost Value-Domain and Collection Algebra Specification",
+      "origin_created_at": "2026-11-12",
+      "imported_at": "2026-11-12",
+      "input_role": "Prior-art survey of the formal algebra chapters; carries its own verified/inferred marks; several statements corrected in the curated report.",
+      "opaque_citation_groups": 0,
+      "session_local_links": 0
+    },
+    {
+      "id": "prior-art-survey-2026-11-12-sources",
+      "original_filename": "none: page list returned by the research tool, host labels omitted",
+      "path": "docs/reviews/supplied/value-domain-algebra-prior-art-survey-sources.txt",
+      "sha256": "02ce8d7e5ce80b13752d661ded9c15befcb6006f24dc48254fcb19c0640ca45c",
+      "bytes": 6171,
+      "lines": 91,
+      "title": "Pages consulted by the prior-art survey",
+      "origin_created_at": "2026-11-12",
+      "imported_at": "2026-11-12",
+      "input_role": "The 91 URLs the survey tool reported consulting; not a statement that each page supports a claim.",
+      "opaque_citation_groups": 0,
+      "session_local_links": 0
     }
   ],
   "archive": {
@@ -294,6 +322,26 @@
       "related_ids": ["frost-research-synthesis-foundations-and-engine-roadmap", "frost-research-prompt-computed-sets-and-durable-execution"],
       "supersedes": [],
       "open_questions": ["Q-CSET-1", "Q-NARY-1", "Q-AUTHZ-1"]
+    },
+    {
+      "id": "frost-research-report-value-domain-algebra-prior-art",
+      "path": "docs/research/reports/value-domain-algebra-prior-art.md",
+      "title": "Prior art for the value-domain and collection algebra (curated survey)",
+      "kind": "report",
+      "level": "landscape",
+      "research_status": "curated",
+      "implementation_status": "proposed",
+      "source_validation": "partial",
+      "input_files": ["docs/reviews/supplied/value-domain-algebra-prior-art-survey.md", "docs/reviews/supplied/value-domain-algebra-prior-art-survey-sources.txt"],
+      "input_members": [],
+      "input_sha256": ["e96cc829088ddb57e3ad1b00c2d8d4ff270a6d9482fffcf3bcf32132c6a17d59", "02ce8d7e5ce80b13752d661ded9c15befcb6006f24dc48254fcb19c0640ca45c"],
+      "origin_created_at": "2026-11-12",
+      "imported_at": "2026-11-12",
+      "repo_baseline": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+      "parent_ids": ["frost-research-synthesis-foundations-and-engine-roadmap"],
+      "related_ids": ["frost-research-report-collection-algebra-survey", "frost-research-report-computed-sets-summary", "frost-research-source-catalog"],
+      "supersedes": [],
+      "open_questions": ["Q-ALG-1", "Q-BAG-1", "Q-MM-1", "Q-BIMAP-1", "Q-CSET-1", "Q-AUTHZ-1"]
     },
     {
       "id": "frost-research-synthesis-foundations-and-engine-roadmap",

@@ -148,3 +148,95 @@ fn bimap_counterexamples_are_real() {
     let by_left_key = relation(pairs(r).filter(|(a, _)| pairs(s).all(|(x, _)| x != *a)));
     assert_eq!((r & !s, by_left_key), (r, 0));
 }
+
+type Compatibility = fn(u32, u32) -> bool;
+
+fn partial_identity(r: u32) -> bool {
+    pairs(r).all(|(a, b)| a == b)
+}
+
+/// The chapter's relation: the union of the two is a partial bijection.
+fn compatible(r: u32, s: u32) -> bool {
+    valid(r | s)
+}
+
+/// The inverse-semigroup relation: both mixed products are partial identities.
+fn algebraically_compatible(r: u32, s: u32) -> bool {
+    partial_identity(compose(inverse(r), s)) && partial_identity(compose(r, inverse(s)))
+}
+
+/// Both mixed products are empty.
+fn orthogonal(r: u32, s: u32) -> bool {
+    compose(inverse(r), s) == 0 && compose(r, inverse(s)) == 0
+}
+
+/// Whether two definitions of compatibility agree on every pair.
+fn compatibility_agrees(first: Compatibility, second: Compatibility) -> bool {
+    let all = bimaps();
+    all.iter()
+        .all(|&r| all.iter().all(|&s| first(r, s) == second(r, s)))
+}
+
+/// `BIMAP-COMPAT`: the chapter's `compatible` is the inverse-semigroup
+/// compatibility relation, and orthogonal means disjoint domains and ranges.
+#[test]
+fn compatibility_is_the_inverse_semigroup_relation() {
+    assert!(compatibility_agrees(compatible, algebraically_compatible));
+    let all = bimaps();
+    let mut compatible_pairs = 0;
+    for &r in &all {
+        for &s in &all {
+            compatible_pairs += usize::from(compatible(r, s));
+            let disjoint_ends = pairs(r).all(|(a, b)| pairs(s).all(|(x, y)| a != x && b != y));
+            assert_eq!(orthogonal(r, s), disjoint_ends);
+            if orthogonal(r, s) {
+                assert!(compatible(r, s));
+                assert_eq!((r | s).count_ones(), r.count_ones() + s.count_ones());
+            }
+        }
+    }
+    assert!(0 < compatible_pairs && compatible_pairs < all.len() * all.len());
+}
+
+/// Wrong definitions fail: validity that checks the left side only, and
+/// compatibility that tests one mixed product.
+#[test]
+fn wrong_compatibility_definitions_are_rejected() {
+    let left_only: Compatibility = |r, s| valid_with(r | s, false);
+    let one_product: Compatibility = |r, s| partial_identity(compose(inverse(r), s));
+    assert!(!compatibility_agrees(left_only, algebraically_compatible));
+    assert!(!compatibility_agrees(compatible, one_product));
+}
+
+/// `BIMAP-COMPAT`: a three-way union is a partial bijection exactly when the
+/// operands are pairwise compatible, and composition distributes over a
+/// compatible union on either side.
+#[test]
+fn pairwise_compatibility_decides_the_three_way_union() {
+    let all = bimaps();
+    for &r in &all {
+        for &s in &all {
+            for &t in &all {
+                assert_eq!(
+                    valid(r | s | t),
+                    compatible(r, s) && compatible(r, t) && compatible(s, t)
+                );
+                if compatible(r, s) {
+                    let union = r | s;
+                    assert_eq!(compose(union, t), compose(r, t) | compose(s, t));
+                    assert_eq!(compose(t, union), compose(t, r) | compose(t, s));
+                    assert!(valid(compose(union, t)) && valid(compose(t, union)));
+                }
+            }
+        }
+    }
+}
+
+/// Compatibility is not transitive: `{(0,0)}` and `{(0,1)}` are each
+/// compatible with the empty bijection and not with each other.
+#[test]
+fn compatibility_is_not_transitive() {
+    let (r, s, t) = (relation([(0, 0)]), 0, relation([(0, 1)]));
+    assert!(compatible(r, s) && compatible(s, t));
+    assert!(!compatible(r, t));
+}
