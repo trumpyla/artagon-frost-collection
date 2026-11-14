@@ -64,7 +64,7 @@ For implemented behavior, the source, rustdoc, and actual tests at the pinned
 revision remain authoritative. Within this proposed refinement, this index and
 catalog name the domain-specific contracts. The existing
 [collection integration guide](../collection-algebra.md) retains its research
-history and selected names; [general set algebra](../set-algebra.md) retains its
+history and selected names; [general set algebra](../../../crates/frost-collections-core/docs/set-algebra.md) retains its
 more detailed expression proposal. Conflicts are recorded, not silently solved
 by renaming an implemented type.
 

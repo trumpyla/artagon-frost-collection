@@ -29,7 +29,7 @@ those cases do not measure shuffled-ingest sorting throughput.
 `integer_output` measures mixed output materialization, distant dense windows,
 native equality, representation-independent Hash on several data shapes,
 sorted Roaring builders, byte promotion and small dense membership. The
-[comparison report](../integer-output-benchmarks.md) describes the bundled
+[comparison report](../../crates/frost-collections-integer/docs/integer-output-benchmarks.md) describes the bundled
 baseline archive and identical-harness reproduction script. It compares baseline
 x86-64 and x86-64-v3 separately; changing the target CPU is not a source-level
 speedup and must not be hidden in the aggregate.
@@ -65,7 +65,7 @@ tests when they express the intended algorithmic complexity.
 ## Isolation from coverage, sanitizers, and policy thresholds
 
 - Frost benchmarks use custom `harness = false` executables backed by
-  [`benches/support/mod.rs`](../../crates/frost-collections-test-support/src/bench.rs) (not Criterion).
+  [`crates/frost-collections-test-support/src/bench.rs`](../../crates/frost-collections-test-support/src/bench.rs) (not Criterion).
   Setting `FROST_BENCH_LIST=1` lists registered benchmark cases without timing
   loops so `make catalog-inventory` can verify every benchmark executable against
   [`verification/metadata/bench-inventory.json`](../../crates/frost-collections-core/verification/metadata/bench-inventory.json)
@@ -75,7 +75,7 @@ tests when they express the intended algorithmic complexity.
   Miri, or Loom, and never run benchmarks concurrently with `make check`,
   `make coverage`, `make mutants`, or `make fuzz-smoke`.
 - Keep answer validation outside the timed loop using `measure` and
-  `measure_with_setup` in [`benches/support/mod.rs`](../../crates/frost-collections-test-support/src/bench.rs).
+  `measure_with_setup` in [`crates/frost-collections-test-support/src/bench.rs`](../../crates/frost-collections-test-support/src/bench.rs).
   State explicitly whether input construction, clone/thaw staging, result
   destruction, and worker-thread lifecycle are inside or outside the timed
   region.

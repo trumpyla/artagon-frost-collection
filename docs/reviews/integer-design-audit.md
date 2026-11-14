@@ -3,7 +3,7 @@
 > Historical audit of the initial integer-profile delivery. Its std requirement
 > and construction-only output policies were superseded by the
 > [integer output review](integer-output-review.md). See the current
-> [integer design](../design/integer-sets.md) for maintained contracts.
+> [integer design](../../crates/frost-collections-integer/docs/integer-sets.md) for maintained contracts.
 
 ## Decision
 
@@ -105,7 +105,7 @@ Dense cases rejected by the configured budget are reported as ineligible; they
 are not timed through an unbounded allocation. The benchmark validates full set
 answers before timing and uses seven chronological raw samples. A correct
 cardinality alone would be insufficient to validate a materialized answer.
-The [integer benchmark report](../integer-benchmarks.md) preserves the recorded
+The [integer benchmark report](../../crates/frost-collections-integer/docs/integer-benchmarks.md) preserves the recorded
 results, the initial mixed-direction problem, and the scope of each measurement.
 
 These are warm-cache synthetic workloads, with chronological samples rather than
@@ -151,7 +151,7 @@ considered after their domain, cardinality, and performance contracts are set.
 
 ## Review anchors
 
-- [Implemented profile design](../design/integer-sets.md)
+- [Implemented profile design](../../crates/frost-collections-integer/docs/integer-sets.md)
 - [Public key laws](../../crates/frost-collections-integer/src/integer/key.rs)
 - [Public construction and set API](../../crates/frost-collections-integer/src/integer/set.rs)
 - [Policy and checked errors](../../crates/frost-collections-integer/src/integer/policy.rs)

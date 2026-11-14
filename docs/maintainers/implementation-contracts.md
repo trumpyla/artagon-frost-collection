@@ -36,14 +36,14 @@ module. `docs/maintainers/guide.md` is the maintainer entry point.
   test, benchmark, feature, or verification package.
 - The repository is a Cargo workspace with its packages under `crates/`. The
   packages are those of the [crate split plan](../design/crate-split-plan.md),
-  extracted under reorganization epic `frost-wlt`; do not add a package outside
-  that epic. Until the extractions land, `crates/frost-collections` holds all
-  the code, and module paths below are relative to that package.
-  `src/family` owns ordinary mutable/frozen pairs;
-  `src/adaptive` owns explicit policies; `src/backends` and `src/adapters` supply
-  optional integrations. `src/concurrent` separates live guarded access from
+  extracted under reorganization epic `frost-wlt`; do not add a package
+  without a design record. `crates/frost-collections` is the facade: it holds
+  re-exports, feature forwarding, crate documentation and the examples.
+  `crates/frost-collections-core/src/family` owns ordinary mutable/frozen pairs;
+  `crates/frost-collections-core/src/adaptive` owns explicit policies; `crates/frost-collections-core/src/backends` and `crates/frost-collections-core/src/adapters` supply
+  optional integrations. `crates/frost-collections-concurrent/src/concurrent` separates live guarded access from
   whole-value snapshot publication.
-  `src/integer` owns the typed encoded set profile, including its codec, policy,
+  `crates/frost-collections-integer/src/integer` owns the typed encoded set profile, including its codec, policy,
   and private storage; ordinary family identities do not depend on it.
 - Root files are the public entry point and contribution policies. Design and
   maintenance documents live under `docs/`. Historical inputs are evidence,
@@ -91,7 +91,7 @@ An empty search or graph result alone never proves a symbol is unused.
   shared retry helper connected to the real production implementation.
 - No manual Send/Sync implementations or new unsafe blocks without a written
   invariant and a focused ownership review. Unsafe is currently confined to
-  `src/adaptive/seq/buf.rs`; retain its safety comments and Miri coverage.
+  `crates/frost-collections-core/src/adaptive/seq/buf.rs`; retain its safety comments and Miri coverage.
 - The `integer` profile uses a safe extensible `IntKey` codec and sealed unsigned
   widths. Codec laws never justify unsafe access. Preserve canonical codes,
   checked imports, logical-domain type separation, and by-value traversal.

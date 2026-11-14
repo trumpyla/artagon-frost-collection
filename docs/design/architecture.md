@@ -17,15 +17,15 @@ diagnostics, not a library requirement.
 this combined design. This document describes the resulting architecture and
 its boundaries. [README.md](../../crates/frost-collections/README.md) contains the rationale, the
 user-facing feature catalog, and tested introductory examples. The
-[Frozen API guide](frozen-api.md) gathers the frozen-value contracts from
+[Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md) gathers the frozen-value contracts from
 sections 1, 3, 5, and 6 below into one reference with source and test links.
 
 Version 0.4.0 adds frozen set algebra without changing the family identities or
-freeze/thaw pairings. [Set operations](../set-operations.md) records the lazy
+freeze/thaw pairings. [Set operations](../../crates/frost-collections-core/docs/set-operations.md) records the lazy
 borrowed family operations, direct scalar kernels, frozen bitmap results, and
 left-representative rule.
 
-The [general set-algebra proposal](set-algebra.md) broadens future expression
+The [general set-algebra proposal](../../crates/frost-collections-core/docs/set-algebra.md) broadens future expression
 composition to mutable/frozen families and compatible native backends, with
 separate borrowed, encoded-value, and lending-stream boundaries. It is a design,
 not an implemented change to the current API or kernels.
@@ -324,7 +324,7 @@ The merged public API retains `IntSetLimits`, `limits()`, and all four
 `*_with_policy` operations. Commutative algebra takes the smaller limits;
 difference keeps left limits. Identity reuse must satisfy those limits and any
 forced result representation. Canonical Hash events remain independent of
-physical storage and sharing. See [integer design](integer-sets.md),
+physical storage and sharing. See [integer design](../../crates/frost-collections-integer/docs/integer-sets.md),
 [integration review](../reviews/revision2-integration-review.md), and
 [current validation](../revision2-integration-validation.md). Borrowed expression
 views and persistent tree directories remain proposed extensions.
@@ -402,7 +402,7 @@ primitive to retry derivation after conflicts and returns the displaced version.
 Its callback may repeat; the operation has no fairness or bounded-retry promise.
 `Send` and `Sync` follow the payload's actual auto traits. The store preserves
 structural versions; it does not deep-freeze elements or shared interior state.
-See [the complete snapshot contract](snapshots.md) and
+See [the complete snapshot contract](../../crates/frost-collections-concurrent/docs/snapshots.md) and
 [verification scope](../verification.md) for the linearization and model boundary.
 
 Source: [concurrent access and snapshot publication](../../crates/frost-collections-concurrent/src/concurrent/mod.rs).

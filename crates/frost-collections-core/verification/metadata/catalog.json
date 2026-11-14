@@ -1,5 +1,8 @@
 {
   "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "verification/kani/Cargo.toml"
+  ],
   "contracts": [
     {
       "id": "C-ORDERED-SET-ALGEBRA",
@@ -322,6 +325,11 @@
       "features": [
         "std"
       ]
+    },
+    {
+      "path": "verification/kani/src/lib.rs",
+      "kind": "lib",
+      "features": []
     }
   ],
   "cases": [
@@ -5659,6 +5667,291 @@
       "target": "tests/formal_models/main.rs",
       "cfg": "cfg (feature = \"std\")",
       "cost": "fast"
+    },
+    {
+      "id": "T-LIB-023",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::dense_padding_does_not_create_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::dense padding does not create members",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-024",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::inline_prefix_preserved",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::inline prefix preserved",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-025",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::inline_transfer_drops_each_owner_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::inline transfer drops each owner once",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-026",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::inline_zero_capacity",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::inline zero capacity",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-027",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::ordered_set_algebra",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::ordered set algebra",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-028",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:proofs::sorted_constructor_preserves_or_rejects_input",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: proofs::sorted constructor preserves or rejects input",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (kani)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-029",
+      "file": "verification/kani/src/lib.rs",
+      "selector": "test:tests::property_helpers_execute_against_production_code",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::property helpers execute against production code",
+      "seed": "unreviewed",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-039",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::nested_ordered_union_keeps_the_first_representative",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference rule applied left to right, for symbolic masks of three operands with fixed distinct labels",
+      "scenario": "Kani: both groupings of union, with materialized intermediate frozen sets, select the first operand holding each key, over three keys",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-040",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_union_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: union of real FrozenOrderedSet values refines SET-REP over three keys; each yielded label names its source operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-041",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::tests::representative_helpers_execute_against_production_code",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule with fixed distinct labels per operand",
+      "scenario": "Native run of the Kani set-law helpers over every pair and triple of subsets of three keys",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (test)",
+      "cost": "fast"
+    },
+    {
+      "id": "T-LIB-043",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_difference_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for every concrete mask pair with fixed distinct labels",
+      "scenario": "Kani: difference of real FrozenOrderedSet values refines SET-REP over three keys; each yielded label names its source operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-044",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_intersection_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for every concrete mask pair with fixed distinct labels",
+      "scenario": "Kani: intersection of real FrozenOrderedSet values refines SET-REP over three keys; each yielded label names its source operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
+    },
+    {
+      "id": "T-LIB-045",
+      "file": "verification/kani/src/set_laws.rs",
+      "selector": "test:set_laws::proofs::ordered_symmetric_difference_refines_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Reference left-representative rule on the abstraction of each operand, for symbolic masks with fixed distinct labels",
+      "scenario": "Kani: symmetric difference of real FrozenOrderedSet values refines SET-REP over three keys; each yielded label names its source operand",
+      "seed": "none",
+      "target": "verification/kani/src/lib.rs",
+      "cfg": "cfg (any (kani , test)); cfg (kani)",
+      "cost": "slow"
     }
   ]
 }

@@ -23,13 +23,13 @@ or test metadata, this file wins; fix the other document in the same change.
 | A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, the internal `frost-collections-core`, `frost-collections-integer` and `frost-collections-concurrent`, and the dev-only `frost-collections-test-support` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
-| `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **In progress.** The workspace exists (`frost-wlt.8`); the packages are extracted by `frost-wlt.9`–`.13`. Names and boundaries are the author's defaults and may be overruled. | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
+| `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **Implemented** by `frost-wlt.8`–`.14`. Names and boundaries are the author's defaults and may be overruled; an adaptive package is an open decision (`frost-adp`). | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
 
 `frost-wlt` uses these rules; it does not define them. Since 2026-11-13 it no
 longer waits for the open `frost-wou` tasks
 ([decision](docs/design/decisions.md#crate-split-execution-2026-11-13)). Do
 not add a package, or a placeholder for one, outside `frost-wlt`. Where a rule
-below names `src/`, `tests/`, `benches/` or `examples/`, it means that
+below names `src/`, `tests/`, `benches/` or `crates/frost-collections/examples/`, it means that
 directory of a package.
 
 Rules carry stable IDs (`CR-<AREA>-<n>`) so reviews, issues, and catalog records
@@ -71,12 +71,13 @@ architecture, decisions, maintainer guides, the research corpus), historical
 evidence under `verification/`, and repository tooling such as the catalog
 validator in `verification/catalog/`. The root
 [verification/metadata/](verification/metadata/catalog.json) catalog records
-repository tooling and the isolated packages still under `verification/`.
-Until `frost-wlt.17`, the root `docs/` and `CHANGELOG.md` also serve the
-packages.
+repository tooling only. The root `docs/` holds repository-wide documents;
+each package has its own `README.md`, `CHANGELOG.md` and `docs/`. The root
+`CHANGELOG.md` records repository-wide changes and everything from before the
+packages existed.
 
 - **CR-LAYOUT-1.** `src/` contains code that ships. Test helpers, factories,
-  oracles, and benchmark drivers live in `tests/support/`, `benches/support/`,
+  oracles, and benchmark drivers live in `crates/frost-collections-test-support/src/`, `crates/frost-collections-test-support/src/`,
   or an isolated package, never in `src/` behind `pub`, `#[doc(hidden)]`, or a
   feature.
 - **CR-LAYOUT-2.** Private invariants are tested in `#[cfg(test)] mod tests`
@@ -85,7 +86,7 @@ packages.
 - **CR-LAYOUT-3.** Each file directly under `tests/` is a separate test crate.
   Name it after a contract area, not after a review round. A multi-file target
   uses `tests/<area>/main.rs` or a root file with `#[path]` modules, as
-  `tests/concurrent.rs` does; modules in a subdirectory do not become targets.
+  `crates/frost-collections-concurrent/tests/concurrent.rs` does; modules in a subdirectory do not become targets.
 - **CR-LAYOUT-4.** Every example is an executable scenario with assertions,
   `test = true`, and `required-features` when it needs any. Cargo skips a target
   whose required features are disabled, so a skipped example is never counted
@@ -96,16 +97,24 @@ packages.
   `FROST_BENCH_LIST=1`. They follow
   [benchmark guidance](docs/maintainers/benchmarks.md).
 - **CR-LAYOUT-6.** Fuzz, Loom, Kani, catalog, and downstream-consumer harnesses
-  are separate packages with their own `Cargo.toml` and committed lockfile. In
-  the target layout a package's fuzz package is `<package>/fuzz/`, the
-  cargo-fuzz default. In the current checkout it is
-  [verification/fuzz](verification/fuzz/README.md), selected with
-  `cargo fuzz --fuzz-dir`. The migration moves it; do not keep both.
+  are separate packages with their own `Cargo.toml`, `[workspace]` table and
+  committed lockfile, and each lives with the package whose code it exercises:
+  the Kani package and the Verus proofs under
+  `crates/frost-collections-core/verification/`, the fuzz package at
+  [`crates/frost-collections-integer/fuzz`](crates/frost-collections-integer/fuzz/README.md)
+  (the cargo-fuzz default directory; it uses core and integer code, and the
+  integer package is the lowest that depends on both), Loom under
+  `crates/frost-collections-concurrent/verification/`, and the downstream
+  codec check under `crates/frost-collections/verification/`. The catalog tool
+  is repository tooling and stays in `verification/catalog`. A harness exists
+  in one location only.
 - **CR-LAYOUT-7.** A verification harness that must execute private production
   code includes the exact production file (`#[path]` or `include!`) instead of
-  copying the algorithm or widening its visibility. `tests/publication_model.rs`,
-  `verification/loom`, and `verification/kani` follow this rule. The included
-  file stays self-contained so the harness and the library compile the same text.
+  copying the algorithm or widening its visibility. The publication model test
+  and the Loom package include `crates/frost-collections-concurrent/src/concurrent/publication.rs` of the
+  concurrent package; the Kani package includes `crates/frost-collections-core/src/adaptive/seq/buf.rs` of
+  the core package. The included file stays self-contained so the harness and
+  the library compile the same text.
 - **CR-LAYOUT-8.** Historical logs, raw samples, and supplied inputs are
   evidence. They stay where they were recorded and are not moved into a
   package during the reorganization.
@@ -120,7 +129,7 @@ packages.
   Moving a package directory moves everything it owns. Repository-wide
   documents and historical evidence (CR-LAYOUT-8) are not package artifacts.
 - **CR-LAYOUT-10.** A package owns the formal artifacts for its laws.
-  Executable models are Rust test targets in `tests/formal_models/`, one module
+  Executable models are Rust test targets in `crates/frost-collections-core/tests/formal_models/`, one module
   per design chapter, run by `make check`. Proof harnesses for those laws live
   in `<package>/verification/<tool>/` as isolated packages (CR-LAYOUT-6). Model
   reference definitions are never imported from production code. Where the
@@ -138,7 +147,7 @@ packages.
 | --- | --- | --- |
 | Semantic contracts and their rustdoc | `src/` of the package that defines the type | Depend on test support or a verification package |
 | Contract and differential tests | `tests/` of the defining package; cross-package contracts in the facade package | Mirror the implementation as its own oracle |
-| Workload factories and oracles | `tests/support/`, `benches/support/`, or a `publish = false` support package | Produce Frost types when a plain `Vec`/`BTreeSet` input suffices |
+| Workload factories and oracles | `crates/frost-collections-test-support/src/`, `crates/frost-collections-test-support/src/`, or a `publish = false` support package | Produce Frost types when a plain `Vec`/`BTreeSet` input suffices |
 | Benchmark timing | `benches/` with common support | Validate answers inside the timed region |
 | Model checking, proofs, fuzzing, catalog validation | Isolated packages | Become normal or dev-dependencies of the library |
 | Test and benchmark metadata | `<package>/verification/metadata/` (section 6) | Live only in comments or test names |
@@ -240,9 +249,13 @@ or is compiled out in each profile; it never fails because a feature is absent.
   structural `cfg` that the catalog discovers (section 6).
 - **CR-FEAT-3.** The matrix covers each feature alone and all together, not the
   powerset. A claim about a specific combination needs that combination run.
-- **CR-FEAT-4.** In the target layout, the facade forwards each feature to the
-  owning package. Facade and owning-package feature names stay identical, and
-  `make features` runs against the facade.
+- **CR-FEAT-4.** The facade forwards each feature to the package that owns its
+  code, under the same name, and every library package declares the features
+  of the workspace packages it depends on (`make feature-forwarding`).
+  `make profiles` and `make features` run once per library package, each in
+  its own Cargo invocation, so one package's features never reach another's
+  build; `make feature-isolation` asserts that the facade's no-`std` profiles
+  resolve the core package without `std`.
 
 ## 5. Public API coverage
 
@@ -456,7 +469,7 @@ input.
 | Loom | `make loom` | The production retry loop under the stated writer bound and store assumption |
 | Kani | `make kani` | Bounded symbolic results with stated unwind limits, only when the verifier ran |
 | Verus, pinned by `VERUS_VERSION` | `make verus` | A law holds for its reference definition over vstd types; says nothing about Frost code |
-| Fuzzing ([fuzz harness](verification/fuzz/README.md)) | `make fuzz-check` replays the seed corpus on stable; `make fuzz-smoke` runs bounded libFuzzer on `FUZZ_TOOLCHAIN` | Oracle agreement on inputs reached in a recorded run; no absence-of-bugs claim |
+| Fuzzing ([fuzz harness](crates/frost-collections-integer/fuzz/README.md)) | `make fuzz-check` replays the seed corpus on stable; `make fuzz-smoke` runs bounded libFuzzer on `FUZZ_TOOLCHAIN` | Oracle agreement on inputs reached in a recorded run; no absence-of-bugs claim |
 | Source coverage ([policy](verification/coverage/README.md)) | `make coverage`, `make coverage-gate`; `make coverage-branch` on nightly | Executed code in a stated scope (CR-COV-1, CR-COV-2) |
 | Mutation testing ([policy](verification/mutation/README.md)) | `make mutants` with `.config/mutants.toml` | Survivors show unasserted behavior; a low survivor count is not proof |
 | Catalog | `make catalog`, `make catalog-inventory` | Structural registration and metadata validity (section 6) |
@@ -517,7 +530,7 @@ change does not claim that it has run on GitHub.
 | Change | Required in the same change |
 | --- | --- |
 | New or changed public item | Rustdoc with ownership, panic, complexity, feature, and concurrency notes; obligations; tests per category; curated catalog cases linked to a contract; changelog |
-| New or changed formal law | A model module in the owning package's `tests/formal_models/` with wrong-definition checks; the law in `docs/design/algebra/catalog.json` and the proof ledger; curated catalog cases |
+| New or changed formal law | A model module in the owning package's `crates/frost-collections-core/tests/formal_models/` with wrong-definition checks; the law in `docs/design/algebra/catalog.json` and the proof ledger; curated catalog cases |
 | New test or benchmark | Catalog case or inventory entry (scaffold, then curate when reviewed); features and `cfg`; benchmark control, timing, and seed; `make catalog` and `make catalog-inventory` pass |
 | New feature | `Cargo.toml` entry, feature catalog in [README.md](crates/frost-collections/README.md), isolated and embedded matrix entries, tests compiled out when disabled |
 | New isolated verification package | Own manifest and lockfile; Make target with a tool-version check; exclusion from packaging; proof-scope statement |

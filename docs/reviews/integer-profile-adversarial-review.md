@@ -58,7 +58,7 @@ above therefore come from a same-binary harness that links both versions of the
 profile, validates every answer and alternates measurements; its CSV, the three
 repository benchmark runs and the harness source are under
 [`verification/int-set/revision2/`](../../verification/int-set/revision2/README.md),
-and [the benchmark report](../integer-benchmarks.md) explains the protocol and
+and [the benchmark report](../../crates/frost-collections-integer/docs/integer-benchmarks.md) explains the protocol and
 lists the cases that remained slower.
 
 ## Open items

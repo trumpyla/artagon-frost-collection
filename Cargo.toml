@@ -3,6 +3,9 @@
 # own [workspace] table and are not members.
 [workspace]
 members = ["crates/*"]
+# The A/B harness extracts a baseline checkout here; it is another workspace
+# and must find its own root manifest, not this one.
+exclude = ["verification/integer-optimizations/ab-harness/baseline-workspace"]
 resolver = "3"
 
 [workspace.package]

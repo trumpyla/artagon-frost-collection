@@ -139,7 +139,7 @@ only a sealed set of frozen payloads and atomically publishes whole owned versio
 A reader retains an Arc or guard to one version. Unconditional publication does
 not make a multiwriter read/derive/publish sequence transactional. The subsequent
 integration adds identity-based conditional publication and retrying update;
-see [snapshot contracts](snapshots.md). Structural freezing does not remove
+see [snapshot contracts](../../crates/frost-collections-concurrent/docs/snapshots.md). Structural freezing does not remove
 element interior mutability.
 
 ## 5. Adopt framework integrations with explicit semantics
@@ -248,7 +248,7 @@ The earlier proposal for a separate `PersistentIntSet` is narrowed to possible
 future directory/path-copying and bounded-sharing contracts. Its APIs are not
 implemented. The current Chunked candidate already provides immutable payload
 sharing within `FrozenIntSet`; the
-[persistent design](persistent-integer-storage.md) records that boundary. Generic
+[persistent design](../../crates/frost-collections-integer/docs/persistent-integer-storage.md) records that boundary. Generic
 borrowed set expressions and lazy integer evaluation remain proposals.
 
 ## Research corpus and rationale, 2026-11-09
@@ -265,7 +265,7 @@ adopted. It changes documentation only; source, features, CI, and the Rust
 | Package layout | Keep one library package, `frost-collections`, imported as `frost`. Record a `frost-api` facade over flat `crates/frost-*` packages as an **unadopted proposal**. | The handoff describes that layout as a user decision, but the maintainer policy and the current task keep one package. Adopting a split needs its own decision, an updated maintainer policy, a migration plan, and feature and CI changes. Installation instructions stay as they are. |
 | Package names | Adopt no naming rule. Preserve Frost1's plural names and Frost2's singular names as alternatives. | No package is created, so a rule would be premature. A future proposal applies one rule to every domain. |
 | Raw inputs | Keep the original reports byte for byte under `docs/reviews/supplied/`. Do not copy them again. Put curated, cited derivatives under `docs/research/`. | Raw files are evidence, not instructions or policy. Only curated files get corrected examples, portable citations, and per-claim status. |
-| Frozen API | Make [the Frozen API guide](frozen-api.md) the canonical guide to current frozen contracts, with proposals in a separate section. | Contracts were scattered across the README, architecture, and rustdoc. The guide links each claim to source and tests. |
+| Frozen API | Make [the Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md) the canonical guide to current frozen contracts, with proposals in a separate section. | Contracts were scattered across the README, architecture, and rustdoc. The guide links each claim to source and tests. |
 | Engine motivations | Describe symbolic execution, authorization, and computed sets in the README as motivating workloads with explicit outside-scope boundaries. | Frost implements no engine, policy language, solver, identity protocol, durable store, or consistency protocol. |
 | Complexity claims | Do not transfer an upstream bound to Frost algorithms. Derived bounds name every variable. | `fst` documents n-ary operations as `O(n1 + n2 + ...)`; its implementation uses a binary heap and byte-key comparisons. See [collection algebra](collection-algebra.md#n-ary-sorted-merge-cost). |
 | Missing artifacts | Import the computed-sets summary under a summary name. Do not reconstruct the full computed-sets report, the original research template, its ZIP, or a standalone algebraic-foundations report. | None of these were supplied or recovered. A summary's statement that a file exists is not evidence that it exists. |
@@ -307,7 +307,7 @@ public APIs, Rust 1.99.1, and edition 2024 are unchanged by it.
 
 This series changes costs, not contracts. No public item, feature, policy
 limit, representation candidate, or Hash event stream changed. The
-[validation record](../integer-optimization-validation.md) holds the
+[validation record](../../crates/frost-collections-integer/docs/integer-optimization-validation.md) holds the
 measurements, their limits, and the gates that ran.
 
 | Area | Decision | Reason and limit |

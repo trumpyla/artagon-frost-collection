@@ -23,7 +23,7 @@ EMBEDDED_NO_ATOMICS_TARGET ?= thumbv6m-none-eabi
 NEXTEST_PROFILE ?= default
 COVERAGE_TARGET_DIR ?= target/coverage
 COVERAGE_OUTPUT_DIR ?= target/coverage
-COVERAGE_IGNORE_REGEX ?= (^|/)(tests|benches|examples|verification)/
+COVERAGE_IGNORE_REGEX ?= (^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/
 COVERAGE_MIN_LINES ?= 77
 COVERAGE_MIN_FUNCTIONS ?= 70
 COVERAGE_MIN_REGIONS ?= 77
@@ -38,6 +38,9 @@ CATALOG_TARGET_DIR ?= target/catalog
 CATALOG_INVENTORY_DIR ?= target/catalog-inventory
 AB_BASELINE ?= origin/main
 AB_ROUNDS ?= 3
+# The harness lockfile is committed for a baseline in the workspace layout.
+# For a baseline from before that layout, pass AB_LOCKED= (empty).
+AB_LOCKED ?= --locked
 AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 # The facade package. Recipes name a package with -p; none relies on feature
 # unification across workspace members.
@@ -226,7 +229,7 @@ integers:
 	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(INTEGER)" --locked --no-default-features --features int-set --test integer_sets --test integer_output
 	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(INTEGER)" --locked --release --test integer_sets --test integer_output
 	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CONCURRENT)" --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_output
-	"$(CARGO)" test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+	"$(CARGO)" test --locked --manifest-path crates/frost-collections/verification/int-key-downstream/Cargo.toml
 
 # Nothing is published, and `cargo package` cannot resolve unpublished path
 # siblings. So the file set each member would package is copied into a fresh
@@ -330,19 +333,19 @@ bounded:
 	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CORE)" --locked --test exhaustive_collections --features fixedbitset-0_5
 	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CONCURRENT)" --locked --test publication_model -- --nocapture
 	# Native property helpers; this does not execute a symbolic solver.
-	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/kani/Cargo.toml --locked
+	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path crates/frost-collections-core/verification/kani/Cargo.toml --locked
 
 loom:
-	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/loom/Cargo.toml --release --locked
+	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path crates/frost-collections-concurrent/verification/loom/Cargo.toml --release --locked
 
 kani:
 	"$(CARGO)" kani --version
-	cd verification/kani && "$(CARGO)" kani --lib
+	cd crates/frost-collections-core/verification/kani && "$(CARGO)" kani --lib
 
 # Fails when Verus is absent or is not the pinned release.
 verus:
 	"$(VERUS)" --version | grep -F "$(VERUS_VERSION)"
-	"$(VERUS)" --crate-type=lib verification/verus/src/lib.rs
+	"$(VERUS)" --crate-type=lib crates/frost-collections-core/verification/verus/src/lib.rs
 
 nextest:
 	"$(CARGO)" nextest --version
@@ -385,7 +388,7 @@ coverage-gate:
 	  rustflags_env="$${RUSTFLAGS:-}$${CARGO_ENCODED_RUSTFLAGS:-}"; \
 	  effective_target="$${CARGO_BUILD_TARGET:-$$host_line}"; \
 	  llvm_ver=$$("$(CARGO)" llvm-cov --version); \
-	  if [[ $$effective_target == aarch64-apple-darwin && $$toolchain_ver == 1.99.1 && ( -z "$$rustup_tc" || $$rustup_tc == 1.99.1 ) && -z "$$rustflags_env" && $$llvm_ver == "cargo-llvm-cov 0.9.1" && "$(COVERAGE_IGNORE_REGEX)" == "(^|/)(tests|benches|examples|verification)/" ]]; then \
+	  if [[ $$effective_target == aarch64-apple-darwin && $$toolchain_ver == 1.99.1 && ( -z "$$rustup_tc" || $$rustup_tc == 1.99.1 ) && -z "$$rustflags_env" && $$llvm_ver == "cargo-llvm-cov 0.9.1" && "$(COVERAGE_IGNORE_REGEX)" == "(^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/" ]]; then \
 	    ratchet_mode="scoped_exact_ratchet_enforced"; \
 	  else \
 	    ratchet_mode="portable_adoption_floor_only_cross_target"; \
@@ -426,16 +429,16 @@ mutants:
 	"$(CARGO)" mutants --config "$(MUTANTS_CONFIG)" --output "$(MUTANTS_OUTPUT_DIR)"
 
 fuzz-check:
-	"$(CARGO)" test --manifest-path verification/fuzz/Cargo.toml \
+	"$(CARGO)" test --manifest-path crates/frost-collections-integer/fuzz/Cargo.toml \
 	  --target-dir "$(FUZZ_TARGET_DIR)" --lib --locked
 
 fuzz-smoke: fuzz-check
 	"$(CARGO)" fuzz --version
 	mkdir -p "$(FUZZ_WORK_CORPUS_DIR)/$(FUZZ_TARGET)"
-	"$(CARGO)" "+$(FUZZ_TOOLCHAIN)" fuzz run --fuzz-dir verification/fuzz \
+	"$(CARGO)" "+$(FUZZ_TOOLCHAIN)" fuzz run --fuzz-dir crates/frost-collections-integer/fuzz \
 	  --target-dir "$(FUZZ_TARGET_DIR)" "$(FUZZ_TARGET)" \
 	  "$(FUZZ_WORK_CORPUS_DIR)/$(FUZZ_TARGET)" \
-	  "verification/fuzz/corpus/$(FUZZ_TARGET)" -- \
+	  "crates/frost-collections-integer/fuzz/corpus/$(FUZZ_TARGET)" -- \
 	  -runs="$(FUZZ_RUNS)" -max_total_time="$(FUZZ_MAX_TIME)"
 
 catalog:
@@ -452,15 +455,16 @@ catalog-inventory:
 	metadata=$$("$(CARGO)" metadata --format-version 1 --no-deps --locked); \
 	benches=$$(printf '%s\n' "$$metadata" | "$(JQ)" -er \
 	  '[.packages[] | . as $$package | .targets[] | select(.kind | index("bench")) | \
-	    [$$package.name, $$package.manifest_path, .name] | @tsv] | \
+	    [$$package.name, $$package.manifest_path, .name, .src_path] | @tsv] | \
 	   if length == 0 then error("no bench targets found") else .[] end'); \
-	while IFS=$$'\t' read -r package manifest bench; do \
-	  bench=$${bench%$$'\r'}; \
+	while IFS=$$'\t' read -r package manifest bench source; do \
+	  source=$${source%$$'\r'}; \
+	  package_dir=$$(dirname "$$manifest"); \
 	  list_file="$(CATALOG_INVENTORY_DIR)/$$bench.list"; \
 	  FROST_BENCH_LIST=1 "$(CARGO)" bench -p "$$package" --locked --all-features --bench "$$bench" >"$$list_file"; \
 	  "$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
-	    --target-dir "$(CATALOG_TARGET_DIR)" -- inventory "benches/$$bench.rs" "$$list_file" \
-	    --root "$$(dirname "$$manifest")"; \
+	    --target-dir "$(CATALOG_TARGET_DIR)" -- inventory "$${source#"$$package_dir"/}" "$$list_file" \
+	    --root "$$package_dir"; \
 	done <<< "$$benches"
 
 shell-check:
@@ -479,7 +483,7 @@ integer-ab:
 	@git --version >&2
 	@tar --version >&2
 	@"$(SHELL)" "$(AB_HARNESS_DIR)/prepare-baseline.sh" "$(AB_BASELINE)" >&2
-	@"$(CARGO)" build --release --locked --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml" >&2
+	@"$(CARGO)" build --release $(AB_LOCKED) --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml" >&2
 	@"$(AB_HARNESS_DIR)/target/release/frost-integer-optimizations-ab" "$(AB_ROUNDS)"
 
 tools-check:

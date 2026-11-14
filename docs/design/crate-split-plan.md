@@ -1,6 +1,6 @@
 ---
 id: FROST-CRATE-SPLIT-PLAN
-status: proposed
+status: executed-pending-approval
 epic: frost-wlt
 updated: 2026-11-13
 supersedes: docs/design/proposals/crate-split.md
@@ -17,7 +17,8 @@ and what changed. The [first review](../reviews/crate-split-adversarial-review.m
 (S01–S25) is answered there too. The tracker tasks under `frost-wlt` carry the
 acceptance criteria; this record carries the design they refer to.
 
-Status is `proposed` until the maintainer has seen it. Decisions D2–D16 below
+The maintainer was shown this plan on 2026-11-14 and has not yet approved it;
+it was executed on the instruction to execute. Decisions D2–D16 below
 are the author's defaults, taken so that execution is not blocked. The
 maintainer may overrule any of them; section 1.1 says what each costs to undo.
 
@@ -118,8 +119,8 @@ in the migration table. Expected owners, to be confirmed by compiling:
 
 | Package | Tests | Benches | Isolated harnesses |
 | --- | --- | --- | --- |
-| core | Every target that uses only core paths, including the adaptive, family, backend, adapter, set-algebra and formal-model targets | `set_operations`, `ordered_sets`, `adaptive_maps`, `performance_review` | Ordered-set fuzz target; the Kani package (it includes `adaptive/seq/buf.rs` by path); Verus proofs |
-| integer | `integer_sets`, `integer_output` without their `arc-swap-1` cases; integer cases of `metadata_and_factories` | `integer_sets`, `integer_output` | Integer fuzz target |
+| core | Every target that uses only core paths, including the adaptive, family, backend, adapter, set-algebra and formal-model targets | `set_operations`, `ordered_sets`, `adaptive_maps`, `performance_review` | The Kani package (it includes `adaptive/seq/buf.rs` by path); Verus proofs |
+| integer | `integer_sets`, `integer_output` without their `arc-swap-1` cases; integer cases of `metadata_and_factories` | `integer_sets`, `integer_output` | The fuzz package, with both targets |
 | concurrent | `concurrent`, `publication_model` (includes `publication.rs` by path), the `arc-swap-1` integer cases | `snapshots` | Loom (includes `publication.rs` by path) |
 | facade | Targets that need the complete prelude or all packages; every example | — | `int-key-downstream` |
 
@@ -143,7 +144,7 @@ Every tooling file keyed on today's layout is listed, with its line, in
 | CR-BOUND-2 | The facade holds no algorithms; sibling roots mirror `frost::` paths (D6) | `.12` |
 | CR-BOUND-3, CR-LAYOUT-7 | Name the new paths of `buf.rs`, `publication.rs` and the harnesses | `.8`, `.9`, `.12`, `.14` |
 | CR-LAYOUT-5 | Benchmark support comes from the support package | `.13` |
-| CR-LAYOUT-6 | The fuzz package is split by owner in one task | `.14` |
+| CR-LAYOUT-6 | The fuzz package moves to the integer package in one task; it is not split | `.14` |
 | CR-LAYOUT-9 | Examples and `int-key-downstream` are facade artifacts (D7, D15) | `.13`, `.14` |
 | CR-DEP-1 | Unchanged in substance; `frost-r0a` records that `int-set` exposes the Roaring adapter | `.9` |
 | CR-DEP-5 | States the scratch-workspace package test (D13) | `.9` |
@@ -195,6 +196,14 @@ and every edit to a moved test other than its alias line.
 | `.13` | The `int-set` module of `tests/metadata_and_factories.rs` (one test) moved to a target of the same name in the integer package; the other 11 tests are in core. Catalog selector of `T-METADATA_AND_FACTORIES-009` lost its `integer::` prefix. | D14. |
 | `.13` | Catalog and benchmark inventory split by owner: core 246 records, integer 77, concurrent 28, facade 12 (examples and its library target), test-support 1, root 38. Contracts moved to the package that owns their code. 55 records changed `cfg` to match the gates above. Two target records list the member features of `advanced` and `concurrent` instead of the aggregate names. New record `T-LIB-048` marks the support package's library target. All 397 baseline IDs are present. | D11, CR-META-1. |
 | `.13` | The facade has no tests or benches; its only dev-dependency is `serde_json` for `examples/frameworks.rs`. The integer, bounded and Miri lanes name the owning packages. | CR-LAYOUT-9. |
+| `.14` | The Kani package and the Verus proofs moved to `crates/frost-collections-core/verification/`; Loom to `crates/frost-collections-concurrent/verification/loom`; `int-key-downstream` to `crates/frost-collections/verification/`. Kani now depends on the core package (under the name `frost`) and includes `buf.rs` from its own package; Loom includes `publication.rs` from its own package. | CR-LAYOUT-6, CR-LAYOUT-7, D15. |
+| `.14` | The fuzz package moved whole to `crates/frost-collections-integer/fuzz` and depends on the integer package. It was not split by owner as first planned: its library is one module whose two targets share decoding and helper code, so a split would rewrite the harness. The integer package is the lowest package that depends on everything it uses. | CR-LAYOUT-9; review finding P12. |
+| `.14` | Catalog records of the moved harnesses live in the catalogs of their packages, each of which lists its isolated manifest; the root catalog keeps the catalog tool's own records. IDs are unchanged. | D11. |
+| `.14` | The nine Kani harnesses recorded as verified were re-run after the move and verify again. Normal dependency trees of the four library packages for the core-only, alloc and default profiles are saved under `verification/results/crate-split/dep-trees/`; none contains a proof, model or fuzz tool. The support package excludes its metadata from its packaged file set. | `.14` acceptance. |
+| `.15` | `catalog-inventory` takes each bench target's path from Cargo metadata. The coverage scope also excludes `fuzz/` and the test-support package; the pinned scope of the exact ratchet and the coverage policy follow it, and the policy notes that the baseline must be re-recorded on the reference host. | `.15`; CR-COV-2. |
+| `.15` | `prepare-baseline.sh` extracts a baseline into `ab-harness/baseline-workspace`, renaming every package, and handles both layouts. The root workspace and the harness exclude that directory so the baseline finds its own root manifest. `make integer-ab` builds with `$(AB_LOCKED)`, `--locked` by default; the committed lockfile matches a workspace-layout baseline. | Cargo reuses an already-loaded outer workspace root for a nested checkout unless it is excluded. |
+| `.17` | Package-specific documents moved: nine integer design and evidence documents to `crates/frost-collections-integer/docs/`, `snapshots.md` to the concurrent package, `frozen-api.md`, `set-operations.md` and `set-algebra.md` to core. `docs/design/algebra/`, `collection-algebra.md`, architecture, philosophy, decisions, maintainer guides, research and reviews stay at the root as repository-wide documents. Each internal package has a README and a changelog. | CR-LAYOUT-9. |
+| `.17` | Backticked source paths in current documents name the new locations (111 rewritten by script, 14 by hand). Generic mentions such as `src/` mean a package's directory. Historical records, decisions and reviews keep the paths they were written with; only their links changed. | P13. |
 
 ## 8. Risks accepted
 

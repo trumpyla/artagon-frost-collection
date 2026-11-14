@@ -10,7 +10,7 @@ use super::Operation;
 /// inserted as one range, and shorter runs down to `RANGE_RUN` are when the
 /// probe lands inside them. The value is a structural allowance (two endpoints
 /// against `RANGE_RUN` pushes), not a measured machine crossover; see
-/// `docs/integer-benchmarks.md` for the workloads it was checked against.
+/// `docs/integer-benchmarks.md` in this package for the workloads it was checked against.
 const RANGE_RUN: usize = 32;
 
 /// The only implementations are unsigned primitive widths. Codec laws never

@@ -36,6 +36,16 @@ No public API or behaviour change so far.
   new dev-only `frost-collections-test-support`. Three test files are split
   between two packages; no test body changed. Catalog and benchmark-inventory
   records live with their targets.
+- Move the isolated harnesses to the packages they exercise: Kani and Verus
+  to core, the fuzz package to integer, Loom to concurrent, the downstream
+  codec check to the facade. The nine Kani harnesses that verified before
+  verify again.
+- Move package-specific design and evidence documents into each package's
+  `docs/`, and give each internal package a README and a changelog.
+- `prepare-baseline.sh` and `make integer-ab` handle a workspace-layout
+  baseline. The coverage scope excludes the fuzz and test-support packages.
+- Miri was not run on the final layout, by maintainer instruction; see
+  `verification/results/crate-split/README.md` for what ran and what did not.
 
 ## Unreleased — value-domain algebra documents and rules entry
 
@@ -111,7 +121,7 @@ semantic contract changes.
 
 No public API, feature, representation candidate, policy limit, or Hash event
 stream changes. Measurements and their limits are in
-[the optimization record](docs/integer-optimization-validation.md).
+[the optimization record](crates/frost-collections-integer/docs/integer-optimization-validation.md).
 
 - Forward `fold` from `IntSetIter` and `EncodedValues` to the storage traversal,
   which selects the representation once. `for_each`, `sum`, and other `fold`
@@ -163,7 +173,7 @@ edition 2024 toolchain are unchanged.
 - Add a doctested README example of representative rules with hand-written
   `PartialEq`, `Eq`, and `Hash`, correcting the supplied report's derived-trait
   sketch.
-- Add the [Frozen API guide](docs/design/frozen-api.md): frozen value kinds,
+- Add the [Frozen API guide](crates/frost-collections-core/docs/frozen-api.md): frozen value kinds,
   plans, error recovery, representative laws, access models, costs, the integer
   profile, snapshot admission, and a separate proposal section.
 - Add the curated research corpus under `docs/research/`: index, manifest,

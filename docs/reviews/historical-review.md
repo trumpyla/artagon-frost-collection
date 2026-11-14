@@ -1,6 +1,6 @@
 > **0.4.0 follow-up:** frozen ordered/hash set algebra and Roaring/dense bitmap
 > algebra are implemented and verified. The implementation and benchmark
-> contracts are in [SET_OPERATIONS.md](../set-operations.md); current execution
+> contracts are in [SET_OPERATIONS.md](../../crates/frost-collections-core/docs/set-operations.md); current execution
 > results are in [VERIFICATION.md](historical-verification.md). Independent review checked
 > left-side representatives, iterator progress and size hints, unequal bitmap
 > universes, dirty padding, and cardinality arithmetic. No additional unsafe

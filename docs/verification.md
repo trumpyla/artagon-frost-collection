@@ -32,8 +32,8 @@ The shared-storage and explicit Chunked integration has a separate
 `verification/revision2-integration/`. The subsequent
 [GitHub import and Make checks](../verification/revision2-integration/github-import-ci/README.md)
 record the PR checkout's verification separately. The earlier
-[integer output corrections](integer-output-validation.md), initial
-[integer addition](integer-validation.md), and logs under `verification/results/`
+[integer output corrections](../crates/frost-collections-integer/docs/integer-output-validation.md), initial
+[integer addition](../crates/frost-collections-integer/docs/integer-validation.md), and logs under `verification/results/`
 remain historical evidence for their recorded source revisions.
 
 ### Historical optional-tool status
@@ -53,20 +53,20 @@ checkout; record any fresh execution separately.
 
 | Target | What is executed | Domain or bound | What the result does not establish |
 | --- | --- | --- | --- |
-| `tests/exhaustive_collections.rs`: ordered algebra | Actual public frozen-set constructors, iterators, folds, counts, and predicates | All 4,096 pairs of subsets of six ordered values; every consumed iterator prefix | Correctness for arbitrary sizes, arbitrary `Ord` implementations, or every galloping path |
+| `crates/frost-collections-core/tests/exhaustive_collections.rs`: ordered algebra | Actual public frozen-set constructors, iterators, folds, counts, and predicates | All 4,096 pairs of subsets of six ordered values; every consumed iterator prefix | Correctness for arbitrary sizes, arbitrary `Ord` implementations, or every galloping path |
 | Same file: dense algebra | Actual public bitmap operations and full-word kernels | Six membership positions at word boundaries; eight logical lengths; all valid masks; independent clean/all-one input padding | Every possible multiword bitmap, every padding pattern, or every architecture |
 | Same file: inline ownership | Actual `InlineVec` mutation, retention, spill, shrink, freeze, and thaw | All 7^5 operation traces at capacities 0 and 2; 33,614 traces total | Arbitrary capacities, arbitrary destructors, or panic behavior |
-| `tests/publication_model.rs` | The exact production `publication::update` loop | All modeled load/CAS orders for three one-shot writers, and a two-writer equal-value publication case | arc-swap internals, weak-memory behaviors inside a primitive, fairness, or unbounded writer progress |
-| `tests/integer_sets.rs` | Actual typed constructors, all 16 ordered storage pairs, all four materialized operations, counts, predicates, and cached bounds | All pairs of subsets of five boundary values for both unsigned widths: 32,768 input/representation combinations, plus generated, codec, sharing, and adversarial cases | Arbitrary codecs, every integer input, all allocations, or internals of the Roaring dependency |
-| `tests/integer_output.rs` and integer storage unit tests | Actual result planning, byte promotion, minimum/left limit inheritance, native equality, canonical Hash, policy-compatible sharing, and snapshot updates | All 16 input representation pairs and four forced outputs across four boundary windows; explicit budget/identity cases; endian/chunk regressions; exact Hasher event sequences | Minimal memory for every workload, bounded process memory, arbitrary codecs, or the complete dependency implementation |
+| `crates/frost-collections-concurrent/tests/publication_model.rs` | The exact production `publication::update` loop | All modeled load/CAS orders for three one-shot writers, and a two-writer equal-value publication case | arc-swap internals, weak-memory behaviors inside a primitive, fairness, or unbounded writer progress |
+| `crates/frost-collections-integer/tests/integer_sets.rs` | Actual typed constructors, all 16 ordered storage pairs, all four materialized operations, counts, predicates, and cached bounds | All pairs of subsets of five boundary values for both unsigned widths: 32,768 input/representation combinations, plus generated, codec, sharing, and adversarial cases | Arbitrary codecs, every integer input, all allocations, or internals of the Roaring dependency |
+| `crates/frost-collections-integer/tests/integer_output.rs` and integer storage unit tests | Actual result planning, byte promotion, minimum/left limit inheritance, native equality, canonical Hash, policy-compatible sharing, and snapshot updates | All 16 input representation pairs and four forced outputs across four boundary windows; explicit budget/identity cases; endian/chunk regressions; exact Hasher event sequences | Minimal memory for every workload, bounded process memory, arbitrary codecs, or the complete dependency implementation |
 | Integer Dense/Chunked unit regressions | Actual shared containers, saved iterator cursors, conversion kernels, and run visitors | Empty and maximum-code boundaries, overlapping-container reuse, partial Array/Bitmap/Full folds, and early breaks; six bounded cases also selected by `make miri` | Persistent-tree complexity, every container size or cursor position, or all allocator behavior |
-| `tests/concurrent.rs` | Actual snapshot wrapper and dependency | Native regression histories, forced conflict/retry, and bounded concurrent writer workloads | Exhaustive operating-system schedules or a proof of the dependency |
-| `tests/inline_safety.rs` under Miri | Actual unsafe inline storage through public APIs | Concrete ownership, alignment, zero-sized-value, partial-iterator, and panic paths | Soundness for every safe caller or a complete model of Rust's semantics |
+| `crates/frost-collections-concurrent/tests/concurrent.rs` | Actual snapshot wrapper and dependency | Native regression histories, forced conflict/retry, and bounded concurrent writer workloads | Exhaustive operating-system schedules or a proof of the dependency |
+| `crates/frost-collections-core/tests/inline_safety.rs` under Miri | Actual unsafe inline storage through public APIs | Concrete ownership, alignment, zero-sized-value, partial-iterator, and panic paths | Soundness for every safe caller or a complete model of Rust's semantics |
 | Three-operation inline test under Miri | Actual inline transitions and per-element ownership counters | All 7^3 traces at capacities 0 and 2; 686 traces total | The larger native five-operation domain, arbitrary capacities, or every unwind path |
-| `verification/loom` | The same production retry loop with Loom-instrumented synchronization | Two and three one-shot incrementing writers; no preemption, permutation, or duration truncation | arc-swap's pointer publication, reference counting, reclamation, or lock-free progress |
-| `verification/kani` | Actual public collection APIs and the exact private `InlineBuf` source | Twelve bounded harnesses, described below | Unbounded collection correctness, arbitrary callbacks/destructors, or concurrent memory ordering |
-| `tests/api_contracts.rs` | Public `MutableVec`, `MutableOrderedMap` entries/ranges/iterators, and generic `MapInsert`/`MapRemove`/`LookupRef` capabilities | Five initial vectors across all 16^3 three-step traces (20,480 traces); deterministic `usize::MAX` reservation overflow; 8-element non-`Clone` partial drain drop counters; explicit key-representative tags and lazy callback counters ([obligations](../verification/crate-standards-validation/api-contracts.md)) | Arbitrary trace lengths, allocator OOM behavior, panic unwinding, or unexercised families |
-| `verification/fuzz` (`make fuzz-check`, `make fuzz-smoke`) | Public `MutableOrderedSet`, `FrozenOrderedSet`, `MutableOrderedMap`, `FrozenOrderedMap`, and `FrozenIntSet<i32>` across all five `IntSetPolicy` modes | Deterministic seed-corpus and boundary replay on stable 1.99.1 plus coverage-guided `libFuzzer` runs on `nightly-2026-11-08` against `BTreeMap`/`BTreeSet` and `Hasher` event-stream oracles | Exhaustive proof over unbounded inputs or non-instrumented target architectures |
+| `crates/frost-collections-concurrent/verification/loom` | The same production retry loop with Loom-instrumented synchronization | Two and three one-shot incrementing writers; no preemption, permutation, or duration truncation | arc-swap's pointer publication, reference counting, reclamation, or lock-free progress |
+| `crates/frost-collections-core/verification/kani` | Actual public collection APIs and the exact private `InlineBuf` source | Twelve bounded harnesses, described below | Unbounded collection correctness, arbitrary callbacks/destructors, or concurrent memory ordering |
+| `crates/frost-collections-core/tests/api_contracts.rs` | Public `MutableVec`, `MutableOrderedMap` entries/ranges/iterators, and generic `MapInsert`/`MapRemove`/`LookupRef` capabilities | Five initial vectors across all 16^3 three-step traces (20,480 traces); deterministic `usize::MAX` reservation overflow; 8-element non-`Clone` partial drain drop counters; explicit key-representative tags and lazy callback counters ([obligations](../verification/crate-standards-validation/api-contracts.md)) | Arbitrary trace lengths, allocator OOM behavior, panic unwinding, or unexercised families |
+| `crates/frost-collections-integer/fuzz` (`make fuzz-check`, `make fuzz-smoke`) | Public `MutableOrderedSet`, `FrozenOrderedSet`, `MutableOrderedMap`, `FrozenOrderedMap`, and `FrozenIntSet<i32>` across all five `IntSetPolicy` modes | Deterministic seed-corpus and boundary replay on stable 1.99.1 plus coverage-guided `libFuzzer` runs on `nightly-2026-11-08` against `BTreeMap`/`BTreeSet` and `Hasher` event-stream oracles | Exhaustive proof over unbounded inputs or non-instrumented target architectures |
 
 The ordinary tests and the standalone Kani property helpers are executable
 without installing Loom or Kani. The two optional packages are isolated from
@@ -113,7 +113,7 @@ all remaining owners. The separate panic regressions cover unwinding behavior.
 The retry model runs as part of `make bounded`.
 
 Both the real store and the model call
-[`src/concurrent/publication.rs`](../crates/frost-collections-concurrent/src/concurrent/publication.rs). The test
+[`crates/frost-collections-concurrent/src/concurrent/publication.rs`](../crates/frost-collections-concurrent/src/concurrent/publication.rs). The test
 includes that file directly; it does not maintain a second copy of the retry
 algorithm. Only the atomic store is replaced.
 
@@ -185,7 +185,7 @@ under an atomic-store assumption. See the [Loom documentation][loom] and
 ## Unsafe storage under Miri
 
 The only runtime module allowed to use `unsafe` is
-[`src/adaptive/seq/buf.rs`](../crates/frost-collections-core/src/adaptive/seq/buf.rs). Its invariant is that an
+[`crates/frost-collections-core/src/adaptive/seq/buf.rs`](../crates/frost-collections-core/src/adaptive/seq/buf.rs). Its invariant is that an
 inline buffer owns exactly the initialized prefix, and an owning iterator owns
 exactly its remaining contiguous range. Moving storage must transfer that
 ownership before any destructor can run.
@@ -341,6 +341,15 @@ seconds.
 | `set_laws::ordered_difference_refines_the_representative_rule` | Verified | 428 s | 4.3 GB |
 | `set_laws::nested_ordered_union_keeps_the_first_representative` | Verified | 129 s | 2.2 GB |
 
+On 2026-11-14, after the Kani package moved to
+`crates/frost-collections-core/verification/kani` and began depending on the
+core package, the nine harnesses listed as verified were run again, one at a
+time on the same host, and all nine verified with the same check counts.
+The intersection and difference harnesses took 440 s and 478 s, about 12%
+longer than in the table, while other work ran on the host; the others were
+within 6% of the table in time and peak memory. The two harnesses that did
+not finish were not re-run.
+
 `make kani` therefore does not pass on that host: two harnesses that predate the
 `set_laws` module do not finish, and the repository records no earlier solver
 run of them, only native helper runs. They
@@ -374,7 +383,7 @@ unwinding assertions to turn an incomplete analysis into a green result. See
 
 ## Spec-level Verus proofs
 
-[`verification/verus`](../verification/verus/README.md) proves algebra laws for
+[`crates/frost-collections-core/verification/verus`](../crates/frost-collections-core/verification/verus/README.md) proves algebra laws for
 their reference definitions over vstd's finite `Set`, `Map` and `Seq` and over
 natural-number counts. It is not a Cargo package and does not link to Frost, so
 it says nothing about Frost code; the Kani `set_laws` harnesses are the bounded
@@ -394,13 +403,13 @@ neither metric replaces public API semantic obligations. See
 
 The baseline observation at commit `6ab0918dbbf655894d8d3176b81091bd28899c5f` on
 `aarch64-apple-darwin` (Rust `1.99.1`, `cargo-llvm-cov 0.9.1`, `--all-features`,
-excluding `tests/`, `benches/`, `examples/`, and `verification/` from the
+excluding `tests/`, `benches/`, `crates/frost-collections/examples/`, and `verification/` from the
 denominator) is recorded in
 [`verification/crate-standards-validation/baseline-coverage.json`](../verification/crate-standards-validation/baseline-coverage.json).
 Because `--ignore-filename-regex '(^|/)(tests|benches|examples|verification)/'`
 filters by file path, the `src/**/*.rs` denominator is a **file-scoped
 library-source denominator** that includes inline `#[cfg(test)]` modules inside
-`src/` (such as unit tests in `src/integer/**`), not test-free production code.
+`src/` (such as unit tests in `crates/frost-collections-integer/src/integer/**`), not test-free production code.
 Custom `harness = false` benchmark targets in `benches/` do not run during
 default `cargo llvm-cov` execution.
 
@@ -408,7 +417,7 @@ default `cargo llvm-cov` execution.
 - **Functions (`6ab0918` baseline)**: `1,343 / 1,894` (`70.908%`)
 - **Regions (`6ab0918` baseline)**: `11,067 / 14,230` (`77.772%`)
 - **Instantiations (`6ab0918` baseline)**: `5,434 / 8,602` (`63.171%`, report-only; not gated)
-- **Same-scope observation with `tests/api_contracts.rs`**: ~`79.15%` lines
+- **Same-scope observation with `crates/frost-collections-core/tests/api_contracts.rs`**: ~`79.15%` lines
   (`7,268 / 9,183`), ~`73.76%` functions (`1,397 / 1,894`), and ~`79.42%`
   regions (`11,302 / 14,230`) on `aarch64-apple-darwin` (still below the
   `90% / 85% / 90%` target; final raw coverage evidence is Root-owned).

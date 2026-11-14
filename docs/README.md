@@ -13,24 +13,24 @@ does not validate later changes.
 | --- | --- | --- |
 | [Design philosophy](design/philosophy.md) | Durable principles and review criteria | Current |
 | [Architecture](design/architecture.md) | Families, capabilities, profiles, and backend boundaries | Current |
-| [Frozen API guide](design/frozen-api.md) | Frozen value kinds, plans, recovery, access models, costs, snapshot admission | Current; proposals marked |
+| [Frozen API guide](../crates/frost-collections-core/docs/frozen-api.md) | Frozen value kinds, plans, recovery, access models, costs, snapshot admission | Current; proposals marked |
 | [Design decisions](design/decisions.md) | Why the architecture was selected, and later integration decisions | Current |
-| [Set operations](set-operations.md) | Algebra, representatives, complexity, and bitmap universes | Current |
-| [Snapshot publication](design/snapshots.md) | Ownership, identity, retries, and linearization | Current |
-| [Typed integer profile](design/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra | Current |
+| [Set operations](../crates/frost-collections-core/docs/set-operations.md) | Algebra, representatives, complexity, and bitmap universes | Current |
+| [Snapshot publication](../crates/frost-collections-concurrent/docs/snapshots.md) | Ownership, identity, retries, and linearization | Current |
+| [Typed integer profile](../crates/frost-collections-integer/docs/integer-sets.md) | Canonical key codecs, private storage, policies, and encoded algebra | Current |
 | [Crate standard](../CRATES.md) | Package layout, dependency placement, feature/target matrix, API obligations, coverage accounting, test and benchmark metadata | Current standard |
-| [Crate layout](design/crate-layout.md) | Current package, the `crates/frost-*` reorganization target, split constraints, and required decisions | Current and proposal |
+| [Crate layout](design/crate-layout.md) | The workspace as laid out, and the split constraints and analysis that preceded it | Current, with a record of the analysis |
 
 ## Proposals
 
 | Document | Purpose | Status |
 | --- | --- | --- |
-| [General set algebra](design/set-algebra.md) | Typed views for all set categories, representative semantics, execution, and ownership | Proposal |
+| [General set algebra](../crates/frost-collections-core/docs/set-algebra.md) | Typed views for all set categories, representative semantics, execution, and ownership | Proposal |
 | [Collection algebra](design/collection-algebra.md) | Maps, sequences, bags, multimaps, bimaps, and prefix indexes; [naming dispositions](design/collection-algebra.md#naming-dispositions) and corrections | Proposal |
-| [Borrowed integer expressions](design/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
-| [Persistent integer storage](design/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
-| [Integer roadmap](design/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
-| [Crate split plan](design/crate-split-plan.md) | Execution plan for epic `frost-wlt`: decisions, packages, module and feature maps, artifact owners, rules that change | Proposed, under execution |
+| [Borrowed integer expressions](../crates/frost-collections-integer/docs/integer-views.md) | IntSetExpr API, bounds, cursors, evaluation, and admission tests | Proposal |
+| [Persistent integer storage](../crates/frost-collections-integer/docs/persistent-integer-storage.md) | Implemented flat shared chunks distinguished from proposed tree directories and a separate family | Current and proposal |
+| [Integer roadmap](../crates/frost-collections-integer/docs/integer-roadmap.md) | Future families and their acceptance criteria | Proposal |
+| [Crate split plan](design/crate-split-plan.md) | Execution plan for epic `frost-wlt`: decisions, packages, module and feature maps, artifact owners, rules that change | Executed; pending maintainer approval |
 | [Crate split proposal](design/proposals/crate-split.md) | First proposal for `frost-wlt`, with the measured module graph | Superseded by the plan |
 
 ## Formal models and domain-specific algebra
@@ -111,10 +111,10 @@ change.
 | [Attachment integration](../verification/attachment-integration-2026-11-09/README.md) | Input digests, conflict resolutions, and checks run on that checkout | Dated record |
 | [Expression bounds model](../verification/integer-views/README.md) | Executed finite mathematics checks; no production views implementation | Dated record |
 | [Generic algebra model](../verification/set-algebra/README.md) | Reproduced representative/order counterexamples; no production view implementation | Dated record |
-| [Prior output validation](integer-output-validation.md) | Output-policy, feature, concurrency, and verification gates | Historical |
-| [Prior integer benchmarks](integer-output-benchmarks.md) | Same-harness comparisons and CPU target controls; not merged-source measurements | Historical |
-| [Initial integer validation](integer-validation.md) | Evidence before output-policy corrections | Historical |
-| [Initial integer benchmarks](integer-benchmarks.md) | Representation tradeoffs and mixed-probe improvement | Historical |
+| [Prior output validation](../crates/frost-collections-integer/docs/integer-output-validation.md) | Output-policy, feature, concurrency, and verification gates | Historical |
+| [Prior integer benchmarks](../crates/frost-collections-integer/docs/integer-output-benchmarks.md) | Same-harness comparisons and CPU target controls; not merged-source measurements | Historical |
+| [Initial integer validation](../crates/frost-collections-integer/docs/integer-validation.md) | Evidence before output-policy corrections | Historical |
+| [Initial integer benchmarks](../crates/frost-collections-integer/docs/integer-benchmarks.md) | Representation tradeoffs and mixed-probe improvement | Historical |
 | [Prior integration validation](production-readiness.md) | Checks before the integer profile was added | Historical |
 
 ## Maintenance
@@ -128,7 +128,7 @@ change.
 | [Release procedure](maintainers/releasing.md) | Concrete gates before publishing | Current |
 | [Crate standard](../CRATES.md) | Layout, dependency, API obligation, coverage, and metadata rules | Current |
 | [Verification catalog](../verification/catalog/README.md) | Catalog and benchmark-inventory schemas, structural discovery, and its limits | Current |
-| [Coverage policy](../verification/coverage/README.md), [mutation policy](../verification/mutation/README.md), [fuzz harness](../verification/fuzz/README.md) | Denominators and gates, survivor triage, and isolated fuzz targets | Current |
+| [Coverage policy](../verification/coverage/README.md), [mutation policy](../verification/mutation/README.md), [fuzz harness](../crates/frost-collections-integer/fuzz/README.md) | Denominators and gates, survivor triage, and isolated fuzz targets | Current |
 | [Rust verification strategy](research/reports/rust-verification-strategy.md) | Source-backed rationale for the tool choices | Research |
 | [Formal validation tools](research/reports/formal-validation-tools.md) | Established tools for the formal models and law proofs, 2026-11-13 | Research |
 | [GitHub workflow](maintainers/github-workflow.md) | Issue forms and pull requests as intake; tracker records as the work plan | Current |
@@ -143,7 +143,7 @@ Open research questions remain in the research synthesis and integration audit.
 
 ## Reading paths
 
-- **New contributor:** crate README, Frozen API guide, `examples/`, design
+- **New contributor:** crate README, Frozen API guide, `crates/frost-collections/examples/`, design
   philosophy, contributor guide, crate standard.
 - **Test, benchmark, or verification author:** crate standard, testing
   standard, verification catalog, verification, benchmarks, maintainer guide.

@@ -1,0 +1,15 @@
+bytemuck v1.25.2
+byteorder v1.5.0
+fearless_simd v1.2.0
+fearless_simd_macros v0.1.0 (proc-macro)
+frost-collections-core v0.4.0
+frost-collections-integer v0.4.0
+libm v0.2.16
+proc-macro2 v1.0.107
+proc-macro2 v1.0.107 (*)
+quote v1.0.47
+quote v1.0.47 (*)
+roaring v0.12.0
+roaring v0.12.0 (*)
+syn v3.0.9
+unicode-ident v1.0.27

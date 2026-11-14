@@ -84,7 +84,7 @@ and memory safety are separate proof obligations.
 | --- | --- |
 | Existing traits, exact wrappers, ordinary/adaptive families and their native/framework impls | Root package; cohesive frost-core candidate |
 | Existing binary family methods | The crate defining each family |
-| Generic sorted-slice kernels | `src/family/ordered/set_ops.rs`; frost-set-kernels candidate |
+| Generic sorted-slice kernels | `crates/frost-collections-core/src/family/ordered/set_ops.rs`; frost-set-kernels candidate |
 | Typed integer storage and full-value codecs | src/integer; frost-integer-sets candidate |
 | New composed set expressions | New owner such as frost-set-algebra, depending downward on capabilities/kernels |
 | New map expressions and joins | Candidate frost-map-algebra |

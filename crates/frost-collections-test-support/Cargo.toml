@@ -6,6 +6,7 @@ rust-version.workspace = true
 description = "Workload factories and benchmark timing helpers shared by the tests and benches of the Frost packages. Dev-dependency only"
 license.workspace = true
 publish.workspace = true
+exclude = ["verification/**"]
 
 # No dependency, and none on a Frost package: a support package that depended
 # on the crate under test could link two copies of its types into that crate's

@@ -1,10 +1,13 @@
 {
   "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "fuzz/Cargo.toml"
+  ],
   "contracts": [
     {
       "id": "C-INT-SET-ALGEBRA",
       "title": "Integer profile algebra and counts agree across all representations and sharing histories",
-      "source": "docs/design/integer-sets.md; docs/maintainers/implementation-contracts.md integer profile paragraph",
+      "source": "docs/integer-sets.md; docs/maintainers/implementation-contracts.md integer profile paragraph",
       "obligations": [
         "FrozenIntSet::try_from_iter",
         "FrozenIntSet::intersection_len",
@@ -67,6 +70,21 @@
       "features": [
         "int-set"
       ]
+    },
+    {
+      "path": "fuzz/fuzz_targets/integer_set_algebra.rs",
+      "kind": "bin",
+      "features": []
+    },
+    {
+      "path": "fuzz/fuzz_targets/ordered_set_algebra.rs",
+      "kind": "bin",
+      "features": []
+    },
+    {
+      "path": "fuzz/src/lib.rs",
+      "kind": "lib",
+      "features": []
     }
   ],
   "cases": [
@@ -1713,6 +1731,111 @@
       "seed": "unreviewed",
       "target": "tests/integer_sets.rs",
       "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SET_ALGEBRA-001",
+      "file": "fuzz/fuzz_targets/integer_set_algebra.rs",
+      "selector": "fuzz:fuzz_target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: fuzz:fuzz target",
+      "seed": "unreviewed",
+      "target": "fuzz/fuzz_targets/integer_set_algebra.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_ALGEBRA-001",
+      "file": "fuzz/fuzz_targets/ordered_set_algebra.rs",
+      "selector": "fuzz:fuzz_target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: fuzz:fuzz target",
+      "seed": "unreviewed",
+      "target": "fuzz/fuzz_targets/ordered_set_algebra.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-018",
+      "file": "fuzz/src/lib.rs",
+      "selector": "test:tests::integer_set_algebra_seed_corpus_and_policy_combinations",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::integer set algebra seed corpus and policy combinations",
+      "seed": "unreviewed",
+      "target": "fuzz/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-019",
+      "file": "fuzz/src/lib.rs",
+      "selector": "test:tests::integer_set_ineligible_policy_limits_are_rejected_and_preserve_input",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::integer set ineligible policy limits are rejected and preserve input",
+      "seed": "unreviewed",
+      "target": "fuzz/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-020",
+      "file": "fuzz/src/lib.rs",
+      "selector": "test:tests::ordered_set_algebra_seed_corpus_and_edge_cases",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::ordered set algebra seed corpus and edge cases",
+      "seed": "unreviewed",
+      "target": "fuzz/src/lib.rs",
+      "cfg": "cfg (test)",
       "cost": "unreviewed"
     }
   ]

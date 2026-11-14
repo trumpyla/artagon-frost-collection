@@ -3,7 +3,7 @@
 Review date: **2026-11-08, America/New_York**. Reviewed input: the supplied
 `frost-collections-repo(1).zip`, at imported commit `3405657`.
 
-Outcome: recommend the [general set-algebra design](../design/set-algebra.md).
+Outcome: recommend the [general set-algebra design](../../crates/frost-collections-core/docs/set-algebra.md).
 This change adds design documents and an independent finite semantic model.
 **It does not implement a generic view API, change production kernels, or
 introduce a new collection backend.**
@@ -69,7 +69,7 @@ is not a prerequisite for ordinary generic set algebra.
 The supplied report is preserved unchanged as historical input. This pass did
 not repeat its external paper measurements or re-audit every recent upstream
 issue status. Sources actually used for new factual claims are listed in the
-[design](../design/set-algebra.md).
+[design](../../crates/frost-collections-core/docs/set-algebra.md).
 
 ## 4. Existing executable contracts
 

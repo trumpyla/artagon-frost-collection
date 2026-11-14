@@ -12,7 +12,7 @@
     "denominator_kind": "file_scoped_library_source_including_inline_cfg_test_modules",
     "doctests_instrumented": false,
     "benchmarks_executed": false,
-    "ignore_filename_regex": "(^|/)(tests|benches|examples|verification)/"
+    "ignore_filename_regex": "(^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/"
   },
   "observed_baseline": {
     "lines": { "covered": 7089, "count": 9183, "percent": 77.1969944462594 },
@@ -23,6 +23,7 @@
     "doctests": { "status": "unmeasured_on_stable" },
     "linux_x86_64_baseline": { "status": "unmeasured_not_proven_by_macos" }
   },
+  "workspace_layout_note": "The baseline was recorded on the single-package layout. Since epic frost-wlt the sources are crates/*/src, the scope also excludes fuzz/ and the test-support package, and the core package gained a few hidden wrapper functions, so the denominator differs. The exact ratchet still compares against the recorded baseline on the reference host; re-record the baseline there before treating a ratchet failure as a coverage regression. Not re-recorded yet: the execution host of frost-wlt is not the reference host.",
   "post_api_contracts_observation_note": {
     "approximate_lines_percent": 79.16,
     "approximate_functions_percent": 73.76,
@@ -42,7 +43,7 @@
       "matching_host_target": "aarch64-apple-darwin",
       "matching_toolchain": "1.99.1",
       "matching_tool": "cargo-llvm-cov 0.9.1",
-      "matching_ignore_regex": "(^|/)(tests|benches|examples|verification)/",
+      "matching_ignore_regex": "(^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/",
       "baseline_file": "verification/crate-standards-validation/baseline-coverage.json",
       "comparison": "source-summary.json data[0].totals.{lines,functions,regions}.percent >= baseline totals.{lines,functions,regions}.percent",
       "scope_metadata_output": "target/coverage/scope-metadata.json"

@@ -8,13 +8,16 @@ license = "MIT OR Apache-2.0"
 description = "Same-executable comparison of a baseline revision and the working tree"
 
 [workspace]
+# The baseline is another workspace's checkout: its packages inherit from its
+# own root manifest, not from this one.
+exclude = ["baseline-workspace"]
 
 [dependencies]
 # The candidate is the working tree. `prepare-baseline.sh <rev>` archives the
-# baseline revision into ./baseline under a renamed package, so one executable
-# links both.
+# baseline revision into ./baseline-workspace under renamed packages, so one
+# executable links both.
 frost = { package = "frost-collections", path = "../../../crates/frost-collections", default-features = false, features = ["int-set", "std"] }
-frost_baseline = { package = "frost-baseline", path = "baseline", default-features = false, features = ["int-set", "std"] }
+frost_baseline = { package = "frost-baseline", path = "baseline-workspace/crates/frost-collections", default-features = false, features = ["int-set", "std"] }
 
 [profile.release]
 debug = false

@@ -47,7 +47,7 @@ an adaptive profile is explicitly different. Do not promise a universal inverse.
 | FrozenIntSetView | Separate proposed validated storage view; not a synonym for IntSetExpr |
 | PersistentIntSet | Separate proposed persistent family; not all frozen values have its intended update costs |
 
-Consult the [Frozen API guide](../frozen-api.md) for actual method and recovery
+Consult the [Frozen API guide](../../../crates/frost-collections-core/docs/frozen-api.md) for actual method and recovery
 contracts. No universal FrozenValue, FrozenCollection or FrozenValueDomain trait
 is introduced here. New semantic interfaces belong only where an executable
 consumer needs them.

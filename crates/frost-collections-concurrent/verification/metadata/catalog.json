@@ -1,10 +1,13 @@
 {
   "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "verification/loom/Cargo.toml"
+  ],
   "contracts": [
     {
       "id": "C-SNAPSHOT-PUBLICATION",
       "title": "publish is unconditional; publish_if_current compares allocation identity; update may repeat the callback and returns the displaced version",
-      "source": "docs/design/snapshots.md; docs/maintainers/implementation-contracts.md snapshot paragraph",
+      "source": "docs/snapshots.md; docs/maintainers/implementation-contracts.md snapshot paragraph",
       "obligations": [
         "SnapshotStore"
       ]
@@ -53,6 +56,11 @@
       "features": [
         "arc-swap-1"
       ]
+    },
+    {
+      "path": "verification/loom/src/lib.rs",
+      "kind": "lib",
+      "features": []
     }
   ],
   "cases": [
@@ -645,6 +653,48 @@
       "seed": "unreviewed",
       "target": "tests/concurrent.rs",
       "cfg": "cfg (feature = \"scc-3\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-030",
+      "file": "verification/loom/src/lib.rs",
+      "selector": "test:tests::three_writers_have_no_lost_updates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::three writers have no lost updates",
+      "seed": "unreviewed",
+      "target": "verification/loom/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-031",
+      "file": "verification/loom/src/lib.rs",
+      "selector": "test:tests::two_writers_have_no_lost_updates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::two writers have no lost updates",
+      "seed": "unreviewed",
+      "target": "verification/loom/src/lib.rs",
+      "cfg": "cfg (test)",
       "cost": "unreviewed"
     }
   ]

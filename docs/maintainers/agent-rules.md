@@ -36,9 +36,10 @@ extraction is tracked under `frost-wlt` and follows `CRATES.md` and
 These rules hold for every change; the implementation contracts state them in
 full:
 
-- The packages are those of `docs/design/crate-split-plan.md`; add or split one
-  only under `frost-wlt`. Until its extractions land, `frost-collections` under
-  `crates/` holds all the code, and `src/` below means its `src/`.
+- The packages are those of `docs/design/crate-split-plan.md`:
+  `frost-collections` (the facade and only supported entry point), the
+  internal `-core`, `-integer` and `-concurrent`, and the dev-only
+  `-test-support`. Add or split a package only with a design record.
 - Features are additive: enabling one never changes an existing type's
   representation, hasher, bounds or freeze/thaw partner.
 - No new `unsafe` block or manual `Send`/`Sync` implementation without a written

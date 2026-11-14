@@ -1,5 +1,8 @@
 {
   "schema": "frost-verification-catalog/1",
+  "isolated": [
+    "verification/int-key-downstream/Cargo.toml"
+  ],
   "contracts": [],
   "targets": [
     {
@@ -88,6 +91,11 @@
     },
     {
       "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    },
+    {
+      "path": "verification/int-key-downstream/src/lib.rs",
       "kind": "lib",
       "features": []
     }
@@ -343,6 +351,48 @@
       "seed": "unreviewed",
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-021",
+      "file": "verification/int-key-downstream/src/lib.rs",
+      "selector": "test:tests::downstream_freeze_plan_and_forced_backends_agree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::downstream freeze plan and forced backends agree",
+      "seed": "unreviewed",
+      "target": "verification/int-key-downstream/src/lib.rs",
+      "cfg": "cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-022",
+      "file": "verification/int-key-downstream/src/lib.rs",
+      "selector": "test:tests::downstream_keys_and_private_width_mapping_are_usable_generically",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tests::downstream keys and private width mapping are usable generically",
+      "seed": "unreviewed",
+      "target": "verification/int-key-downstream/src/lib.rs",
+      "cfg": "cfg (test)",
       "cost": "unreviewed"
     }
   ]

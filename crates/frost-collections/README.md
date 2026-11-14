@@ -136,7 +136,7 @@ Five related concepts stay separate:
 Materializing a collection of references still depends on the sources' lifetimes.
 A query description does not freeze the data that it reads. A stable snapshot
 can still be too old for a revocation requirement. The
-[Frozen API guide](../../docs/design/frozen-api.md) maps each of these contracts to
+[Frozen API guide](../frost-collections-core/docs/frozen-api.md) maps each of these contracts to
 source and tests.
 
 ## Engines Frost is meant to serve
@@ -220,15 +220,15 @@ in-memory index alone does not prove that an authorization answer is fresh.
 | Area | Status | Reference |
 | --- | --- | --- |
 | The library package `frost-collections`, imported as `frost`, in a Cargo workspace | Implemented | [Cargo.toml](Cargo.toml) |
-| Five mutable/frozen family pairs, exact `Frozen<B>` wrappers, adaptive profiles | Implemented | [Frozen API guide](../../docs/design/frozen-api.md) |
-| Lazy borrowed set algebra and scalar counts for ordered and hash sets; bitmap algebra | Implemented | [Set operations](../../docs/set-operations.md) |
-| Typed integer profile with shared storage and an explicit Chunked policy | Implemented (`int-set`); its algebra is eager | [Integer design](../../docs/design/integer-sets.md) |
-| Whole-value snapshot publication | Implemented (`arc-swap-1`) | [Snapshot contract](../../docs/design/snapshots.md) |
-| Generic borrowed set expressions; borrowed integer expressions | Proposal | [Set algebra](../../docs/design/set-algebra.md), [integer views](../../docs/design/integer-views.md) |
+| Five mutable/frozen family pairs, exact `Frozen<B>` wrappers, adaptive profiles | Implemented | [Frozen API guide](../frost-collections-core/docs/frozen-api.md) |
+| Lazy borrowed set algebra and scalar counts for ordered and hash sets; bitmap algebra | Implemented | [Set operations](../frost-collections-core/docs/set-operations.md) |
+| Typed integer profile with shared storage and an explicit Chunked policy | Implemented (`int-set`); its algebra is eager | [Integer design](../frost-collections-integer/docs/integer-sets.md) |
+| Whole-value snapshot publication | Implemented (`arc-swap-1`) | [Snapshot contract](../frost-collections-concurrent/docs/snapshots.md) |
+| Generic borrowed set expressions; borrowed integer expressions | Proposal | [Set algebra](../frost-collections-core/docs/set-algebra.md), [integer views](../frost-collections-integer/docs/integer-views.md) |
 | Map merge and join, bags, multimaps, bimaps, sequence algebra, prefix indexes | Proposal | [Collection algebra](../../docs/design/collection-algebra.md) |
-| Persistent tree directories; a separate persistent integer family | Proposal | [Persistent storage](../../docs/design/persistent-integer-storage.md) |
+| Persistent tree directories; a separate persistent integer family | Proposal | [Persistent storage](../frost-collections-integer/docs/persistent-integer-storage.md) |
 | Computed sets over durable or indexed relations | Research | [Research synthesis](../../docs/research/synthesis/foundations-and-engine-roadmap.md) |
-| Internal packages `frost-collections-core`, `-integer` and `-concurrent` behind this one | In progress (epic `frost-wlt`); this package stays the only supported entry point | [Crate split plan](../../docs/design/crate-split-plan.md), [design decisions](../../docs/design/decisions.md) |
+| Internal packages `frost-collections-core`, `-integer` and `-concurrent` behind this one | Implemented (epic `frost-wlt`); this package is the only supported entry point | [Crate split plan](../../docs/design/crate-split-plan.md), [design decisions](../../docs/design/decisions.md) |
 | Authorization or policy engine, solver, identity server, durable store, distributed consistency protocol | Outside scope | — |
 
 ### Naming and compatibility
@@ -264,13 +264,13 @@ selective merge; earlier reviews and benchmarks remain historical evidence.
 | Category | Artifact | Purpose | Status |
 | --- | --- | --- | --- |
 | Index | [Documentation index](../../docs/README.md) | Complete inventory of design, research, review, and maintenance documents | Navigation |
-| Frozen API | [Frozen API guide](../../docs/design/frozen-api.md) | Families, exact wrappers, plans, recovery, access models, costs, snapshots | Current contracts; proposals marked |
+| Frozen API | [Frozen API guide](../frost-collections-core/docs/frozen-api.md) | Families, exact wrappers, plans, recovery, access models, costs, snapshots | Current contracts; proposals marked |
 | Principles | [Philosophy](../../docs/design/philosophy.md), [architecture](../../docs/design/architecture.md), [decisions](../../docs/design/decisions.md) | Durable principles, current architecture, and recorded choices | Current design |
 | Naming | [Naming dispositions](../../docs/design/collection-algebra.md#naming-dispositions) | Stable public capabilities and distinct proposed collection names | Current decision; future types marked |
 | Formal domains | [Formal model](../../docs/design/algebra/formal-model.md), [value domains](../../docs/design/algebra/domains.md), [domain chapters](../../docs/design/algebra/README.md) | Denotations, validity, closure, observations and refinement obligations | Proposed contracts; no production API |
-| Algebra | [Set operations](../../docs/set-operations.md), [collection algebra](../../docs/design/collection-algebra.md), [general set algebra](../../docs/design/set-algebra.md) | Implemented set contracts; proposed algebra for other collections | Implemented and proposal |
-| Integers | [Integer design](../../docs/design/integer-sets.md), [integer views](../../docs/design/integer-views.md), [roadmap](../../docs/design/integer-roadmap.md) | Codecs, storage, policies; deferred expressions | Implemented and proposal |
-| Versions | [Snapshots](../../docs/design/snapshots.md), [persistent storage](../../docs/design/persistent-integer-storage.md) | Publication, retries, sharing, and retention | Implemented and proposal |
+| Algebra | [Set operations](../frost-collections-core/docs/set-operations.md), [collection algebra](../../docs/design/collection-algebra.md), [general set algebra](../frost-collections-core/docs/set-algebra.md) | Implemented set contracts; proposed algebra for other collections | Implemented and proposal |
+| Integers | [Integer design](../frost-collections-integer/docs/integer-sets.md), [integer views](../frost-collections-integer/docs/integer-views.md), [roadmap](../frost-collections-integer/docs/integer-roadmap.md) | Codecs, storage, policies; deferred expressions | Implemented and proposal |
+| Versions | [Snapshots](../frost-collections-concurrent/docs/snapshots.md), [persistent storage](../frost-collections-integer/docs/persistent-integer-storage.md) | Publication, retries, sharing, and retention | Implemented and proposal |
 | Research | [Research index](../../docs/research/README.md), [synthesis](../../docs/research/synthesis/foundations-and-engine-roadmap.md), [sources](../../docs/research/SOURCES.md), [integration audit](../../docs/research/integration-audit.md) | Curated reports, decision map, source evidence, corrections and gaps | Research; not accepted design |
 | Templates | [Research prompt](../../docs/research/templates/research-prompt.md) | Start a landscape, deep-dive, or validation study | Template |
 | Examples | [examples/](examples/) | Executable scenarios run as tests | Implemented; see feature requirements |
@@ -281,7 +281,7 @@ selective merge; earlier reviews and benchmarks remain historical evidence.
 
 Reading paths:
 
-- **New contributor:** this README, the Frozen API guide, `examples/`, the
+- **New contributor:** this README, the Frozen API guide, `crates/frost-collections/examples/`, the
   philosophy, then the contributor guide.
 - **Frozen API implementer:** architecture, the Frozen API guide, the linked
   source modules and tests, then verification scope.
@@ -468,7 +468,7 @@ kernels. `FixedBitSet` operations ignore raw padding and document the resulting
 logical universe for differently sized operands.
 
 See `docs/set-operations.md` for result ownership, complexity and boundary contracts,
-and `examples/set_operations.rs` for the tested complete scenario.
+and `crates/frost-collections/examples/set_operations.rs` for the tested complete scenario.
 
 ## Feature catalog
 
@@ -603,22 +603,22 @@ codes and test ordering on the observed input. Custom codecs must preserve the
 complete value and remain stable; equality alone cannot verify discarded
 metadata. Ordinary ordered sets retain their existing `freeze()` result.
 
-See [the integer design](../../docs/design/integer-sets.md),
+See [the integer design](../frost-collections-integer/docs/integer-sets.md),
 [revision integration review](../../docs/reviews/revision2-integration-review.md), and
 [current validation](../../docs/revision2-integration-validation.md) for the current
 contracts and executed checks. The earlier
 [output review](../../docs/reviews/integer-output-review.md),
-[output validation](../../docs/integer-output-validation.md), and
-[comparative benchmarks](../../docs/integer-output-benchmarks.md) are retained as
+[output validation](../frost-collections-integer/docs/integer-output-validation.md), and
+[comparative benchmarks](../frost-collections-integer/docs/integer-output-benchmarks.md) are retained as
 historical evidence; their measurements are not results for this merged source.
 
-The [general set-algebra design](../../docs/design/set-algebra.md) and
-[borrowed integer expressions](../../docs/design/integer-views.md) remain proposals;
+The [general set-algebra design](../frost-collections-core/docs/set-algebra.md) and
+[borrowed integer expressions](../frost-collections-integer/docs/integer-views.md) remain proposals;
 current integer algebra is eager. The
-[persistent-storage design](../../docs/design/persistent-integer-storage.md) now
+[persistent-storage design](../frost-collections-integer/docs/persistent-integer-storage.md) now
 separates the implemented flat shared chunks from proposed persistent tree
 directories and a possible future `PersistentIntSet`. The
-[integer roadmap](../../docs/design/integer-roadmap.md) records the remaining admission
+[integer roadmap](../frost-collections-integer/docs/integer-roadmap.md) records the remaining admission
 gates. No lazy expression engine or separate persistent family is implemented.
 
 ## Framework contracts
@@ -746,12 +746,12 @@ assert_eq!(store.peek(|version| version.as_slice()[0]), 1);
 
 Guarded reads can fall back to reference counting. Contention, allocation,
 callbacks, and destructors prevent an unconditional bounded-latency guarantee.
-[The snapshot contract](../../docs/design/snapshots.md) explains ownership, retries,
+[The snapshot contract](../frost-collections-concurrent/docs/snapshots.md) explains ownership, retries,
 panics, progress, and old-version retention.
 
 ## Examples and verification
 
-The `examples/` programs contain assertions and tests that execute their actual
+The `crates/frost-collections/examples/` programs contain assertions and tests that execute their actual
 scenarios. Cargo declares their feature requirements. This README is included
 in rustdoc, so its Rust blocks are doctested.
 The root Makefile requires GNU Make 3.81+ and Bash 3.2+. Targets that discover

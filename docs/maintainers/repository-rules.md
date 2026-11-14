@@ -13,9 +13,9 @@ or the preserved [implementation contracts](implementation-contracts.md).
 
 1. **Scope and layout.** A Cargo workspace with its packages under `crates/`.
    `frost-collections`, Rust import `frost`, is the library and the only
-   supported entry point. Extracting `frost-collections-core`, `-integer` and
-   `-concurrent` from it is migration work under `frost-wlt`, by the
-   [crate split plan](../design/crate-split-plan.md). Do not create empty
+   supported entry point. It re-exports the internal packages
+   `frost-collections-core`, `-integer` and `-concurrent`
+   ([crate split plan](../design/crate-split-plan.md)). Do not create empty
    packages or adopt a different crate list by copying historical research.
 2. **Code.** Keep features additive and preserve the semantic contracts:
    representatives, borrowed queries, iterator contracts, recovery and panic/drop

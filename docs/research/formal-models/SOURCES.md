@@ -34,8 +34,8 @@ build success, or a new dependency/version recommendation.
 | SRC-FROST-READ | [read.rs](../../../crates/frost-collections-core/src/read.rs) | Existing carrier, lookup, borrowed/value traversal, endpoint and cardinality capabilities |
 | SRC-FROST-FROZEN | [frozen.rs](../../../crates/frost-collections-core/src/frozen.rs) | Exact wrapper, sealed eligibility, access and consuming recovery |
 | SRC-FROST-KEY | [integer/key.rs](../../../crates/frost-collections-integer/src/integer/key.rs) | Full original-value reconstruction, canonical accepted codes, order and stability |
-| SRC-FROST-GUIDE | [Frozen guide](../../design/frozen-api.md) | Existing family partners and documented transitions; source remains authoritative |
-| SRC-FROST-SETS | [Set proposal](../../design/set-algebra.md) | Typed view proposal and representative distinctions; not implemented |
+| SRC-FROST-GUIDE | [Frozen guide](../../../crates/frost-collections-core/docs/frozen-api.md) | Existing family partners and documented transitions; source remains authoritative |
+| SRC-FROST-SETS | [Set proposal](../../../crates/frost-collections-core/docs/set-algebra.md) | Typed view proposal and representative distinctions; not implemented |
 | SRC-FROST-NAMES | [Collection algebra](../../design/collection-algebra.md#naming-dispositions) | Names already selected on main, including SeqMultiMap |
 | SRC-FROST-STANDARDS | [CRATES.md](../../../CRATES.md) | Layout, dependencies, test/benchmark metadata, and migration decision gates |
 

@@ -136,3 +136,47 @@ Gates that passed: `make check`, `profiles`, `features` (78 pairs), `integers`,
 
 `move_targets.py` and `doctest_alias.py` are the tools that moved the targets
 and added the crate aliases.
+
+## Final layout (`frost-wlt.14`–`.17`, evidence for `.6`)
+
+Run on 2026-11-14 against the tree committed with this section, on the same
+Linux x86-64 host (4 CPUs, 15 GB). Tools: cargo and rustc 1.99.1,
+`nightly-2026-11-08` for `doctest-codes`, cargo-nextest 0.9.151, cargo-llvm-cov
+0.9.1, Kani 0.68.0, ShellCheck 0.9.0, Bats 1.10.0, ast-grep 0.51.2, jq 1.7.
+
+| Check | Result |
+| --- | --- |
+| `make check` | Pass |
+| `make profiles` (with `feature-isolation`, `feature-forwarding`) | Pass, four library packages |
+| `make features` | Pass, 78 package-feature pairs |
+| `make integers`, `examples`, `embedded` | Pass |
+| `make package` | Pass; 414 tests in the scratch copy of the packaged file sets |
+| `make bounded`, `loom`, `fuzz-check` | Pass |
+| `make doctest-codes` | Pass; 61 doctests with error codes checked |
+| `make shell-check`, `tools-check` | Pass; 45 Bats cases |
+| `make nextest` | Pass; 353 tests |
+| `make coverage-gate` | Pass in portable-floor mode: lines 81.37%, functions 75.74%, regions 81.94% (`final/coverage-totals.json`) |
+| Kani, nine harnesses, one at a time | All verify (`kani-after-move/results.tsv`) |
+| `make integer-ab`, one round | Runs with a workspace-layout baseline under `--locked` and with `origin/main` under `AB_LOCKED=`; 630 cases each. One round is a smoke run, not a measurement |
+| Test counts, five profiles | Every non-doctest target equals its baseline line; doctests are the baseline plus one (`final/test-counts.*.tsv`) |
+| Public API under `frost::`, five profiles | Identical to `baseline/api-paths.*.txt` |
+| Catalog | 402 records; all 397 baseline IDs present |
+| Dependency trees | No proof, model or fuzz tool in any library package (`dep-trees/`) |
+
+Not run, and therefore not evidence for the final layout:
+
+- **Miri**, by maintainer instruction of 2026-11-14. Before that instruction
+  the two lanes over `buf.rs` passed after the scaffold and after the core
+  extraction, and one 32-bit integer lane passed after the integer extraction.
+  The lanes in `make miri` name the owning packages but were not executed on
+  the final tree.
+- **Kani** `ordered_set_algebra` and `dense_padding_does_not_create_members`,
+  which did not finish before the split either (`frost-k4n`).
+- **Verus**, **cargo-fuzz** (`make fuzz-smoke`) and **cargo-mutants**: not
+  installed on this host.
+- **Benchmarks**: listed and matched against their inventories by
+  `make check`, but not measured. Earlier measurements are for the single
+  package.
+- **The exact coverage ratchet**: it applies only on the reference host
+  (aarch64-apple-darwin), and its baseline predates the split.
+- **`make coverage-branch`**, **`make miri-survey`**, and **GitHub CI**.
