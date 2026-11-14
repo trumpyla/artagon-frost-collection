@@ -1,8 +1,8 @@
 ---
 id: FROST-CRATE-SPLIT-PLAN
-status: executed-pending-approval
+status: approved
 epic: frost-wlt
-updated: 2026-11-13
+updated: 2026-11-14
 supersedes: docs/design/proposals/crate-split.md
 ---
 
@@ -17,10 +17,10 @@ and what changed. The [first review](../reviews/crate-split-adversarial-review.m
 (S01–S25) is answered there too. The tracker tasks under `frost-wlt` carry the
 acceptance criteria; this record carries the design they refer to.
 
-The maintainer was shown this plan on 2026-11-14 and has not yet approved it;
-it was executed on the instruction to execute. Decisions D2–D16 below
-are the author's defaults, taken so that execution is not blocked. The
-maintainer may overrule any of them; section 1.1 says what each costs to undo.
+The maintainer approved this plan as executed on 2026-11-14
+([decision](decisions.md#crate-split-execution-2026-11-13)). Package names and
+boundaries may be redrawn in the API refactor. Decisions D2–D16 below began as
+the author's defaults; section 1.1 says what each costs to undo.
 
 ## 1. Decisions
 

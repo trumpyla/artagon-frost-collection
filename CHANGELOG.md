@@ -54,6 +54,12 @@ No public API or behaviour change so far.
   with forward slashes, so it accepts Windows paths from Cargo metadata.
 - Record fuzzing, mutation-testing and benchmark comparisons of the split
   tree against the pre-split revision.
+- The maintainer approved the crate split plan as executed on 2026-11-14 and
+  waived three lanes that the execution host could not run; they stay tracked
+  as `frost-k4n`, `frost-v3s` and `frost-c7b`. Epic `frost-wlt` is closed.
+- CI no longer runs Miri on push or pull request. `ci.yml` keeps the
+  error-code check (`make doctest-codes`); `verification.yml` runs `make miri`
+  in its nightly and release tiers.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

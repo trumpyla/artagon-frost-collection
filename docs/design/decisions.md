@@ -402,9 +402,10 @@ it answers. This entry records what is decided and by whom.
 | Adaptive profiles | They stay in the core package. | Extracting them would open the serde seal, which relaxes a contract. Only the maintainer can approve that; it is tracked as `frost-adp`. |
 | Publication | Nothing is published; every package is `publish = false`; the facade is the only supported entry point. | Author's default (plan D3). |
 | Contracts | No semantic or safety contract changes. Known defects are tracked as `frost-r0a` and `frost-k4n`, not fixed inside a move. | The API-compatibility decision relaxes no contract. |
-| Unrun lanes | A verification lane that cannot run on the host blocks closing the epic unless waived here. | Plan D16. No waiver has been given. |
-| Miri | The maintainer instructed on 2026-11-14 that Miri is not to be run in the execution session. Miri lanes are recorded as not run from that point; they are left to CI (`make miri`) or a later local run. | Maintainer instruction. Before it, two lanes over `buf.rs` passed after the scaffold and after the core extraction, and the 32-bit word-storage lane passed on the integer package. Whether this waives the Miri lanes for closing the epic is for the maintainer to state. |
+| Unrun lanes | A verification lane that cannot run on the host blocks closing the epic unless waived here. On 2026-11-14 the maintainer waived three for this epic: Verus, the exact coverage ratchet, and the two Kani harnesses of `frost-k4n`. | Plan D16. Each stays tracked: `frost-k4n`, `frost-v3s` and `frost-c7b`. The waiver closes the epic; it is not evidence that those lanes pass. |
+| Miri | The maintainer instructed on 2026-11-14 that Miri is not to be run in the execution session. Miri lanes are recorded as not run from that point; they are left to CI (`make miri`) or a later local run. | Maintainer instruction. Before it, two lanes over `buf.rs` passed after the scaffold and after the core extraction, and the 32-bit word-storage lane passed on the integer package. On 2026-11-14 the maintainer decided that the GitHub CI runs of `make miri` on the split tree are the Miri evidence for the epic, and that CI runs Miri in its nightly and release tiers, not on push or pull request. |
+| Approval | The maintainer approved the plan as executed on 2026-11-14. Package names and boundaries may be revisited in the API refactor. | Maintainer decision. It approves the executed layout. It does not approve an adaptive package (`frost-adp`) or publishing. |
 
-Decisions D2–D16 of the plan are defaults taken so that execution is not
-blocked. The maintainer may overrule any of them; the plan states what undoing
-each one costs.
+Decisions D2–D16 of the plan began as defaults taken so that execution was not
+blocked. The maintainer approved them with the plan on 2026-11-14; the plan
+states what undoing each one costs.

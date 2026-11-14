@@ -299,3 +299,29 @@ Bats cases.
 
 After these changes `make check`, `shell-check`, `fuzz-check` and
 `tools-check` pass on this host, and the catalog has 403 records.
+
+## Maintainer decisions, 2026-11-14
+
+The maintainer decided the points that the final-evidence task left open
+([decision record](../../../docs/design/decisions.md#crate-split-execution-2026-11-13)):
+
+- The plan is approved as executed. Package names and boundaries may be
+  revisited in the API refactor.
+- The GitHub CI runs of `make miri` on the split tree are the Miri evidence
+  for the epic. Miri was not run on the execution host after the instruction
+  of 2026-11-14.
+- Three lanes are waived for this epic and stay tracked: the two Kani
+  harnesses that do not finish (`frost-k4n`), Verus (`frost-v3s`), and the
+  exact coverage ratchet on the reference host (`frost-c7b`). A waiver is not
+  a result: none of the three has passed on the split tree.
+- Miri moves out of the push workflow. `ci.yml` keeps `make doctest-codes`;
+  `verification.yml` runs `make miri` in its nightly and release tiers.
+
+Run [32](https://github.com/trumpyla/artagon-frost-collection/actions/runs/43557293563)
+passed all 11 jobs, `make miri` included, on commit `3bd103c`, the last commit
+before the workflow change. With these decisions `frost-wlt.6` and the epic
+are closed.
+
+The workflow change was checked only by parsing the two files. `actionlint`
+is not installed on this host, and the new nightly job has not yet run on
+GitHub.

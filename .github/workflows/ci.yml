@@ -88,18 +88,20 @@ jobs:
       - name: Integer profile, optimized tests, and downstream codec extension
         run: make integers
 
-  ownership:
+  # Miri does not run on push or pull request (maintainer decision of
+  # 2026-11-14). `make miri` runs in the nightly and release tiers of
+  # verification.yml. This job keeps the error-code check that it started with.
+  diagnostic-codes:
     runs-on: ubuntu-latest
-    # Includes the full 88-case planner matrix in fresh 32-bit interpreters.
-    timeout-minutes: 90
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - run: rustup toolchain install 1.99.1 --profile minimal
-      - run: rustup toolchain install nightly-2026-11-08 --profile minimal --component miri,rust-src
-      - name: Diagnostic codes and ownership under both aliasing models
-        run: make miri
+      - run: rustup toolchain install nightly-2026-11-08 --profile minimal
+      - name: Error codes of compile-fail doctests
+        run: make doctest-codes
 
   publication-model:
     runs-on: ubuntu-latest
