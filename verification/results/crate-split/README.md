@@ -122,3 +122,17 @@ run, by maintainer instruction.
 `api_paths.py` now prints an external re-export by the last segment of its
 source, so routing `arc_swap` through another package does not change its
 line; the baseline files are reproduced unchanged by the updated tool.
+
+## After `frost-wlt.13` (tests and benches with their owners)
+
+In each of the five profiles, the executed-test count of every non-doctest
+target equals the baseline line for that target (split targets are summed
+under their shared name), and doctests equal the baseline plus one. Public
+paths, inherent items and trait implementations under `frost::` are identical
+to the baseline in all five profiles. All 397 baseline catalog IDs are present.
+Gates that passed: `make check`, `profiles`, `features` (78 pairs), `integers`,
+`examples`, `package`, `embedded`, `bounded`, `loom`, `fuzz-check`,
+`doctest-codes`, `shell-check`, `tools-check`. Miri was not run.
+
+`move_targets.py` and `doctest_alias.py` are the tools that moved the targets
+and added the crate aliases.

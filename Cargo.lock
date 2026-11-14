@@ -293,26 +293,10 @@ checksum = "77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb"
 name = "frost-collections"
 version = "0.4.0"
 dependencies = [
- "arbitrary",
- "arc-swap",
- "borsh",
- "exhaust",
- "fixedbitset",
  "frost-collections-concurrent",
  "frost-collections-core",
  "frost-collections-integer",
- "hashbrown 0.17.1",
- "imbl",
- "indexmap",
- "itertools",
- "proptest",
- "proptest-state-machine",
- "rayon",
- "roaring",
- "schemars",
- "serde",
  "serde_json",
- "slotmap",
 ]
 
 [[package]]
@@ -324,6 +308,7 @@ dependencies = [
  "dashmap",
  "frost-collections-core",
  "frost-collections-integer",
+ "frost-collections-test-support",
  "scc",
 ]
 
@@ -336,12 +321,17 @@ dependencies = [
  "borsh",
  "crossbeam-skiplist",
  "dashmap",
+ "exhaust",
  "fixedbitset",
+ "frost-collections-test-support",
  "fst",
  "hashbrown 0.17.1",
  "imbl",
  "indexmap",
+ "itertools",
  "phf",
+ "proptest",
+ "proptest-state-machine",
  "rayon",
  "roaring",
  "scc",
@@ -357,8 +347,14 @@ name = "frost-collections-integer"
 version = "0.4.0"
 dependencies = [
  "frost-collections-core",
+ "frost-collections-test-support",
+ "proptest",
  "roaring",
 ]
+
+[[package]]
+name = "frost-collections-test-support"
+version = "0.4.0"
 
 [[package]]
 name = "fst"

@@ -22,10 +22,11 @@ Nothing is published to a registry.
 | `frost-collections-core` | `crates/frost-collections-core` | Internal. Capability traits, plans, families, adaptive profiles, native backends, framework integrations |
 | `frost-collections-integer` | `crates/frost-collections-integer` | Internal. The typed integer-set profile |
 | `frost-collections-concurrent` | `crates/frost-collections-concurrent` | Internal. Live guarded access and snapshot publication |
+| `frost-collections-test-support` | `crates/frost-collections-test-support` | Internal, dev-dependency only. Workload factories and benchmark timing helpers |
 
 The code was split into these internal packages under tracker epic
-`frost-wlt`; tests, benches and isolated harnesses are still moving to their
-owners. The [crate split plan](docs/design/crate-split-plan.md) says what
+`frost-wlt`. Each package owns its tests and benches; the isolated fuzz,
+Kani, Loom and downstream harnesses are still under `verification/`. The [crate split plan](docs/design/crate-split-plan.md) says what
 moves where and when. Depend on
 `frost-collections` only: the other packages are internal.
 

@@ -69,7 +69,7 @@ The model boundary and actual executed checks are described in
 
 - [Public wrapper and guard](../../crates/frost-collections-concurrent/src/concurrent/snapshot.rs)
 - [Retry helper shared with the scheduler model](../../crates/frost-collections-concurrent/src/concurrent/publication.rs)
-- [Real backend concurrency tests](../../crates/frost-collections/tests/concurrent/snapshot.rs)
+- [Real backend concurrency tests](../../crates/frost-collections-concurrent/tests/concurrent/snapshot.rs)
 - [ArcSwap's upstream guarantees](https://docs.rs/arc-swap/1.9.4/arc_swap/)
 
 The model assumes a linearizable publication primitive. It does not replace a

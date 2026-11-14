@@ -36,8 +36,8 @@ The frozen ordered map is shared by the ordinary and adaptive ordered families.
 
 Sources: [exact wrapper](../../crates/frost-collections-core/src/frozen.rs), [family modules](../../crates/frost-collections-core/src/family/mod.rs),
 [adaptive profiles](../../crates/frost-collections-core/src/adaptive/mod.rs), [integer profile](../../crates/frost-collections-integer/src/integer/mod.rs).
-Tests: [families](../../crates/frost-collections/tests/families.rs), [mutable sets](../../crates/frost-collections/tests/mutable_sets.rs),
-[contracts](../../crates/frost-collections/tests/contracts.rs).
+Tests: [families](../../crates/frost-collections-core/tests/families.rs), [mutable sets](../../crates/frost-collections-core/tests/mutable_sets.rs),
+[contracts](../../crates/frost-collections-core/tests/contracts.rs).
 
 ### Exact-backend `Frozen<B>`
 
@@ -107,8 +107,8 @@ method set, `seal` and `compact`; new plans use `freeze_with` or
 extension traits.
 
 Sources: [plan definitions](../../crates/frost-collections-core/src/plan.rs), [vector plans](../../crates/frost-collections-core/src/backends/std_seq.rs),
-[integer plans](../../crates/frost-collections-integer/src/integer/set.rs). Tests: [contracts](../../crates/frost-collections/tests/contracts.rs),
-[core review](../../crates/frost-collections/tests/core_review.rs), [inline ownership](../../crates/frost-collections/tests/inline_safety.rs).
+[integer plans](../../crates/frost-collections-integer/src/integer/set.rs). Tests: [contracts](../../crates/frost-collections-core/tests/contracts.rs),
+[core review](../../crates/frost-collections-core/tests/core_review.rs), [inline ownership](../../crates/frost-collections-core/tests/inline_safety.rs).
 
 ## 3. Errors decide what you can recover
 
@@ -157,8 +157,8 @@ not repair inconsistent trait implementations. The README's
 with hand-written `PartialEq`, `Eq`, and `Hash` that use the same field.
 
 Sources: [family laws](../../crates/frost-collections-core/src/family/mod.rs), [hash set algebra](../../crates/frost-collections-core/src/family/hash_set.rs).
-Tests: [contracts](../../crates/frost-collections/tests/contracts.rs), [hash set operations](../../crates/frost-collections/tests/hash_set_ops.rs),
-[ordered set operations](../../crates/frost-collections/tests/ordered_set_ops.rs), [set review](../../crates/frost-collections/tests/sets_review.rs).
+Tests: [contracts](../../crates/frost-collections-core/tests/contracts.rs), [hash set operations](../../crates/frost-collections-core/tests/hash_set_ops.rs),
+[ordered set operations](../../crates/frost-collections-core/tests/ordered_set_ops.rs), [set review](../../crates/frost-collections-core/tests/sets_review.rs).
 
 ## 5. Three read access models
 
@@ -187,7 +187,7 @@ associated types and are not.
 
 Sources: [read capabilities](../../crates/frost-collections-core/src/read.rs), [FST](../../crates/frost-collections-core/src/backends/fst.rs),
 [bitmaps](../../crates/frost-collections-core/src/backends/bitmap.rs), [slot maps](../../crates/frost-collections-core/src/backends/slotmap.rs).
-Tests: [backend review](../../crates/frost-collections/tests/backend_review.rs), [specialized](../../crates/frost-collections/tests/specialized.rs).
+Tests: [backend review](../../crates/frost-collections-core/tests/backend_review.rs), [specialized](../../crates/frost-collections-core/tests/specialized.rs).
 
 ## 6. What frozen does and does not mean
 
@@ -267,7 +267,7 @@ not a variant of an ordinary family.
 
 Sources: [codec laws](../../crates/frost-collections-integer/src/integer/key.rs), [policies](../../crates/frost-collections-integer/src/integer/policy.rs),
 [set and freeze plans](../../crates/frost-collections-integer/src/integer/set.rs), [shared alias](../../crates/frost-collections-integer/src/integer/mod.rs).
-Tests: [integer sets](../../crates/frost-collections/tests/integer_sets.rs), [integer output](../../crates/frost-collections/tests/integer_output.rs).
+Tests: [integer sets](../../crates/frost-collections-integer/tests/integer_sets.rs), [integer output](../../crates/frost-collections-integer/tests/integer_output.rs).
 Design: [integer profile](integer-sets.md).
 
 ## 9. Snapshot admission and publication
@@ -294,8 +294,8 @@ interior state shared by elements.
 
 Sources: [snapshot API](../../crates/frost-collections-concurrent/src/concurrent/snapshot.rs),
 [retry helper](../../crates/frost-collections-concurrent/src/concurrent/publication.rs). Tests:
-[snapshot behavior](../../crates/frost-collections/tests/concurrent/snapshot.rs),
-[retry schedules](../../crates/frost-collections/tests/publication_model.rs). Contract:
+[snapshot behavior](../../crates/frost-collections-concurrent/tests/concurrent/snapshot.rs),
+[retry schedules](../../crates/frost-collections-concurrent/tests/publication_model.rs). Contract:
 [snapshot publication](snapshots.md); model bounds: [verification](../verification.md).
 
 ## 10. Feature boundaries

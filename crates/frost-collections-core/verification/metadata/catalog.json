@@ -1,11 +1,327 @@
 {
   "schema": "frost-verification-catalog/1",
-  "contracts": [],
+  "contracts": [
+    {
+      "id": "C-ORDERED-SET-ALGEBRA",
+      "title": "Frozen ordered set algebra agrees with BTreeSet and keeps the left representative",
+      "source": "docs/set-operations.md; docs/maintainers/implementation-contracts.md 'Families keep the first equivalent key/element'",
+      "obligations": [
+        "FrozenOrderedSet::intersection",
+        "FrozenOrderedSet::union",
+        "FrozenOrderedSet::difference",
+        "FrozenOrderedSet::symmetric_difference",
+        "FrozenOrderedSet::intersection_len",
+        "FrozenOrderedSet::union_len",
+        "FrozenOrderedSet::difference_len",
+        "FrozenOrderedSet::symmetric_difference_len",
+        "FrozenOrderedSet::is_subset",
+        "FrozenOrderedSet::is_superset",
+        "FrozenOrderedSet::is_disjoint"
+      ]
+    },
+    {
+      "id": "C-FIRST-KEY-LAST-VALUE",
+      "title": "Families keep the first equivalent key/element and the last map value",
+      "source": "docs/design/architecture.md section 2; docs/maintainers/implementation-contracts.md",
+      "obligations": [
+        "FrozenOrderedMap",
+        "FrozenOrderedSet",
+        "FrozenHashMap",
+        "FrozenHashSet"
+      ]
+    },
+    {
+      "id": "C-INLINE-OWNERSHIP",
+      "title": "Inline storage owns exactly the initialized prefix; every element is dropped once under mutation, transfer, and unwinding",
+      "source": "docs/verification.md 'Unsafe storage under Miri'; docs/maintainers/implementation-contracts.md unsafe paragraph",
+      "obligations": [
+        "InlineVec"
+      ]
+    },
+    {
+      "id": "C-FREEZE-THAW-PARTNERS",
+      "title": "Every ordinary mutable family freezes to its named frozen partner and thaws back; frozen means structurally immutable only",
+      "source": "docs/design/architecture.md section 1 and 3",
+      "obligations": [
+        "FreezeWith",
+        "TryFreezeWith"
+      ]
+    },
+    {
+      "id": "C-ITERATOR-PROPERTIES",
+      "title": "Borrowed lookup, iterator order, partial iteration, size hints, and fusion are preserved",
+      "source": "docs/maintainers/implementation-contracts.md 'Contracts that must survive optimization'",
+      "obligations": [
+        "Entries",
+        "Elements",
+        "LookupRef"
+      ]
+    },
+    {
+      "id": "C-MUTABLE-VEC-OPERATIONS",
+      "title": "Mutable vector mutation ordering, return values, partial drain, split/append, capacity failure, and freeze/thaw preserve contents and drop each owner once",
+      "source": "verification/crate-standards-validation/api-contracts.md",
+      "obligations": [
+        "MutableVec"
+      ]
+    },
+    {
+      "id": "C-MAP-ENTRY-REPRESENTATIVES",
+      "title": "Entry APIs retain the stored key representative, run default callbacks only when vacant, and removal returns the stored representative; ranges and named iterators match BTreeMap",
+      "source": "verification/crate-standards-validation/api-contracts.md; docs/design/architecture.md 'Entries, iterators, and mutation access'",
+      "obligations": [
+        "MutableOrderedMap",
+        "FrozenOrderedMap",
+        "MapInsert",
+        "MapRemove"
+      ]
+    },
+    {
+      "id": "C-ALGEBRA-FORMAL-MODELS",
+      "title": "Proposed collection-algebra laws checked by finite models; obligations name law IDs from docs/design/algebra/catalog.json, not public items",
+      "source": "docs/design/algebra/proof-obligations.md; docs/design/algebra/catalog.json",
+      "obligations": [
+        "law:SET-BOOLEAN",
+        "law:SET-REP",
+        "law:DOM-IMAGE",
+        "law:DOM-CONGRUENCE",
+        "law:DOM-VALID",
+        "law:DOM-NORMALIZE",
+        "law:MAP-LIFT",
+        "law:BAG-LAWS",
+        "law:BAG-SUPPORT",
+        "law:COUNT-PARTIAL",
+        "law:SEQ-MONOID",
+        "law:REL-COMP",
+        "law:BAGREL-COMP",
+        "law:MM-SUPPORT",
+        "law:BIMAP-CLOSED",
+        "law:BIMAP-IDENTITY",
+        "law:BIMAP-PARTIAL",
+        "law:KNOW-BOUNDS",
+        "law:DELTA-REPLAY",
+        "law:FROZEN-STABLE",
+        "law:FROZEN-DENOTE"
+      ]
+    }
+  ],
   "targets": [
     {
       "path": "src/lib.rs",
       "kind": "lib",
       "features": []
+    },
+    {
+      "path": "tests/adapters.rs",
+      "kind": "test",
+      "features": [
+        "serde-1",
+        "borsh-1",
+        "rayon-1",
+        "arbitrary-1",
+        "schemars-1"
+      ]
+    },
+    {
+      "path": "tests/adaptive_performance.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/advanced.rs",
+      "kind": "test",
+      "features": [
+        "smallvec-1",
+        "arrayvec-0_7",
+        "imbl-7",
+        "roaring-0_12",
+        "fixedbitset-0_5",
+        "slotmap-1",
+        "phf-0_14",
+        "fst-0_4"
+      ]
+    },
+    {
+      "path": "tests/api_contracts.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/backend_review.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/bitmap_performance.rs",
+      "kind": "test",
+      "features": [
+        "fixedbitset-0_5"
+      ]
+    },
+    {
+      "path": "tests/bitmap_set_ops.rs",
+      "kind": "test",
+      "features": [
+        "fixedbitset-0_5",
+        "roaring-0_12"
+      ]
+    },
+    {
+      "path": "tests/contracts.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/core_review.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/differential.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/ecosystem_review.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/exhaustive_collections.rs",
+      "kind": "test",
+      "features": [
+        "alloc",
+        "fixedbitset-0_5"
+      ]
+    },
+    {
+      "path": "tests/families.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/hash_set_ops.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/inline_safety.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/metadata_and_factories.rs",
+      "kind": "test",
+      "features": [
+        "alloc",
+        "int-set"
+      ]
+    },
+    {
+      "path": "tests/mutable_sets.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/ordered_performance.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/ordered_set_ops.rs",
+      "kind": "test",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "path": "tests/rayon_performance.rs",
+      "kind": "test",
+      "features": [
+        "rayon-1"
+      ]
+    },
+    {
+      "path": "tests/root_regressions.rs",
+      "kind": "test",
+      "features": []
+    },
+    {
+      "path": "tests/sets_review.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "tests/specialized.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "benches/adaptive_maps.rs",
+      "kind": "bench",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "benches/ordered_sets.rs",
+      "kind": "bench",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "path": "benches/performance_review.rs",
+      "kind": "bench",
+      "features": [
+        "std",
+        "roaring-0_12",
+        "fixedbitset-0_5"
+      ]
+    },
+    {
+      "path": "benches/set_operations.rs",
+      "kind": "bench",
+      "features": [
+        "std",
+        "roaring-0_12",
+        "fixedbitset-0_5"
+      ]
+    },
+    {
+      "path": "tests/formal_models/main.rs",
+      "kind": "test",
+      "features": [
+        "std"
+      ]
     }
   ],
   "cases": [
@@ -71,6 +387,5278 @@
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (any (feature = \"roaring-0_12\" , feature = \"int-set\" , feature = \"fixedbitset-0_5\")); cfg (all (test , any (feature = \"roaring-0_12\" , feature = \"int-set\")))",
       "cost": "unreviewed"
+    },
+    {
+      "id": "T-API_CONTRACTS-001",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:mutable_vec_exhausts_bounded_operation_traces",
+      "status": "curated",
+      "kind": "exhaustive",
+      "tags": [
+        "vec",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-MUTABLE-VEC-OPERATIONS",
+        "C-FREEZE-THAW-PARTNERS"
+      ],
+      "oracle": "std::vec::Vec; five initial vectors and all 16^3 three-operation traces (20,480), every prefix checked",
+      "scenario": "Mutation ordering, return values, partial drain, split/append, and freeze/thaw preserve contents",
+      "seed": "none",
+      "cost": "bounded",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-API_CONTRACTS-002",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:mutable_vec_capacity_failure_preserves_contents",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "vec",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-MUTABLE-VEC-OPERATIONS"
+      ],
+      "oracle": "capacity lower bounds and fixed expected contents; usize::MAX additional capacity forces overflow without allocating",
+      "scenario": "Successful reservation supplies room; capacity overflow leaves contents and capacity intact",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-API_CONTRACTS-003",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:mutable_vec_partial_consumption_drops_each_non_clone_value_once",
+      "status": "curated",
+      "kind": "ownership",
+      "tags": [
+        "vec",
+        "ownership",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-MUTABLE-VEC-OPERATIONS"
+      ],
+      "oracle": "eight distinct non-Clone values with per-value drop counters checked at each ownership boundary",
+      "scenario": "Partial drain and partial owning iteration neither leak nor double-drop transferred elements",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-API_CONTRACTS-004",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:ordered_entry_preserves_representatives_and_lazy_callbacks",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "ordered",
+        "map-entry",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-MAP-ENTRY-REPRESENTATIVES",
+        "C-FIRST-KEY-LAST-VALUE"
+      ],
+      "oracle": "keys compare by borrowed string but carry distinct representative tags; explicit callback counts and fixed values",
+      "scenario": "Equivalent entries retain the stored key; default callbacks run only when vacant; removal returns the stored representative",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-API_CONTRACTS-005",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:ordered_mutation_ranges_and_named_iterators_match_btree",
+      "status": "curated",
+      "kind": "differential",
+      "tags": [
+        "ordered",
+        "iterator",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-MAP-ENTRY-REPRESENTATIVES",
+        "C-ITERATOR-PROPERTIES"
+      ],
+      "oracle": "std::collections::BTreeMap plus repeated exhaustion checks; fixed four-key domain",
+      "scenario": "Mutable values, ordered ranges, exact remaining iterator counts, fusion, and removals agree with the ordered contract",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-API_CONTRACTS-006",
+      "file": "tests/api_contracts.rs",
+      "selector": "test:borrowed_map_capabilities_preserve_stored_keys",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "ordered",
+        "hash",
+        "map-entry",
+        "root-contract",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "verification/crate-standards-validation/api-contracts.md",
+      "contracts": [
+        "C-FIRST-KEY-LAST-VALUE",
+        "C-ITERATOR-PROPERTIES"
+      ],
+      "oracle": "explicit representative tags and return values across the ordered family and BTreeMap; hash family and HashMap under std",
+      "scenario": "Generic insertion retains the first key and last value; borrowed lookup and removal expose the stored key",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/api_contracts.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-001",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:set_pair_is_deterministic_and_identified_by_parameters",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "repeated build equality; id string contains the seed and no comma",
+      "scenario": "Building the same SetPairSpec twice yields identical vectors and id; a changed seed changes only seeded layouts",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-002",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:set_pair_guarantees_hold_against_btreeset",
+      "status": "curated",
+      "kind": "differential",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "std BTreeSet over emitted values: distinct counts, shared count, bounds, layout membership, block order",
+      "scenario": "Nine specs across uniform, stride, runs, and chunk layouts with interleaved, block, and shuffled partitions and duplicate-bearing emission",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-003",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:interleaved_partition_spreads_classes_evenly",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "every window of six consecutive codes contains all three classes",
+      "scenario": "Balanced 400/400/200 interleaved partition has no class gap",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-004",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:invalid_layout_parameters_are_rejected_with_the_offending_parameter",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "exact WorkloadError variants",
+      "scenario": "Span too small, overflowing base/stride, zero step and zero run are rejected before generation",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-005",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:invalid_chunk_parameters_are_rejected_with_the_offending_parameter",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "exact WorkloadError variants",
+      "scenario": "Chunk bits outside 1..=63, per_chunk larger than a chunk, and chunk code overflow are rejected",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-006",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:invalid_structure_parameters_are_rejected_with_the_offending_parameter",
+      "status": "curated",
+      "kind": "contract",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "exact WorkloadError variants",
+      "scenario": "Shared exceeding a side, non-permutation block order, duplicates of an empty side, and u32 narrowing overflow are rejected",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-007",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:frozen_ordered_set_matches_factory_oracle",
+      "status": "curated",
+      "kind": "differential",
+      "tags": [
+        "factory",
+        "ordered",
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-ORDERED-SET-ALGEBRA",
+        "C-FIRST-KEY-LAST-VALUE"
+      ],
+      "oracle": "SetOracle (BTreeSet) over emitted values",
+      "scenario": "FrozenOrderedSet algebra, counts, and relations on all factory specs including shuffled duplicate input",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-008",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:sequence_entries_keep_last_value_for_duplicate_keys",
+      "status": "curated",
+      "kind": "differential",
+      "tags": [
+        "factory",
+        "ordered",
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-FIRST-KEY-LAST-VALUE"
+      ],
+      "oracle": "BTreeMap last-value oracle from factory entries",
+      "scenario": "FrozenOrderedMap collected from shuffled entries with 30 duplicate keys keeps the last position per key",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-010",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:final_u64_chunk_and_partial_chunks_are_handled_without_wrapping",
+      "status": "curated",
+      "kind": "regression",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "review correction 1 finding FACTORY-1",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "exact expected code vectors and max_code; Overflow(chunk code) beyond the last container",
+      "scenario": "Final u64 2^16 container with one and two members, rejection of a third, and a partial final container without its end code",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-011",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:layout_parameters_are_validated_even_for_empty_output",
+      "status": "curated",
+      "kind": "regression",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "review correction 1 finding FACTORY-2",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "exact WorkloadError variants; maximal uniform code reachable",
+      "scenario": "Zero step, zero chunk bits, and zero span are rejected with zero members; base u64::MAX span 1 yields u64::MAX",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-012",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:extreme_counts_are_rejected_before_any_generation",
+      "status": "curated",
+      "kind": "regression",
+      "tags": [
+        "factory",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "support",
+      "provenance": "review correction 1 finding FACTORY-2",
+      "contracts": [
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "ExceedsSupportedSize/Overflow/DuplicatesOfEmptySide returned without allocation",
+      "scenario": "Union above MAX_MEMBERS, duplicates pushing a side above the bound or overflowing usize, and empty-side duplicates are rejected before generation",
+      "seed": "none",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "cfg (feature = \"alloc\")"
+    },
+    {
+      "id": "B-ORDERED_SETS-001",
+      "file": "benches/ordered_sets.rs",
+      "selector": "fn:factory_case",
+      "status": "curated",
+      "kind": "benchmark",
+      "tags": [
+        "benchmark",
+        "factory",
+        "ordered",
+        "set-algebra",
+        "native-control"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "benches/ordered_sets.rs factory_cases",
+      "contracts": [
+        "C-ORDERED-SET-ALGEBRA",
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "BTreeSet answers checked by measure before timing; full case id printed to stderr",
+      "scenario": "Factory-driven uniform skew, run/gap blocks, and shuffled duplicate cases alongside the hand-written matrix",
+      "seed": "factory",
+      "cost": "timed",
+      "timing": "operation",
+      "control": "std_count and std_subset",
+      "target": "benches/ordered_sets.rs",
+      "cfg": "none"
+    },
+    {
+      "id": "B-ADAPTIVE_MAPS-001",
+      "file": "benches/adaptive_maps.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/adaptive_maps.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "B-ORDERED_SETS-002",
+      "file": "benches/ordered_sets.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/ordered_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "B-PERFORMANCE_REVIEW-001",
+      "file": "benches/performance_review.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/performance_review.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "B-SET_OPERATIONS-001",
+      "file": "benches/set_operations.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/set_operations.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-001",
+      "file": "tests/adapters.rs",
+      "selector": "test:arbitrary_tests::arbitrary_reaches_every_representation_with_valid_invariants",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arbitrary reaches every representation with valid invariants",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"arbitrary-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-002",
+      "file": "tests/adapters.rs",
+      "selector": "test:arbitrary_tests::arbitrary_reaches_grown_states",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arbitrary reaches grown states",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"arbitrary-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-003",
+      "file": "tests/adapters.rs",
+      "selector": "test:borsh_tests::borsh_is_canonical_and_matches_std_bytes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borsh is canonical and matches std bytes",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"borsh-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-004",
+      "file": "tests/adapters.rs",
+      "selector": "test:borsh_tests::borsh_rejects_non_total_hash_key_ordering",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borsh rejects non total hash key ordering",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"borsh-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-005",
+      "file": "tests/adapters.rs",
+      "selector": "test:borsh_tests::ordered_borsh_roundtrip_is_strict_without_std_feature",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered borsh roundtrip is strict without std feature",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"borsh-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-006",
+      "file": "tests/adapters.rs",
+      "selector": "test:rayon_tests::rayon_collect_equals_sequential_collect",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rayon collect equals sequential collect",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-007",
+      "file": "tests/adapters.rs",
+      "selector": "test:rayon_tests::rayon_mutable_and_owned_iteration",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rayon mutable and owned iteration",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-008",
+      "file": "tests/adapters.rs",
+      "selector": "test:rayon_tests::rayon_mutates_adaptive_ordered_values",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rayon mutates adaptive ordered values",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-009",
+      "file": "tests/adapters.rs",
+      "selector": "test:schemars_tests::schemas_match_the_std_type_with_the_same_encoding",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: schemas match the std type with the same encoding",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"schemars-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-010",
+      "file": "tests/adapters.rs",
+      "selector": "test:serde_tests::serde_borrowed_keys_work_with_strict_helpers",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: serde borrowed keys work with strict helpers",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"serde-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-011",
+      "file": "tests/adapters.rs",
+      "selector": "test:serde_tests::serde_duplicate_policy_and_strict_helpers",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: serde duplicate policy and strict helpers",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"serde-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-012",
+      "file": "tests/adapters.rs",
+      "selector": "test:serde_tests::serde_encoding_ignores_representation",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: serde encoding ignores representation",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"serde-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-013",
+      "file": "tests/adapters.rs",
+      "selector": "test:serde_tests::serde_round_trips_every_family",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: serde round trips every family",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"serde-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTERS-014",
+      "file": "tests/adapters.rs",
+      "selector": "test:serde_tests::sorted_unique_decoding_covers_all_ordered_maps",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: sorted unique decoding covers all ordered maps",
+      "seed": "unreviewed",
+      "target": "tests/adapters.rs",
+      "cfg": "cfg (feature = \"serde-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-001",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:hash_entry_panicking_before_promotion_keeps_the_map",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash entry panicking before promotion keeps the map",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-002",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:hash_entry_preserves_promotion_and_closure_panic_behavior",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash entry preserves promotion and closure panic behavior",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-003",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:hash_entry_searches_the_linear_representation_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash entry searches the linear representation once",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-004",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:ordered_entry_panicking_before_promotion_keeps_the_map",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered entry panicking before promotion keeps the map",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-005",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:ordered_entry_preserves_promotion_and_closure_panic_behavior",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered entry preserves promotion and closure panic behavior",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADAPTIVE_PERFORMANCE-006",
+      "file": "tests/adaptive_performance.rs",
+      "selector": "test:ordered_entry_searches_the_sorted_representation_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered entry searches the sorted representation once",
+      "seed": "unreviewed",
+      "target": "tests/adaptive_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-001",
+      "file": "tests/advanced.rs",
+      "selector": "test:roaring_sets::bitmap_iterates_values_and_keeps_cardinality_wide",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bitmap iterates values and keeps cardinality wide",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"roaring-0_12\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-002",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::borrowed_lookups_and_persistent_snapshots_are_independent",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borrowed lookups and persistent snapshots are independent",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-003",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::borrowed_removal_returns_stored_entries_and_keeps_persistent_snapshots",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borrowed removal returns stored entries and keeps persistent snapshots",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-004",
+      "file": "tests/advanced.rs",
+      "selector": "test:generational_maps::dense_and_secondary_maps_support_copied_key_iteration",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: dense and secondary maps support copied key iteration",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"slotmap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-005",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::equivalent_insert_retains_original_stored_key",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: equivalent insert retains original stored key",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-006",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::ordered_maps_and_sets_preserve_order_and_borrowed_queries",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered maps and sets preserve order and borrowed queries",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-007",
+      "file": "tests/advanced.rs",
+      "selector": "test:dense_sets::padding_bits_are_not_members_and_retention_preserves_storage",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: padding bits are not members and retention preserves storage",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-008",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::persistent_sets_keep_first_representatives_and_remove_by_borrowed_query",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: persistent sets keep first representatives and remove by borrowed query",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-009",
+      "file": "tests/advanced.rs",
+      "selector": "test:generational_maps::secondary_membership_is_independent_of_primary_removal",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: secondary membership is independent of primary removal",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"slotmap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-010",
+      "file": "tests/advanced.rs",
+      "selector": "test:roaring_sets::set_mutation_capabilities_report_membership_changes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: set mutation capabilities report membership changes",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"roaring-0_12\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-011",
+      "file": "tests/advanced.rs",
+      "selector": "test:generational_maps::slotmap_rejects_stale_keys_and_clones_do_not_mutate_snapshot",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: slotmap rejects stale keys and clones do not mutate snapshot",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"slotmap-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-012",
+      "file": "tests/advanced.rs",
+      "selector": "test:roaring_sets::treemap_preserves_full_width_keys_and_snapshot",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: treemap preserves full width keys and snapshot",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"roaring-0_12\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-013",
+      "file": "tests/advanced.rs",
+      "selector": "test:dense_sets::universe_size_and_membership_cardinality_are_distinct",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: universe size and membership cardinality are distinct",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ADVANCED-014",
+      "file": "tests/advanced.rs",
+      "selector": "test:persistent::vector_retains_snapshot_and_exposes_sequence_capabilities",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: vector retains snapshot and exposes sequence capabilities",
+      "seed": "unreviewed",
+      "target": "tests/advanced.rs",
+      "cfg": "cfg (feature = \"imbl-7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BACKEND_REVIEW-001",
+      "file": "tests/backend_review.rs",
+      "selector": "test:arrayvec_exact_length_failure_preserves_owned_elements",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arrayvec exact length failure preserves owned elements",
+      "seed": "unreviewed",
+      "target": "tests/backend_review.rs",
+      "cfg": "cfg (feature = \"arrayvec-0_7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BACKEND_REVIEW-002",
+      "file": "tests/backend_review.rs",
+      "selector": "test:arrayvec_exact_length_is_independent_of_inline_capacity",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arrayvec exact length is independent of inline capacity",
+      "seed": "unreviewed",
+      "target": "tests/backend_review.rs",
+      "cfg": "cfg (feature = \"arrayvec-0_7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BACKEND_REVIEW-003",
+      "file": "tests/backend_review.rs",
+      "selector": "test:fst_read_traits_work_for_borrowed_bytes_and_seal_for_owned_bytes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: fst read traits work for borrowed bytes and seal for owned bytes",
+      "seed": "unreviewed",
+      "target": "tests/backend_review.rs",
+      "cfg": "cfg (feature = \"fst-0_4\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BACKEND_REVIEW-004",
+      "file": "tests/backend_review.rs",
+      "selector": "test:value_and_cardinality_read_traits_remain_dyn_compatible",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: value and cardinality read traits remain dyn compatible",
+      "seed": "unreviewed",
+      "target": "tests/backend_review.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_PERFORMANCE-001",
+      "file": "tests/bitmap_performance.rs",
+      "selector": "test:both_boundaries_mask_dirty_padding_without_losing_real_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: both boundaries mask dirty padding without losing real members",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_performance.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_PERFORMANCE-002",
+      "file": "tests/bitmap_performance.rs",
+      "selector": "test:long_shared_word_spans_and_partial_tails",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: long shared word spans and partial tails",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_performance.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_PERFORMANCE-003",
+      "file": "tests/bitmap_performance.rs",
+      "selector": "test:long_zero_extended_suffixes_in_both_directions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: long zero extended suffixes in both directions",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_performance.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_SET_OPS-001",
+      "file": "tests/bitmap_set_ops.rs",
+      "selector": "test:fixed::algebra_matches_logical_membership_with_arbitrary_blocks",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: algebra matches logical membership with arbitrary blocks",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_set_ops.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_SET_OPS-002",
+      "file": "tests/bitmap_set_ops.rs",
+      "selector": "macro:roaring_tests::algebra_matches_reference_membership",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: algebra matches reference membership",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_set_ops.rs",
+      "cfg": "cfg (feature = \"roaring-0_12\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_SET_OPS-003",
+      "file": "tests/bitmap_set_ops.rs",
+      "selector": "test:fixed::empty_partial_and_unequal_universes_ignore_dirty_padding",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty partial and unequal universes ignore dirty padding",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_set_ops.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_SET_OPS-004",
+      "file": "tests/bitmap_set_ops.rs",
+      "selector": "test:fixed::padding_cannot_become_a_member_in_a_larger_universe",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: padding cannot become a member in a larger universe",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_set_ops.rs",
+      "cfg": "cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-BITMAP_SET_OPS-005",
+      "file": "tests/bitmap_set_ops.rs",
+      "selector": "macro:roaring_tests::sparse_dense_empty_and_extreme_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: sparse dense empty and extreme members",
+      "seed": "unreviewed",
+      "target": "tests/bitmap_set_ops.rs",
+      "cfg": "cfg (feature = \"roaring-0_12\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-001",
+      "file": "tests/contracts.rs",
+      "selector": "test:adaptive_representations_are_logically_equal_and_keep_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive representations are logically equal and keep hasher",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-002",
+      "file": "tests/contracts.rs",
+      "selector": "test:algorithms_accept_mutable_and_frozen_alike",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: algorithms accept mutable and frozen alike",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-003",
+      "file": "tests/contracts.rs",
+      "selector": "test:borrowed_string_queries",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: borrowed string queries",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-004",
+      "file": "tests/contracts.rs",
+      "selector": "test:defaults_do_not_require_element_default",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: defaults do not require element default",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-005",
+      "file": "tests/contracts.rs",
+      "selector": "test:deque_compact_is_contiguous_in_logical_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: deque compact is contiguous in logical order",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-006",
+      "file": "tests/contracts.rs",
+      "selector": "test:empty_ordered_range_never_panics_like_btree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty ordered range never panics like btree",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-007",
+      "file": "tests/contracts.rs",
+      "selector": "test:erased_lookup_is_dyn_compatible",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: erased lookup is dyn compatible",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-008",
+      "file": "tests/contracts.rs",
+      "selector": "test:every_std_family_has_a_retaining_freeze",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: every std family has a retaining freeze",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-009",
+      "file": "tests/contracts.rs",
+      "selector": "test:family_builders_keep_first_key_last_value",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: family builders keep first key last value",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-010",
+      "file": "tests/contracts.rs",
+      "selector": "test:hashbrown_adapter_uses_equivalent",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hashbrown adapter uses equivalent",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\"); cfg (feature = \"hashbrown-0_17\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-011",
+      "file": "tests/contracts.rs",
+      "selector": "test:heap_order_vs_sorted_order_is_explicit",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: heap order vs sorted order is explicit",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-012",
+      "file": "tests/contracts.rs",
+      "selector": "test:indexmap_adapter_keeps_insertion_order_and_positions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: indexmap adapter keeps insertion order and positions",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\"); cfg (feature = \"indexmap-2\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-013",
+      "file": "tests/contracts.rs",
+      "selector": "test:inline_vec_is_canonical_for_equality_and_hash",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline vec is canonical for equality and hash",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-014",
+      "file": "tests/contracts.rs",
+      "selector": "test:layout_report",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: layout report",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-015",
+      "file": "tests/contracts.rs",
+      "selector": "test:mutation_traits_on_backends",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mutation traits on backends",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-016",
+      "file": "tests/contracts.rs",
+      "selector": "test:ordered_families_dedup_by_ord_not_partial_eq",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered families dedup by ord not partial eq",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-017",
+      "file": "tests/contracts.rs",
+      "selector": "test:ordered_range_matches_btree_including_panics",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered range matches btree including panics",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-018",
+      "file": "tests/contracts.rs",
+      "selector": "test:prelude_does_not_shadow_std_first_entry",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: prelude does not shadow std first entry",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-019",
+      "file": "tests/contracts.rs",
+      "selector": "test:recoverable_failure_returns_source_unchanged",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: recoverable failure returns source unchanged",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-020",
+      "file": "tests/contracts.rs",
+      "selector": "test:rejected_input_and_slice_equality",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rejected input and slice equality",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-021",
+      "file": "tests/contracts.rs",
+      "selector": "test:seal_is_o1_and_keeps_capacity_compact_drops_it",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: seal is o1 and keeps capacity compact drops it",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-022",
+      "file": "tests/contracts.rs",
+      "selector": "test:sealing_preserves_already_stored_representatives",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: sealing preserves already stored representatives",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-023",
+      "file": "tests/contracts.rs",
+      "selector": "test:strict_builders_return_the_rejected_entry",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: strict builders return the rejected entry",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-001",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::every_hash_builder_preserves_first_key_and_last_value",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: every hash builder preserves first key and last value",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-002",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::explicit_hash_builders_need_neither_clone_nor_default_hashers",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: explicit hash builders need neither clone nor default hashers",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-003",
+      "file": "tests/core_review.rs",
+      "selector": "test:explicit_native_extraction_preserves_owned_values",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: explicit native extraction preserves owned values",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-004",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::frozen_adaptive_thaw_and_extraction_do_not_clone_the_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: frozen adaptive thaw and extraction do not clone the hasher",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-005",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::hash_promotion_panic_keeps_a_valid_map_and_drops_values_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash promotion panic keeps a valid map and drops values once",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-006",
+      "file": "tests/core_review.rs",
+      "selector": "test:inline_collection_stops_at_the_first_none",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline collection stops at the first none",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-007",
+      "file": "tests/core_review.rs",
+      "selector": "test:inline_zero_sized_reservation_checks_length_overflow",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline zero sized reservation checks length overflow",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-008",
+      "file": "tests/core_review.rs",
+      "selector": "test:mutable_ordered_strict_building_uses_input_order_and_index_mut_borrows_keys",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mutable ordered strict building uses input order and index mut borrows keys",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-009",
+      "file": "tests/core_review.rs",
+      "selector": "test:ordered_duplicate_reduction_drops_each_value_once_on_panic",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered duplicate reduction drops each value once on panic",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-010",
+      "file": "tests/core_review.rs",
+      "selector": "test:ordered_freezing_does_not_require_new_key_bounds",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered freezing does not require new key bounds",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-011",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::ordered_promotion_panic_keeps_a_valid_map_and_drops_values_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered promotion panic keeps a valid map and drops values once",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-012",
+      "file": "tests/core_review.rs",
+      "selector": "test:small_inline_collection_does_not_consult_heap_reservation_hints",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: small inline collection does not consult heap reservation hints",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-013",
+      "file": "tests/core_review.rs",
+      "selector": "test:hashed::strict_hash_builders_return_the_rejected_input_entry",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: strict hash builders return the rejected input entry",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CORE_REVIEW-014",
+      "file": "tests/core_review.rs",
+      "selector": "test:thawing_zero_sized_values_keeps_the_standard_capacity_convention",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: thawing zero sized values keeps the standard capacity convention",
+      "seed": "unreviewed",
+      "target": "tests/core_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DIFFERENTIAL-001",
+      "file": "tests/differential.rs",
+      "selector": "test:adaptive_hash_matches_hashmap",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive hash matches hashmap",
+      "seed": "unreviewed",
+      "target": "tests/differential.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DIFFERENTIAL-002",
+      "file": "tests/differential.rs",
+      "selector": "test:frozen_vec_roundtrip",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: frozen vec roundtrip",
+      "seed": "unreviewed",
+      "target": "tests/differential.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DIFFERENTIAL-003",
+      "file": "tests/differential.rs",
+      "selector": "test:inline_vec_roundtrip",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline vec roundtrip",
+      "seed": "unreviewed",
+      "target": "tests/differential.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DIFFERENTIAL-004",
+      "file": "tests/differential.rs",
+      "selector": "test:ordered_map_matches_btree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered map matches btree",
+      "seed": "unreviewed",
+      "target": "tests/differential.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DIFFERENTIAL-005",
+      "file": "tests/differential.rs",
+      "selector": "test:ordered_set_matches_btree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered set matches btree",
+      "seed": "unreviewed",
+      "target": "tests/differential.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-001",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:rayon_contracts::collection_and_extension_do_not_send_the_hasher_to_workers",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: collection and extension do not send the hasher to workers",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-002",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:borsh_contracts::exact_wrapper_preserves_native_decoding_rules",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: exact wrapper preserves native decoding rules",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"borsh-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-003",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:borsh_contracts::hash_decoding_cannot_silently_collapse_eq_equivalent_ordered_keys",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash decoding cannot silently collapse eq equivalent ordered keys",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"borsh-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-004",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:borsh_contracts::hash_set_encoding_matches_ordered_sets_and_rejects_noncanonical_input",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash set encoding matches ordered sets and rejects noncanonical input",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"borsh-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-005",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:serde_contracts::hash_sets_roundtrip_without_a_stable_wire_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash sets roundtrip without a stable wire order",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"serde-1\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-006",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:serde_contracts::map_allocation_ignores_excessive_deserializer_size_hint",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: map allocation ignores excessive deserializer size hint",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"serde-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-007",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:rayon_contracts::ordered_parallel_input_retains_first_representative_and_last_value",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered parallel input retains first representative and last value",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-008",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:borsh_contracts::ordered_set_encodings_are_canonical_and_strict",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered set encodings are canonical and strict",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"borsh-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-009",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:serde_contracts::ordered_sets_roundtrip_and_strict_decoding_rejects_duplicates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered sets roundtrip and strict decoding rejects duplicates",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"serde-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-010",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:rayon_contracts::pure_traversal_needs_neither_hashing_nor_a_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: pure traversal needs neither hashing nor a hasher",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-011",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:set_generation_matches_the_family_builder",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: set generation matches the family builder",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"arbitrary-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ECOSYSTEM_REVIEW-012",
+      "file": "tests/ecosystem_review.rs",
+      "selector": "test:set_schemas_follow_the_same_logical_encoding",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: set schemas follow the same logical encoding",
+      "seed": "unreviewed",
+      "target": "tests/ecosystem_review.rs",
+      "cfg": "cfg (feature = \"schemars-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-EXHAUSTIVE_COLLECTIONS-001",
+      "file": "tests/exhaustive_collections.rs",
+      "selector": "test:dense::bitmap_algebra_exhausts_boundary_members_and_dirty_padding",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bitmap algebra exhausts boundary members and dirty padding",
+      "seed": "unreviewed",
+      "target": "tests/exhaustive_collections.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"fixedbitset-0_5\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-EXHAUSTIVE_COLLECTIONS-002",
+      "file": "tests/exhaustive_collections.rs",
+      "selector": "test:inline_ownership_exhausts_five_operation_traces",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline ownership exhausts five operation traces",
+      "seed": "unreviewed",
+      "target": "tests/exhaustive_collections.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-EXHAUSTIVE_COLLECTIONS-003",
+      "file": "tests/exhaustive_collections.rs",
+      "selector": "test:inline_ownership_exhausts_three_operation_traces",
+      "status": "curated",
+      "tags": [
+        "inline",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "docs/verification.md",
+      "kind": "ownership",
+      "contracts": [
+        "C-INLINE-OWNERSHIP"
+      ],
+      "oracle": "std::vec::Vec of (identity, value) pairs and a per-element drop counter that panics on a second drop",
+      "scenario": "All 7^3 traces of push, pop, front removal, retain, freeze/thaw and shrink on InlineVec at capacities 0 and 2; after every step contents match the reference and every element no longer owned has been dropped exactly once",
+      "seed": "none",
+      "target": "tests/exhaustive_collections.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-EXHAUSTIVE_COLLECTIONS-004",
+      "file": "tests/exhaustive_collections.rs",
+      "selector": "test:ordered_algebra_exhausts_all_pairs_of_six_member_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered algebra exhausts all pairs of six member sets",
+      "seed": "unreviewed",
+      "target": "tests/exhaustive_collections.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-001",
+      "file": "tests/families.rs",
+      "selector": "test:adaptive_api_parity",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive api parity",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-002",
+      "file": "tests/families.rs",
+      "selector": "test:adaptive_hash_promotes_on_new_key_only",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive hash promotes on new key only",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-003",
+      "file": "tests/families.rs",
+      "selector": "test:adaptive_maps_match_std_under_random_ops",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive maps match std under random ops",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-004",
+      "file": "tests/families.rs",
+      "selector": "test:adaptive_ordered_promotes_and_keeps_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive ordered promotes and keeps order",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-005",
+      "file": "tests/families.rs",
+      "selector": "test:append_keeps_self_keys_on_every_toolchain",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: append keeps self keys on every toolchain",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-006",
+      "file": "tests/families.rs",
+      "selector": "test:entry_apis_hide_the_backend",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: entry apis hide the backend",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-007",
+      "file": "tests/families.rs",
+      "selector": "test:freeze_thaw_pairs_are_fixed",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: freeze thaw pairs are fixed",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-008",
+      "file": "tests/families.rs",
+      "selector": "test:inline_reserve_overflow_panics_like_vec",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline reserve overflow panics like vec",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-009",
+      "file": "tests/families.rs",
+      "selector": "test:inline_retain_panic_keeps_unvisited_elements_like_vec",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline retain panic keeps unvisited elements like vec",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-010",
+      "file": "tests/families.rs",
+      "selector": "test:inline_vec_matches_vec_under_random_ops",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline vec matches vec under random ops",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-011",
+      "file": "tests/families.rs",
+      "selector": "test:inline_vec_spills_once_and_demotes_only_explicitly",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline vec spills once and demotes only explicitly",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-012",
+      "file": "tests/families.rs",
+      "selector": "test:mutable_ordered_from_iter_keeps_first_key_representative",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mutable ordered from iter keeps first key representative",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FAMILIES-013",
+      "file": "tests/families.rs",
+      "selector": "test:write_capabilities_work_across_every_mutable_map",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: write capabilities work across every mutable map",
+      "seed": "unreviewed",
+      "target": "tests/families.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-HASH_SET_OPS-001",
+      "file": "tests/hash_set_ops.rs",
+      "selector": "test:algebra_and_counts_match_native_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: algebra and counts match native sets",
+      "seed": "unreviewed",
+      "target": "tests/hash_set_ops.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-HASH_SET_OPS-002",
+      "file": "tests/hash_set_ops.rs",
+      "selector": "test:an_operand_only_traversed_does_not_need_a_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: an operand only traversed does not need a hasher",
+      "seed": "unreviewed",
+      "target": "tests/hash_set_ops.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-HASH_SET_OPS-003",
+      "file": "tests/hash_set_ops.rs",
+      "selector": "test:creating_cloning_and_inspecting_iterators_does_not_probe_membership",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: creating cloning and inspecting iterators does not probe membership",
+      "seed": "unreviewed",
+      "target": "tests/hash_set_ops.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-HASH_SET_OPS-004",
+      "file": "tests/hash_set_ops.rs",
+      "selector": "test:empty_self_disjoint_and_overlap_obey_iterator_contracts",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty self disjoint and overlap obey iterator contracts",
+      "seed": "unreviewed",
+      "target": "tests/hash_set_ops.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-HASH_SET_OPS-005",
+      "file": "tests/hash_set_ops.rs",
+      "selector": "test:representative_retention_survives_smaller_right_scans_and_collisions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: representative retention survives smaller right scans and collisions",
+      "seed": "unreviewed",
+      "target": "tests/hash_set_ops.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-001",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:drop_counts_inline_and_heap",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: drop counts inline and heap",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-002",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:inline_vec_ops_drop_exactly_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: inline vec ops drop exactly once",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-003",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:over_aligned_elements_survive_mutation_spill_and_thaw",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: over aligned elements survive mutation spill and thaw",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-004",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:owning_iterator_drop_panic_still_drops_its_remaining_range",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: owning iterator drop panic still drops its remaining range",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-005",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:panicking_clone_drops_partial_copy_exactly_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: panicking clone drops partial copy exactly once",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-006",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:panicking_hint_after_spilling_drops_every_produced_value",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: panicking hint after spilling drops every produced value",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-007",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:panicking_retain_predicate_leaves_no_leak_or_double_drop",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: panicking retain predicate leaves no leak or double drop",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-008",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:partially_consumed_owning_iterators_drop_the_rest",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: partially consumed owning iterators drop the rest",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-009",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:rejected_element_drop_panic_restores_the_unvisited_suffix",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rejected element drop panic restores the unvisited suffix",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-010",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:thaw_transfers_ownership_without_double_drop",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: thaw transfers ownership without double drop",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-011",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:zero_sized_and_zero_capacity",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: zero sized and zero capacity",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INLINE_SAFETY-012",
+      "file": "tests/inline_safety.rs",
+      "selector": "test:zero_sized_destructors_run_once_through_inline_ownership",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adaptive",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: zero sized destructors run once through inline ownership",
+      "seed": "unreviewed",
+      "target": "tests/inline_safety.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE_SETS-001",
+      "file": "tests/mutable_sets.rs",
+      "selector": "test:defaults_and_iterator_clones_do_not_require_element_traits",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: defaults and iterator clones do not require element traits",
+      "seed": "unreviewed",
+      "target": "tests/mutable_sets.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE_SETS-002",
+      "file": "tests/mutable_sets.rs",
+      "selector": "test:hash_set_equality_and_consuming_iteration_are_logical",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash set equality and consuming iteration are logical",
+      "seed": "unreviewed",
+      "target": "tests/mutable_sets.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE_SETS-003",
+      "file": "tests/mutable_sets.rs",
+      "selector": "test:hash_set_keeps_first_rep_and_the_exact_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash set keeps first rep and the exact hasher",
+      "seed": "unreviewed",
+      "target": "tests/mutable_sets.rs",
+      "cfg": "cfg (feature = \"alloc\"); cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE_SETS-004",
+      "file": "tests/mutable_sets.rs",
+      "selector": "test:ordered_set_iterators_match_sorted_reference",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered set iterators match sorted reference",
+      "seed": "unreviewed",
+      "target": "tests/mutable_sets.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-MUTABLE_SETS-005",
+      "file": "tests/mutable_sets.rs",
+      "selector": "test:ordered_set_keeps_first_rep_and_its_frozen_pair",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered set keeps first rep and its frozen pair",
+      "seed": "unreviewed",
+      "target": "tests/mutable_sets.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-001",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:all_skewed_scalar_and_iterator_entrypoints_stay_below_linear_comparison_work",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: all skewed scalar and iterator entrypoints stay below linear comparison work",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-002",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:lazy_construction_does_no_comparisons_and_separated_ranges_stop_immediately",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: lazy construction does no comparisons and separated ranges stop immediately",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-003",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:same_storage_queries_and_lazy_operations_need_no_key_comparisons",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: same storage queries and lazy operations need no key comparisons",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-004",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:skewed_operations_skip_large_gaps_and_preserve_left_representatives",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: skewed operations skip large gaps and preserve left representatives",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-005",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:skewed_predicates_skip_gaps_when_the_answer_requires_the_whole_small_operand",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: skewed predicates skip gaps when the answer requires the whole small operand",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_PERFORMANCE-006",
+      "file": "tests/ordered_performance.rs",
+      "selector": "test:skewed_searches_match_standard_sets_and_survive_partial_consumption",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: skewed searches match standard sets and survive partial consumption",
+      "seed": "unreviewed",
+      "target": "tests/ordered_performance.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-001",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:algebra_matches_btree_sets_for_random_inputs",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: algebra matches btree sets for random inputs",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-002",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:empty_singleton_identical_disjoint_and_overlapping_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty singleton identical disjoint and overlapping sets",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-003",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:hints_clones_counts_and_fused_exhaustion_track_partial_consumption",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hints clones counts and fused exhaustion track partial consumption",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-004",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:keys_may_borrow_nonstatic_data",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: keys may borrow nonstatic data",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-005",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:overlap_keeps_the_left_representative_without_cloning_elements",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: overlap keeps the left representative without cloning elements",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-006",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:scalar_predicates_short_circuit_and_scan_linearly",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: scalar predicates short circuit and scan linearly",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-007",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:shared_prefix_and_uneven_tails_match_standard_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: shared prefix and uneven tails match standard sets",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-008",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:skewed_algebra_matches_standard_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: skewed algebra matches standard sets",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-RAYON_PERFORMANCE-001",
+      "file": "tests/rayon_performance.rs",
+      "selector": "test:owning_parallel_adaptive_ordered_map_preserves_both_representations",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: owning parallel adaptive ordered map preserves both representations",
+      "seed": "unreviewed",
+      "target": "tests/rayon_performance.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-RAYON_PERFORMANCE-002",
+      "file": "tests/rayon_performance.rs",
+      "selector": "test:owning_parallel_ordered_set_keeps_order_and_drops_each_member_once",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: owning parallel ordered set keeps order and drops each member once",
+      "seed": "unreviewed",
+      "target": "tests/rayon_performance.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-RAYON_PERFORMANCE-003",
+      "file": "tests/rayon_performance.rs",
+      "selector": "test:truncated_parallel_set_traversal_drops_the_unvisited_suffix",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "adapters",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: truncated parallel set traversal drops the unvisited suffix",
+      "seed": "unreviewed",
+      "target": "tests/rayon_performance.rs",
+      "cfg": "cfg (feature = \"rayon-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ROOT_REGRESSIONS-001",
+      "file": "tests/root_regressions.rs",
+      "selector": "test:already_valid_ordered_set_can_freeze_without_new_ordering_bounds",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: already valid ordered set can freeze without new ordering bounds",
+      "seed": "unreviewed",
+      "target": "tests/root_regressions.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ROOT_REGRESSIONS-002",
+      "file": "tests/root_regressions.rs",
+      "selector": "test:mutable_hash_set_debug_does_not_require_a_debug_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mutable hash set debug does not require a debug hasher",
+      "seed": "unreviewed",
+      "target": "tests/root_regressions.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SETS_REVIEW-001",
+      "file": "tests/sets_review.rs",
+      "selector": "test:hash_set_rejection_and_reservation_preserve_members_and_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash set rejection and reservation preserve members and hasher",
+      "seed": "unreviewed",
+      "target": "tests/sets_review.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SETS_REVIEW-002",
+      "file": "tests/sets_review.rs",
+      "selector": "test:hashbrown_set_supports_borrowed_mutation_capabilities",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hashbrown set supports borrowed mutation capabilities",
+      "seed": "unreviewed",
+      "target": "tests/sets_review.rs",
+      "cfg": "cfg (feature = \"hashbrown-0_17\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SETS_REVIEW-003",
+      "file": "tests/sets_review.rs",
+      "selector": "test:insertion_ordered_set_keeps_explicit_removal_choice",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: insertion ordered set keeps explicit removal choice",
+      "seed": "unreviewed",
+      "target": "tests/sets_review.rs",
+      "cfg": "cfg (feature = \"indexmap-2\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SETS_REVIEW-004",
+      "file": "tests/sets_review.rs",
+      "selector": "test:ordered_set_strict_construction_and_mutation_match_native_semantics",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: ordered set strict construction and mutation match native semantics",
+      "seed": "unreviewed",
+      "target": "tests/sets_review.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-001",
+      "file": "tests/specialized.rs",
+      "selector": "test:arrayvec_failure_returns_ownership_and_keeps_content",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arrayvec failure returns ownership and keeps content",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (feature = \"arrayvec-0_7\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-002",
+      "file": "tests/specialized.rs",
+      "selector": "test:core_arrays_need_neither_alloc_nor_std",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: core arrays need neither alloc nor std",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-003",
+      "file": "tests/specialized.rs",
+      "selector": "test:fst_lookup_decodes_values_and_streams_lend_keys",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: fst lookup decodes values and streams lend keys",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (feature = \"fst-0_4\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-004",
+      "file": "tests/specialized.rs",
+      "selector": "test:hashbrown_sets_compact_with_the_supplied_hasher",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hashbrown sets compact with the supplied hasher",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (all (feature = \"std\" , feature = \"hashbrown-0_17\"))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-005",
+      "file": "tests/specialized.rs",
+      "selector": "test:indexset_compact_retains_positions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: indexset compact retains positions",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (all (feature = \"std\" , feature = \"indexmap-2\"))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-006",
+      "file": "tests/specialized.rs",
+      "selector": "test:smallvec_freeze_preserves_spill_state_and_compact_values",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: smallvec freeze preserves spill state and compact values",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (feature = \"smallvec-1\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-SPECIALIZED-007",
+      "file": "tests/specialized.rs",
+      "selector": "test:static_maps_and_sets_preserve_their_query_and_order_contracts",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "backends",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: static maps and sets preserve their query and order contracts",
+      "seed": "unreviewed",
+      "target": "tests/specialized.rs",
+      "cfg": "cfg (feature = \"phf-0_14\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-ORDERED_SET_OPS-009",
+      "file": "tests/ordered_set_ops.rs",
+      "selector": "test:folds_match_stepwise_traversal_for_merge_and_seek_kernels",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: folds match stepwise traversal for merge and seek kernels",
+      "seed": "unreviewed",
+      "target": "tests/ordered_set_ops.rs",
+      "cfg": "cfg (feature = \"alloc\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-024",
+      "file": "tests/contracts.rs",
+      "selector": "test:adaptive_ordered_range_on_an_emptied_tree_matches_the_sorted_form",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: adaptive ordered range on an emptied tree matches the sorted form",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-025",
+      "file": "tests/contracts.rs",
+      "selector": "test:bulk_extension_keeps_representatives_policies_and_partial_progress",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bulk extension keeps representatives policies and partial progress",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-026",
+      "file": "tests/contracts.rs",
+      "selector": "test:collected_ordered_families_match_entry_by_entry_insertion",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: collected ordered families match entry by entry insertion",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-027",
+      "file": "tests/contracts.rs",
+      "selector": "test:iterator_end_queries_match_a_complete_traversal",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: iterator end queries match a complete traversal",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-CONTRACTS-028",
+      "file": "tests/contracts.rs",
+      "selector": "test:hash_extension_reserves_like_the_standard_collections",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: hash extension reserves like the standard collections",
+      "seed": "unreviewed",
+      "target": "tests/contracts.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-FORMAL_MODELS-001",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::checked_sum_succeeds_in_either_grouping_exactly_when_the_total_fits",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Bounds 0..=7, all operand triples within each bound",
+      "scenario": "Both groupings of a checked sum equal the total when it fits and fail otherwise; wrapping differs",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-002",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::count_operations_satisfy_their_laws",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All two-key bags with counts 0..=3, pairs and triples; scalar identities",
+      "scenario": "Commutativity, associativity, lattice distributivity, zero-self, and non-associative absolute difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-003",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::identities_reject_wrong_count_definitions",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Scalar identities applied to wrong min and monus definitions",
+      "scenario": "Identities reject a product min and a left-projection monus",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-004",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::left_present_representatives_associate_for_sum_max_and_min",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All count triples 0..=3 with operand labels",
+      "scenario": "The left-present representative policy associates for sum, max, and min",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-005",
+      "file": "tests/formal_models/bags.rs",
+      "selector": "test:bags::support_preserves_only_the_lattice_and_sum",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All two-key bags with counts 0..=3; computed counterexamples",
+      "scenario": "Support maps sum and max to union, min to intersection, and preserves neither monus nor absolute difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-006",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::bimap_counterexamples_are_real",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed relations",
+      "scenario": "Union is not closed on either side, checked XOR definedness does not reassociate, pair and key difference differ",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-007",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::checked_union_succeeds_exactly_when_the_whole_union_is_valid",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All triples of the 34 partial bijections against validity of the three-way union",
+      "scenario": "Checked union succeeds in either grouping exactly when the whole union is valid",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-008",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::partial_bijections_are_closed_under_the_listed_operations",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 34 partial bijections on three-by-three keys, pairs and triples",
+      "scenario": "Closure under intersection, difference, composition, inverse, restriction; local identities; inverse of a composition",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-009",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::wrong_bimap_definitions_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Left-only validity count and a union that never conflicts",
+      "scenario": "Both wrong definitions are rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-010",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::empty_shortcuts_must_not_skip_context_checks",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Checked union against an empty-operand shortcut for each context field",
+      "scenario": "The shortcut hides each compatibility error the checked union reports",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-011",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::knowledge_bounds_are_sound_and_exact_for_independent_operands",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 intervals on three keys and every realization of each pair",
+      "scenario": "Each transfer rule is sound and equals the meet and join of realizations",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-012",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::ordered_replay_matches_last_event_wins_and_compaction",
+      "status": "curated",
+      "tags": [
+        "snapshot",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Last-event-wins reference over all histories of at most four events on two keys, every cut",
+      "scenario": "Ordered replay matches the reference and compaction at any cut",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-013",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::positive_recursion_reaches_its_fixed_point_in_at_most_n_steps",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Breadth-first search over all 512 directed graphs on three nodes",
+      "scenario": "Iterated reachability stabilizes within three strict steps and matches search",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-014",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::wrong_knowledge_rules_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Deny-lower-bound difference and a loose XOR rule",
+      "scenario": "The first is unsound; the second is sound but not exact",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-015",
+      "file": "tests/formal_models/computed.rs",
+      "selector": "test:computed::wrong_replays_are_rejected",
+      "status": "curated",
+      "tags": [
+        "snapshot",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Last-event-wins reference",
+      "scenario": "Replays that ignore deletions or order disagree with the reference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-016",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::bag_pushforward_preserves_sum_and_needs_injectivity_for_the_rest",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 functions on three keys; all bags with counts 0..=2",
+      "scenario": "Pushforward preserves sum always and max, min, monus exactly when injective",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-017",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::class_filters_commute_with_conversion_exactly_when_congruent",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 classifiers and all predicates on three keys",
+      "scenario": "A filter commutes with conversion to classes exactly when it is constant on each class",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-018",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::collapsing_conversion_changes_grant_and_deny_answers",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed grant/deny rule before and after collapsing keys",
+      "scenario": "Converting early invents a grant at intersection and removes one at difference",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-019",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::direct_image_needs_injectivity_beyond_union",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 27 functions on three keys and all subset pairs; injectivity computed independently",
+      "scenario": "Image preserves union always and intersection, difference, XOR exactly when injective; inclusion directions; preimage preserves all",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-020",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::normalization_preserves_meaning_but_idempotence_alone_does_not",
+      "status": "curated",
+      "tags": [
+        "catalog",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Written raw-to-meaning table; a constant normalizer",
+      "scenario": "Normalization preserves meaning and is idempotent on outputs; an idempotent constant collapses identities",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-021",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::percentage_validation_matches_its_boundary_table",
+      "status": "curated",
+      "tags": [
+        "catalog",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Written boundary table",
+      "scenario": "Percentage admission at -1, 0, 1, 99, 100, 101, fractions, NaN, and an out-of-range sum",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-022",
+      "file": "tests/formal_models/domains.rs",
+      "selector": "test:domains::subcarrier_restrictions_are_not_closed",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed counterexamples",
+      "scenario": "Nonempty and at-most-one restrictions are not closed; IEEE NaN has no total order",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-023",
+      "file": "tests/formal_models/frozen.rs",
+      "selector": "test:frozen::frozen_structure_does_not_freeze_interior_state",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "ownership",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-FREEZE-THAW-PARTNERS"
+      ],
+      "oracle": "FrozenVec of Cell before and after an interior update",
+      "scenario": "A frozen sequence keeps its structure while element state changes",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-024",
+      "file": "tests/formal_models/frozen.rs",
+      "selector": "test:frozen::materialized_references_still_borrow_their_source",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "ownership",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-FREEZE-THAW-PARTNERS"
+      ],
+      "oracle": "Pointer identity of a FrozenVec of references with its source",
+      "scenario": "A materialized collection of references still points into its source",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-025",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::deleting_and_subtracting_resolvers_do_not_reassociate",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed merges on one key",
+      "scenario": "A deleting resolver and a subtracting resolver fail associativity",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-026",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::joins_and_alignment_have_the_stated_domains_and_shapes",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All maps on two keys with three values; pinned alignment",
+      "scenario": "Inner join covers common keys, commutes up to swap, reassociates up to reshaping; alignment covers all keys with tags",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-027",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::merge_associates_exactly_when_the_lifted_resolver_does",
+      "status": "curated",
+      "tags": [
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All 81 resolvers from two values to absence-or-value; all maps on two keys",
+      "scenario": "Pointwise merge associates exactly when the lifted resolver associates",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-028",
+      "file": "tests/formal_models/maps.rs",
+      "selector": "test:maps::stored_none_is_not_a_missing_binding",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "map-entry",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "contract",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-MAP-ENTRY-REPRESENTATIVES"
+      ],
+      "oracle": "FrozenOrderedMap lookup of a stored None and of a missing key",
+      "scenario": "Present None and absence are distinct observations",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-029",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::boolean_composition_associates_and_distributes_over_union",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All Boolean relations on two-by-two keys, triples",
+      "scenario": "Composition associates and distributes over union on both sides",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-030",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::empty_fibers_and_grouping_are_explicit_conversions",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "std BTreeMap fibers before and after normalization; grouped entries flattened",
+      "scenario": "An empty native fiber stays present until normalized; grouping loses interleaving",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-031",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::weighted_composition_associates_and_projects_to_boolean_composition",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Weights 0..=2 on two-by-two keys; Boolean composition on supports as a second implementation",
+      "scenario": "Weighted composition associates, projects to Boolean composition, and counts two witnesses",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-032",
+      "file": "tests/formal_models/relations.rs",
+      "selector": "test:relations::wrong_compositions_are_rejected",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "First-middle-only and maximum compositions against the cross-check and witness count",
+      "scenario": "Both wrong compositions are rejected",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-033",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::concatenation_is_a_monoid_and_projections_respect_it",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All words of at most three letters over two symbols, pairs and triples",
+      "scenario": "Concatenation is a monoid; map, filter, flat_map, counting preserve it; reverse reverses it",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-034",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::list_intersection_is_ambiguous_until_named",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Membership filter and multiset intersection computed on the same words",
+      "scenario": "The two readings of list intersection differ on duplicates",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-035",
+      "file": "tests/formal_models/sequences.rs",
+      "selector": "test:sequences::zip_distributes_over_concatenation_only_when_aligned",
+      "status": "curated",
+      "tags": [
+        "vec",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "All aligned word quadruples; a computed misaligned case",
+      "scenario": "Zip distributes over concatenation when left parts have equal length, not otherwise",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-036",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::associativity_does_not_pin_the_representative_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "A right-biased rule checked against the same associativity and pinned cases",
+      "scenario": "Associativity holds for both biases; only the pinned cases reject the wrong rule",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-037",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::bit_and_slot_encodings_agree",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Two independent encodings of the same subsets",
+      "scenario": "Bit-mask and slot encodings agree on membership and count",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-038",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::frozen_set_families_match_the_model_on_every_pair",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "hash",
+        "set-algebra",
+        "iterator",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-ORDERED-SET-ALGEBRA",
+        "C-FIRST-KEY-LAST-VALUE"
+      ],
+      "oracle": "Slot model of representatives with the documented left/sole-operand rule; all 256 pairs of labelled subsets of four keys",
+      "scenario": "FrozenOrderedSet and FrozenHashSet union, intersection, difference, symmetric difference, their counts, subset and disjoint agree with the model; ordered output ascends",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-039",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::left_first_absorption_and_distribution_hold_on_representatives",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Slot model; all triples of labelled subsets of three keys",
+      "scenario": "Left-first absorption and distribution preserve representatives",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-040",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::membership_laws_hold_for_every_subset_of_four_keys",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "exhaustive",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Bit-mask set algebra over all subsets of four keys; count identities",
+      "scenario": "SET-BOOLEAN membership laws, identities, and difference counterexamples",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-041",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::nested_union_and_intersection_keep_the_first_operand_representative",
+      "status": "curated",
+      "tags": [
+        "ordered",
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS",
+        "C-ORDERED-SET-ALGEBRA"
+      ],
+      "oracle": "Slot model; all 512 triples of labelled subsets of three keys, intermediates materialized as FrozenOrderedSet",
+      "scenario": "Left-representative union and intersection reassociate in the model and in nested real results",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-042",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::representative_level_counterexamples_are_real",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "regression",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "Computed slot-model results on one key held by every operand",
+      "scenario": "XOR reassociation and cancellation, commutation, and right-first absorption/distribution change the selected object",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-043",
+      "file": "tests/formal_models/bimaps.rs",
+      "selector": "test:bimaps::validity_agrees_with_an_independent_enumeration",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "differential",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "exhaust enumeration of partial functions on three keys with distinct values",
+      "scenario": "The mask-level validity predicate admits exactly the 34 relations exhaust enumerates as partial bijections",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-044",
+      "file": "tests/formal_models/stateful.rs",
+      "selector": "test:stateful::every_short_operation_sequence_matches_the_model",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "BTreeSet reference over every sequence of at most four insert, remove or freeze-thaw steps on three keys",
+      "scenario": "MutableOrderedSet and MutableHashSet, frozen and thawed, match the model after each of 4,096 sequences",
+      "seed": "none",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
+    },
+    {
+      "id": "T-FORMAL_MODELS-045",
+      "file": "tests/formal_models/stateful.rs",
+      "selector": "test:stateful::sampled_operation_sequences_match_the_model",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "model",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "proptest-state-machine BTreeSet reference over sampled sequences of up to 40 steps on 16 keys",
+      "scenario": "Both mutable set families and their frozen forms match the reference after every sampled step; failures shrink",
+      "seed": "proptest",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "bounded"
+    },
+    {
+      "id": "T-FORMAL_MODELS-046",
+      "file": "tests/formal_models/sets.rs",
+      "selector": "test:sets::sampled_union_keeps_the_first_representative_and_rejects_the_right_rule",
+      "status": "curated",
+      "tags": [
+        "set-algebra",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "verification",
+      "provenance": "docs/design/algebra/proof-obligations.md",
+      "kind": "property",
+      "contracts": [
+        "C-ALGEBRA-FORMAL-MODELS"
+      ],
+      "oracle": "First operand holding each key, over sampled triples of sets on 64 keys",
+      "scenario": "Union associates and keeps the first representative; the right-biased rule fails and shrinks to at most two members",
+      "seed": "fixed",
+      "target": "tests/formal_models/main.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "fast"
     }
   ]
 }

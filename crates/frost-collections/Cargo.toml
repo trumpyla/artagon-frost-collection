@@ -62,25 +62,9 @@ frost-collections-integer = { workspace = true, optional = true }
 frost-collections-concurrent = { workspace = true, optional = true }
 
 [dev-dependencies]
-proptest = "1.12"
-proptest-state-machine = "0.9"
-exhaust = { version = "0.2.7", default-features = false, features = ["alloc"] }
-itertools = "0.15"
-hashbrown = { version = "0.17", default-features = true }
-indexmap = { version = "2.14", default-features = true }
+# For `examples/frameworks.rs`. Tests and benches live in the packages that
+# own the code they exercise.
 serde_json = "1"
-serde = { version = "1", features = ["derive"] }
-borsh = "1.5"
-arbitrary = "1.4"
-rayon = "1.11"
-schemars = "1"
-# Optional backends that tests name directly instead of through
-# `frost::backend`. The library reaches them only through the core package.
-imbl = { workspace = true }
-slotmap = { workspace = true }
-fixedbitset = { workspace = true }
-roaring = { workspace = true }
-arc-swap = { workspace = true }
 
 [lints]
 workspace = true
@@ -137,42 +121,7 @@ name = "set_operations"
 required-features = ["alloc"]
 test = true
 
-[[bench]]
-name = "set_operations"
-required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
-harness = false
-
-[[bench]]
-name = "performance_review"
-required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
-harness = false
-
-[[bench]]
-name = "ordered_sets"
-required-features = ["std"]
-harness = false
-
-[[bench]]
-name = "adaptive_maps"
-required-features = ["std"]
-harness = false
-
-[[bench]]
-name = "snapshots"
-required-features = ["arc-swap-1"]
-harness = false
-
-[[bench]]
-name = "integer_sets"
-required-features = ["int-set"]
-harness = false
-
 [[example]]
 name = "integer_sets"
 required-features = ["int-set"]
 test = true
-
-[[bench]]
-name = "integer_output"
-required-features = ["int-set", "std"]
-harness = false

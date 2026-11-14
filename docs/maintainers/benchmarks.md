@@ -65,17 +65,17 @@ tests when they express the intended algorithmic complexity.
 ## Isolation from coverage, sanitizers, and policy thresholds
 
 - Frost benchmarks use custom `harness = false` executables backed by
-  [`benches/support/mod.rs`](../../crates/frost-collections/benches/support/mod.rs) (not Criterion).
+  [`benches/support/mod.rs`](../../crates/frost-collections-test-support/src/bench.rs) (not Criterion).
   Setting `FROST_BENCH_LIST=1` lists registered benchmark cases without timing
   loops so `make catalog-inventory` can verify every benchmark executable against
-  [`verification/metadata/bench-inventory.json`](../../crates/frost-collections/verification/metadata/bench-inventory.json)
+  [`verification/metadata/bench-inventory.json`](../../crates/frost-collections-core/verification/metadata/bench-inventory.json)
   via [`verification/catalog`](../../verification/catalog/Cargo.toml).
 - Never collect timing samples from binaries built with `-C instrument-coverage`
   (`cargo-llvm-cov`), sanitizer instrumentation (`cargo-fuzz` / AddressSanitizer),
   Miri, or Loom, and never run benchmarks concurrently with `make check`,
   `make coverage`, `make mutants`, or `make fuzz-smoke`.
 - Keep answer validation outside the timed loop using `measure` and
-  `measure_with_setup` in [`benches/support/mod.rs`](../../crates/frost-collections/benches/support/mod.rs).
+  `measure_with_setup` in [`benches/support/mod.rs`](../../crates/frost-collections-test-support/src/bench.rs).
   State explicitly whether input construction, clone/thaw staging, result
   destruction, and worker-thread lifecycle are inside or outside the timed
   region.

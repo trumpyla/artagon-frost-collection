@@ -20,7 +20,7 @@ or test metadata, this file wins; fix the other document in the same change.
 
 | Scope | State | Where it is decided |
 | --- | --- | --- |
-| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, and the internal `frost-collections-core`, `frost-collections-integer` and `frost-collections-concurrent` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
+| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, the internal `frost-collections-core`, `frost-collections-integer` and `frost-collections-concurrent`, and the dev-only `frost-collections-test-support` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
 | `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **In progress.** The workspace exists (`frost-wlt.8`); the packages are extracted by `frost-wlt.9`–`.13`. Names and boundaries are the author's defaults and may be overruled. | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
@@ -51,9 +51,9 @@ Directories that a package does not need are omitted, never created empty.
     <area>.rs           one Cargo test target
     <area>/main.rs      a multi-file test target; its modules live beside it
     formal_models/      finite formal models of this package's laws (CR-LAYOUT-10)
-    support/mod.rs      shared test helpers and workload factories; never a target
+    support/mod.rs      helpers private to this package's tests; never a target
   benches/            harness = false benchmark targets
-    support/mod.rs      shared measurement, factory, and control helpers
+    support/mod.rs      helpers private to this package's benches; shared ones are in the support package
   examples/           executable examples; each declares test = true
   fuzz/               isolated cargo-fuzz package (target layout; see CR-LAYOUT-6)
   verification/       isolated verification packages and package-owned metadata
@@ -91,8 +91,9 @@ packages.
   whose required features are disabled, so a skipped example is never counted
   as passing.
 - **CR-LAYOUT-5.** Benchmarks use `harness = false`, declare
-  `required-features`, share measurement code through `benches/support/`, and
-  support listing with `FROST_BENCH_LIST=1`. They follow
+  `required-features`, share measurement code through the `bench` module of
+  the support package (CR-BOUND-1), and support listing with
+  `FROST_BENCH_LIST=1`. They follow
   [benchmark guidance](docs/maintainers/benchmarks.md).
 - **CR-LAYOUT-6.** Fuzz, Loom, Kani, catalog, and downstream-consumer harnesses
   are separate packages with their own `Cargo.toml` and committed lockfile. In
@@ -114,7 +115,8 @@ packages.
   records, README, changelog, and the design documents for its contracts.
   These refer only to files under the package, workspace-root files, and the
   packages it depends on. A test that needs several packages lives in the
-  lowest package that depends on all of them; the facade holds the rest.
+  lowest package that depends on all of them. Examples are the exception: they
+  document the supported entry point, so every example lives in the facade.
   Moving a package directory moves everything it owns. Repository-wide
   documents and historical evidence (CR-LAYOUT-8) are not package artifacts.
 - **CR-LAYOUT-10.** A package owns the formal artifacts for its laws.
@@ -144,11 +146,12 @@ packages.
 | Package design documents | `<package>/docs/` | Duplicate a repository-wide decision instead of linking it |
 | Orchestration | Root `Makefile` | Hide failures, skip missing tools, or require Python |
 
-- **CR-BOUND-1.** A shared support package used by several crates is
-  `publish = false`, is used only as a dev-dependency, and generates plain data
-  (seeds, vectors, sorted keys, operation scripts). If it depended on the crate
-  under test, that crate's unit tests could link two distinct copies of its
-  types.
+- **CR-BOUND-1.** The shared support package, `frost-collections-test-support`,
+  is `publish = false`, is used only as a dev-dependency, and depends on no
+  Frost package. It generates plain data (seeds, vectors, sorted keys,
+  operation scripts) and holds the dependency-free benchmark timing helpers.
+  If it depended on a crate under test, that crate's unit tests could link two
+  distinct copies of its types.
 - **CR-BOUND-2.** The facade package re-exports by name and forwards
   features; it holds no algorithms and does not re-export a hidden module.
   Public paths under `frost::` are part of the API contract. The integer and
@@ -401,7 +404,7 @@ isolated packages whose targets the tool also discovers.
 
 ### Benchmark inventory: `frost-bench-inventory/1`
 
-[bench-inventory.json](crates/frost-collections/verification/metadata/bench-inventory.json) maps each
+[bench-inventory.json](crates/frost-collections-core/verification/metadata/bench-inventory.json) maps each
 benchmark target to every exact case name that `FROST_BENCH_LIST=1` prints.
 Each entry has `name`, `timing`, `status`, `tags`, `features`, `scenario`,
 `control`, `area`, `provenance`, `seed`, `cost` (always `timed`), and
@@ -431,11 +434,12 @@ input.
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
 - **CR-META-5.** Counts are not coverage. On this checkout `check` reports 385
-  structural test and proof declarations and 401 case records (77 `curated`,
-  324 `unreviewed`) across the root catalog and one catalog per package.
-  There are 12 contracts, and 922 benchmark names in seven targets, with every
-  inventory entry `unreviewed`. Every contract has at least one curated case.
-  Curating the unreviewed legacy records is part of `frost-wou.6`.
+  structural test and proof declarations and 402 case records (77 `curated`,
+  325 `unreviewed`): core 246, integer 77, concurrent 28, the facade 12, the
+  support package 1, and 38 in the root catalog. There are 12 contracts, and
+  922 benchmark names in seven targets, with every inventory entry
+  `unreviewed`. Every contract has at least one curated case. Curating the
+  unreviewed legacy records is part of `frost-wou.6`.
 - **CR-META-6.** Benchmark records keep raw samples and slower observations,
   and identify the compiler, profile, target CPU, and source revision. Listing
   validates answers and names without timing; it supports no performance claim.

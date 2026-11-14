@@ -41,5 +41,20 @@ crossbeam-skiplist-0_1 = ["frost-collections-core/crossbeam-skiplist-0_1"]
 frost-collections-core = { workspace = true, features = ["alloc", "int-set"] }
 roaring = { workspace = true }
 
+[dev-dependencies]
+frost-collections-test-support = { workspace = true }
+proptest = "1.12"
+
+# The package always provides the integer profile, so these targets need no
+# `int-set` feature.
+[[bench]]
+name = "integer_sets"
+harness = false
+
+[[bench]]
+name = "integer_output"
+required-features = ["std"]
+harness = false
+
 [lints]
 workspace = true

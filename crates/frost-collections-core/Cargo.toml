@@ -66,9 +66,39 @@ scc = { workspace = true, optional = true }
 crossbeam-skiplist = { workspace = true, optional = true }
 
 [dev-dependencies]
-# For the serde doctest in `src/adapters/serde.rs`.
-serde = { version = "1", features = ["derive"] }
+frost-collections-test-support = { workspace = true }
+proptest = "1.12"
+proptest-state-machine = "0.9"
+exhaust = { version = "0.2.7", default-features = false, features = ["alloc"] }
+itertools = "0.15"
+hashbrown = { version = "0.17", default-features = true }
+indexmap = { version = "2.14", default-features = true }
 serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+borsh = "1.5"
+arbitrary = "1.4"
+rayon = "1.11"
+schemars = "1"
+
+[[bench]]
+name = "set_operations"
+required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
+harness = false
+
+[[bench]]
+name = "performance_review"
+required-features = ["std", "roaring-0_12", "fixedbitset-0_5"]
+harness = false
+
+[[bench]]
+name = "ordered_sets"
+required-features = ["std"]
+harness = false
+
+[[bench]]
+name = "adaptive_maps"
+required-features = ["std"]
+harness = false
 
 [lints]
 workspace = true

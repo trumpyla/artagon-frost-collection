@@ -298,7 +298,7 @@ Sources: [adaptive architecture](../../crates/frost-collections-core/src/adaptiv
 [inline mutation](../../crates/frost-collections-core/src/adaptive/seq/mutable.rs),
 [adaptive hashing](../../crates/frost-collections-core/src/adaptive/hash_map/mutable.rs),
 [adaptive ordering](../../crates/frost-collections-core/src/adaptive/ordered_map/mutable.rs),
-[core regressions](../../crates/frost-collections/tests/core_review.rs), [ownership regressions](../../crates/frost-collections/tests/inline_safety.rs).
+[core regressions](../../crates/frost-collections-core/tests/core_review.rs), [ownership regressions](../../crates/frost-collections-core/tests/inline_safety.rs).
 
 ## 5. Advanced storage gets honest capabilities
 

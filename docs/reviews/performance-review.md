@@ -17,7 +17,7 @@ This pass implements five focused improvements and adds a broader benchmark corp
 | Medium | Small adaptive map entry access searched the same representation twice. | Reuse the successful lookup or insertion index across the promotion decision. | [hash entry](../../crates/frost-collections-core/src/adaptive/hash_map/mutable.rs), [ordered entry](../../crates/frost-collections-core/src/adaptive/ordered_map/mutable.rs) |
 | Medium | Owning Rayon traversal expressed a new collection even when a contiguous buffer already existed. | Transfer the existing boxed-slice/vector allocation directly to Rayon. | [Rayon adapter](../../crates/frost-collections-core/src/adapters/rayon.rs) |
 | Low | Set iterator wrappers did not forward native bulk operations consistently with map wrappers. | Forward `fold`, `count`, and ordered reverse folds. | [set iterators](../../crates/frost-collections-core/src/family/sets.rs) |
-| High, measurement | Earlier large ratios compared against deliberately more expensive algorithms. | Added before/after measurements and appropriate native operations. | [benchmark](../../crates/frost-collections/benches/performance_review.rs) |
+| High, measurement | Earlier large ratios compared against deliberately more expensive algorithms. | Added before/after measurements and appropriate native operations. | [benchmark](../../crates/frost-collections-core/benches/performance_review.rs) |
 
 ## Measured results
 

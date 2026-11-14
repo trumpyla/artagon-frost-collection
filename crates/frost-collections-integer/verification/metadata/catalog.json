@@ -1,11 +1,72 @@
 {
   "schema": "frost-verification-catalog/1",
-  "contracts": [],
+  "contracts": [
+    {
+      "id": "C-INT-SET-ALGEBRA",
+      "title": "Integer profile algebra and counts agree across all representations and sharing histories",
+      "source": "docs/design/integer-sets.md; docs/maintainers/implementation-contracts.md integer profile paragraph",
+      "obligations": [
+        "FrozenIntSet::try_from_iter",
+        "FrozenIntSet::intersection_len",
+        "FrozenIntSet::is_subset",
+        "FrozenIntSet::is_disjoint",
+        "FrozenIntSet::cardinality",
+        "FrozenIntSet::iter",
+        "FrozenIntSet::representation"
+      ]
+    },
+    {
+      "id": "C-INT-SET-POLICY-LIMITS",
+      "title": "IntSetLimits and *_with_policy operations: commutative operations take the smaller limits; difference keeps the left limits; identity shortcuts check eligibility",
+      "source": "docs/maintainers/implementation-contracts.md integer profile paragraph",
+      "obligations": [
+        "IntSetLimits",
+        "IntSetPolicy"
+      ]
+    }
+  ],
   "targets": [
     {
       "path": "src/lib.rs",
       "kind": "lib",
       "features": []
+    },
+    {
+      "path": "tests/integer_output.rs",
+      "kind": "test",
+      "features": [
+        "int-set"
+      ]
+    },
+    {
+      "path": "tests/integer_sets.rs",
+      "kind": "test",
+      "features": [
+        "int-set"
+      ]
+    },
+    {
+      "path": "tests/metadata_and_factories.rs",
+      "kind": "test",
+      "features": [
+        "alloc",
+        "int-set"
+      ]
+    },
+    {
+      "path": "benches/integer_output.rs",
+      "kind": "bench",
+      "features": [
+        "int-set",
+        "std"
+      ]
+    },
+    {
+      "path": "benches/integer_sets.rs",
+      "kind": "bench",
+      "features": [
+        "int-set"
+      ]
     }
   ],
   "cases": [
@@ -450,6 +511,1208 @@
       "seed": "unreviewed",
       "target": "src/lib.rs",
       "cfg": "cfg_attr (docsrs , feature (doc_cfg)); cfg (test)",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-METADATA_AND_FACTORIES-009",
+      "file": "tests/metadata_and_factories.rs",
+      "selector": "test:frozen_int_set_matches_factory_oracle_across_chunk_boundaries",
+      "status": "curated",
+      "kind": "differential",
+      "tags": [
+        "factory",
+        "integer",
+        "set-algebra",
+        "integration"
+      ],
+      "features": [
+        "int-set"
+      ],
+      "area": "integer",
+      "provenance": "crates/frost-collections-test-support/src/workload.rs module documentation",
+      "contracts": [
+        "C-INT-SET-ALGEBRA"
+      ],
+      "oracle": "SetOracle (BTreeSet) over emitted values",
+      "scenario": "All policy pairs (auto, sorted, dense, roaring, chunked) on 2^16 chunk-boundary, run/gap, and u32-ceiling uniform datasets; dense budget rejections skipped explicitly",
+      "seed": "fixed",
+      "cost": "fast",
+      "target": "tests/metadata_and_factories.rs",
+      "cfg": "none"
+    },
+    {
+      "id": "B-INTEGER_SETS-001",
+      "file": "benches/integer_sets.rs",
+      "selector": "literal:u32.factory_chunks_{}",
+      "status": "curated",
+      "kind": "benchmark",
+      "tags": [
+        "benchmark",
+        "factory",
+        "integer",
+        "roaring",
+        "set-algebra",
+        "native-control"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "benches/integer_sets.rs main",
+      "contracts": [
+        "C-INT-SET-ALGEBRA",
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "BTreeSet answers in compare and native32 before timing",
+      "scenario": "Seeded shuffled 2^16 chunk-boundary dataset across all policies and mixed representations with native Roaring control",
+      "seed": "factory",
+      "cost": "timed",
+      "timing": "operation",
+      "control": "btree.* and native_roaring.*",
+      "target": "benches/integer_sets.rs",
+      "cfg": "none"
+    },
+    {
+      "id": "B-INTEGER_SETS-002",
+      "file": "benches/integer_sets.rs",
+      "selector": "literal:u64.factory_uniform_{}",
+      "status": "curated",
+      "kind": "benchmark",
+      "tags": [
+        "benchmark",
+        "factory",
+        "integer",
+        "roaring",
+        "set-algebra",
+        "native-control"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "benches/integer_sets.rs main",
+      "contracts": [
+        "C-INT-SET-ALGEBRA",
+        "C-WORKLOAD-FACTORY"
+      ],
+      "oracle": "BTreeSet answers in compare, construction, and native64 before timing",
+      "scenario": "Seeded sparse u64 uniform dataset above 2^40 for algebra, construction, and native Treemap control",
+      "seed": "factory",
+      "cost": "timed",
+      "timing": "operation",
+      "control": "btree.* and native_roaring.*",
+      "target": "benches/integer_sets.rs",
+      "cfg": "none"
+    },
+    {
+      "id": "B-INTEGER_OUTPUT-001",
+      "file": "benches/integer_output.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "B-INTEGER_SETS-003",
+      "file": "benches/integer_sets.rs",
+      "selector": "bench",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "benchmark"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bench",
+      "seed": "unreviewed",
+      "target": "benches/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-001",
+      "file": "tests/integer_output.rs",
+      "selector": "test:both_limits_are_combined_independently",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: both limits are combined independently",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-002",
+      "file": "tests/integer_output.rs",
+      "selector": "test:canonical_hash_events_match_across_representations_and_boundaries",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: canonical hash events match across representations and boundaries",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-003",
+      "file": "tests/integer_output.rs",
+      "selector": "test:canonical_hash_scout_thresholds_are_representation_independent",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: canonical hash scout thresholds are representation independent",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-004",
+      "file": "tests/integer_output.rs",
+      "selector": "test:compact_native_intersection_survives_auto_but_respects_output_limits",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: compact native intersection survives auto but respects output limits",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-005",
+      "file": "tests/integer_output.rs",
+      "selector": "test:construction_limits_survive_default_algebra",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: construction limits survive default algebra",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-006",
+      "file": "tests/integer_output.rs",
+      "selector": "test:contiguous_payload_diagnostics_report_actual_buffer_bytes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: contiguous payload diagnostics report actual buffer bytes",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-007",
+      "file": "tests/integer_output.rs",
+      "selector": "test:distant_dense_runs_promote_without_a_sorted_expansion",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: distant dense runs promote without a sorted expansion",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-008",
+      "file": "tests/integer_output.rs",
+      "selector": "test:empty_operands_and_identity_shortcuts_do_not_bypass_limits",
+      "status": "curated",
+      "tags": [
+        "integer",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "docs/maintainers/implementation-contracts.md",
+      "kind": "contract",
+      "contracts": [
+        "C-INT-SET-POLICY-LIMITS"
+      ],
+      "oracle": "Hand-expected limits and representation: the stricter operand limits for union, symmetric difference and intersection; the left limits for difference",
+      "scenario": "A dense 512-member set combined with an empty or equal set whose limits forbid dense and Roaring storage: identity shortcuts still apply the stricter limits and produce the sorted representation",
+      "seed": "none",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "fast"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-009",
+      "file": "tests/integer_output.rs",
+      "selector": "test:equality_and_hash_ignore_dense_padding_and_construction_history",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: equality and hash ignore dense padding and construction history",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-010",
+      "file": "tests/integer_output.rs",
+      "selector": "test:equality_checks_members_even_when_metadata_matches",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: equality checks members even when metadata matches",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-011",
+      "file": "tests/integer_output.rs",
+      "selector": "test:explicit_large_dense_budget_is_not_clamped_to_the_default",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: explicit large dense budget is not clamped to the default",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "cfg (not (miri))",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-012",
+      "file": "tests/integer_output.rs",
+      "selector": "test:identity_sharing_obeys_forced_representations_and_inherited_limits",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: identity sharing obeys forced representations and inherited limits",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-013",
+      "file": "tests/integer_output.rs",
+      "selector": "test:limits_are_excluded_from_logical_equality_and_hash",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: limits are excluded from logical equality and hash",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-014",
+      "file": "tests/integer_output.rs",
+      "selector": "test:mixed_promotion_handles_word_partition_and_unsigned_end_boundaries",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mixed promotion handles word partition and unsigned end boundaries",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-015",
+      "file": "tests/integer_output.rs",
+      "selector": "test:output_policy_overrides_are_checked_and_retained",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: output policy overrides are checked and retained",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-017",
+      "file": "tests/integer_output.rs",
+      "selector": "test:roaring_partition_limits_apply_to_promoted_outputs",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: roaring partition limits apply to promoted outputs",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-018",
+      "file": "tests/integer_output.rs",
+      "selector": "test:signed_and_restricted_domains_survive_promoted_algebra",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: signed and restricted domains survive promoted algebra",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_OUTPUT-019",
+      "file": "tests/integer_output.rs",
+      "selector": "test:tiny_mixed_updates_preserve_a_dense_window",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: tiny mixed updates preserve a dense window",
+      "seed": "unreviewed",
+      "target": "tests/integer_output.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-001",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:a_decoder_that_changes_after_construction_causes_a_checked_panic",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: a decoder that changes after construction causes a checked panic",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-002",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:all_backend_pairs_align_distinct_dense_windows_and_signed_zero",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: all backend pairs align distinct dense windows and signed zero",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-003",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:arbitrary_u64_sorted_and_roaring_algebra_match_standard_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: arbitrary u64 sorted and roaring algebra match standard sets",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-004",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:auto_planner_respects_local_span_and_scattered_upper_prefixes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: auto planner respects local span and scattered upper prefixes",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-005",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:broken_codec_laws_are_checked_without_unsafe_value_construction",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: broken codec laws are checked without unsafe value construction",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-006",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:budgets_are_inherited_by_results",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: budgets are inherited by results",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-007",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:builtin_codecs_preserve_width_boundaries_order_and_round_trips",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: builtin codecs preserve width boundaries order and round trips",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-008",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:bulk_algebra_and_replanning_do_not_reencode_or_decode_keys",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: bulk algebra and replanning do not reencode or decode keys",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-009",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:capability_traits_expose_reconstructed_values_and_wide_cardinality",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: capability traits expose reconstructed values and wide cardinality",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-010",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:chunked_results_share_untouched_containers",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: chunked results share untouched containers",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-011",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:cloning_and_identity_results_share_storage",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: cloning and identity results share storage",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-013",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:dense_full_u64_span_is_rejected_before_narrowing_or_allocating",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: dense full u64 span is rejected before narrowing or allocating",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-014",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:dense_windows_near_u64_max_align_without_overflow",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: dense windows near u64 max align without overflow",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-015",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:empty_and_duplicate_inputs_have_set_semantics_in_every_backend",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty and duplicate inputs have set semantics in every backend",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-016",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:explicit_budget_and_partition_limits_are_enforced",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: explicit budget and partition limits are enforced",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-017",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:far_apart_dense_operands_do_not_allocate_the_gap",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: far apart dense operands do not allocate the gap",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-018",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:finite_five_member_domains_exhaust_all_representation_pairs",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: finite five member domains exhaust all representation pairs",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-019",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:forced_backends_and_iterators_preserve_typed_value_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: forced backends and iterators preserve typed value order",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-020",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:freeze_plan_preserves_failed_sources_and_ordinary_pairings",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: freeze plan preserves failed sources and ordinary pairings",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-021",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:full_containers_take_part_in_every_representation_pair",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: full containers take part in every representation pair",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-022",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:logical_equality_order_and_hash_ignore_representation",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: logical equality order and hash ignore representation",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-023",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:mixed_backend_dispatch_preserves_algebra_at_balanced_and_skewed_sizes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mixed backend dispatch preserves algebra at balanced and skewed sizes",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-024",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:mixed_results_keep_the_compact_operand_representation",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: mixed results keep the compact operand representation",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-025",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:narrow_and_address_sized_keys_round_trip_and_reject_foreign_codes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: narrow and address sized keys round trip and reject foreign codes",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-026",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:restricted_domains_reject_imported_gaps_and_algebra_only_selects_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: restricted domains reject imported gaps and algebra only selects members",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-027",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:signed_encodings_preserve_generated_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: signed encodings preserve generated order",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-029",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:two_cluster_u64_algebra_matches_standard_sets_in_every_backend",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: two cluster u64 algebra matches standard sets in every backend",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-030",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:windowed_u64_algebra_matches_standard_sets_in_every_backend",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: windowed u64 algebra matches standard sets in every backend",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-032",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:public_iterator_folds_resume_after_partial_consumption",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: public iterator folds resume after partial consumption",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-033",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:construction_normalizes_every_arrival_order_identically",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: construction normalizes every arrival order identically",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-034",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:construction_reports_contract_errors_on_every_path",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: construction reports contract errors on every path",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-035",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:empty_results_share_an_eligible_empty_operand",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: empty results share an eligible empty operand",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-INTEGER_SETS-036",
+      "file": "tests/integer_sets.rs",
+      "selector": "test:scattered_sorted_results_share_an_equal_operand",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "integer",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: scattered sorted results share an equal operand",
+      "seed": "unreviewed",
+      "target": "tests/integer_sets.rs",
+      "cfg": "none",
       "cost": "unreviewed"
     }
   ]

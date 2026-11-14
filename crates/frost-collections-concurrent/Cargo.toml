@@ -47,5 +47,13 @@ scc = { workspace = true, optional = true }
 crossbeam-skiplist = { workspace = true, optional = true }
 arc-swap = { workspace = true, optional = true }
 
+[dev-dependencies]
+frost-collections-test-support = { workspace = true }
+
+[[bench]]
+name = "snapshots"
+required-features = ["arc-swap-1"]
+harness = false
+
 [lints]
 workspace = true

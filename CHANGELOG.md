@@ -31,6 +31,11 @@ No public API or behaviour change so far.
   publication. `frost-collections` is now re-exports, feature forwarding and
   documentation only. No public path changed. `make feature-forwarding`
   checks that every layer declares the features of the layers below it.
+- Move every test and bench target to the package that owns the code it
+  exercises, and the workload factories and benchmark timing helpers to the
+  new dev-only `frost-collections-test-support`. Three test files are split
+  between two packages; no test body changed. Catalog and benchmark-inventory
+  records live with their targets.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

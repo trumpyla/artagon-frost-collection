@@ -42,8 +42,10 @@ AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
 # The facade package. Recipes name a package with -p; none relies on feature
 # unification across workspace members.
 FACADE ?= frost-collections
-# The package whose unit tests the 32-bit Miri lanes select by name.
+# The packages that own the test targets some lanes select by name.
+CORE ?= frost-collections-core
 INTEGER ?= frost-collections-integer
+CONCURRENT ?= frost-collections-concurrent
 PACKAGE_CHECK_DIR ?= target/package-check
 # Fails a lane whose test selection matched nothing.
 REQUIRE_TESTS := "$(SHELL)" scripts/require-tests.sh
@@ -221,8 +223,9 @@ examples:
 	done <<< "$$examples"
 
 integers:
-	"$(CARGO)" test -p "$(FACADE)" --locked --no-default-features --features int-set --test integer_sets --test integer_output
-	"$(CARGO)" test -p "$(FACADE)" --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_output
+	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(INTEGER)" --locked --no-default-features --features int-set --test integer_sets --test integer_output
+	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(INTEGER)" --locked --release --test integer_sets --test integer_output
+	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CONCURRENT)" --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_output
 	"$(CARGO)" test --locked --manifest-path verification/int-key-downstream/Cargo.toml
 
 # Nothing is published, and `cargo package` cannot resolve unpublished path
@@ -271,13 +274,13 @@ doctest-codes:
 
 miri: doctest-codes
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --test inline_safety --test families --test core_review -- --skip under_random_ops
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(CORE)" --locked --test inline_safety --test families --test core_review -- --skip under_random_ops
 	MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --test inline_safety
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(CORE)" --locked --test inline_safety
 	MIRIFLAGS='-Zmiri-tree-borrows -Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(CORE)" --locked --test exhaustive_collections inline_ownership_exhausts_three_operation_traces
 	MIRIFLAGS='-Zmiri-strict-provenance' \
-	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	    --target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
 	MIRIFLAGS='-Zmiri-strict-provenance' \
 	  $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
@@ -305,7 +308,7 @@ miri: doctest-codes
 	  empty_operands_and_identity_shortcuts_do_not_bypass_limits \
 	  output_policy_overrides_are_checked_and_retained; do \
 	  MIRIFLAGS='-Zmiri-strict-provenance' \
-	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(FACADE)" --locked --no-default-features --features int-set \
+	    $(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test -p "$(INTEGER)" --locked --no-default-features --features int-set \
 	      --target i686-unknown-linux-gnu --test integer_output "$$case_name" -- --exact --test-threads=1; \
 	done
 	+$(MAKE) miri-survey
@@ -324,8 +327,8 @@ $(MIRI_SURVEY_SHARDS):
 	    -- --exact --test-threads=1
 
 bounded:
-	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(FACADE)" --locked --test exhaustive_collections --features fixedbitset-0_5
-	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(FACADE)" --locked --test publication_model -- --nocapture
+	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CORE)" --locked --test exhaustive_collections --features fixedbitset-0_5
+	$(REQUIRE_TESTS) "$(CARGO)" test -p "$(CONCURRENT)" --locked --test publication_model -- --nocapture
 	# Native property helpers; this does not execute a symbolic solver.
 	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/kani/Cargo.toml --locked
 

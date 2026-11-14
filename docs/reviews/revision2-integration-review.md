@@ -77,7 +77,7 @@ before rebuilding. The policy caps dense payload bytes and native Roaring
 upper-32-bit partitions; it does not cap total process memory, staging, sorted
 storage, or chunked storage.
 
-Evidence: [`tests/integer_output.rs`](../../crates/frost-collections/tests/integer_output.rs), including
+Evidence: [`tests/integer_output.rs`](../../crates/frost-collections-integer/tests/integer_output.rs), including
 `identity_sharing_obeys_forced_representations_and_inherited_limits`, and the
 retained original result-policy regressions.
 

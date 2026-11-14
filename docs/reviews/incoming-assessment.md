@@ -69,11 +69,11 @@ and [environment/source hashes](../../verification/results/ordered-strategy-envi
 No hardware performance counters were collected: an explanation involving a
 specific number of cold cache lines, hot B-tree levels, or branch misses is a
 hypothesis, not a result of this run. The current public API benchmark is
-[ordered_sets.rs](../../crates/frost-collections/benches/ordered_sets.rs).
+[ordered_sets.rs](../../crates/frost-collections-core/benches/ordered_sets.rs).
 
 ### Regression coverage retained from the patch
 
-[ordered_performance.rs](../../crates/frost-collections/tests/ordered_performance.rs) checks scalar
+[ordered_performance.rs](../../crates/frost-collections-core/tests/ordered_performance.rs) checks scalar
 counts, explicit `next` traversal, specialized `count`, both operand directions,
 and predicate work against a comparison budget well below a full large-side
 scan. Separate all-present, late-missing, and all-absent predicate cases prevent
@@ -81,7 +81,7 @@ early exits from disguising linear work. Answers are asserted individually.
 Existing tests preserve left representatives, lazy construction, same-storage
 behavior, partial consumption, hints, folding, cloning, and fusion.
 
-[ordered_set_ops.rs](../../crates/frost-collections/tests/ordered_set_ops.rs) adds the supplied skewed and
+[ordered_set_ops.rs](../../crates/frost-collections-core/tests/ordered_set_ops.rs) adds the supplied skewed and
 shared-prefix differential generators. The latter is named honestly: its
 random lengths do not guarantee initially balanced operands. The incoming
 private lower-bound test is not transplanted into a different implementation.
@@ -105,12 +105,12 @@ The supplied probe has several limits that matter when interpreting its tables:
   before/after comparison.
 - The `pop_first` rows time rebuilding the map plus draining it; the extension
   rows include initial construction. The new
-  [adaptive benchmark](../../crates/frost-collections/benches/adaptive_maps.rs) prepares each map and
+  [adaptive benchmark](../../crates/frost-collections-core/benches/adaptive_maps.rs) prepares each map and
   incoming batch outside timing. Drops and allocation performed by the
   measured operation remain included. Large cases keep timer overhead small.
 - The snapshot probe creates and joins threads inside the measured region and
   lacks a common start barrier. The new
-  [snapshot benchmark](../../crates/frost-collections/benches/snapshots.rs) uses persistent workers,
+  [snapshot benchmark](../../crates/frost-collections-concurrent/benches/snapshots.rs) uses persistent workers,
   synchronized starts, a warmup, and checked checksums. It reports aggregate
   elapsed ns/read, including batch barrier/channel overhead, with no writer.
   It is not a per-read latency or mixed-reader/writer claim.
@@ -122,10 +122,10 @@ The supplied probe has several limits that matter when interpreting its tables:
   stores offsets in unchecked `u32`, and has no general duplicate policy.
   It is a limited experiment, not a production frozen-map implementation.
 
-The common [timing support](../../crates/frost-collections/benches/support/mod.rs) preserves seven raw
-samples alongside median/min/max. [set_operations.rs](../../crates/frost-collections/benches/set_operations.rs)
+The common [timing support](../../crates/frost-collections-test-support/src/bench.rs) preserves seven raw
+samples alongside median/min/max. [set_operations.rs](../../crates/frost-collections-core/benches/set_operations.rs)
 uses native collection controls and one deterministic hash builder. The larger
-[performance_review.rs](../../crates/frost-collections/benches/performance_review.rs) remains available;
+[performance_review.rs](../../crates/frost-collections-core/benches/performance_review.rs) remains available;
 its subset answers now also come from the independent B-tree reference.
 
 ## Corrections to the proposed designs

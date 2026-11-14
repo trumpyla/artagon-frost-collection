@@ -21,8 +21,8 @@ and release-gate scope are documented separately in
 
 ## Method and interpretation
 
-The same [public-API harness](../crates/frost-collections/benches/integer_output.rs) and
-[timing support](../crates/frost-collections/benches/support/mod.rs) were compiled against the previously
+The same [public-API harness](../crates/frost-collections-integer/benches/integer_output.rs) and
+[timing support](../crates/frost-collections-test-support/src/bench.rs) were compiled against the previously
 delivered full archive and the final candidate. The comparison uses Rust
 **1.99.1**, LLVM **23.1.1**, edition 2024, on Linux x86-64, with release
 optimization level 3, LTO disabled, 16 codegen units, and unwinding panics.
