@@ -62,6 +62,11 @@ No public API or behaviour change so far.
   in its nightly and release tiers.
 - CI runs the host job on Linux only. The macOS and Windows runners are
   disabled for now because of their cost; `ci.yml` says how to restore them.
+- Agents add no attribution to commits, pull requests, comments, code or
+  documents. The rule is in `AGENTS.md`; `.claude/settings.json` and
+  `.github/copilot-instructions.md` apply it to Claude Code and Copilot.
+- `TOOLS.md` names the package directories under `crates/` in its navigation
+  roots and command examples.
 
 ## Unreleased — value-domain algebra documents and rules entry
 

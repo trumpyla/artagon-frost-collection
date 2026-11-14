@@ -14,8 +14,8 @@ available; this checkout's commands also work without those plugins.
 | Find Rust syntax shapes or preview a structural rewrite | `ast-grep` | Parses syntax, not receiver types, macro expansions, or feature combinations. |
 | Search text, current edits, feature declarations, CI, or prose | `rtk rg` | Reads current files; respect exit 1 for no match and exit 2 for errors. |
 
-Use `src/` for production code, `tests/` for contracts, and `crates/frost-collections/examples/` and
-`benches/` for consumers. The isolated `crates/frost-collections-concurrent/verification/loom`, `crates/frost-collections-core/verification/kani`,
+Use `crates/*/src/` for production code, `crates/*/tests/` for contracts, and
+`crates/frost-collections/examples/` and `crates/*/benches/` for consumers. The isolated `crates/frost-collections-concurrent/verification/loom`, `crates/frost-collections-core/verification/kani`,
 and `crates/frost-collections/verification/int-key-downstream` packages need separate attention when
 their included production sources or dependency contracts change.
 
@@ -35,8 +35,8 @@ the current implementation. Ripwire commands below use explicit live roots.
 ```sh
 ripwire --version
 ripwire . --doctor
-ripwire src --for="ordered set intersection" --legend=compact
-ripwire src tests examples benches --callers=intersection_len --legend=compact
+ripwire crates --for="ordered set intersection" --legend=compact
+ripwire crates --callers=intersection_len --legend=compact
 ```
 
 Replace the selector with the actual symbol; use `file:name` when names
@@ -55,7 +55,7 @@ state:
 tgrep --version
 tgrep index --hidden --exclude .git --exclude .idea .
 tgrep status .
-tgrep --hidden -n -g 'src/**/*.rs' 'publish_if_current' .
+tgrep --hidden -n -g 'crates/*/src/**/*.rs' 'publish_if_current' .
 ```
 
 Use `.` as the query root so tgrep finds this checkout's index; select a
@@ -100,9 +100,9 @@ and [rule testing guide](https://ast-grep.github.io/guide/test-rule.html).
 ## Ripgrep and verification
 
 ```sh
-rtk rg -n 'publish_if_current' src tests
+rtk rg -n 'publish_if_current' crates
 rtk rg --hidden -n 'make check' .github
-rtk rg -n 'int-set|no_std|cfg\(' Cargo.toml src
+rtk rg -n 'int-set|no_std|cfg\(' Cargo.toml crates
 rtk make check
 ```
 
