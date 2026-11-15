@@ -52,7 +52,7 @@ retain their versions across writes and store destruction. A derivation panic
 does not publish that invocation's candidate, but does not undo another writer
 or element interior mutation. Allocation, destructors, finite guard fast paths,
 and arbitrary retries rule out a blanket bounded-latency or lock-free workflow
-claim. The [snapshot contract](design/snapshots.md) documents these boundaries.
+claim. The [snapshot contract](../crates/frost-collections-concurrent/docs/snapshots.md) documents these boundaries.
 
 `src/concurrent.rs` became a directory with separate live traits, backend
 adapters, snapshot types, and a shared retry helper. Public paths remain stable.

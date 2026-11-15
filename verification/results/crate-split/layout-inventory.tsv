@@ -1,0 +1,386 @@
+.config/mutants.toml	1	package-name	# cargo-mutants configuration for frost-collections.
+.config/mutants.toml	8	src-path	"src/**/*.rs",
+.config/mutants.toml	12	test-path	"tests/**",
+.config/mutants.toml	13	bench-path	"benches/**",
+.config/mutants.toml	14	example-path	"examples/**",
+.config/mutants.toml	15	harness-path	"verification/**",
+.config/nextest.toml	1	package-name	# Nextest configuration for frost-collections.
+.config/nextest.toml	15	target-name	filter = 'binary(exhaustive_collections) | binary(publication_model) | binary(integer_sets) | binary
+.config/nextest.toml	25	target-name	filter = 'binary(exhaustive_collections) | binary(publication_model) | binary(integer_sets) | binary
+.config/nextest.toml	30	package-name	report-name = "frost-collections-nextest"
+.github/workflows/ci.yml	138	other	run: cargo audit --file Cargo.lock --deny warnings
+.github/workflows/verification.yml	143	src-path	--file src/adaptive/seq/buf.rs \
+.github/workflows/verification.yml	144	src-path	--file src/concurrent/publication.rs \
+.github/workflows/verification.yml	145	src-path	--file src/family/ordered/set_ops.rs \
+Cargo.toml	2	package-name	name = "frost-collections"
+Cargo.toml	7	other	readme = "README.md"
+Cargo.toml	12	harness-path	exclude = ["verification/**", "docs/reviews/supplied/**"]
+Cargo.toml	112	example-path	[[example]]
+Cargo.toml	116	example-path	[[example]]
+Cargo.toml	121	example-path	[[example]]
+Cargo.toml	126	example-path	[[example]]
+Cargo.toml	131	example-path	[[example]]
+Cargo.toml	136	example-path	[[example]]
+Cargo.toml	141	example-path	[[example]]
+Cargo.toml	146	example-path	[[example]]
+Cargo.toml	151	example-path	[[example]]
+Cargo.toml	156	example-path	[[example]]
+Cargo.toml	161	bench-path	[[bench]]
+Cargo.toml	166	bench-path	[[bench]]
+Cargo.toml	171	bench-path	[[bench]]
+Cargo.toml	176	bench-path	[[bench]]
+Cargo.toml	181	bench-path	[[bench]]
+Cargo.toml	186	bench-path	[[bench]]
+Cargo.toml	191	example-path	[[example]]
+Cargo.toml	196	bench-path	[[bench]]
+Makefile	26	test-path	COVERAGE_IGNORE_REGEX ?= (^|/)(tests|benches|examples|verification)/
+Makefile	41	harness-path	AB_HARNESS_DIR := verification/integer-optimizations/ab-harness
+Makefile	81	harness-path	'make catalog      Run verification/catalog obligation inventory checks' \
+Makefile	114	target-name	"$(CARGO)" test --examples --all-features --locked
+Makefile	117	target-name	"$(CARGO)" clippy --lib --no-default-features --locked -- -D warnings
+Makefile	121	target-name	"$(CARGO)" clippy --lib --no-default-features --features alloc --locked -- -D warnings
+Makefile	135	package-name	'[.packages[] | select(.name == "frost-collections")] | \
+Makefile	143	target-name	"$(CARGO)" clippy --lib --no-default-features --features "$$feature" --locked -- -D warnings; \
+Makefile	153	package-name	'[.packages[] | select(.name == "frost-collections")] | \
+Makefile	159	target-name	"$(CARGO)" run --example "$$example" --all-features --locked; \
+Makefile	163	target-name	"$(CARGO)" test --locked --no-default-features --features int-set --test integer_sets --test integer
+Makefile	164	target-name	"$(CARGO)" test --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_
+Makefile	165	harness-path	"$(CARGO)" test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+Makefile	172	package-name	[.packages[] | select(.name == "frost-collections")] | \
+Makefile	174	other	[$$target, "package", (.name + "-" + .version), "Cargo.toml"] | join("/")'); \
+Makefile	177	other	"$(CARGO)" test --manifest-path "$$manifest" --all-features --locked; \
+Makefile	178	target-name	"$(CARGO)" test --manifest-path "$$manifest" --examples --all-features --locked
+Makefile	181	target-name	"$(CARGO)" build --lib --locked --no-default-features --features int-set --target "$(EMBEDDED_NO_ATO
+Makefile	182	target-name	"$(CARGO)" build --lib --locked --no-default-features --features int-set --target "$(EMBEDDED_TARGET
+Makefile	183	target-name	"$(CARGO)" build --lib --locked --no-default-features --target "$(EMBEDDED_TARGET)"
+Makefile	184	target-name	"$(CARGO)" build --lib --locked --no-default-features \
+Makefile	196	target-name	$(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety --test fami
+Makefile	198	target-name	$(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test inline_safety
+Makefile	200	target-name	$(REQUIRE_TESTS) "$(CARGO)" "+$(MIRI_TOOLCHAIN)" miri test --locked --test exhaustive_collections in
+Makefile	203	target-name	--target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+Makefile	206	target-name	--target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+Makefile	209	target-name	--target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1 \
+Makefile	210	target-name	--skip integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey
+Makefile	213	target-name	integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+Makefile	214	target-name	integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+Makefile	215	target-name	integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+Makefile	216	target-name	integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+Makefile	217	target-name	integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+Makefile	218	target-name	integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do \
+Makefile	221	target-name	--target i686-unknown-linux-gnu --lib "$$case_name" -- --exact --test-threads=1; \
+Makefile	231	target-name	--target i686-unknown-linux-gnu --test integer_output "$$case_name" -- --exact --test-threads=1; \
+Makefile	244	target-name	--target i686-unknown-linux-gnu --lib \
+Makefile	245	target-name	integer::storage::tests::early_survey_exit_selects_the_same_backend_as_a_complete_survey \
+Makefile	249	target-name	$(REQUIRE_TESTS) "$(CARGO)" test --locked --test exhaustive_collections --features fixedbitset-0_5
+Makefile	250	target-name	$(REQUIRE_TESTS) "$(CARGO)" test --locked --test publication_model -- --nocapture
+Makefile	252	harness-path	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/kani/Cargo.toml --locked
+Makefile	255	harness-path	$(REQUIRE_TESTS) --total "$(CARGO)" test --manifest-path verification/loom/Cargo.toml --release --lo
+Makefile	259	harness-path	cd verification/kani && "$(CARGO)" kani --lib
+Makefile	264	harness-path	"$(VERUS)" --crate-type=lib verification/verus/src/lib.rs
+Makefile	288	harness-path	'{schema:"frost-coverage-scope/v1",host_target:$$host,toolchain_version:$$toolchain,rustc_override:$
+Makefile	307	test-path	if [[ $$effective_target == aarch64-apple-darwin && $$toolchain_ver == 1.99.1 && ( -z "$$rustup_tc" 
+Makefile	320	harness-path	'{schema:"frost-coverage-scope/v1",host_target:$$host,toolchain_version:$$toolchain,rustc_override:$
+Makefile	330	harness-path	"$(JQ)" -e --slurpfile base verification/crate-standards-validation/baseline-coverage.json \
+Makefile	348	harness-path	"$(CARGO)" test --manifest-path verification/fuzz/Cargo.toml \
+Makefile	349	target-name	--target-dir "$(FUZZ_TARGET_DIR)" --lib --locked
+Makefile	354	harness-path	"$(CARGO)" "+$(FUZZ_TOOLCHAIN)" fuzz run --fuzz-dir verification/fuzz \
+Makefile	357	harness-path	"verification/fuzz/corpus/$(FUZZ_TARGET)" -- \
+Makefile	361	harness-path	"$(CARGO)" test --locked --manifest-path verification/catalog/Cargo.toml \
+Makefile	363	harness-path	"$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
+Makefile	371	package-name	'[.packages[] | select(.name == "frost-collections")] | \
+Makefile	378	target-name	FROST_BENCH_LIST=1 "$(CARGO)" bench --locked --all-features --bench "$$bench" >"$$list_file"; \
+Makefile	379	harness-path	"$(CARGO)" run --locked --manifest-path verification/catalog/Cargo.toml \
+Makefile	380	bench-path	--target-dir "$(CATALOG_TARGET_DIR)" -- inventory "benches/$$bench.rs" "$$list_file" --root .; \
+Makefile	384	harness-path	"$(SHELLCHECK)" --shell=bash --severity=info scripts/check-doc-links.sh scripts/require-tests.sh "$(
+Makefile	385	harness-path	"$(SHFMT)" -ln bash -d -i 2 -ci -bn scripts/check-doc-links.sh scripts/require-tests.sh "$(AB_HARNES
+Makefile	386	harness-path	"$(SHFMT)" -ln bats -d -i 2 -ci -bn verification/shell/*.bats
+Makefile	390	harness-path	FROST_TEST_BASH="$(SHELL)" FROST_TEST_MAKE="$(MAKE)" "$(BATS)" verification/shell
+Makefile	392	harness-path	# Same-executable timing comparison; see verification/integer-optimizations.
+Makefile	398	harness-path	@"$(SHELL)" "$(AB_HARNESS_DIR)/prepare-baseline.sh" "$(AB_BASELINE)" >&2
+Makefile	399	harness-path	@"$(CARGO)" build --release --locked --manifest-path "$(AB_HARNESS_DIR)/Cargo.toml" >&2
+Makefile	400	harness-path	@"$(AB_HARNESS_DIR)/target/release/frost-integer-optimizations-ab" "$(AB_ROUNDS)"
+benches/support/mod.rs	9	test-path	#[path = "../../tests/support/workload.rs"]
+scripts/check-doc-links.sh	17	root-path-dep	root=$(cd -- "${1:-$script_dir/..}" && pwd -P) || exit 1
+scripts/check-doc-links.sh	26	other	find "$root" -maxdepth 1 \( -type f -o -type l \) -name '*.md' \
+scripts/check-doc-links.sh	28	other	if [[ -d $root/docs ]]; then
+scripts/check-doc-links.sh	29	other	find "$root/docs" -type d -name supplied -prune -o \
+scripts/check-doc-links.sh	30	other	\( -type f -o -type l \) -name '*.md' -print0 >>"$temporary/files"
+sgconfig.yml	2	harness-path	- verification/ast-grep/rules
+sgconfig.yml	4	harness-path	- testDir: verification/ast-grep/tests
+src/lib.rs	1	path-include	#![doc = include_str!("../README.md")]
+tests/publication_model.rs	10	src-path	#[path = "../src/concurrent/publication.rs"]
+verification/ast-grep/rules/rust-unsafe-block-scope.yml	4	src-path	message: Keep production unsafe blocks inside src/adaptive/seq/buf.rs.
+verification/ast-grep/rules/rust-unsafe-block-scope.yml	7	src-path	- src/**/*.rs
+verification/ast-grep/rules/rust-unsafe-block-scope.yml	9	src-path	- src/adaptive/seq/buf.rs
+verification/catalog/Cargo.toml	11	other	[workspace]
+verification/catalog/src/bench.rs	16	harness-path	pub(crate) const SIDECAR_PATH: &str = "verification/metadata/bench-inventory.json";
+verification/catalog/src/bench.rs	419	bench-path	(target == "benches/ordered_sets.rs" && ["std_count", "std_subset"].contains(&op))
+verification/catalog/src/bench.rs	420	bench-path	|| (target == "benches/integer_sets.rs"
+verification/catalog/src/bench.rs	430	bench-path	("benches/ordered_sets.rs", "frost_count") => format!("{prefix}.std_count"),
+verification/catalog/src/bench.rs	431	bench-path	("benches/ordered_sets.rs", "frost_subset") => format!("{prefix}.std_subset"),
+verification/catalog/src/bench.rs	432	bench-path	("benches/integer_sets.rs", "intersection_count" | "intersection_materialize")
+verification/catalog/src/bench.rs	567	bench-path	let subset = derive_entry(&names[0], "operation", "benches/ordered_sets.rs", &names);
+verification/catalog/src/bench.rs	572	bench-path	let disjoint = derive_entry(&names[1], "operation", "benches/ordered_sets.rs", &names);
+verification/catalog/src/bench.rs	577	bench-path	let sidecar = sidecar_for(listing(), "benches/ordered_sets.rs");
+verification/catalog/src/bench.rs	578	bench-path	let list = entries(&sidecar, "benches/ordered_sets.rs");
+verification/catalog/src/bench.rs	601	bench-path	let targets: BTreeSet<String> = ["benches/ordered_sets.rs".to_string()]
+verification/catalog/src/bench.rs	609	bench-path	"benches/ordered_sets.rs".to_string(),
+verification/catalog/src/bench.rs	610	bench-path	"benches/y.rs".to_string(),
+verification/catalog/src/bench.rs	618	bench-path	.any(|e| e.contains("benches/y.rs has no registered measured cases")),
+verification/catalog/src/bench.rs	625	bench-path	let sidecar = sidecar_for(listing(), "benches/x.rs");
+verification/catalog/src/bench.rs	628	bench-path	compare(&sidecar, "benches/x.rs", &executed),
+verification/catalog/src/bench.rs	637	bench-path	let errors = compare(&sidecar, "benches/x.rs", &executed);
+verification/catalog/src/bench.rs	643	bench-path	let errors = compare(&sidecar, "benches/x.rs", &executed);
+verification/catalog/src/bench.rs	664	bench-path	assert_eq!(scaffold(&root, "benches/x.rs", &executed).unwrap(), 4);
+verification/catalog/src/bench.rs	665	bench-path	assert_eq!(scaffold(&root, "benches/x.rs", &executed).unwrap(), 0);
+verification/catalog/src/bench.rs	671	bench-path	assert_eq!(scaffold(&root, "benches/x.rs", &executed).unwrap(), 1);
+verification/catalog/src/bench.rs	673	bench-path	assert_eq!(entries(&sidecar, "benches/x.rs").len(), 5);
+verification/catalog/src/bench.rs	675	bench-path	compare(&sidecar, "benches/x.rs", &executed),
+verification/catalog/src/discovery.rs	14	other	"Cargo.toml",
+verification/catalog/src/discovery.rs	15	harness-path	"verification/loom/Cargo.toml",
+verification/catalog/src/discovery.rs	16	harness-path	"verification/kani/Cargo.toml",
+verification/catalog/src/discovery.rs	17	harness-path	"verification/int-key-downstream/Cargo.toml",
+verification/catalog/src/discovery.rs	18	harness-path	"verification/fuzz/Cargo.toml",
+verification/catalog/src/discovery.rs	19	harness-path	"verification/catalog/Cargo.toml",
+verification/catalog/src/discovery.rs	25	harness-path	if manifest == "Cargo.toml" || root.join("verification/catalog/Cargo.toml").exists() {
+verification/catalog/src/discovery.rs	38	other	"--manifest-path",
+verification/catalog/src/main.rs	26	harness-path	const CATALOG_PATH: &str = "verification/metadata/catalog.json";
+verification/catalog/src/main.rs	1153	test-path	fs::create_dir_all(root.join("tests/a")).unwrap();
+verification/catalog/src/main.rs	1154	test-path	fs::create_dir_all(root.join("tests/support")).unwrap();
+verification/catalog/src/main.rs	1159	harness-path	fs::create_dir_all(root.join("verification/metadata")).unwrap();
+verification/catalog/src/main.rs	1160	other	fs::write(root.join("Cargo.toml"), "[package]\nname = \"catalog-fixture\"\nversion = \"0.1.0\"\nedit
+verification/catalog/src/main.rs	1162	other	root.join("Cargo.lock"),
+verification/catalog/src/main.rs	1167	test-path	root.join("tests/a.rs"),
+verification/catalog/src/main.rs	1172	test-path	root.join("tests/a/live.rs"),
+verification/catalog/src/main.rs	1177	test-path	root.join("tests/support/mod.rs"),
+verification/catalog/src/main.rs	1182	bench-path	root.join("benches/b.rs"),
+verification/catalog/src/main.rs	1187	src-path	root.join("src/lib.rs"),
+verification/catalog/src/main.rs	1193	bench-path	"{\"schema\": \"frost-bench-inventory/1\", \"targets\": {\"benches/b.rs\": [\n  {\"name\": \"balance
+verification/catalog/src/main.rs	1217	test-path	{"path": "tests/a.rs", "kind": "test", "features": ["std"]},
+verification/catalog/src/main.rs	1218	src-path	{"path": "src/lib.rs", "kind": "lib", "features": []},
+verification/catalog/src/main.rs	1219	bench-path	{"path": "benches/b.rs", "kind": "bench", "features": []}
+verification/catalog/src/main.rs	1222	test-path	{"id": "T-A-001", "target": "tests/a.rs", "cfg": "none", "file": "tests/a.rs", "selector": "test:fir
+verification/catalog/src/main.rs	1223	test-path	{"id": "T-A-002", "target": "tests/a.rs", "cfg": "none", "cost": "unreviewed", "file": "tests/a.rs",
+verification/catalog/src/main.rs	1224	test-path	{"id": "T-A-003", "target": "tests/a.rs", "cfg": "none", "cost": "unreviewed", "file": "tests/a/live
+verification/catalog/src/main.rs	1225	src-path	{"id": "T-LIB-001", "target": "src/lib.rs", "cfg": "none", "cost": "unreviewed", "file": "src/lib.rs
+verification/catalog/src/main.rs	1226	bench-path	{"id": "B-B-001", "target": "benches/b.rs", "cfg": "none", "file": "benches/b.rs", "selector": "benc
+verification/catalog/src/main.rs	1227	bench-path	{"id": "B-B-002", "target": "benches/b.rs", "cfg": "none", "file": "benches/b.rs", "selector": "lite
+verification/catalog/src/main.rs	1250	bench-path	inventory(&fixture.root, "benches/b.rs", &listing).unwrap(),
+verification/catalog/src/main.rs	1259	bench-path	let errors = inventory(&fixture.root, "benches/b.rs", &listing).unwrap();
+verification/catalog/src/main.rs	1265	bench-path	inventory(&fixture.root, "benches/b.rs", &listing)
+verification/catalog/src/main.rs	1271	bench-path	inventory(&fixture.root, "benches/b.rs", &listing)
+verification/catalog/src/main.rs	1278	bench-path	"{\"schema\": \"frost-bench-inventory/1\", \"targets\": {\"benches/b.rs\": [\n  {\"name\": \"balance
+verification/catalog/src/main.rs	1319	bench-path	"benches/b.rs bench",
+verification/catalog/src/main.rs	1320	src-path	"src/lib.rs target",
+verification/catalog/src/main.rs	1321	test-path	"tests/a.rs test:first",
+verification/catalog/src/main.rs	1322	test-path	"tests/a.rs test:second",
+verification/catalog/src/main.rs	1323	test-path	"tests/a/live.rs test:live::third"
+verification/catalog/src/main.rs	1326	test-path	assert!(found.iter().all(|d| d.target == "tests/a.rs"
+verification/catalog/src/main.rs	1327	bench-path	|| d.target == "benches/b.rs"
+verification/catalog/src/main.rs	1328	src-path	|| d.target == "src/lib.rs"));
+verification/catalog/src/main.rs	1334	test-path	fs::create_dir_all(fixture.root.join("tests/nested/odd")).unwrap();
+verification/catalog/src/main.rs	1336	test-path	fixture.root.join("tests/nested/main.rs"),
+verification/catalog/src/main.rs	1351	test-path	fixture.root.join("tests/nested/odd/elsewhere.rs"),
+verification/catalog/src/main.rs	1356	test-path	fixture.root.join("tests/nested/odd/sibling.rs"),
+verification/catalog/src/main.rs	1363	test-path	.filter(|d| d.target == "tests/nested/main.rs")
+verification/catalog/src/main.rs	1384	test-path	.any(|d| d.file == "tests/nested/odd/elsewhere.rs")
+verification/catalog/src/main.rs	1482	test-path	.any(|e| e.contains("uncovered case: tests/a.rs test:second")),
+verification/catalog/src/main.rs	1502	test-path	"\"file\": \"tests/a/live.rs\"",
+verification/catalog/src/main.rs	1503	test-path	"\"file\": \"tests/missing.rs\"",
+verification/catalog/src/main.rs	1509	test-path	.any(|e| e.contains("file \"tests/missing.rs\" does not exist")),
+verification/catalog/src/main.rs	1545	bench-path	"{\"path\": \"benches/b.rs\", \"kind\": \"bench\", \"features\": []}",
+verification/catalog/src/main.rs	1546	bench-path	"{\"path\": \"benches/ghost.rs\", \"kind\": \"bench\", \"features\": []}",
+verification/catalog/src/main.rs	1552	bench-path	.any(|e| e.contains("target benches/ghost.rs: file does not exist")),
+verification/catalog/src/main.rs	1558	bench-path	.any(|e| e.contains("uncovered target benches/b.rs")),
+verification/catalog/src/main.rs	1693	test-path	"targets": [{"path": "tests/a.rs", "kind": "test", "features": []}],
+verification/catalog/src/main.rs	1695	test-path	{"id": "T-A-007", "file": "tests/a.rs", "selector": "test:first", "status": "unreviewed", "kind": "u
+verification/coverage/coverage-policy.json	5	harness-path	"baseline_reference": "verification/crate-standards-validation/baseline-coverage.json",
+verification/coverage/coverage-policy.json	15	test-path	"ignore_filename_regex": "(^|/)(tests|benches|examples|verification)/"
+verification/coverage/coverage-policy.json	31	harness-path	"evidence": "verification/crate-standards-validation/after-coverage.json"
+verification/coverage/coverage-policy.json	45	test-path	"matching_ignore_regex": "(^|/)(tests|benches|examples|verification)/",
+verification/coverage/coverage-policy.json	46	harness-path	"baseline_file": "verification/crate-standards-validation/baseline-coverage.json",
+verification/coverage/coverage-policy.json	68	src-path	"allowed_paths": ["src/adaptive/seq/buf.rs"],
+verification/fuzz/Cargo.toml	13	other	[workspace]
+verification/fuzz/Cargo.toml	17	package-name	frost = { package = "frost-collections", path = "../..", features = ["arbitrary-1", "int-set", "bors
+verification/fuzz/Cargo.toml	25	harness-path	path = "src/lib.rs"
+verification/fuzz/Cargo.toml	30	harness-path	path = "fuzz_targets/ordered_set_algebra.rs"
+verification/fuzz/Cargo.toml	37	harness-path	path = "fuzz_targets/integer_set_algebra.rs"
+verification/int-key-downstream/Cargo.toml	10	other	[workspace]
+verification/int-key-downstream/Cargo.toml	13	package-name	frost = { package = "frost-collections", path = "../..", default-features = false, features = ["int-
+verification/int-set/revision2/ab-harness/Cargo.toml	10	other	[workspace]
+verification/int-set/revision2/ab-harness/Cargo.toml	13	package-name	frost = { package = "frost-collections", path = "../../../..", default-features = false, features = 
+verification/int-set/revision2/ab-harness/Cargo.toml	16	harness-path	frost_baseline = { package = "frost-baseline", path = "../frost-baseline", default-features = false,
+verification/int-set/revision2/review-probe/Cargo.toml	10	other	[workspace]
+verification/int-set/revision2/review-probe/Cargo.toml	13	package-name	frost-collections = { path = "../../../..", default-features = false, features = ["int-set", "std"] 
+verification/integer-optimizations/ab-harness/Cargo.toml	10	other	[workspace]
+verification/integer-optimizations/ab-harness/Cargo.toml	16	package-name	frost = { package = "frost-collections", path = "../../..", default-features = false, features = ["i
+verification/integer-optimizations/ab-harness/Cargo.toml	17	harness-path	frost_baseline = { package = "frost-baseline", path = "baseline", default-features = false, features
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	10	root-path-dep	root="$(git -C ../../.. rev-parse --show-toplevel)"
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	18	src-path	git -C "$root" archive --format=tar "$commit" Cargo.toml Cargo.lock src README.md \
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	21	other	manifest=baseline/Cargo.toml
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	25	package-name	sed -e 's/^name = "frost-collections"$/name = "frost-baseline"/' \
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	26	bench-path	-e '/^\[\[bench\]\]$/,/^$/d' \
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	27	example-path	-e '/^\[\[example\]\]$/,/^$/d' \
+verification/integer-optimizations/ab-harness/prepare-baseline.sh	28	test-path	-e '/^\[\[test\]\]$/,/^$/d' \
+verification/kani/Cargo.toml	10	other	[workspace]
+verification/kani/Cargo.toml	13	package-name	frost = { package = "frost-collections", path = "../..", default-features = false, features = ["allo
+verification/kani/src/lib.rs	11	src-path	#[path = "../../../src/adaptive/seq/buf.rs"]
+verification/loom/Cargo.toml	10	other	[workspace]
+verification/loom/src/lib.rs	5	src-path	#[path = "../../../src/concurrent/publication.rs"]
+verification/revision2-integration/ab-harness/Cargo.toml	10	other	[workspace]
+verification/revision2-integration/ab-harness/Cargo.toml	13	package-name	frost = { package = "frost-collections", path = "../../..", default-features = false, features = ["i
+verification/revision2-integration/ab-harness/Cargo.toml	14	harness-path	frost_baseline = { package = "frost-reviewed-baseline", path = "../reviewed-baseline", default-featu
+verification/revision2-integration/first-pass/miri-script-at-start.sh	22	target-name	cargo test --examples --all-features --locked
+verification/revision2-integration/first-pass/miri-script-at-start.sh	26	target-name	cargo clippy --lib --no-default-features --locked -- -D warnings
+verification/revision2-integration/first-pass/miri-script-at-start.sh	29	target-name	cargo clippy --lib --no-default-features --features alloc --locked -- -D warnings
+verification/revision2-integration/first-pass/miri-script-at-start.sh	40	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/first-pass/miri-script-at-start.sh	47	target-name	cargo clippy --lib --no-default-features --features "$frost_feature" --locked -- -D warnings
+verification/revision2-integration/first-pass/miri-script-at-start.sh	58	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/first-pass/miri-script-at-start.sh	64	target-name	cargo run --example "$frost_example" --all-features --locked
+verification/revision2-integration/first-pass/miri-script-at-start.sh	69	target-name	cargo test --locked --no-default-features --features int-set --test integer_sets --test integer_outp
+verification/revision2-integration/first-pass/miri-script-at-start.sh	70	target-name	cargo test --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_outpu
+verification/revision2-integration/first-pass/miri-script-at-start.sh	71	harness-path	cargo test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+verification/revision2-integration/first-pass/miri-script-at-start.sh	80	package-name	p = next(p for p in data["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/first-pass/miri-script-at-start.sh	81	other	print(pathlib.Path(data["target_directory"]) / "package" / (p["name"] + "-" + p["version"]) / "Cargo
+verification/revision2-integration/first-pass/miri-script-at-start.sh	84	other	cargo test --manifest-path "$frost_package_manifest" --all-features --locked
+verification/revision2-integration/first-pass/miri-script-at-start.sh	85	target-name	cargo test --manifest-path "$frost_package_manifest" --examples --all-features --locked
+verification/revision2-integration/first-pass/miri-script-at-start.sh	89	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi
+verification/revision2-integration/first-pass/miri-script-at-start.sh	90	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv7em-none-eabihf
+verification/revision2-integration/first-pass/miri-script-at-start.sh	91	target-name	cargo build --lib --locked --no-default-features --target thumbv7em-none-eabihf
+verification/revision2-integration/first-pass/miri-script-at-start.sh	92	target-name	cargo build --lib --locked --no-default-features \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	101	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety --test families --test core_review -
+verification/revision2-integration/first-pass/miri-script-at-start.sh	103	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety
+verification/revision2-integration/first-pass/miri-script-at-start.sh	105	target-name	cargo +"$frost_nightly" miri test --locked --test exhaustive_collections inline_ownership_exhausts_t
+verification/revision2-integration/first-pass/miri-script-at-start.sh	108	target-name	--target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+verification/revision2-integration/first-pass/miri-script-at-start.sh	111	target-name	--target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+verification/revision2-integration/first-pass/miri-script-at-start.sh	114	target-name	--target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+verification/revision2-integration/first-pass/miri-script-at-start.sh	118	target-name	integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	119	target-name	integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	120	target-name	integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	121	target-name	integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	122	target-name	integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	123	target-name	integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do
+verification/revision2-integration/first-pass/miri-script-at-start.sh	126	target-name	--target i686-unknown-linux-gnu --lib "$frost_storage_case" \
+verification/revision2-integration/first-pass/miri-script-at-start.sh	137	target-name	--target i686-unknown-linux-gnu --test integer_output "$frost_integer_case" \
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	22	target-name	cargo test --examples --all-features --locked
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	26	target-name	cargo clippy --lib --no-default-features --locked -- -D warnings
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	29	target-name	cargo clippy --lib --no-default-features --features alloc --locked -- -D warnings
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	40	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	47	target-name	cargo clippy --lib --no-default-features --features "$frost_feature" --locked -- -D warnings
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	58	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	64	target-name	cargo run --example "$frost_example" --all-features --locked
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	69	target-name	cargo test --locked --no-default-features --features int-set --test integer_sets --test integer_outp
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	70	target-name	cargo test --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_outpu
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	71	harness-path	cargo test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	80	package-name	p = next(p for p in data["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	81	other	print(pathlib.Path(data["target_directory"]) / "package" / (p["name"] + "-" + p["version"]) / "Cargo
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	84	other	cargo test --manifest-path "$frost_package_manifest" --all-features --locked
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	85	target-name	cargo test --manifest-path "$frost_package_manifest" --examples --all-features --locked
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	89	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv7em-none-eabihf
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	90	target-name	cargo build --lib --locked --no-default-features --target thumbv7em-none-eabihf
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	91	target-name	cargo build --lib --locked --no-default-features \
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	100	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety --test families --test core_review -
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	102	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	104	target-name	cargo +"$frost_nightly" miri test --locked --test exhaustive_collections inline_ownership_exhausts_t
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	107	target-name	--target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	110	target-name	--target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	113	target-name	--target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+verification/revision2-integration/miri-first-attempt-script-at-start.sh	122	target-name	--target i686-unknown-linux-gnu --test integer_output "$frost_integer_case" \
+verification/revision2-integration/miri-script-at-start.sh	22	target-name	cargo test --examples --all-features --locked
+verification/revision2-integration/miri-script-at-start.sh	26	target-name	cargo clippy --lib --no-default-features --locked -- -D warnings
+verification/revision2-integration/miri-script-at-start.sh	29	target-name	cargo clippy --lib --no-default-features --features alloc --locked -- -D warnings
+verification/revision2-integration/miri-script-at-start.sh	40	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-script-at-start.sh	47	target-name	cargo clippy --lib --no-default-features --features "$frost_feature" --locked -- -D warnings
+verification/revision2-integration/miri-script-at-start.sh	58	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-script-at-start.sh	64	target-name	cargo run --example "$frost_example" --all-features --locked
+verification/revision2-integration/miri-script-at-start.sh	69	target-name	cargo test --locked --no-default-features --features int-set --test integer_sets --test integer_outp
+verification/revision2-integration/miri-script-at-start.sh	70	target-name	cargo test --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_outpu
+verification/revision2-integration/miri-script-at-start.sh	71	harness-path	cargo test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+verification/revision2-integration/miri-script-at-start.sh	80	package-name	p = next(p for p in data["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/miri-script-at-start.sh	81	other	print(pathlib.Path(data["target_directory"]) / "package" / (p["name"] + "-" + p["version"]) / "Cargo
+verification/revision2-integration/miri-script-at-start.sh	84	other	cargo test --manifest-path "$frost_package_manifest" --all-features --locked
+verification/revision2-integration/miri-script-at-start.sh	85	target-name	cargo test --manifest-path "$frost_package_manifest" --examples --all-features --locked
+verification/revision2-integration/miri-script-at-start.sh	89	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi
+verification/revision2-integration/miri-script-at-start.sh	90	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv7em-none-eabihf
+verification/revision2-integration/miri-script-at-start.sh	91	target-name	cargo build --lib --locked --no-default-features --target thumbv7em-none-eabihf
+verification/revision2-integration/miri-script-at-start.sh	92	target-name	cargo build --lib --locked --no-default-features \
+verification/revision2-integration/miri-script-at-start.sh	101	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety --test families --test core_review -
+verification/revision2-integration/miri-script-at-start.sh	103	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety
+verification/revision2-integration/miri-script-at-start.sh	105	target-name	cargo +"$frost_nightly" miri test --locked --test exhaustive_collections inline_ownership_exhausts_t
+verification/revision2-integration/miri-script-at-start.sh	108	target-name	--target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+verification/revision2-integration/miri-script-at-start.sh	111	target-name	--target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+verification/revision2-integration/miri-script-at-start.sh	114	target-name	--target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+verification/revision2-integration/miri-script-at-start.sh	118	target-name	integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+verification/revision2-integration/miri-script-at-start.sh	119	target-name	integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+verification/revision2-integration/miri-script-at-start.sh	120	target-name	integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+verification/revision2-integration/miri-script-at-start.sh	121	target-name	integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+verification/revision2-integration/miri-script-at-start.sh	122	target-name	integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+verification/revision2-integration/miri-script-at-start.sh	123	target-name	integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do
+verification/revision2-integration/miri-script-at-start.sh	126	target-name	--target i686-unknown-linux-gnu --lib "$frost_storage_case" \
+verification/revision2-integration/miri-script-at-start.sh	137	target-name	--target i686-unknown-linux-gnu --test integer_output "$frost_integer_case" \
+verification/revision2-integration/policy-oracle/Cargo.toml	8	other	[workspace]
+verification/revision2-integration/policy-oracle/Cargo.toml	12	harness-path	path = "../policy-oracle.rs"
+verification/revision2-integration/policy-oracle/Cargo.toml	15	package-name	frost = { package = "frost-collections", path = "../../..", features = ["int-set"] }
+verification/revision2-integration/reviewed-baseline/Cargo.toml	12	harness-path	exclude = ["verification/**", "docs/reviews/supplied/**"]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	108	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	112	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	117	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	122	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	127	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	132	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	137	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	142	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	147	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	152	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	157	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	162	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	167	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	172	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	177	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	182	bench-path	[[bench]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	187	example-path	[[example]]
+verification/revision2-integration/reviewed-baseline/Cargo.toml	192	bench-path	[[bench]]
+verification/revision2-integration/verify-script-tested.sh	22	target-name	cargo test --examples --all-features --locked
+verification/revision2-integration/verify-script-tested.sh	26	target-name	cargo clippy --lib --no-default-features --locked -- -D warnings
+verification/revision2-integration/verify-script-tested.sh	29	target-name	cargo clippy --lib --no-default-features --features alloc --locked -- -D warnings
+verification/revision2-integration/verify-script-tested.sh	40	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/verify-script-tested.sh	47	target-name	cargo clippy --lib --no-default-features --features "$frost_feature" --locked -- -D warnings
+verification/revision2-integration/verify-script-tested.sh	58	package-name	package = next(p for p in json.load(sys.stdin)["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/verify-script-tested.sh	64	target-name	cargo run --example "$frost_example" --all-features --locked
+verification/revision2-integration/verify-script-tested.sh	69	target-name	cargo test --locked --no-default-features --features int-set --test integer_sets --test integer_outp
+verification/revision2-integration/verify-script-tested.sh	70	target-name	cargo test --locked --release --features int-set,arc-swap-1 --test integer_sets --test integer_outpu
+verification/revision2-integration/verify-script-tested.sh	71	harness-path	cargo test --locked --manifest-path verification/int-key-downstream/Cargo.toml
+verification/revision2-integration/verify-script-tested.sh	80	package-name	p = next(p for p in data["packages"] if p["name"] == "frost-collections")
+verification/revision2-integration/verify-script-tested.sh	81	other	print(pathlib.Path(data["target_directory"]) / "package" / (p["name"] + "-" + p["version"]) / "Cargo
+verification/revision2-integration/verify-script-tested.sh	84	other	cargo test --manifest-path "$frost_package_manifest" --all-features --locked
+verification/revision2-integration/verify-script-tested.sh	85	target-name	cargo test --manifest-path "$frost_package_manifest" --examples --all-features --locked
+verification/revision2-integration/verify-script-tested.sh	89	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv6m-none-eabi
+verification/revision2-integration/verify-script-tested.sh	90	target-name	cargo build --lib --locked --no-default-features --features int-set --target thumbv7em-none-eabihf
+verification/revision2-integration/verify-script-tested.sh	91	target-name	cargo build --lib --locked --no-default-features --target thumbv7em-none-eabihf
+verification/revision2-integration/verify-script-tested.sh	92	target-name	cargo build --lib --locked --no-default-features \
+verification/revision2-integration/verify-script-tested.sh	101	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety --test families --test core_review -
+verification/revision2-integration/verify-script-tested.sh	103	target-name	cargo +"$frost_nightly" miri test --locked --test inline_safety
+verification/revision2-integration/verify-script-tested.sh	105	target-name	cargo +"$frost_nightly" miri test --locked --test exhaustive_collections inline_ownership_exhausts_t
+verification/revision2-integration/verify-script-tested.sh	108	target-name	--target i686-unknown-linux-gnu --test integer_sets dense_ -- --test-threads=1
+verification/revision2-integration/verify-script-tested.sh	111	target-name	--target i686-unknown-linux-gnu --lib integer::storage::word::tests -- --test-threads=1
+verification/revision2-integration/verify-script-tested.sh	114	target-name	--target i686-unknown-linux-gnu --lib integer::storage::tests -- --test-threads=1
+verification/revision2-integration/verify-script-tested.sh	118	target-name	integer::chunked::tests::partial_fold_resumes_near_chunk_ends_without_repeating_next_chunk \
+verification/revision2-integration/verify-script-tested.sh	119	target-name	integer::chunked::tests::full_chunk_runs_and_early_break_are_bounded \
+verification/revision2-integration/verify-script-tested.sh	120	target-name	integer::chunked::tests::unchanged_overlapping_containers_keep_their_allocations \
+verification/revision2-integration/verify-script-tested.sh	121	target-name	integer::chunked::tests::dense_promotion_splits_windows_on_container_boundaries \
+verification/revision2-integration/verify-script-tested.sh	122	target-name	integer::dense::tests::deleting_from_an_empty_window_is_a_no_op \
+verification/revision2-integration/verify-script-tested.sh	123	target-name	integer::dense::tests::dense_runs_preserve_word_edges_and_the_maximum_code; do
+verification/revision2-integration/verify-script-tested.sh	126	target-name	--target i686-unknown-linux-gnu --lib "$frost_storage_case" \
+verification/revision2-integration/verify-script-tested.sh	137	target-name	--target i686-unknown-linux-gnu --test integer_output "$frost_integer_case" \
+verification/shell/coverage.bats	12	harness-path	frost_baseline="$frost_fixture/verification/crate-standards-validation/baseline-coverage.json"
+verification/shell/coverage.bats	15	harness-path	cp "$BATS_TEST_DIRNAME/../crate-standards-validation/baseline-coverage.json" "$frost_baseline"
+verification/shell/coverage.bats	117	test-path	run_coverage_gate 'COVERAGE_IGNORE_REGEX=(^|/)(tests|examples)/'
+verification/shell/makefile.bats	18	package-name	"name":"frost-collections","version":"0.4.0",
+verification/shell/makefile.bats	101	package-name	FROST_TEST_METADATA='{"packages":[{"name":"frost-collections","features":{}}]}' \
+verification/shell/makefile.bats	112	target-name	[[ "$(<"$FROST_TEST_LOG")" == *'<clippy> <--lib> <--no-default-features> <--features> <alpha-feature
+verification/shell/makefile.bats	128	target-name	[[ "$(<"$FROST_TEST_LOG")" == *'<run> <--example> <first> <--all-features> <--locked>'* ]]
+verification/shell/makefile.bats	136	package-name	[[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.
+verification/shell/makefile.bats	162	target-name	[[ "$(<"$FROST_TEST_LOG")" == *'<--example> <first>'* ]]
+verification/shell/makefile.bats	163	target-name	[[ "$(<"$FROST_TEST_LOG")" == *'<--example> <second>'* ]]
+verification/shell/makefile.bats	172	package-name	[[ "$(<"$FROST_TEST_LOG")" == *'<--manifest-path> <build area/package/frost-collections-0.4.0/Cargo.
+verification/shell/makefile.bats	177	harness-path	frost_harness="$frost_fixture/verification/integer-optimizations/ab-harness"

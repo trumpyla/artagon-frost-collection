@@ -30,7 +30,7 @@ complementary evidence lanes:
 2. **Seeded property-based testing** with `proptest 1.12` and committed
    `.proptest-regressions` seed persistence (`SRC-VERIFY-PROPTEST`).
 3. **Isolated structure-aware differential fuzzing** in
-   [`verification/fuzz`](../../../verification/fuzz/README.md) (`cargo-fuzz 0.13.2`,
+   [`verification/fuzz`](../../../crates/frost-collections-integer/fuzz/README.md) (`cargo-fuzz 0.13.2`,
    `libfuzzer-sys 0.4.13`, `arbitrary 1.5.0`) with a stable-toolchain corpus replay
    gate (`make fuzz-check`) and bounded nightly `libFuzzer` exploration
    (`make fuzz-smoke`, `SRC-VERIFY-CARGO-FUZZ`).
@@ -53,10 +53,10 @@ complementary evidence lanes:
    `i686-unknown-linux-gnu` integer storage checks in `make miri`,
    `SRC-VERIFY-MIRI`).
 7. **Concurrency schedule exploration and bounded symbolic proofs** via the
-   shared production retry helper in [`tests/publication_model.rs`](../../../tests/publication_model.rs),
-   isolated [`verification/loom`](../../../verification/loom/src/lib.rs)
+   shared production retry helper in [`tests/publication_model.rs`](../../../crates/frost-collections-concurrent/tests/publication_model.rs),
+   isolated [`verification/loom`](../../../crates/frost-collections-concurrent/verification/loom/src/lib.rs)
    (`loom 0.7.3`, `SRC-VERIFY-LOOM`), and isolated
-   [`verification/kani`](../../../verification/kani/src/lib.rs) (`Kani 0.68.0`,
+   [`verification/kani`](../../../crates/frost-collections-core/verification/kani/src/lib.rs) (`Kani 0.68.0`,
    `SRC-VERIFY-KANI`). Deductive verifiers (`Verus`, `Creusot`) are evaluated
    and deferred until post-`frost-wlt` stabilization (`SRC-VERIFY-VERUS`,
    `SRC-VERIFY-CREUSOT`).
@@ -86,12 +86,12 @@ fail closed with a non-zero exit code when an optional binary is missing.
 | `cargo-nextest` | `0.9.151` (`SRC-VERIFY-NEXTEST`) | Process-per-test runner with deterministic `retries = 0`, slow-timeout enforcement, and JUnit XML output | Executes root `Cargo.toml` unit, integration, and example targets | Does not run doctests (`cargo test --doc` remains separate in `make check` and `make miri`) | **Adopted** ([`.config/nextest.toml`](../../../.config/nextest.toml), `make nextest`) |
 | `cargo-llvm-cov` | `0.9.1` (`SRC-VERIFY-LLVM-COV`) | Source-based LLVM coverage (`-C instrument-coverage`) over `src/**/*.rs` | Compiles `frost-collections` with `--all-features --locked` | Stable `1.99.1` measures lines, functions, regions, and instantiations; `--branch` and `--doctests` require nightly | **Adopted** (`make coverage`, `make coverage-gate`, `make coverage-branch`) |
 | `cargo-mutants` | `25.3.1` CLI contract (`SRC-VERIFY-CARGO-MUTANTS`) | AST-driven fault injection in `src/**/*.rs` to audit assertion strength | Mutates `src/**/*.rs` against `--all-features --locked` test runs | Cannot prove equivalence of surviving fast-path mutants; requires human survivor triage | **Adopted** ([`.config/mutants.toml`](../../../.config/mutants.toml), `make mutants`) |
-| `cargo-fuzz` / `libfuzzer-sys` | `0.13.2` / `0.4.13` (`SRC-VERIFY-CARGO-FUZZ`) | Structure-aware coverage-guided differential fuzzing with `arbitrary 1.5.0` | Isolated `[workspace]` in `verification/fuzz` depending on `frost-collections` by path | Sanitizer instrumentation requires nightly; `make fuzz-check` replays corpora on stable `1.99.1` | **Adopted** ([`verification/fuzz`](../../../verification/fuzz/README.md), `make fuzz-check`, `make fuzz-smoke`) |
+| `cargo-fuzz` / `libfuzzer-sys` | `0.13.2` / `0.4.13` (`SRC-VERIFY-CARGO-FUZZ`) | Structure-aware coverage-guided differential fuzzing with `arbitrary 1.5.0` | Isolated `[workspace]` in `verification/fuzz` depending on `frost-collections` by path | Sanitizer instrumentation requires nightly; `make fuzz-check` replays corpora on stable `1.99.1` | **Adopted** ([`verification/fuzz`](../../../crates/frost-collections-integer/fuzz/README.md), `make fuzz-check`, `make fuzz-smoke`) |
 | `proptest` | `1.12` (`SRC-VERIFY-PROPTEST`) | Property-based testing with automatic shrinking and `.proptest-regressions` seed persistence | Dev-dependency in root `Cargo.toml` | Default 256 cases sample the input space; does not replace finite exhaustive domains | **Retained & standardized** (`PROPTEST_CASES` scaling in nightly CI) |
 | `Miri` | `nightly-2026-11-08` (`SRC-VERIFY-MIRI`) | Undefined-behavior, provenance, aliasing (Stacked + Tree Borrows), and 32-bit layout checker | Executes `src/adaptive/seq/buf.rs` and `src/integer/**` through public and unit tests | Interprets executed paths only; not a symbolic proof over all inputs | **Retained** (`make miri`) |
 | `Loom` | `0.7.3` (`SRC-VERIFY-LOOM`) | Exhaustive C11-style schedule exploration of `publication::update` | Isolated `[workspace]` in `verification/loom` including `src/concurrent/publication.rs` via `#[path]` | Models retry protocol against a trusted `loom::sync::Mutex` store; does not verify `arc-swap` internals | **Retained** (`make loom`) |
-| `Kani` | `0.68.0` (`SRC-VERIFY-KANI`) | Bit-precise CBMC bounded model checking of `InlineBuf`, ordered algebra, and bitmap padding | Isolated `[workspace]` in `verification/kani` using path dependency + `#[path]` on `src/adaptive/seq/buf.rs` | Requires compatible nightly compiler (`kani 0.68.0` bundles `nightly-2026-08-21` < MSRV `1.99.1`); native helpers run in `make bounded` | **Retained as explicit release gate** (`make kani`, [`.github/workflows/proofs.yml`](../../../.github/workflows/proofs.yml)) |
-| `Verus` / `Creusot` | Current upstream (`SRC-VERIFY-VERUS`, `SRC-VERIFY-CREUSOT`) | Deductive SMT/Why3 verification of unbounded functional invariants | None | Both require custom toolchain pins and intrusive ghost/specification macros (`verus!`, Pearlite `#[ensures]`) incompatible with a zero-dependency `#![no_std]` library on stable Rust `1.99.1` | **Deferred** (re-evaluate for isolated kernel mirrors after `frost-wlt`) |
+| `Kani` | `0.68.0` (`SRC-VERIFY-KANI`) | Bit-precise CBMC bounded model checking of `InlineBuf`, ordered algebra, and bitmap padding | Isolated `[workspace]` in `verification/kani` using path dependency + `#[path]` on `src/adaptive/seq/buf.rs` | Requires compatible nightly compiler (`kani 0.68.0` bundles `nightly-2026-08-21`, whose rustc reports `1.100.0-nightly` and compiled this package on 2026-11-13; an earlier revision of this row wrongly placed it below MSRV `1.99.1`); native helpers run in `make bounded` | **Retained as explicit release gate** (`make kani`, [`.github/workflows/proofs.yml`](../../../.github/workflows/proofs.yml)) |
+| `Verus` / `Creusot` | Current upstream (`SRC-VERIFY-VERUS`, `SRC-VERIFY-CREUSOT`) | Deductive SMT/Why3 verification of unbounded functional invariants | None | Both require custom toolchain pins and intrusive ghost/specification macros (`verus!`, Pearlite `#[ensures]`) incompatible with a zero-dependency `#![no_std]` library on stable Rust `1.99.1` | **Deferred** (re-evaluate for isolated kernel mirrors after `frost-wlt`). Superseded on 2026-11-13 for Verus at spec level: see [formal validation tools](formal-validation-tools.md) |
 
 ## Source coverage model, denominators, and baseline analysis
 
@@ -134,7 +134,7 @@ From [`verification/crate-standards-validation/baseline-coverage.json`](../../..
 | Set algebra kernels (`ordered/set_ops.rs`, `hash_set_ops.rs`, `backends/bitmap.rs`) | 833 / 844 (98.70%) | 141 / 142 (99.30%) | 1,289 / 1,310 (98.40%) | Exhaustive 6-element / 66,564-bitmap suites cover nearly all branches |
 | Concurrency (`src/concurrent/**`) | 117 / 128 (91.41%) | 33 / 36 (91.67%) | 179 / 195 (91.79%) | Guarded lookup, live wrappers, and snapshot retry loop well covered |
 | Inline unsafe buffer (`src/adaptive/seq/buf.rs`) | 107 / 121 (88.43%) | 19 / 22 (86.36%) | 146 / 165 (88.48%) | Covered by 33,614-trace exhaustive and Miri suites |
-| Mutable sequence & ordered family (`vec/mutable.rs`, `ordered/mutable.rs`) | 183 / 465 (39.35%) | 49 / 131 (37.40%) | 237 / 617 (38.41%) | Addressed by new [`tests/api_contracts.rs`](../../../tests/api_contracts.rs) obligations |
+| Mutable sequence & ordered family (`vec/mutable.rs`, `ordered/mutable.rs`) | 183 / 465 (39.35%) | 49 / 131 (37.40%) | 237 / 617 (38.41%) | Addressed by new [`tests/api_contracts.rs`](../../../crates/frost-collections-core/tests/api_contracts.rs) obligations |
 | Capability traits & plans (`src/write.rs`, `src/plan.rs`, `src/iter.rs`) | 71 / 174 (40.80%) | 23 / 55 (41.82%) | 111 / 267 (41.57%) | Default trait methods and error display paths need direct contract tests |
 | Native backend capability impls (`std_btree.rs`, `std_hash.rs`, `hashbrown.rs`, `indexmap.rs`) | 130 / 420 (30.95%) | 32 / 110 (29.09%) | 147 / 491 (29.94%) | Thin capability impls over native collections under-exercised in baseline |
 
@@ -180,9 +180,9 @@ Structural coverage cannot detect whether an operation returned the **wrong**
 equivalent representative or leaked an element on early iterator drop. Frost
 requires every public family and capability to be verified against six semantic
 obligation classes (cataloged by `verification/catalog` and tested in
-[`tests/api_contracts.rs`](../../../tests/api_contracts.rs),
-[`tests/exhaustive_collections.rs`](../../../tests/exhaustive_collections.rs),
-and [`verification/fuzz/src/lib.rs`](../../../verification/fuzz/src/lib.rs)):
+[`tests/api_contracts.rs`](../../../crates/frost-collections-core/tests/api_contracts.rs),
+[`tests/exhaustive_collections.rs`](../../../crates/frost-collections-core/tests/exhaustive_collections.rs),
+and [`verification/fuzz/src/lib.rs`](../../../crates/frost-collections-integer/fuzz/src/lib.rs)):
 
 1. **Representative identity**: First-key/first-element retention on
    construction and insertion; last-value retention on map construction; left
@@ -210,19 +210,19 @@ and [`verification/fuzz/src/lib.rs`](../../../verification/fuzz/src/lib.rs)):
 Neither concurrency models nor bounded proofs may verify a detached copy of an
 algorithm:
 
-- **Retry scheduler model ([`tests/publication_model.rs`](../../../tests/publication_model.rs))**:
-  Includes [`src/concurrent/publication.rs`](../../../src/concurrent/publication.rs)
+- **Retry scheduler model ([`tests/publication_model.rs`](../../../crates/frost-collections-concurrent/tests/publication_model.rs))**:
+  Includes [`src/concurrent/publication.rs`](../../../crates/frost-collections-concurrent/src/concurrent/publication.rs)
   directly and explores all 6 terminal schedules for 2 writers and all 198
   terminal schedules for 3 writers under noncommuting updates `4*x + k`,
   asserting the exact bound of `n + n(n+1)/2` atomic steps (at most 9 for 3
   writers).
-- **Loom model ([`verification/loom/src/lib.rs`](../../../verification/loom/src/lib.rs))**:
+- **Loom model ([`verification/loom/src/lib.rs`](../../../crates/frost-collections-concurrent/verification/loom/src/lib.rs))**:
   Includes `../../../src/concurrent/publication.rs` via `#[path]`, pins
   `loom = "=0.7.3"`, sets `max_branches = 256` as a hard failure ceiling, and
   clears `max_permutations`, `max_duration`, `preemption_bound`, and
   `checkpoint_file` so environment variables cannot silently truncate schedule
   exploration.
-- **Kani bounded harnesses ([`verification/kani/src/lib.rs`](../../../verification/kani/src/lib.rs))**:
+- **Kani bounded harnesses ([`verification/kani/src/lib.rs`](../../../crates/frost-collections-core/verification/kani/src/lib.rs))**:
   Links `frost-collections` by path dependency and includes
   `../../../src/adaptive/seq/buf.rs` via `#[path]`. Sets workspace
   `default-unwind = "1"` and explicit per-harness `#[kani::unwind(N)]` bounds
@@ -245,8 +245,8 @@ installed binaries on `aarch64-apple-darwin`.
 | `SRC-VERIFY-CARGO-FUZZ` | `cargo-fuzz` `0.13.2` CLI (`cargo fuzz run --help`), `libfuzzer-sys 0.4.13`, and Rust Fuzz Book (`https://rust-fuzz.github.io/book/cargo-fuzz.html`) | `[package.metadata] cargo-fuzz = true`, `fuzz_target!` macro, `arbitrary::Arbitrary` structured inputs, `--fuzz-dir`, `--target-dir`, and libFuzzer `-runs=<N>` / `-max_total_time=<S>` options. | Checked against installed `cargo-fuzz 0.13.2` and cached `libfuzzer-sys 0.4.13` on `aarch64-apple-darwin`; executed 64-run smoke on `nightly-2026-11-08`. |
 | `SRC-VERIFY-NEXTEST` | `cargo-nextest` `0.9.151` CLI and configuration reference (`https://nexte.st/docs/configuration/reference/`) | `.config/nextest.toml` profiles (`[profile.default]`, `[profile.ci]`, `[profile.mutants]`), `retries = 0`, `slow-timeout`, filter overrides, and JUnit XML output (`[profile.ci.junit]`). | Checked against installed `cargo-nextest 0.9.151` and `nexte.st` docs on 2026-11-09. Nextest does not execute rustdoc tests. |
 | `SRC-VERIFY-PROPTEST` | `proptest` `1.12` documentation (`https://docs.rs/proptest/latest/proptest/test_runner/enum.FileFailurePersistence.html`) | `FileFailurePersistence::SourceParallel` `.proptest-regressions` seed files, deterministic replay before random generation, and `PROPTEST_CASES` environment scaling. | Checked against `docs.rs/proptest` and repository `tests/integer_sets.proptest-regressions` on 2026-11-09. |
-| `SRC-VERIFY-LOOM` | `loom` `0.7.3` documentation (`https://docs.rs/loom/0.7.3/loom/model/struct.Builder.html`) and [`verification/loom/src/lib.rs`](../../../verification/loom/src/lib.rs) | `Builder::new()`, `max_threads`, `max_branches`, and clearing `max_permutations`/`max_duration`/`preemption_bound` to avoid truncated schedule exploration. | Checked against `verification/loom/src/lib.rs` (inspected by Flash research subagent and verified in source) and `docs.rs` on 2026-11-09. |
+| `SRC-VERIFY-LOOM` | `loom` `0.7.3` documentation (`https://docs.rs/loom/0.7.3/loom/model/struct.Builder.html`) and [`verification/loom/src/lib.rs`](../../../crates/frost-collections-concurrent/verification/loom/src/lib.rs) | `Builder::new()`, `max_threads`, `max_branches`, and clearing `max_permutations`/`max_duration`/`preemption_bound` to avoid truncated schedule exploration. | Checked against `verification/loom/src/lib.rs` (inspected by Flash research subagent and verified in source) and `docs.rs` on 2026-11-09. |
 | `SRC-VERIFY-MIRI` | Miri documentation (`https://github.com/rust-lang/miri`) and [`Makefile`](../../../Makefile) | `-Zmiri-strict-provenance`, `-Zmiri-tree-borrows`, and cross-target `--target i686-unknown-linux-gnu` execution on `nightly-2026-11-08`. | Checked against `Makefile` and `docs/verification.md` on 2026-11-09. |
-| `SRC-VERIFY-KANI` | Kani `0.68.0` documentation (`https://model-checking.github.io/kani/tutorial-loop-unwinding.html`) and [`verification/kani/src/lib.rs`](../../../verification/kani/src/lib.rs) | `#[kani::proof]`, `#[kani::unwind(N)]`, `[workspace.metadata.kani.flags] default-unwind = "1"`, and unwinding assertions. | Checked against `verification/kani` source (inspected by Flash research subagent and verified in source) on 2026-11-09. Local `cargo kani` binary is not installed. |
+| `SRC-VERIFY-KANI` | Kani `0.68.0` documentation (`https://model-checking.github.io/kani/tutorial-loop-unwinding.html`) and [`verification/kani/src/lib.rs`](../../../crates/frost-collections-core/verification/kani/src/lib.rs) | `#[kani::proof]`, `#[kani::unwind(N)]`, `[workspace.metadata.kani.flags] default-unwind = "1"`, and unwinding assertions. | Checked against `verification/kani` source (inspected by Flash research subagent and verified in source) on 2026-11-09. Local `cargo kani` binary is not installed. |
 | `SRC-VERIFY-VERUS` | Verus documentation (`https://verus-lang.github.io/verus/guide/`) | SMT-backed deductive verification inside `verus! { ... }` blocks for low-level systems and pointer code; requires Verus custom toolchain/macros. | Evaluated via primary documentation search on 2026-11-09; deferred for `frost-collections` 0.4.0. |
 | `SRC-VERIFY-CREUSOT` | Creusot documentation (`https://creusot.rs`) | Why3/Coma deductive translation with Pearlite `#[requires]`/`#[ensures]` contracts for safe Rust algorithms; requires Creusot nightly driver and Why3 provers. | Evaluated via primary documentation search on 2026-11-09; deferred for `frost-collections` 0.4.0. |

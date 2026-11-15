@@ -1,0 +1,36 @@
+{
+  "schema": "frost-maintainer-rule-links/v1",
+  "scope": "repository",
+  "path_base": "repository-root",
+  "reviewed_base": "27b14399b0245df2a018fd5eb6f24f47ce7c2dbe",
+  "entry": {
+    "path": "AGENTS.md",
+    "kind": "git-symlink",
+    "target": "docs/maintainers/agent-rules.md"
+  },
+  "authority": [
+    {
+      "path": "CRATES.md",
+      "scope": "layout, dependency placement, verification and benchmark metadata"
+    },
+    {
+      "path": "docs/maintainers/implementation-contracts.md",
+      "scope": "existing implementation, semantic, safety and verification rules retained from main"
+    },
+    {
+      "path": "TOOLS.md",
+      "scope": "source navigation and evidence limits"
+    }
+  ],
+  "companions": [
+    "docs/maintainers/repository-rules.md",
+    "docs/maintainers/documentation-rules.md",
+    "docs/design/algebra/catalog.json"
+  ],
+  "non_goals": [
+    "no workspace migration",
+    "no new public production types",
+    "no automatic publication",
+    "no replacement verification dispatcher"
+  ]
+}

@@ -1,0 +1,4 @@
+     Locking 3 packages to highest Rust 1.99.1 compatible versions
+      Adding frost-baseline-concurrent v0.4.0 (/home/user/artagon-frost-collection/verification/integer-optimizations/ab-harness/baseline-workspace/crates/frost-collections-concurrent)
+      Adding frost-baseline-core v0.4.0 (/home/user/artagon-frost-collection/verification/integer-optimizations/ab-harness/baseline-workspace/crates/frost-collections-core)
+      Adding frost-baseline-integer v0.4.0 (/home/user/artagon-frost-collection/verification/integer-optimizations/ab-harness/baseline-workspace/crates/frost-collections-integer)

@@ -6,16 +6,41 @@ portable citations, a decision-oriented synthesis, reusable research
 templates, and ready-to-run prompts for the next focused investigations.
 Nothing here is an accepted design or an implemented API unless its status
 says so. The [documentation index](../README.md) lists every design,
-verification, and review document; the [crate README](../../README.md)
+verification, and review document; the [crate README](../../crates/frost-collections/README.md)
 explains the rationale and the implemented library.
 
 The current [naming dispositions](../design/collection-algebra.md#naming-dispositions)
 resolve selected research spellings without implementing the proposed types.
 
-Baseline for every artifact: commit `82becb998af5627cc1e58118ae01515d8a3559ca`,
+Baseline for the original corpus artifacts listed below: commit `82becb998af5627cc1e58118ae01515d8a3559ca`,
 imported or written on 2026-11-09. The [machine manifest](manifest.json)
 (validated against [its schema](manifest.schema.json)) records ids, hashes,
 status, and relationships for scripts; this page is the human index.
+
+## Formal-model refinement supplement
+
+The [value-domain and algebra supplement](formal-models/README.md) reconciles the
+available session documents with main at `27b1439`, preserves the selected
+multimap names, and develops the formal model before each collection's laws.
+It includes a source/input ledger, same-author adversarial reviews, bounded
+executable mathematical checks, and a focused follow-up prompt. Its own
+[supplement manifest](formal-models/manifest.json) records these new artifacts;
+the older corpus's baseline, original hashes and citation recovery claims below
+remain historical and are not relabeled as current verification.
+
+The separately linked full reports that earlier summaries described remain
+unrecovered. Newly authored formal chapters do not claim to be those files.
+
+## Prior-art survey of the formal algebra
+
+The [prior-art report](reports/value-domain-algebra-prior-art.md) is a curated
+derivative of a survey run on 2026-11-12 against the formal chapters. Its
+input is a fourth raw input, listed in the [raw index](raw/README.md); it has
+no opaque citation markers, so the citation map has no entries for it. Its
+sources are the `SRC-PRIOR-…` rows of the [source catalog](SOURCES.md), each
+with one of three check levels. It added four laws to the algebra chapters
+and renamed nothing; see the
+[decision record](../design/decisions.md#prior-art-survey-integration-2026-11-12).
 
 ## Status labels
 
@@ -42,6 +67,7 @@ Source validation: `pending`, `partial`, `verified`.
 | [Collection algebra survey](reports/collection-algebra-survey.md) | report, landscape | curated; partial | Curated from Frost1: domains and laws, representative identity with a compiled corrected example, ecosystem evidence with status, corrected sketches, per-claim ledger |
 | [Collection algebra implementation notes](reports/collection-algebra-implementation-notes.md) | report, landscape | curated; partial | Curated from Frost2: versions and licenses as dated claims, target-restriction correction, output modes, n-ary strategies, verification mapped to Make targets |
 | [Computed sets summary](reports/computed-sets-summary.md) | summary | curated; partial | Curated from Frost3; the full report it describes was not supplied |
+| [Value-domain algebra prior art](reports/value-domain-algebra-prior-art.md) | report, landscape | curated; partial | Curated from the prior-art survey of 2026-11-12: established theory and implementations per construct, per-source check levels, corrections, four added laws, five seeded questions |
 | [Foundations and engine roadmap](synthesis/foundations-and-engine-roadmap.md) | synthesis, landscape | curated (new synthesis); partial | Executive map, taxonomy, claim ledger, conflicts, alternatives, current-versus-planned matrix, prioritized questions, roadmap |
 | [Master research prompt](templates/research-prompt.md) | template | curated | Launch a landscape, deep-dive, or validation task without this conversation |
 | [Landscape report template](templates/landscape-report.md) | template | curated | Required sections and ledger for an overview |
@@ -75,26 +101,28 @@ A child report never approves a design; design proposals live under
 
 ## Reading paths
 
-**New contributor.** Crate README rationale → [Frozen API guide](../design/frozen-api.md)
+**New contributor.** Crate README rationale → [Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md)
 → [design philosophy](../design/philosophy.md) → this index → the
 [synthesis](synthesis/foundations-and-engine-roadmap.md) sections 1, 2, and 7.
 
-**Frozen API implementer.** [Frozen API guide](../design/frozen-api.md) →
+**Frozen API implementer.** [Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md) →
 [architecture](../design/architecture.md) sections 1-3 and 6 →
-[snapshot contract](../design/snapshots.md) → the tests named in the source
+[snapshot contract](../../crates/frost-collections-concurrent/docs/snapshots.md) → the tests named in the source
 catalog (`SRC-FROST-TESTS`) → [prompt Q-FROZEN-1](prompts/frozen-api-contracts.md).
 
-**Algebra or planner implementer.** [Set operations](../set-operations.md)
-(implemented) → [general set algebra](../design/set-algebra.md) (proposal) →
+**Algebra or planner implementer.** [Set operations](../../crates/frost-collections-core/docs/set-operations.md)
+(implemented) → [general set algebra](../../crates/frost-collections-core/docs/set-algebra.md) (proposal) →
 [collection algebra synthesis](../design/collection-algebra.md) → the
 [survey](reports/collection-algebra-survey.md) and
 [implementation notes](reports/collection-algebra-implementation-notes.md) →
+the [formal chapters](../design/algebra/README.md) and their
+[prior art](reports/value-domain-algebra-prior-art.md) →
 [prompt Q-ALG-1](prompts/algebraic-foundations.md) → the n-ary derivation in
 the [audit](integration-audit.md).
 
 **Authorization-engine integrator.** Synthesis section 6 →
 [computed sets summary](reports/computed-sets-summary.md) →
-[snapshot contract](../design/snapshots.md) → [integer profile](../design/integer-sets.md)
+[snapshot contract](../../crates/frost-collections-concurrent/docs/snapshots.md) → [integer profile](../../crates/frost-collections-integer/docs/integer-sets.md)
 for encoded ids → [prompt Q-CSET-1](prompts/computed-sets-and-durable-execution.md)
 → [prompt Q-AUTHZ-1](prompts/authorization-engine-integration.md).
 

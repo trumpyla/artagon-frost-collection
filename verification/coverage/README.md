@@ -11,14 +11,16 @@ and the six targeted public-API contract tests added at the root are mapped in
 ## Denominator and exclusion rules
 
 1. **File-scoped library-source denominator**: library source files under
-   `src/**/*.rs`, compiled with `--all-features --locked`. Where inline
-   `#[cfg(test)]` modules reside inside `src/` files (such as `src/integer/**`),
+   `crates/*/src/**/*.rs` of the library packages, compiled with `--all-features --locked`. Where inline
+   `#[cfg(test)]` modules reside inside `src/` files (such as `crates/frost-collections-integer/src/integer/**`),
    their lines are included in the file-scoped denominator; this is file-scoped
    library-source coverage, not a test-free production-code denominator.
 2. **Excluded non-library paths**:
-   `--ignore-filename-regex '(^|/)(tests|benches|examples|verification)/'`.
+   `--ignore-filename-regex '(^|/)(tests|benches|examples|verification|fuzz|frost-collections-test-support)/'`.
+   The fuzz package and the test-support package are harness code, not
+   library source.
    Default `cargo llvm-cov --all-features --locked` runs unit, integration, and
-   example test targets (`tests/`, `examples/`); custom `harness = false`
+   example test targets (`tests/`, `crates/frost-collections/examples/`); custom `harness = false`
    benchmark targets (`benches/`) do **not** execute in the default coverage run.
    Excluded directories define the filename denominator, not the set of executed
    target kinds.
@@ -28,14 +30,14 @@ and the six targeted public-API contract tests added at the root are mapped in
      and ignore regex). A measurement on `aarch64-apple-darwin` does not prove
      the `x86_64-unknown-linux-gnu` baseline on Ubuntu CI.
    - Host `cargo llvm-cov --all-features` on 64-bit targets compiles the
-     `#[cfg(target_has_atomic = "ptr")]` (`Arc`) branch in `src/integer/mod.rs`.
+     `#[cfg(target_has_atomic = "ptr")]` (`Arc`) branch in `crates/frost-collections-integer/src/integer/mod.rs`.
      The `#[cfg(not(target_has_atomic = "ptr"))]` (`Rc`) branch is verified by
      `make embedded` (`thumbv6m-none-eabi`).
    - Do not add `#[coverage(off)]` to production functions to raise percentages.
      Any future exclusion must be listed in [`coverage-policy.json`](coverage-policy.json)
      with a concrete justification (`CR-WAIVE-2`).
-4. **Unsafe code coverage (`src/adaptive/seq/buf.rs`)**:
-   - The sole runtime `unsafe` module is `src/adaptive/seq/buf.rs` (observed
+4. **Unsafe code coverage (`crates/frost-collections-core/src/adaptive/seq/buf.rs`)**:
+   - The sole runtime `unsafe` module is `crates/frost-collections-core/src/adaptive/seq/buf.rs` (observed
      `aarch64-apple-darwin` `6ab0918` baseline: 19/22 functions = 86.364%,
      107/121 lines = 88.430%, 146/165 regions = 88.485%).
    - Line/region coverage in `buf.rs` is necessary but never sufficient: changes
@@ -73,9 +75,9 @@ inventories, not the completeness of semantic API obligations.
 
 | Metric | Observed `aarch64-apple-darwin` baseline (`6ab0918`) | Portable adoption floor (`COVERAGE_MIN_*`) | Scoped ratchet (`aarch64-apple-darwin`) | Target ([`CRATES.md`](../../CRATES.md) §5) | Follow-up Beads task |
 | --- | --- | --- | --- | --- | --- |
-| Lines | 7,089 / 9,183 (`77.197%`) | `>= 77%` (below baseline) | `>= 77.196994%` | `>= 90.0%` | `frost-wou.9` (currently ~`79.16%` with `tests/api_contracts.rs`) |
-| Regions | 11,067 / 14,230 (`77.772%`) | `>= 77%` (below baseline) | `>= 77.772312%` | `>= 90.0%` | `frost-wou.9` (currently ~`79.43%` with `tests/api_contracts.rs`) |
-| Functions | 1,343 / 1,894 (`70.908%`) | `>= 70%` (below baseline) | `>= 70.908131%` | `>= 85.0%` | `frost-wou.9` (currently ~`73.76%` with `tests/api_contracts.rs`) |
+| Lines | 7,089 / 9,183 (`77.197%`) | `>= 77%` (below baseline) | `>= 77.196994%` | `>= 90.0%` | `frost-wou.9` (currently ~`79.16%` with `crates/frost-collections-core/tests/api_contracts.rs`) |
+| Regions | 11,067 / 14,230 (`77.772%`) | `>= 77%` (below baseline) | `>= 77.772312%` | `>= 90.0%` | `frost-wou.9` (currently ~`79.43%` with `crates/frost-collections-core/tests/api_contracts.rs`) |
+| Functions | 1,343 / 1,894 (`70.908%`) | `>= 70%` (below baseline) | `>= 70.908131%` | `>= 85.0%` | `frost-wou.9` (currently ~`73.76%` with `crates/frost-collections-core/tests/api_contracts.rs`) |
 | Instantiations | 5,434 / 8,602 (`63.171%`) | Report only | Report only | Report only | Not gated |
 | Branches | `0 / 0` on stable 1.99.1 | Nightly diagnostic (`make coverage-branch`) | Unmeasured | Provisional (set after first measurement) | `frost-wou.7` |
 | Doctests & isolated profiles | Unmeasured | Unmeasured | Unmeasured | Report per profile | `frost-wou.7` |

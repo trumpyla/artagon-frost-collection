@@ -14,8 +14,8 @@ snapshots. The supplied research identifies these distinct needs, but its
 recommendation to replace the storage layer first is not established by its
 evidence, and several proposed API contracts need correction.
 
-The detailed proposals are [borrowed expressions](../design/integer-views.md)
-and [persistent storage](../design/persistent-integer-storage.md). Both are
+The detailed proposals are [borrowed expressions](../../crates/frost-collections-integer/docs/integer-views.md)
+and [persistent storage](../../crates/frost-collections-integer/docs/persistent-integer-storage.md). Both are
 marked unimplemented. The current `FrozenIntSet<K>` retains its fixed Sorted,
 Dense, and Roaring candidates and its existing eager API.
 
@@ -34,7 +34,7 @@ from **1,025.254 microseconds to 4.805 microseconds**. The result's exact
 contiguous payload remains **250,000 bytes**, including after the tested
 32-update sequence. This is this project's measured workload, not a rerun of
 the supplied review's 3.3 ms figure. See the
-[complete benchmark report](../integer-output-benchmarks.md) and
+[complete benchmark report](../../crates/frost-collections-integer/docs/integer-output-benchmarks.md) and
 [payload evidence](../../verification/integer-output/payload-check.csv).
 
 Clone and version retention still warrant investigation. Today a deep copy
@@ -114,7 +114,7 @@ verified, including merged #928 and #946. Java's shared-container fix #874
 was merged, but its proposed persistent class in
 [#885](https://github.com/RoaringBitmap/RoaringBitmap/pull/885) was **open and
 unmerged**. Its own benchmark includes slower conversion and operation cases.
-The [persistent-storage source ledger](../design/persistent-integer-storage.md)
+The [persistent-storage source ledger](../../crates/frost-collections-integer/docs/persistent-integer-storage.md)
 records the exact statuses and relevant invariants. These are reports about
 other implementations, not defects established in Frost's Rust dependency.
 
@@ -255,7 +255,7 @@ policy failures, snapshot identity and retry behavior, and lifecycle memory
 measurements. The existing concurrency model assumes the publication primitive;
 it does not prove a new tree, ArcSwap internals, or unbounded progress.
 
-The archive's [executed implementation validation](../integer-output-validation.md)
-and [benchmark evidence](../integer-output-benchmarks.md) remain separate from
+The archive's [executed implementation validation](../../crates/frost-collections-integer/docs/integer-output-validation.md)
+and [benchmark evidence](../../crates/frost-collections-integer/docs/integer-output-benchmarks.md) remain separate from
 these proposed gates. No existing test total is presented as validation of
 the unimplemented views or persistent profile.

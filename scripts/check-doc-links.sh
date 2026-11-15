@@ -29,6 +29,11 @@ if [[ -d $root/docs ]]; then
   find "$root/docs" -type d -name supplied -prune -o \
     \( -type f -o -type l \) -name '*.md' -print0 >>"$temporary/files"
 fi
+# Package documents: README, changelog, and docs of each workspace member.
+if [[ -d $root/crates ]]; then
+  find "$root/crates" -type d \( -name supplied -o -name target \) -prune -o \
+    \( -type f -o -type l \) -name '*.md' -print0 >>"$temporary/files"
+fi
 
 # Set decoded in the caller; never evaluate the URL as shell code.
 decode_path() {

@@ -4,7 +4,7 @@ Date: 2026-11-10. Reviewed branch: `integer-optimizations` at `6aaf871`,
 against `main` at `22697a8`, followed by corrections at `23704b0` and
 `727ea33`. The Miri runner correction below preserves the full test matrix.
 The earlier Linux timings and verification remain historical evidence in
-[the optimization record](../integer-optimization-validation.md).
+[the optimization record](../../crates/frost-collections-integer/docs/integer-optimization-validation.md).
 
 ## Findings and corrections
 

@@ -1,0 +1,5281 @@
+{
+  "schema": "frost-bench-inventory/1",
+  "targets": {
+    "benches/ordered_sets.rs": [
+      {
+        "name": "ordered.empty.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_count",
+        "control": "ordered.empty.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_subset",
+        "control": "ordered.empty.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.empty.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.empty.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_count",
+        "control": "ordered.balanced_65536.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_subset",
+        "control": "ordered.balanced_65536.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_count",
+        "control": "ordered.balanced_interleaved_miss.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_subset",
+        "control": "ordered.balanced_interleaved_miss.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_interleaved_miss.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_interleaved_miss.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_count",
+        "control": "ordered.spread_64_65536.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_subset",
+        "control": "ordered.spread_64_65536.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_65536.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_65536.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_count",
+        "control": "ordered.spread_64_1048576.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_subset",
+        "control": "ordered.spread_64_1048576.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_64_1048576.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_64_1048576.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_count",
+        "control": "ordered.spread_1024_1048576.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_subset",
+        "control": "ordered.spread_1024_1048576.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.spread_1024_1048576.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.spread_1024_1048576.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_count",
+        "control": "ordered.head_64_65536.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_subset",
+        "control": "ordered.head_64_65536.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.head_64_65536.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.head_64_65536.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_count",
+        "control": "ordered.tail_64_65536.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_subset",
+        "control": "ordered.tail_64_65536.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.tail_64_65536.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.tail_64_65536.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_count",
+        "control": "ordered.ratio_31.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_subset",
+        "control": "ordered.ratio_31.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_31.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_31.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_count",
+        "control": "ordered.ratio_32.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_subset",
+        "control": "ordered.ratio_32.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_count",
+        "control": "ordered.ratio_33.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_subset",
+        "control": "ordered.ratio_33.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_33.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_33.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_count",
+        "control": "ordered.balanced_then_long_gap.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_subset",
+        "control": "ordered.balanced_then_long_gap.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_then_long_gap.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_then_long_gap.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_count",
+        "control": "ordered.separated.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_subset",
+        "control": "ordered.separated.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.separated.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.separated.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_count",
+        "control": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_subset",
+        "control": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_uniform_skew_seed=1;left=65536;right=64;shared=32;layout=uniform:base=0:span=262144;partition=interleaved;lemit=asc+0;remit=asc+0.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_count",
+        "control": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_subset",
+        "control": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_runs_blocks_seed=2;left=4096;right=4096;shared=1024;layout=runs:base=0:run=256:gap=768;partition=blocks:LSR;lemit=asc+0;remit=asc+0.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_count",
+        "control": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_count",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_fold",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_fold",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_subset",
+        "control": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_subset",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_disjoint",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.frost_disjoint",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_count",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.factory_shuffled_duplicates_seed=3;left=8192;right=8192;shared=4096;layout=uniform:base=0:span=1048576;partition=shuffled;lemit=shuf+1024;remit=asc+0.std_subset",
+        "control": "none",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "factory",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.same_storage.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.same_storage.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      }
+    ],
+    "benches/set_operations.rs": [
+      {
+        "name": "ordered.128.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.128.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.128.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.128.std_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.4096.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.4096.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.4096.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.4096.std_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.65536.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.65536.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.65536.std_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.skew_65536_64.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.skew_65536_64.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.skew_65536_64.std_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.skew_65536_64.std_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "roaring.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "roaring"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case roaring.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "roaring.native_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "roaring",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case roaring.native_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.native_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.native_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      }
+    ],
+    "benches/performance_review.rs": [
+      {
+        "name": "ordered.balanced_128.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_128.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_128.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_4096.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_4096.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.balanced_65536.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.balanced_65536.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_1.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_1.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_head_64.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_head_64.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_tail_64.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_tail_64.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.skew_spread_64.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.skew_spread_64.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_8.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_8.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_16.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_16.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.ratio_32.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.ratio_32.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.disjoint.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.disjoint.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.frost_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.frost_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.frost_reverse_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.frost_reverse_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.frost_iter",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.frost_iter",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.frost_next",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.frost_next",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.std_btree_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.std_btree_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.probe_small_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.probe_small_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "ordered.interleaved_miss.frost_subset",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case ordered.interleaved_miss.frost_subset",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.128.frost_iter_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.128.frost_iter_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.128.std_iter_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.128.std_iter_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.128.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.128.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.128.std_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.128.std_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.65536.frost_iter_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.65536.frost_iter_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.65536.std_iter_count",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.65536.std_iter_count",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.65536.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.65536.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "hash.65536.std_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "hash",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case hash.65536.std_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.64_64.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.64_64.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_65.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_65.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.4096_4096.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.4096_4096.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262144_262144.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262144_262144.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_262147.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_262147.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.65_262147.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.65_262147.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.frost_union",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.frost_union",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.frost_difference",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.frost_difference",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.frost_symmetric",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.frost_symmetric",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "dense.262147_65.frost_materialize_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "bitmap"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case dense.262147_65.frost_materialize_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.hash.8.entry_hit",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.hash.8.entry_hit",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.ordered.8.entry_hit",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.ordered.8.entry_hit",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.hash.64.entry_hit",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.hash.64.entry_hit",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.ordered.64.entry_hit",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.ordered.64.entry_hit",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "roaring.frost_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "roaring"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case roaring.frost_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "roaring.native_intersection",
+        "timing": "operation",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "roaring",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case roaring.native_intersection",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "family",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      }
+    ],
+    "benches/adaptive_maps.rs": [
+      {
+        "name": "adaptive.sorted_threshold_4096.pop_first_drain",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.sorted_threshold_4096.pop_first_drain",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "btree.4096.pop_first_drain",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case btree.4096.pop_first_drain",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.sorted_threshold_8192.extend_interleaved_4096",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.sorted_threshold_8192.extend_interleaved_4096",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "btree.4096.extend_interleaved",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case btree.4096.extend_interleaved",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.sorted_threshold_16384.pop_first_drain",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.sorted_threshold_16384.pop_first_drain",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "btree.16384.pop_first_drain",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case btree.16384.pop_first_drain",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "adaptive.sorted_threshold_32768.extend_interleaved_16384",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "adaptive"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case adaptive.sorted_threshold_32768.extend_interleaved_16384",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      },
+      {
+        "name": "btree.16384.extend_interleaved",
+        "timing": "destructive-with-setup",
+        "status": "unreviewed",
+        "tags": [
+          "benchmark",
+          "unreviewed",
+          "ordered",
+          "native-control"
+        ],
+        "features": "inherit",
+        "scenario": "benchmark case btree.16384.extend_interleaved",
+        "control": "unreviewed: no equivalent native control established",
+        "area": "adaptive",
+        "provenance": "discovery:bench-list",
+        "seed": "unreviewed",
+        "cost": "timed",
+        "contracts": []
+      }
+    ]
+  }
+}

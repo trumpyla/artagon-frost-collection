@@ -1,0 +1,127 @@
+[package]
+name = "frost-collections"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Mutable and frozen collection families, adaptive storage, framework integrations, and concurrent access"
+readme = "README.md"
+license.workspace = true
+categories = ["data-structures", "no-std"]
+keywords = ["collections", "immutable", "frozen", "no_std"]
+publish.workspace = true
+exclude = ["verification/**"]
+
+[lib]
+name = "frost"
+
+[features]
+default = ["std"]
+# Every feature forwards to the package that owns its code, under the same
+# name. `alloc` enables Vec/Box/VecDeque/LinkedList/BinaryHeap/BTree* backends
+# and the allocating families. `std` adds std::collections::{HashMap, HashSet}
+# and the hash families. Every feature is additive: enabling one never changes
+# the representation or bounds of an existing public type.
+alloc = ["frost-collections-core/alloc"]
+std = ["alloc", "frost-collections-core/std", "frost-collections-integer?/std", "dep:frost-collections-concurrent"]
+# Public dependency features name compatibility lines. Supporting a future
+# incompatible line additively needs a separately named dependency and adapter.
+hashbrown-0_17 = ["alloc", "frost-collections-core/hashbrown-0_17"]
+indexmap-2 = ["alloc", "frost-collections-core/indexmap-2"]
+
+# Framework adapters also name compatibility lines. Future incompatible
+# integrations need separately named dependencies to coexist additively.
+serde-1 = ["alloc", "frost-collections-core/serde-1"]
+rayon-1 = ["std", "frost-collections-core/rayon-1"]
+arbitrary-1 = ["std", "frost-collections-core/arbitrary-1"]
+borsh-1 = ["alloc", "frost-collections-core/borsh-1"]
+schemars-1 = ["alloc", "frost-collections-core/schemars-1"]
+
+smallvec-1 = ["alloc", "frost-collections-core/smallvec-1"]
+arrayvec-0_7 = ["frost-collections-core/arrayvec-0_7"]
+imbl-7 = ["std", "frost-collections-core/imbl-7"]
+roaring-0_12 = ["std", "frost-collections-core/roaring-0_12"]
+# The complete integer profile has fixed sorted, dense, Roaring, and explicit
+# chunked candidates. Automatic construction does not select chunked storage.
+# Other integration features never change its representation alternatives.
+int-set = ["alloc", "frost-collections-core/int-set", "dep:frost-collections-integer", "frost-collections-concurrent?/int-set"]
+fixedbitset-0_5 = ["alloc", "frost-collections-core/fixedbitset-0_5"]
+slotmap-1 = ["alloc", "frost-collections-core/slotmap-1"]
+phf-0_14 = ["frost-collections-core/phf-0_14"]
+fst-0_4 = ["std", "frost-collections-core/fst-0_4"]
+dashmap-6 = ["std", "frost-collections-core/dashmap-6", "frost-collections-concurrent/dashmap-6"]
+scc-3 = ["std", "frost-collections-core/scc-3", "frost-collections-concurrent/scc-3"]
+crossbeam-skiplist-0_1 = ["std", "frost-collections-core/crossbeam-skiplist-0_1", "frost-collections-concurrent/crossbeam-skiplist-0_1"]
+arc-swap-1 = ["std", "frost-collections-concurrent/arc-swap-1"]
+concurrent = ["dashmap-6", "scc-3", "crossbeam-skiplist-0_1", "arc-swap-1"]
+advanced = ["smallvec-1", "arrayvec-0_7", "imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1", "phf-0_14", "fst-0_4"]
+frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
+
+[dependencies]
+frost-collections-core = { workspace = true }
+frost-collections-integer = { workspace = true, optional = true }
+frost-collections-concurrent = { workspace = true, optional = true }
+
+[dev-dependencies]
+# For `examples/frameworks.rs`. Tests and benches live in the packages that
+# own the code they exercise.
+serde_json = "1"
+
+[lints]
+workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+
+[[example]]
+name = "core"
+test = true
+
+[[example]]
+name = "mutable"
+required-features = ["alloc"]
+test = true
+
+[[example]]
+name = "adaptive"
+required-features = ["std"]
+test = true
+
+[[example]]
+name = "sequences"
+required-features = ["smallvec-1", "arrayvec-0_7"]
+test = true
+
+[[example]]
+name = "static_maps"
+required-features = ["phf-0_14", "fst-0_4"]
+test = true
+
+[[example]]
+name = "advanced"
+required-features = ["imbl-7", "roaring-0_12", "fixedbitset-0_5", "slotmap-1"]
+test = true
+
+[[example]]
+name = "concurrent"
+required-features = ["dashmap-6"]
+test = true
+
+[[example]]
+name = "snapshots"
+required-features = ["arc-swap-1"]
+test = true
+
+[[example]]
+name = "frameworks"
+required-features = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
+test = true
+
+[[example]]
+name = "set_operations"
+required-features = ["alloc"]
+test = true
+
+[[example]]
+name = "integer_sets"
+required-features = ["int-set"]
+test = true

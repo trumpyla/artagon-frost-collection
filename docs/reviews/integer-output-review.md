@@ -15,8 +15,8 @@ versions in [Cargo.lock](../../Cargo.lock). The relevant pinned dependency is
 `roaring 0.12.0`; source observations below refer to that release, rather than
 assuming that the current upstream branch is identical. New implementation and
 executed evidence are described by this revision's
-[validation report](../integer-output-validation.md) and
-[benchmark report](../integer-output-benchmarks.md). This document records the
+[validation report](../../crates/frost-collections-integer/docs/integer-output-validation.md) and
+[benchmark report](../../crates/frost-collections-integer/docs/integer-output-benchmarks.md). This document records the
 reasoning, contracts, and remaining limits.
 
 The central finding is that correct membership is insufficient for an adaptive
@@ -205,7 +205,7 @@ the measured host, not general hardware-independent factors. The revised hash
 selector described below keeps compact run streams for suitable logical
 contents and falls back to the canonical member stream for fragmented sets.
 Final effects, including any remaining regressions, belong to the separate
-[final benchmark report](../integer-output-benchmarks.md).
+[final benchmark report](../../crates/frost-collections-integer/docs/integer-output-benchmarks.md).
 
 ### Dense-to-Roaring conversion has edge contracts
 
@@ -373,5 +373,5 @@ unbounded proofs of all compiler outputs, arbitrary downstream codecs, allocator
 behavior, or native dependency implementations.
 
 The additional proposed collection structures are evaluated separately in the
-[integer roadmap](../design/integer-roadmap.md). They are design candidates and
+[integer roadmap](../../crates/frost-collections-integer/docs/integer-roadmap.md). They are design candidates and
 are not implementations or verification claims for this revision.

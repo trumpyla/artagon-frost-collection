@@ -8,121 +8,160 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use syn::{Attribute, Item, Lit, Meta};
 
-pub(crate) fn discover(root: &Path) -> Result<Vec<Discovered>, String> {
+/// Runs `cargo metadata --no-deps` for one manifest under `root`.
+fn metadata(root: &Path, manifest: &str) -> Result<Json, String> {
+    let path = root.join(manifest);
+    if !path.exists() {
+        return Err(format!("required manifest missing: {manifest}"));
+    }
+    let output = Command::new(std::env::var_os("CARGO").unwrap_or_else(|| "cargo".into()))
+        .args([
+            "metadata",
+            "--locked",
+            "--offline",
+            "--no-deps",
+            "--format-version",
+            "1",
+            "--manifest-path",
+        ])
+        .arg(&path)
+        .output()
+        .map_err(|e| format!("cargo metadata {manifest}: {e}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "cargo metadata {manifest}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    Json::parse(std::str::from_utf8(&output.stdout).map_err(|e| e.to_string())?)
+}
+
+/// Directories of the packages the root manifest names, relative to `root`.
+/// A single-package root yields `[""]`; a virtual workspace yields one
+/// directory per member.
+pub(crate) fn member_dirs(root: &Path) -> Result<Vec<String>, String> {
     let root = root.canonicalize().map_err(|e| e.to_string())?;
-    let manifests = [
-        "Cargo.toml",
-        "verification/loom/Cargo.toml",
-        "verification/kani/Cargo.toml",
-        "verification/int-key-downstream/Cargo.toml",
-        "verification/fuzz/Cargo.toml",
-        "verification/catalog/Cargo.toml",
-    ];
+    let value = metadata(&root, "Cargo.toml")?;
+    let mut dirs = Vec::new();
+    for package in value
+        .get("packages")
+        .and_then(Json::as_array)
+        .ok_or("cargo metadata missing packages")?
+    {
+        let manifest = PathBuf::from(
+            package
+                .get("manifest_path")
+                .and_then(Json::as_str)
+                .ok_or("package manifest path missing")?,
+        );
+        let manifest = manifest
+            .canonicalize()
+            .map_err(|e| format!("{}: {e}", manifest.display()))?;
+        let dir = manifest.parent().ok_or("manifest without parent")?;
+        if !dir.starts_with(&root) {
+            return Err(format!("package outside root: {}", dir.display()));
+        }
+        dirs.push(rel(&root, dir));
+    }
+    dirs.sort();
+    Ok(dirs)
+}
+
+/// Discovers every target of the root manifest's packages and of each
+/// isolated manifest. Paths in the result are relative to `root`.
+pub(crate) fn discover(root: &Path, isolated: &[String]) -> Result<Vec<Discovered>, String> {
+    let root = root.canonicalize().map_err(|e| e.to_string())?;
+    let mut manifests = vec!["Cargo.toml".to_string()];
+    manifests.extend(isolated.iter().cloned());
     let mut found = Vec::new();
-    for manifest in manifests {
-        let path = root.join(manifest);
-        if !path.exists() {
-            if manifest == "Cargo.toml" || root.join("verification/catalog/Cargo.toml").exists() {
-                return Err(format!("required manifest missing: {manifest}"));
-            }
-            continue;
-        }
-        let output = Command::new(std::env::var_os("CARGO").unwrap_or_else(|| "cargo".into()))
-            .args([
-                "metadata",
-                "--locked",
-                "--offline",
-                "--no-deps",
-                "--format-version",
-                "1",
-                "--manifest-path",
-            ])
-            .arg(&path)
-            .output()
-            .map_err(|e| format!("cargo metadata {manifest}: {e}"))?;
-        if !output.status.success() {
-            return Err(format!(
-                "cargo metadata {manifest}: {}",
-                String::from_utf8_lossy(&output.stderr)
-            ));
-        }
-        let value = Json::parse(std::str::from_utf8(&output.stdout).map_err(|e| e.to_string())?)?;
-        let package = value
+    for manifest in &manifests {
+        let value = metadata(&root, manifest)?;
+        for package in value
             .get("packages")
             .and_then(Json::as_array)
-            .and_then(|a| a.first())
-            .ok_or("cargo metadata missing package")?;
-        let available_features: Vec<String> = package
-            .get("features")
-            .and_then(Json::as_object)
-            .unwrap_or_default()
-            .iter()
-            .map(|(name, _)| name.clone())
-            .collect();
-        for target in package
-            .get("targets")
-            .and_then(Json::as_array)
-            .ok_or("cargo metadata missing targets")?
+            .ok_or("cargo metadata missing packages")?
         {
-            let kind = target
-                .get("kind")
-                .and_then(Json::as_array)
-                .and_then(|a| a.first())
-                .and_then(Json::as_str)
-                .ok_or("target kind missing")?;
-            if !["lib", "test", "bench", "example", "bin"].contains(&kind) {
-                continue;
-            }
-            let path = PathBuf::from(
-                target
-                    .get("src_path")
-                    .and_then(Json::as_str)
-                    .ok_or("target path missing")?,
-            );
-            let path = path
-                .canonicalize()
-                .map_err(|e| format!("{}: {e}", path.display()))?;
-            if !path.starts_with(&root) {
-                return Err(format!("target outside root: {}", path.display()));
-            }
-            let name = rel(&root, &path);
-            let features = target
-                .get("required-features")
-                .and_then(Json::as_array)
-                .unwrap_or_default()
-                .iter()
-                .filter_map(Json::as_str)
-                .map(str::to_string)
-                .collect();
-            let target_source =
-                fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
-            let target_file =
-                syn::parse_file(&target_source).map_err(|e| format!("{}: {e}", path.display()))?;
-            let base = Discovered {
-                target: name.clone(),
-                file: name.clone(),
-                selector: if kind == "bench" { "bench" } else { "target" }.to_string(),
-                kind: kind.to_string(),
-                features,
-                available_features: available_features.clone(),
-                cfg: cfgs(&target_file.attrs).join("; "),
-            };
-            if kind == "bench" {
-                found.push(base.clone());
-            } else {
-                let before = found.len();
-                let dir = path.parent().ok_or("target without parent")?.to_path_buf();
-                let mut active = BTreeSet::new();
-                scan_file(&root, &path, &dir, &[], &[], &base, &mut active, &mut found)?;
-                if before == found.len() {
-                    found.push(base.clone());
-                }
-            }
+            discover_package(&root, package, &mut found)?;
         }
     }
     found.sort();
     found.dedup();
     Ok(found)
+}
+
+fn discover_package(
+    root: &Path,
+    package: &Json,
+    found: &mut Vec<Discovered>,
+) -> Result<(), String> {
+    let available_features: Vec<String> = package
+        .get("features")
+        .and_then(Json::as_object)
+        .unwrap_or_default()
+        .iter()
+        .map(|(name, _)| name.clone())
+        .collect();
+    for target in package
+        .get("targets")
+        .and_then(Json::as_array)
+        .ok_or("cargo metadata missing targets")?
+    {
+        let kind = target
+            .get("kind")
+            .and_then(Json::as_array)
+            .and_then(|a| a.first())
+            .and_then(Json::as_str)
+            .ok_or("target kind missing")?;
+        if !["lib", "test", "bench", "example", "bin"].contains(&kind) {
+            continue;
+        }
+        let path = PathBuf::from(
+            target
+                .get("src_path")
+                .and_then(Json::as_str)
+                .ok_or("target path missing")?,
+        );
+        let path = path
+            .canonicalize()
+            .map_err(|e| format!("{}: {e}", path.display()))?;
+        if !path.starts_with(root) {
+            return Err(format!("target outside root: {}", path.display()));
+        }
+        let name = rel(root, &path);
+        let features = target
+            .get("required-features")
+            .and_then(Json::as_array)
+            .unwrap_or_default()
+            .iter()
+            .filter_map(Json::as_str)
+            .map(str::to_string)
+            .collect();
+        let target_source =
+            fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let target_file =
+            syn::parse_file(&target_source).map_err(|e| format!("{}: {e}", path.display()))?;
+        let base = Discovered {
+            target: name.clone(),
+            file: name.clone(),
+            selector: if kind == "bench" { "bench" } else { "target" }.to_string(),
+            kind: kind.to_string(),
+            features,
+            available_features: available_features.clone(),
+            cfg: cfgs(&target_file.attrs).join("; "),
+        };
+        if kind == "bench" {
+            found.push(base.clone());
+        } else {
+            let before = found.len();
+            let dir = path.parent().ok_or("target without parent")?.to_path_buf();
+            let mut active = BTreeSet::new();
+            scan_file(root, &path, &dir, &[], &[], &base, &mut active, found)?;
+            if before == found.len() {
+                found.push(base.clone());
+            }
+        }
+    }
+    Ok(())
 }
 
 fn cfgs(attrs: &[Attribute]) -> Vec<String> {
@@ -271,7 +310,7 @@ fn scan_items(
                     .path
                     .segments
                     .last()
-                    .is_some_and(|s| s.ident == "proptest") =>
+                    .is_some_and(|s| s.ident == "proptest" || s.ident == "prop_state_machine") =>
             {
                 for (name, local_cfg) in proptest_items(m.mac.tokens.clone()) {
                     let mut names = modules.to_vec();
@@ -322,7 +361,8 @@ fn scan_items(
     Ok(())
 }
 
-// Proptest's `name(arg in strategy)` is not a Rust function signature. Inspect
+// Proptest's `name(arg in strategy)` and proptest-state-machine's
+// `name(sequential 1..n => Test)` are not Rust function signatures. Inspect
 // top-level macro tokens, never strings/comments or arbitrary macro expansions.
 fn proptest_items(tokens: TokenStream) -> Vec<(String, Vec<String>)> {
     let tokens: Vec<TokenTree> = tokens.into_iter().collect();

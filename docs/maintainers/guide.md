@@ -25,21 +25,21 @@ feature constraints that epic must resolve.
 
 | Area | Files | Invariants to review |
 | --- | --- | --- |
-| Public surface | `src/lib.rs`, `read.rs`, `write.rs`, `plan.rs`, `frozen.rs` | Small capabilities, sealed eligibility, explicit ownership plans |
-| Ordinary families | `src/family/` | Fixed pairings, representative policy, borrowed keys, owned iterator contracts |
-| Ordered set kernels | `src/family/ordered/set_ops.rs` | Sorted unique input, left representatives, monotonic cursors, balanced/skewed paths |
-| Dense and compressed bitmaps | `src/backends/bitmap.rs` | Natural cardinality width, logical universe, dirty-padding masks, empty/exhausted iteration |
-| Adaptive maps | `src/adaptive/{hash_map,ordered_map}/` | Cache lookup only until representation changes; explicit promotion/demotion policy |
-| Inline storage | `src/adaptive/seq/buf.rs` | Initialized prefix, one owner per initialized element, transfer-before-drop, ZST/zero capacity |
-| Integer profile | `src/integer/{key,policy,set,storage}.rs` and `storage/word.rs` | Canonical codecs, checked imports, wide counts/spans, compact pair outputs, retained minimum/left limits, canonical Hash events, policy-compatible root reuse |
-| Integer Dense/Chunked storage | `src/integer/{dense,chunked}.rs` | Absolute dense coordinates, immutable shared containers, sorted flat directory, unchanged old versions, partial cursors, bounded conversions |
-| Frameworks | `src/adapters/` | Logical encoding, canonical strict decoding, deterministic winners only with defined encounter order |
-| Live concurrency | `src/concurrent/{live,dashmap,scc,skiplist}.rs` | Guard scope, no escaping references, native reentrancy constraints |
-| Snapshots | `src/concurrent/{snapshot,publication}.rs` | Identity CAS, candidate ownership, exact displaced version, retry callback semantics |
+| Public surface | `crates/frost-collections/src/lib.rs`, `crates/frost-collections-core/src/read.rs`, `crates/frost-collections-core/src/write.rs`, `crates/frost-collections-core/src/plan.rs`, `crates/frost-collections-core/src/frozen.rs` | Small capabilities, sealed eligibility, explicit ownership plans |
+| Ordinary families | `crates/frost-collections-core/src/family/` | Fixed pairings, representative policy, borrowed keys, owned iterator contracts |
+| Ordered set kernels | `crates/frost-collections-core/src/family/ordered/set_ops.rs` | Sorted unique input, left representatives, monotonic cursors, balanced/skewed paths |
+| Dense and compressed bitmaps | `crates/frost-collections-core/src/backends/bitmap.rs` | Natural cardinality width, logical universe, dirty-padding masks, empty/exhausted iteration |
+| Adaptive maps | `crates/frost-collections-core/src/adaptive/{hash_map,ordered_map}/` | Cache lookup only until representation changes; explicit promotion/demotion policy |
+| Inline storage | `crates/frost-collections-core/src/adaptive/seq/buf.rs` | Initialized prefix, one owner per initialized element, transfer-before-drop, ZST/zero capacity |
+| Integer profile | `crates/frost-collections-integer/src/integer/{key,policy,set,storage}.rs` and `storage/word.rs` | Canonical codecs, checked imports, wide counts/spans, compact pair outputs, retained minimum/left limits, canonical Hash events, policy-compatible root reuse |
+| Integer Dense/Chunked storage | `crates/frost-collections-integer/src/integer/{dense,chunked}.rs` | Absolute dense coordinates, immutable shared containers, sorted flat directory, unchanged old versions, partial cursors, bounded conversions |
+| Frameworks | `crates/frost-collections-core/src/adapters/` | Logical encoding, canonical strict decoding, deterministic winners only with defined encounter order |
+| Live concurrency | `crates/frost-collections-concurrent/src/concurrent/{live,dashmap,scc,skiplist}.rs` | Guard scope, no escaping references, native reentrancy constraints |
+| Snapshots | `crates/frost-collections-concurrent/src/concurrent/{snapshot,publication}.rs` | Identity CAS, candidate ownership, exact displaced version, retry callback semantics |
 
 The internal file split does not rename the public `frost::concurrent` module or
 ordinary family paths. Integration tests are organized by contract; files under
-`tests/concurrent/` are submodules of the single Cargo target `concurrent`.
+`crates/frost-collections-concurrent/tests/concurrent/` are submodules of the single Cargo target `concurrent`.
 
 ## Match verification to the risk
 
@@ -94,9 +94,9 @@ copying, reference-count traffic, retained memory, and final-owner release. Empt
 sets allocate a shared header; clone means a constant-time reference increment,
 not zero work. Payload diagnostics are not resident-memory bounds.
 
-The [integer expression proposal](../design/integer-views.md) and the separate
+The [integer expression proposal](../../crates/frost-collections-integer/docs/integer-views.md) and the separate
 family/tree-directory parts of the
-[persistent-storage proposal](../design/persistent-integer-storage.md) remain
+[persistent-storage proposal](../../crates/frost-collections-integer/docs/persistent-integer-storage.md) remain
 unimplemented. Keep their acceptance gates separate from current test totals.
 In view work, distinguish proven bounds from planner estimates, preserve mixed
 Boolean structure, and test partial cursor states. The
@@ -115,7 +115,7 @@ make one benchmark win. Default Cargo profiles remain the baseline.
 
 Verification and coverage tools never become library dependencies; see the
 dependency rules in [CRATES.md](../../CRATES.md#3-dependency-placement-and-leakage).
-`verification/loom` and `verification/kani` are isolated tooling packages.
+`crates/frost-collections-concurrent/verification/loom` and `crates/frost-collections-core/verification/kani` are isolated tooling packages.
 Resolve and record their tool/dependency versions before claiming their results.
 The package archive excludes verification artifacts; the source distribution
 contains them. `make package` tests the extracted Cargo package to

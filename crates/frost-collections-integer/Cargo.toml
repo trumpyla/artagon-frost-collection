@@ -1,0 +1,60 @@
+[package]
+name = "frost-collections-integer"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "The typed integer-set profile of Frost: codec, policies and private storage. Internal: depend on frost-collections"
+license.workspace = true
+publish.workspace = true
+exclude = ["verification/**", "fuzz/**"]
+
+[features]
+default = ["std"]
+# This package always allocates and always provides the integer profile.
+# `alloc` and `int-set` are empty so that every lane can name them in every
+# package; no code here is gated on them.
+alloc = []
+int-set = []
+std = ["frost-collections-core/std", "roaring/std"]
+# Features of the core package, forwarded under the same names so that the
+# surface this package re-exports can be configured through it.
+hashbrown-0_17 = ["frost-collections-core/hashbrown-0_17"]
+indexmap-2 = ["frost-collections-core/indexmap-2"]
+serde-1 = ["frost-collections-core/serde-1"]
+rayon-1 = ["frost-collections-core/rayon-1"]
+arbitrary-1 = ["frost-collections-core/arbitrary-1"]
+borsh-1 = ["frost-collections-core/borsh-1"]
+schemars-1 = ["frost-collections-core/schemars-1"]
+smallvec-1 = ["frost-collections-core/smallvec-1"]
+arrayvec-0_7 = ["frost-collections-core/arrayvec-0_7"]
+imbl-7 = ["frost-collections-core/imbl-7"]
+roaring-0_12 = ["frost-collections-core/roaring-0_12"]
+fixedbitset-0_5 = ["frost-collections-core/fixedbitset-0_5"]
+slotmap-1 = ["frost-collections-core/slotmap-1"]
+phf-0_14 = ["frost-collections-core/phf-0_14"]
+fst-0_4 = ["frost-collections-core/fst-0_4"]
+dashmap-6 = ["frost-collections-core/dashmap-6"]
+scc-3 = ["frost-collections-core/scc-3"]
+crossbeam-skiplist-0_1 = ["frost-collections-core/crossbeam-skiplist-0_1"]
+
+[dependencies]
+frost-collections-core = { workspace = true, features = ["alloc", "int-set"] }
+roaring = { workspace = true }
+
+[dev-dependencies]
+frost-collections-test-support = { workspace = true }
+proptest = "1.12"
+
+# The package always provides the integer profile, so these targets need no
+# `int-set` feature.
+[[bench]]
+name = "integer_sets"
+harness = false
+
+[[bench]]
+name = "integer_output"
+required-features = ["std"]
+harness = false
+
+[lints]
+workspace = true

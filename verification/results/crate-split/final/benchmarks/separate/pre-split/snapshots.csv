@@ -1,0 +1,9 @@
+case,iterations,median_ns,min_ns,max_ns,sample_1_ns,sample_2_ns,sample_3_ns,sample_4_ns,sample_5_ns,sample_6_ns,sample_7_ns
+snapshot.owned_load.1_readers.aggregate_ns_per_read,200000,19.555,19.491,19.855,19.855,19.698,19.546,19.528,19.556,19.555,19.491
+snapshot.guard_load.1_readers.aggregate_ns_per_read,200000,12.855,12.654,14.686,12.668,12.855,13.192,12.654,14.686,12.655,13.955
+snapshot.peek.1_readers.aggregate_ns_per_read,200000,12.413,12.207,13.241,12.212,12.564,12.207,12.827,12.413,12.293,13.241
+snapshot.raw_arc_swap_guard.1_readers.aggregate_ns_per_read,200000,12.810,12.628,13.168,12.628,13.168,12.663,12.810,12.956,12.643,12.839
+snapshot.owned_load.4_readers.aggregate_ns_per_read,800000,119.137,105.446,133.375,105.446,117.137,116.927,122.059,119.137,119.351,133.375
+snapshot.guard_load.4_readers.aggregate_ns_per_read,800000,6.330,3.248,6.510,6.510,6.330,3.258,6.378,6.329,3.248,6.379
+snapshot.peek.4_readers.aggregate_ns_per_read,800000,3.287,3.167,6.339,3.167,3.287,6.339,4.011,4.970,3.239,3.208
+snapshot.raw_arc_swap_guard.4_readers.aggregate_ns_per_read,800000,3.215,3.150,6.293,3.176,3.166,3.218,3.150,3.425,6.293,3.215

@@ -18,6 +18,25 @@ originals under `docs/reviews/supplied/`.
 | `Frost3.md.md` | [`frost-computed-sets-summary.md`](../../reviews/supplied/frost-computed-sets-summary.md) | `6f39fdbcf2d7816a3ea33eb40e371be7115b1b452cf040a7f8fe84a60de8177c` | 11,501 / 115 |
 | Complete handoff archive | [`frost-research-handoff.zip`](../../reviews/supplied/frost-research-handoff.zip) | `605767df09f7a631f7c27951c38054216e63de8ece55f9ca4d3f6c7fc65ece0f` | 62,661 bytes, 12 members |
 
+A fourth input was added on 2026-11-12. It is a research tool's output, not a
+supplied file, and it is not in the handoff archive:
+
+| Input | Retained text | SHA-256 | Bytes / lines |
+| --- | --- | --- | --- |
+| Prior-art survey of the value-domain algebra | [`value-domain-algebra-prior-art-survey.md`](../../reviews/supplied/value-domain-algebra-prior-art-survey.md) | `e96cc829088ddb57e3ad1b00c2d8d4ff270a6d9482fffcf3bcf32132c6a17d59` | 39,313 / 250 |
+| Pages the survey consulted | [`value-domain-algebra-prior-art-survey-sources.txt`](../../reviews/supplied/value-domain-algebra-prior-art-survey-sources.txt) | `02ce8d7e5ce80b13752d661ded9c15befcb6006f24dc48254fcb19c0640ca45c` | 6,171 / 91 |
+
+The survey text was written into the repository by the integrating session
+from the tool's returned report, with JSON escapes decoded. No independent
+copy exists to compare it with, so the hash identifies the retained file, not
+a file that someone supplied. The tool listed each consulted page with a bare
+host label; the labels are omitted and the URLs kept, in the tool's order.
+The survey has no opaque citation markers and no session-local links. Its
+curated derivative is the
+[prior-art report](../reports/value-domain-algebra-prior-art.md).
+
+The paragraphs below describe the three original reports and the archive.
+
 Hashes were recomputed on this checkout on 2026-11-09 and match the archive's
 `input-manifest.json`. The [machine manifest](../manifest.json) repeats them so
 a script can re-verify them.
@@ -47,8 +66,8 @@ and template originals stay recoverable after the curated versions diverge.
 - `Frost2` and `Frost3` contain session-local `sandbox` links to files that
   were not supplied. Those links are recovery targets, not repository paths.
 
-Raw citation markers and session-local links are permitted only in these
-three files and the archive. Curated documents must not contain them.
+Raw citation markers and session-local links are permitted only in the
+three original reports and the archive. Curated documents must not contain them.
 
 ## Reading the raw files
 

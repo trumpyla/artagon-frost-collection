@@ -1,0 +1,8 @@
+crates/frost-collections-core/src/plan.rs:136:9: replace <impl fmt::Display for LengthMismatch>::fmt -> fmt::Result with Ok(Default::default())
+crates/frost-collections-integer/src/integer/policy.rs:245:9: replace <impl fmt::Display for IntSetError>::fmt -> fmt::Result with Ok(Default::default())
+crates/frost-collections-integer/src/integer/policy.rs:116:32: replace * with + in IntSetPolicy::auto
+crates/frost-collections-core/src/plan.rs:120:9: replace <impl core::error::Error for Rejected<S, E>>::source -> Option<&(dyn core::error::Error +'static)> with None
+crates/frost-collections-integer/src/integer/policy.rs:181:9: replace IntSetPolicy::max_roaring_partitions -> usize with 1
+crates/frost-collections-core/src/plan.rs:106:9: replace <impl fmt::Debug for Rejected<S, E>>::fmt -> fmt::Result with Ok(Default::default())
+crates/frost-collections-integer/src/integer/policy.rs:181:9: replace IntSetPolicy::max_roaring_partitions -> usize with 0
+crates/frost-collections-core/src/plan.rs:114:9: replace <impl fmt::Display for Rejected<S, E>>::fmt -> fmt::Result with Ok(Default::default())

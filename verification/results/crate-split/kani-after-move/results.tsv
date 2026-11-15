@@ -1,0 +1,9 @@
+inline_zero_capacity	VERIFICATION:- SUCCESSFUL	 ** 0 of 446 failed (10 unreachable)	0.5931448s	cbmc_peak_mb=6
+sorted_constructor_preserves_or_rejects_input	VERIFICATION:- SUCCESSFUL	 ** 0 of 565 failed (4 unreachable)	10.599164s	cbmc_peak_mb=774
+inline_prefix_preserved	VERIFICATION:- SUCCESSFUL	 ** 0 of 338 failed (1 unreachable)	5.051471s	cbmc_peak_mb=318
+ordered_union_refines_the_representative_rule	VERIFICATION:- SUCCESSFUL	 ** 0 of 1495 failed (22 unreachable)	18.508518s	cbmc_peak_mb=680
+ordered_symmetric_difference_refines_the_representative_rule	VERIFICATION:- SUCCESSFUL	 ** 0 of 1496 failed (22 unreachable)	118.74423s	cbmc_peak_mb=2902
+nested_ordered_union_keeps_the_first_representative	VERIFICATION:- SUCCESSFUL	 ** 0 of 1509 failed (22 unreachable)	128.91324s	cbmc_peak_mb=2244
+ordered_intersection_refines_the_representative_rule	VERIFICATION:- SUCCESSFUL	 ** 0 of 1489 failed (20 unreachable)	439.5927s	cbmc_peak_mb=4221
+ordered_difference_refines_the_representative_rule	VERIFICATION:- SUCCESSFUL	 ** 0 of 1489 failed (20 unreachable)	477.6615s	cbmc_peak_mb=4300
+inline_transfer_drops_each_owner_once	VERIFICATION:- SUCCESSFUL	 ** 0 of 609 failed (4 unreachable)	117.77988s	cbmc_peak_mb=9827

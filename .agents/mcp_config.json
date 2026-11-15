@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "hashline": {
+      "command": "hashline",
+      "args": [
+        "mcp"
+      ],
+      "env": {
+        "HASHLINE_NO_UPDATE_CHECK": "1"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+# crates.io sparse-index lookups, 2026-11-13.
+# Command per name: curl -sS -o /dev/null -w "%{http_code}" https://index.crates.io/<2>/<2>/<name>
+# 200 = a crate with this name exists; 404 = no such crate.
+frost-core                      200  (unrelated crate; latest listed version 3.0.0)
+frost-adaptive                  404
+frost-integer                   404
+frost-concurrent                404
+frost-api                       404
+frost-collections               404
+frost-collections-core          404
+frost-collections-adaptive      404
+frost-base                      404
+frost-kernel                    404
+frost-collections-integer       404
+frost-collections-concurrent    404
+frost-collections-test-support  404

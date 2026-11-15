@@ -26,6 +26,21 @@ patches and their digests are retained under
 | [Computed-sets summary](frost-computed-sets-summary.md) | `Frost3.md.md` | `6f39fdbcf2d7816a3ea33eb40e371be7115b1b452cf040a7f8fe84a60de8177c` | Summary and delivery note for a computed-sets report; **not** the full report |
 | [Research handoff archive](frost-research-handoff.zip) | Supplied handoff ZIP | `605767df09f7a631f7c27951c38054216e63de8ece55f9ca4d3f6c7fc65ece0f` | Integration instructions, draft README text, five template starters, and the three reports above |
 
+## Prior-art survey of the value-domain algebra
+
+| File | SHA-256 | What it is |
+| --- | --- | --- |
+| [Survey](value-domain-algebra-prior-art-survey.md) | `e96cc829088ddb57e3ad1b00c2d8d4ff270a6d9482fffcf3bcf32132c6a17d59` | Output of a research tool run on 2026-11-12 against the formal algebra chapters: prior art per construct, with the survey's own verified/inferred marks |
+| [Consulted pages](value-domain-algebra-prior-art-survey-sources.txt) | `02ce8d7e5ce80b13752d661ded9c15befcb6006f24dc48254fcb19c0640ca45c` | The 91 URLs the tool reported consulting, in its order |
+
+These two files are evidence, not policy. Several of the survey's statements
+were corrected when its sources were reread; the corrections are in the
+[curated report](../../research/reports/value-domain-algebra-prior-art.md),
+and the survey text is left as produced. The survey's recommendations to
+rename operations were not adopted.
+
+## Notes on the four collection-algebra inputs
+
 All four files are unmodified supplied material. The three reports keep their
 original opaque citation markers, session-local links, and illustrative APIs;
 these files are the only Markdown documents in the repository allowed to

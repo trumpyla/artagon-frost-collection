@@ -23,9 +23,10 @@ publish machine-specific paths. An export from an older local database can
 restore historical creator values, so repeat this check after exporting.
 
 The [crate standard](../../CRATES.md) is canonical for layout, dependency,
-coverage, and test metadata rules. Frost currently has one package. The standards
-and testing epic is `frost-wou`; the future crate reorganization epic is
-`frost-wlt`, which depends on `frost-wou`.
+coverage, and test metadata rules. Frost is a Cargo workspace: the library
+`frost-collections` re-exports the internal packages `frost-collections-core`,
+`-integer` and `-concurrent`. The standards and testing epic is `frost-wou`;
+the crate reorganization epic is `frost-wlt`.
 
 PR descriptions should explain the concrete problem and behavior, scope, affected
 public APIs and feature or target profiles, contract and documentation changes,

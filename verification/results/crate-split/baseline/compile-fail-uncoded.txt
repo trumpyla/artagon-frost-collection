@@ -1,0 +1,8 @@
+# compile_fail doctests without an error code, and the error each produces.
+# rustc assigns no code to these borrow-check region errors, so stable and
+# nightly rustdoc both accept any error for them. Recorded on the single-package
+# tree by running each block as an ordinary doctest (cargo test --doc --all-features).
+src/concurrent/live.rs ConcurrentLookup (line 20): error: lifetime may not live long enough
+src/concurrent/live.rs ConcurrentUpdate (line 58): error: lifetime may not live long enough
+src/concurrent/live.rs ConcurrentSetLookup (line 99): error: lifetime may not live long enough
+src/concurrent/snapshot.rs SnapshotStore::peek (line 235): error: lifetime may not live long enough

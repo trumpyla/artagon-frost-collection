@@ -10,5 +10,5 @@ description = "Probe programs from the integer-profile adversarial review"
 [workspace]
 
 [dependencies]
-frost-collections = { path = "../../../..", default-features = false, features = ["int-set", "std"] }
+frost-collections = { path = "../../../../crates/frost-collections", default-features = false, features = ["int-set", "std"] }
 roaring = "0.12.0"

@@ -109,3 +109,16 @@ setup() {
   run "$frost_bash" "$frost_script" "$frost_fixture/missing"
   [ "$status" -ne 0 ]
 }
+
+@test "checks package documents under crates and skips their build output" {
+  mkdir -p "$frost_fixture/crates/member/docs" "$frost_fixture/crates/member/target"
+  touch "$frost_fixture/root.md"
+  printf '%s\n' '[up](../../root.md)' '[local](docs/note.md)' \
+    >"$frost_fixture/crates/member/README.md"
+  printf '%s\n' '[missing](nowhere.md)' >"$frost_fixture/crates/member/docs/note.md"
+  printf '%s\n' '[generated](nowhere.md)' >"$frost_fixture/crates/member/target/out.md"
+  run "$frost_bash" "$frost_script" "$frost_fixture"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *'crates/member/docs/note.md: missing nowhere.md'* ]]
+  [[ "$output" != *'target/out.md'* ]]
+}

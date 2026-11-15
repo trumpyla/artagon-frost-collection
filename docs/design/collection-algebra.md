@@ -26,18 +26,32 @@ work, not a recovered copy.
 
 Both reports recommend separating logical collection semantics from storage and
 execution. That fits the current [architecture](architecture.md),
-[Frozen API guide](frozen-api.md), and
-[general set-algebra proposal](set-algebra.md).
+[Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md), and
+[general set-algebra proposal](../../crates/frost-collections-core/docs/set-algebra.md).
+
+## Formal refinement added after the research integration
+
+The [formal model](algebra/formal-model.md) and [value-domain contract](algebra/domains.md)
+now specify a common refinement framework before the
+[collection-specific chapters](algebra/collection-models.md). They distinguish
+valid values, logical identity, representation invariants, closure, observable
+behavior and source context. [The catalog](algebra/catalog.json) registers the
+terms and obligations; [the review](../reviews/value-domain-algebra-review.md)
+records corrections and bounded evidence.
+
+These are proposed contracts, not implemented APIs. The historical synthesis
+below remains provenance; its selected names are retained. The new specification
+uses `absolute_difference` for bag counts and recommends `difference_by_key`
+for map restriction. Neither spelling renames an existing public method.
 
 ## Package layout and naming
 
-Frost is one library package, `frost-collections`, imported as `frost`. The
-repository's maintainer policy keeps one library package. Frost1 assumes an
-existing `crates/frost-*` workspace split ("finish current workspace split");
-that assumption does not describe this repository. The research handoff also
-records a requested `frost-api` facade over flat `crates/frost-*` packages.
-That layout is an **unadopted proposal**: adopting it needs an explicit
-decision that also updates the maintainer policy. See
+Frost is a Cargo workspace. Users depend on `frost-collections`, imported as
+`frost`, which re-exports the internal packages `frost-collections-core`,
+`-integer` and `-concurrent` ([crate split plan](crate-split-plan.md)). Frost1
+assumed a different `crates/frost-*` split with a `frost-api` facade and
+packages per algebra; that crate list was not adopted. A new package for a
+proposed family needs its own design record. See
 [design decisions](decisions.md#research-corpus-and-rationale-2026-11-09).
 
 The reports disagree on package names: Frost1 uses `frost-bags`,
@@ -59,11 +73,12 @@ spellings below are historical alternatives, not additional public names.
 | Map lookup | Retain `LookupRef<Q>` instead of report names `MapGet<Q>` or `Get<Q>` | Returns the stored key and value; each implementation defines its query relation. |
 | Set lookup | Retain `SetContains<Q>` and `SetGet<Q>` instead of historical `Contains<Q>` and set `Get<Q>`, respectively | Membership does not promise a reference; retrieval returns the stored representative. |
 | Ordered map traversal | Retain `Entries` plus `OrderedEntries` instead of `SortedMapEntries` | Together they promise ascending key traversal; `OrderedEntries` also provides both endpoints. |
-| Multimap fibers | Propose distinct `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`; reject the historical `ListMultiMap` alternative | `SeqMultiMap` names ordered values with duplicates without implying linked-list storage. Detailed fiber semantics remain open. |
+| Multimap fibers | Propose distinct `SeqMultiMap`, `SetMultiMap`, and `BagMultiMap`; reject the historical `ListMultiMap` alternative | `SeqMultiMap` names ordered values with duplicates without implying linked-list storage. Proposed fiber semantics are now in [multimap algebra](algebra/multimaps.md); implementation remains open. |
 | Bimap lifecycle | Propose insertion on `MutableBiMap` or a builder; keep `FrozenBiMap` structurally immutable | Frozen algebra may produce a new value; conflict and failure contracts remain open. |
 | Integer sets | Retain implemented `FrozenIntSet`; keep proposed `IntSetExpr`, `FrozenIntSetView`, and `PersistentIntSet` distinct | Respectively: owned eager set, borrowed algebra query, validated borrowed storage view, and owned persistent set. The last three remain unimplemented. |
 
-Package naming and map-difference spelling remain separate open decisions.
+Package naming remains open under `frost-wlt.1`. The formal refinement recommends
+`difference_by_key`; accepting a concrete API still requires its own design gate.
 
 ## Distinct logical contracts
 
@@ -79,7 +94,8 @@ Package naming and map-difference spelling remain separate open decisions.
 
 For a bag with multiplicities `a(x)` and `b(x)`, the candidate definitions are
 `sum = a + b`, `max_union = max(a, b)`, `intersection = min(a, b)`,
-`difference = a.saturating_sub(b)`, and `symmetric_difference = abs_diff(a, b)`.
+`difference = a.saturating_sub(b)`, and `absolute_difference = abs_diff(a, b)`. The older bag spelling
+`symmetric_difference` denotes this count operation, not associative set XOR.
 An additive count overflow must be reported explicitly. Saturation is part of
 the subtraction definition, not an implicit overflow policy for addition.
 `max_union`, `intersection`, truncated difference, and absolute difference
@@ -115,7 +131,7 @@ the value. Stable insertion order does not authorize a sorted merge. Borrowed
 lookup must remain available without imposing `Clone` or `Default` on elements.
 
 The reports invent capability names. Proposals must map them to the existing
-traits in [`read`](../../src/read.rs) rather than silently renaming public APIs:
+traits in [`read`](../../crates/frost-collections-core/src/read.rs) rather than silently renaming public APIs:
 
 | Report name | Existing Frost capability | Note |
 | --- | --- | --- |
@@ -125,7 +141,7 @@ traits in [`read`](../../src/read.rs) rather than silently renaming public APIs:
 | `SortedMapEntries` | `Entries` plus `OrderedEntries` | Together promise ascending traversal; `OrderedEntries` provides endpoints |
 | `Len` | `Len`; `Cardinality` for `u64` counts | Counts are never truncated to `usize` |
 | `BagCount`, `PrefixIndex` | None | New capabilities; need their own proposal |
-| `difference_by_key` (Frost1), `difference_keys` (Frost2) | None | Pick one name in a map-algebra proposal |
+| `difference_by_key` (Frost1), `difference_keys` (Frost2) | None | Formal refinement recommends `difference_by_key`; no implemented API is renamed |
 
 Ordinary families continue to keep the first equivalent key or element and the
 last map value. Borrowed union and intersection keep left representatives.
@@ -134,7 +150,7 @@ bimap contracts must state representative selection independently of equality
 and order. Tests should use keys with observable metadata ignored by equality.
 
 Borrowed entries, decoded integer values, and lending byte-key streams remain
-separate access models. The implemented [integer profile](integer-sets.md)
+separate access models. The implemented [integer profile](../../crates/frost-collections-integer/docs/integer-sets.md)
 reconstructs values; it cannot fabricate stored references. Its shared storage
 and explicit Chunked policy do not implement lazy collection expressions. Typed
 integer domains stay separate, and identifiers from independently versioned
@@ -155,8 +171,8 @@ not copy them.
 
 | Supplied sketch | Problem | Disposition |
 | --- | --- | --- |
-| Frost1 `FrozenBiMap::try_insert(&mut self, ...)` | Mutation on a frozen type contradicts frozen semantics | Put insertion on `MutableBiMap` or a builder; frozen algebra consumes or borrows and returns a new value. See the [Frozen API guide](frozen-api.md#11-proposals-not-current-api). |
-| Frost1 `#[derive(Hash, Eq, PartialEq)]` key whose equality "depends only on `logical_id`" | Derived traits compare and hash every field, including `display` | Write `PartialEq`, `Eq`, and `Hash` by hand over the same fields. The README's [representative example](../../README.md#contracts-that-matter) is a compiled doctest. |
+| Frost1 `FrozenBiMap::try_insert(&mut self, ...)` | Mutation on a frozen type contradicts frozen semantics | Put insertion on `MutableBiMap` or a builder; frozen algebra consumes or borrows and returns a new value. See the [Frozen API guide](../../crates/frost-collections-core/docs/frozen-api.md#11-proposals-not-current-api). |
+| Frost1 `#[derive(Hash, Eq, PartialEq)]` key whose equality "depends only on `logical_id`" | Derived traits compare and hash every field, including `display` | Write `PartialEq`, `Eq`, and `Hash` by hand over the same fields. The README's [representative example](../../crates/frost-collections/README.md#contracts-that-matter) is a compiled doctest. |
 | Lookup traits over unconstrained `Q` (`MapGet<Q>`, `get_by_left<Q>`, `get_left<Q: ?Sized>`) | No relation ties `Q` to the stored key, so an implementation cannot look anything up correctly | Keep the relation on each implementation, as `LookupRef` does. Do not add a blanket `Borrow` bound that excludes `Equivalent`-style backends. |
 | Frost1 `model_inner_join(a: &BTreeMap, b: &BTreeMap) -> Vec<(&K, &A, &B)>` | Two reference inputs and no `self`: lifetime elision fails, so the sketch does not compile | Name the lifetimes explicitly. Treat every report snippet as a sketch until compiled. |
 | N-ary sorted operations described as total-input-linear | The upstream bound hides stream count and key length | See [n-ary merge cost](#n-ary-sorted-merge-cost). |
@@ -201,7 +217,7 @@ Frost must not transfer the upstream bound to its own algorithms. A Frost n-ary
 plan states its own variables: source count, comparison cost, workspace,
 decoding, and I/O. Binary sorted merges over in-memory families remain
 `O(n + m)` comparisons; the existing ordered kernel's seeking strategy is
-documented in [set operations](../set-operations.md).
+documented in [set operations](../../crates/frost-collections-core/docs/set-operations.md).
 
 ## Execution and ownership boundaries
 
@@ -217,7 +233,7 @@ Consuming operations may reuse owned storage when a backend permits it, with
 documented representative, drop, and panic behavior. Persistence and concurrency
 are separate choices: immutable sharing must preserve every retained version;
 live per-key access does not establish a coherent whole-collection snapshot.
-The existing [snapshot publication contract](snapshots.md) continues to govern
+The existing [snapshot publication contract](../../crates/frost-collections-concurrent/docs/snapshots.md) continues to govern
 whole-value publication and retry callbacks.
 
 Encoded integer maps, rank/select, FST streams, and radix/prefix indexes remain

@@ -23,7 +23,7 @@ reconstruct the complete key. It stores canonical unsigned codes and decodes
 values on demand. Metadata discarded by a codec cannot be recovered, even if
 equality ignores it; use an ordinary family when stored representatives matter.
 Codec laws remain safe-trait requirements, never permission for unchecked memory
-access. See [the integer profile](integer-sets.md).
+access. See [the integer profile](../../crates/frost-collections-integer/docs/integer-sets.md).
 
 ## Freezing is an ownership transition
 
