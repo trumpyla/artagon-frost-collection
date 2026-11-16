@@ -21,20 +21,24 @@ only after the user trusts the folder.
 | Claude Code | `.claude/agents/mechanical-edit.md` | A subagent on the smallest model for mechanical file edits |
 | Claude Code | `.claude/rules/unsafe-boundary.md` | Loads the unsafe rule when a file beside `buf.rs` is opened |
 | Claude Code | `.claude/skills/make-gates/SKILL.md` | `/make-gates`: run the gates for the change |
+| Claude Code | `.claude/skills/frost-test-change/SKILL.md`, `.claude/skills/frost-perf-triage/SKILL.md` | Load for test or benchmark work and for a slowdown ([agent-testing.md](agent-testing.md)) |
+| Claude Code | `.claude/rules/benchmarks.md` | Loads the benchmark rules when a benchmark file is opened |
 | Codex | `.codex/rules/frost.rules` | Asks before a slow lane or a push. Refuses `cargo publish` |
 | Codex | `.codex/agents/mechanical-edit.toml` | An agent role with low reasoning effort for mechanical file edits |
 | Codex | `.codex/config.toml` | Registers the `hashline` server |
 | Antigravity CLI | `.agents/rules/repository.md` | Repeats the critical rules as an always-on rule |
 | Antigravity CLI | `.agents/agents/mechanical-edit/agent.md` | A subagent on the fast model for mechanical file edits |
 | Antigravity CLI | `.agents/skills/make-gates/SKILL.md` | `/make-gates`: run the gates for the change |
+| Antigravity CLI, Codex | `.agents/skills/frost-test-change/SKILL.md`, `.agents/skills/frost-perf-triage/SKILL.md` | The same two skills. Codex documents `.agents/skills/` as its repository skill folder; not run here |
 | Antigravity CLI | `.agents/mcp_config.json` | Registers the `hashline` server |
 | Copilot | `.github/copilot-instructions.md` | Points to the rules and says what a review checks first |
 | Copilot | `.github/copilot/settings.json` | Copilot CLI adds no `Co-authored-by` trailer |
-| Copilot | `.github/instructions/*.instructions.md` | Rules that load for Rust sources and for workflow files |
+| Copilot | `.github/instructions/*.instructions.md` | Rules that load for Rust sources, benchmarks and workflow files |
 | Copilot | `.github/agents/mechanical-edit.agent.md` | A custom agent limited to reading, searching and editing |
 
-The four `mechanical-edit` files and the two `make-gates` files say the same
-thing in each CLI's format. Change them together.
+The four `mechanical-edit` files, the two `make-gates` files, the two copies of
+each `frost-*` skill, and the two benchmark rule files say the same thing in each
+CLI's format. Change them together.
 
 ## What a repository file cannot do
 
