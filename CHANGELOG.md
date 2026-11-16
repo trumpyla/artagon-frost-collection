@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — interval package
+
+- New package `frost-interval`: value domains with order-preserving
+  encodings, `FrozenIntervalSet`, `FrozenIntervalMap` and `IntervalSet`.
+  The facade re-exports it as `frost::interval` behind the new feature
+  `interval`; `chrono-0_4`, `jiff-0_2` and `time-0_3` add temporal domains.
+  Design record: `docs/design/proposals/frozen-box.md`. No existing public
+  item changed.
+
 ## Unreleased — crate split (`frost-wlt`)
 
 No public API or behaviour change so far.

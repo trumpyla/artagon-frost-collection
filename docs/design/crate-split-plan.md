@@ -60,6 +60,7 @@ and from keeping today's lanes; they are not preferences.
 | `frost-collections-concurrent` | Live guarded access, snapshot publication and its seal | core; integer when `int-set` | no; always `std` | `forbid` |
 | `frost-collections` | Facade: re-exports, the complete prelude and backend modules, feature forwarding, README as crate documentation, examples | all three | follows features | `forbid` |
 | `frost-collections-test-support` | Workload factories and benchmark timing helpers | — | — | `forbid` |
+| `frost-interval` | Value domains with order-preserving encodings; interval sets and maps. Added on 2026-11-16 ([decision](decisions.md#interval-package-and-project-direction-2026-11-16)); not part of the split | — | yes; always `alloc` | `forbid` |
 
 Each package owns code; none is a placeholder.
 

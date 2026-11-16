@@ -1,0 +1,35 @@
+[package]
+name = "frost-interval"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Value domains with order-preserving encodings, and interval sets and maps over them"
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = ["std"]
+# This package always allocates. `alloc` is empty so that every lane can name
+# it in every package; no code here is gated on it.
+alloc = []
+# `std` adds the `SystemTime` and `Instant` domains.
+std = []
+# Third-party temporal domains, one compatibility line each.
+chrono-0_4 = ["dep:chrono"]
+jiff-0_2 = ["dep:jiff"]
+time-0_3 = ["dep:time"]
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, optional = true }
+jiff = { version = "0.2.43", default-features = false, optional = true }
+time = { version = "0.3", default-features = false, optional = true }
+
+[dev-dependencies]
+proptest = "1.12"
+
+[[example]]
+name = "readme"
+test = true
+
+[lints]
+workspace = true

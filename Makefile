@@ -266,7 +266,7 @@ embedded:
 	"$(CARGO)" build -p "$(FACADE)" --lib --locked --no-default-features --features int-set --target "$(EMBEDDED_TARGET)"
 	"$(CARGO)" build -p "$(FACADE)" --lib --locked --no-default-features --target "$(EMBEDDED_TARGET)"
 	"$(CARGO)" build -p "$(FACADE)" --lib --locked --no-default-features \
-	  --features alloc,hashbrown-0_17,indexmap-2,smallvec-1,arrayvec-0_7,fixedbitset-0_5,slotmap-1,phf-0_14,serde-1,borsh-1,schemars-1 \
+	  --features alloc,hashbrown-0_17,indexmap-2,smallvec-1,arrayvec-0_7,fixedbitset-0_5,slotmap-1,phf-0_14,serde-1,borsh-1,schemars-1,interval \
 	  --target "$(EMBEDDED_TARGET)"
 
 # Stable rustdoc accepts any error for a `compile_fail` doctest. The pinned

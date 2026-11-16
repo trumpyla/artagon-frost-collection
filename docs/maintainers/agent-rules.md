@@ -6,7 +6,7 @@ canonical_path: docs/maintainers/agent-rules.md
 entry_symlink: AGENTS.md
 rules_registry: docs/maintainers/rules.json
 reviewed_base: 27b14399b0245df2a018fd5eb6f24f47ce7c2dbe
-updated: 2026-11-12
+updated: 2026-11-16
 ---
 
 # Working on Frost
@@ -38,8 +38,9 @@ full:
 
 - The packages are those of `docs/design/crate-split-plan.md`:
   `frost-collections` (the facade and only supported entry point), the
-  internal `-core`, `-integer` and `-concurrent`, and the dev-only
-  `-test-support`. Add or split a package only with a design record.
+  internal `-core`, `-integer` and `-concurrent`, the dev-only
+  `-test-support`, and `frost-interval` (value domains and intervals). Add or
+  split a package only with a design record.
 - Features are additive: enabling one never changes an existing type's
   representation, hasher, bounds or freeze/thaw partner.
 - No new `unsafe` block or manual `Send`/`Sync` implementation without a written

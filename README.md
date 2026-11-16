@@ -23,6 +23,7 @@ Nothing is published to a registry.
 | `frost-collections-integer` | `crates/frost-collections-integer` | Internal. The typed integer-set profile |
 | `frost-collections-concurrent` | `crates/frost-collections-concurrent` | Internal. Live guarded access and snapshot publication |
 | `frost-collections-test-support` | `crates/frost-collections-test-support` | Internal, dev-dependency only. Workload factories and benchmark timing helpers |
+| `frost-interval` | [`crates/frost-interval`](crates/frost-interval/README.md) | Value domains with order-preserving encodings; interval sets and maps. Re-exported as `frost::interval` (feature `interval`) and usable on its own |
 
 The code was split into these internal packages under tracker epic
 `frost-wlt`. Each package owns its tests and benches; the isolated fuzz,

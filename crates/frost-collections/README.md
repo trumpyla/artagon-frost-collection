@@ -488,6 +488,10 @@ representation or selects a different hasher. Backends are reexported from
 | `imbl-7` | persistent vector, hash map/set, ordered map/set | `std` |
 | `roaring-0_12` | compressed `u32` and `u64` integer sets | `std` |
 | `int-set` | typed frozen integer profile with fixed Sorted/Dense/Roaring/Chunked candidates | `alloc` |
+| `interval` | value domains with order-preserving encodings; `FrozenIntervalSet`, `FrozenIntervalMap`, `IntervalSet` (`frost::interval`) | `alloc`; `std` adds the `SystemTime` and `Instant` domains |
+| `chrono-0_4` | chrono date and time domains for `interval` | `alloc` |
+| `jiff-0_2` | jiff date, time and timestamp domains for `interval` | `alloc` |
+| `time-0_3` | time-crate date, time and duration domains for `interval` | `alloc` |
 | `fixedbitset-0_5` | dense bitsets | `alloc` |
 | `slotmap-1` | generational slot maps | `alloc` |
 | `phf-0_14` | compile-time perfect-hash maps/sets, including declaration-order variants | `core` at runtime |

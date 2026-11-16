@@ -26,6 +26,11 @@ pub use frost_collections_concurrent::concurrent;
 #[cfg(feature = "int-set")]
 pub use frost_collections_integer::integer;
 
+/// Value domains with order-preserving encodings, and interval sets and maps
+/// over them. The `frost-interval` package is also usable on its own.
+#[cfg(feature = "interval")]
+pub use frost_interval as interval;
+
 pub use frost_collections_core::{Compact, ExactLen, Retain};
 pub use frost_collections_core::{Eligible, Frozen};
 pub use frost_collections_core::{FreezeExt, FreezeWith, Rejected, TryFreezeWith};
