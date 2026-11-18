@@ -431,3 +431,19 @@ it answers. This entry records what is decided and by whom.
 Decisions D2–D16 of the plan began as defaults taken so that execution was not
 blocked. The maintainer approved them with the plan on 2026-11-14; the plan
 states what undoing each one costs.
+
+## Interval package and project direction, 2026-11-16
+
+The maintainer decided on 2026-11-16 to add the value-domain and interval
+design ([design record](proposals/frozen-box.md), revision 8) as a workspace
+package, and stated the direction of the project.
+
+| Area | Decision | Reason and limit |
+| --- | --- | --- |
+| Project direction | Frost is a generic frozen-structures project, not only a collections library. Its goal is to serve an access-control engine and OIDC and OAuth servers. | Maintainer statement. It changes no existing contract or package name now. |
+| Applications | The access-control engine and the OIDC and OAuth servers live in separate repositories that depend on Frost. | Maintainer decision. Frost stays a library. |
+| Existing package names | The `frost-collections*` names stay for now. A rename is a later change of its own. | Maintainer decision: rename only the new package now. |
+| New package | `frost-interval` in `crates/frost-interval`: value domains with order-preserving encodings, `FrozenIntervalSet`, `FrozenIntervalMap` and `IntervalSet`. It depends on no other Frost package. | Maintainer decision on the name and on joining the workspace now. It departs from the `frost-collections` prefix of plan D4 on purpose: the maintainer asked that the new package not be called a collection. |
+| Facade | Optional feature `interval` re-exports the package as `frost::interval`; `chrono-0_4`, `jiff-0_2` and `time-0_3` forward to it and imply `interval`. `interval` is in the embedded build list. | CR-FEAT-1 and CR-FEAT-4. |
+| Open items | The `IntKey` link, a shipped law kit, the benchmarks, and curation of the 62 scaffolded catalog cases. | Listed in section 13 of the design record. |
+

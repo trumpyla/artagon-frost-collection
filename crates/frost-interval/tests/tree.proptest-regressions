@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 3ee2eaf488b0dac804b2cc740f19e549ab097448a04cf47ed6e84906d2b2212c # shrinks to ops = [(false, 0), (true, 56), (false, 0), (false, 57), (false, 0), (false, 0), (false, 0), (false, 0), (true, 0), (true, -2), (true, -4), (true, -6), (false, 1), (false, 1), (false, 0), (true, -5), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (false, 0), (true, 0), (true, -8), (true, 2), (false, -22), (true, -965), (true, 1428), (true, 478), (true, 1456), (true, 426), (true, 921), (true, -540), (true, 783), (true, -852), (true, 702), (true, 908), (true, 1057), (true, -1178), (true, 483), (true, 219), (true, -683), (true, 55), (true, -794), (true, -449), (true, -1346), (true, -951), (true, -172), (true, -1109), (true, -307), (true, -74), (true, -905), (true, -1352), (true, -48), (true, -1137)]
+cc 12bf46a0325465dfa2a19da46588c249f92b1da24538a9b5e01eb3197852abe4 # shrinks to start = {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 18, 20, 21, 22, 23, 24, 27, 41, 51, 53, 61, 63, 64, 76, 90, 91, 114, 122, 124, 125, 128, 129, 130, 131, 132, 144, 145, 147, 148, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 174, 182, 184, 185, 186, 187, 188, 189, 200, 203, 204, 208, 210, 243, 247, 294, 377}, ops = [51, 25, 12, 175, 133, 162, 77, 26, 248, 249, 54, 351, 352, 250, 28, 353, 354, 251, 0, 252, 29, 24]

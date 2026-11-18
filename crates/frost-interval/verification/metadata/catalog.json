@@ -1,0 +1,1340 @@
+{
+  "schema": "frost-verification-catalog/1",
+  "contracts": [],
+  "targets": [
+    {
+      "path": "examples/readme.rs",
+      "kind": "example",
+      "features": []
+    },
+    {
+      "path": "src/lib.rs",
+      "kind": "lib",
+      "features": []
+    },
+    {
+      "path": "tests/domains.rs",
+      "kind": "test",
+      "features": []
+    },
+    {
+      "path": "tests/generic.rs",
+      "kind": "test",
+      "features": []
+    },
+    {
+      "path": "tests/temporal_ext.rs",
+      "kind": "test",
+      "features": []
+    },
+    {
+      "path": "tests/tree.rs",
+      "kind": "test",
+      "features": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "T-README-001",
+      "file": "examples/readme.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "examples/readme.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-LIB-050",
+      "file": "src/lib.rs",
+      "selector": "target",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: target",
+      "seed": "unreviewed",
+      "target": "src/lib.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-001",
+      "file": "tests/domains.rs",
+      "selector": "test:canonical_intervals",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: canonical intervals",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-002",
+      "file": "tests/domains.rs",
+      "selector": "test:cidr_prefixes_as_intervals",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: cidr prefixes as intervals",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-003",
+      "file": "tests/domains.rs",
+      "selector": "test:domain_adds_no_bytes",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: domain adds no bytes",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-004",
+      "file": "tests/domains.rs",
+      "selector": "test:downset_exhaustive_over_three_bits",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: downset exhaustive over three bits",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-005",
+      "file": "tests/domains.rs",
+      "selector": "test:equal_codes_give_equal_storage",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: equal codes give equal storage",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-006",
+      "file": "tests/domains.rs",
+      "selector": "test:f1_every_interval_is_canonical",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f1 every interval is canonical",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-007",
+      "file": "tests/domains.rs",
+      "selector": "test:f3_out_of_universe_index_panics",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f3 out of universe index panics",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-008",
+      "file": "tests/domains.rs",
+      "selector": "test:f4_boundary_of_a_cut_is_total",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f4 boundary of a cut is total",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-009",
+      "file": "tests/domains.rs",
+      "selector": "test:f5_counts_use_rank",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f5 counts use rank",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-010",
+      "file": "tests/domains.rs",
+      "selector": "test:f9_empty_interval_algebra",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f9 empty interval algebra",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-011",
+      "file": "tests/domains.rs",
+      "selector": "test:laws_hold_for_every_shipped_domain",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: laws hold for every shipped domain",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-012",
+      "file": "tests/domains.rs",
+      "selector": "test:min_max_cuts",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: min max cuts",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-013",
+      "file": "tests/domains.rs",
+      "selector": "test:month_exhaustive_subsets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: month exhaustive subsets",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-014",
+      "file": "tests/domains.rs",
+      "selector": "test:month_interval_algebra_exhaustive",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: month interval algebra exhaustive",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-015",
+      "file": "tests/domains.rs",
+      "selector": "test:set_algebra_laws_across_families",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: set algebra laws across families",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-016",
+      "file": "tests/domains.rs",
+      "selector": "test:signed_codecs_preserve_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: signed codecs preserve order",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-017",
+      "file": "tests/domains.rs",
+      "selector": "test:sparse_codec_never_invents_members",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: sparse codec never invents members",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-018",
+      "file": "tests/domains.rs",
+      "selector": "test:u64_userid_i128_agree",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: u64 userid i128 agree",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-019",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::lossy_encoding_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::lossy encoding is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-020",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::order_reversing_encoding_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::order reversing encoding is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-021",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::skipping_succ_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::skipping succ is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-022",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::wrong_cover_preserving_marker_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::wrong cover preserving marker is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-023",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::wrong_min_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::wrong min is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-024",
+      "file": "tests/domains.rs",
+      "selector": "test:unlawful::wrong_rank_is_detected",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: unlawful::wrong rank is detected",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-025",
+      "file": "tests/domains.rs",
+      "selector": "test:weekday_cyclic_intervals_exhaustive",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: weekday cyclic intervals exhaustive",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-DOMAINS-026",
+      "file": "tests/domains.rs",
+      "selector": "test:weekday_wraps",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: weekday wraps",
+      "seed": "unreviewed",
+      "target": "tests/domains.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-001",
+      "file": "tests/generic.rs",
+      "selector": "test:any_std_range_is_an_interval",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: any std range is an interval",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-002",
+      "file": "tests/generic.rs",
+      "selector": "test:cyclic_intervals_exhaustive",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: cyclic intervals exhaustive",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-003",
+      "file": "tests/generic.rs",
+      "selector": "test:encoding_lifts_to_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: encoding lifts to sets",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-004",
+      "file": "tests/generic.rs",
+      "selector": "test:f32_code_is_the_numeric_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f32 code is the numeric order",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-005",
+      "file": "tests/generic.rs",
+      "selector": "test:f32_exhaustive_walk",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f32 exhaustive walk",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-006",
+      "file": "tests/generic.rs",
+      "selector": "test:f64_code_is_the_numeric_order",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: f64 code is the numeric order",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-007",
+      "file": "tests/generic.rs",
+      "selector": "test:float_domains_obey_the_laws",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: float domains obey the laws",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-008",
+      "file": "tests/generic.rs",
+      "selector": "test:float_sets_are_sets_of_floats",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: float sets are sets of floats",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-009",
+      "file": "tests/generic.rs",
+      "selector": "test:generic_code_over_regions",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: generic code over regions",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-010",
+      "file": "tests/generic.rs",
+      "selector": "test:identity_encoding_never_clones_a_probe",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: identity encoding never clones a probe",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-011",
+      "file": "tests/generic.rs",
+      "selector": "test:integer_domains_obey_the_laws",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer domains obey the laws",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-012",
+      "file": "tests/generic.rs",
+      "selector": "test:integer_sets_cost_one_word_per_boundary",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: integer sets cost one word per boundary",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-013",
+      "file": "tests/generic.rs",
+      "selector": "test:map_examples",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: map examples",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-014",
+      "file": "tests/generic.rs",
+      "selector": "test:map_matches_point_model",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: map matches point model",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-015",
+      "file": "tests/generic.rs",
+      "selector": "test:map_over_u64_edges",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: map over u64 edges",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-016",
+      "file": "tests/generic.rs",
+      "selector": "test:newtype_domains_take_one_line",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: newtype domains take one line",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-017",
+      "file": "tests/generic.rs",
+      "selector": "test:region_laws_for_every_family",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: region laws for every family",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-GENERIC-018",
+      "file": "tests/generic.rs",
+      "selector": "test:std_time_domains",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: std time domains",
+      "seed": "unreviewed",
+      "target": "tests/generic.rs",
+      "cfg": "cfg (feature = \"std\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-001",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:chrono_domains::naive_date_exhaustive_walk",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: chrono domains::naive date exhaustive walk",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"chrono-0_4\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-002",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:chrono_domains::naive_date_sets",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: chrono domains::naive date sets",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"chrono-0_4\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-003",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:chrono_domains::time_of_day_types_are_dense_and_bounded",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: chrono domains::time of day types are dense and bounded",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"chrono-0_4\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-004",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:jiff_domains::civil_date_exhaustive_walk",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: jiff domains::civil date exhaustive walk",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"jiff-0_2\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-005",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:jiff_domains::civil_time_and_instants",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: jiff domains::civil time and instants",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"jiff-0_2\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-006",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:time_domains::date_exhaustive_walk",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: time domains::date exhaustive walk",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"time-0_3\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TEMPORAL_EXT-007",
+      "file": "tests/temporal_ext.rs",
+      "selector": "test:time_domains::time_and_date_times",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: time domains::time and date times",
+      "seed": "unreviewed",
+      "target": "tests/temporal_ext.rs",
+      "cfg": "cfg (feature = \"time-0_3\")",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-001",
+      "file": "tests/tree.rs",
+      "selector": "test:dense_domain_updates",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: dense domain updates",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-002",
+      "file": "tests/tree.rs",
+      "selector": "test:edges_of_bounded_and_gapped_domains",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: edges of bounded and gapped domains",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-003",
+      "file": "tests/tree.rs",
+      "selector": "test:from_sorted_fills_every_node_to_half",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: from sorted fills every node to half",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-004",
+      "file": "tests/tree.rs",
+      "selector": "test:i64_updates_match_model",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: i64 updates match model",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-005",
+      "file": "tests/tree.rs",
+      "selector": "test:month_build_by_updates_exhaustive",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: month build by updates exhaustive",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-006",
+      "file": "tests/tree.rs",
+      "selector": "test:month_insert_remove_exhaustive",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: month insert remove exhaustive",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-007",
+      "file": "tests/tree.rs",
+      "selector": "test:rank_le_matches_model",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: rank le matches model",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-008",
+      "file": "tests/tree.rs",
+      "selector": "test:toggle_grows_and_shrinks_through_every_height",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: toggle grows and shrinks through every height",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    },
+    {
+      "id": "T-TREE-009",
+      "file": "tests/tree.rs",
+      "selector": "test:toggle_sequence_matches_model",
+      "status": "unreviewed",
+      "tags": [
+        "unreviewed",
+        "integration"
+      ],
+      "features": "inherit",
+      "area": "family",
+      "provenance": "discovery:scaffold",
+      "kind": "unreviewed",
+      "contracts": [],
+      "oracle": "unreviewed",
+      "scenario": "scaffold: toggle sequence matches model",
+      "seed": "unreviewed",
+      "target": "tests/tree.rs",
+      "cfg": "none",
+      "cost": "unreviewed"
+    }
+  ]
+}

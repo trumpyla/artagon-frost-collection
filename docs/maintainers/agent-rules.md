@@ -41,8 +41,9 @@ full:
 
 - The packages are those of `docs/design/crate-split-plan.md`:
   `frost-collections` (the facade and only supported entry point), the
-  internal `-core`, `-integer` and `-concurrent`, and the dev-only
-  `-test-support`. Add or split a package only with a design record.
+  internal `-core`, `-integer` and `-concurrent`, the dev-only
+  `-test-support`, and `frost-interval` (value domains and intervals). Add or
+  split a package only with a design record.
 - Features are additive: enabling one never changes an existing type's
   representation, hasher, bounds or freeze/thaw partner.
 - No new `unsafe` block or manual `Send`/`Sync` implementation without a written

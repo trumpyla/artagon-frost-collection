@@ -22,7 +22,7 @@ default = ["std"]
 # and the hash families. Every feature is additive: enabling one never changes
 # the representation or bounds of an existing public type.
 alloc = ["frost-collections-core/alloc"]
-std = ["alloc", "frost-collections-core/std", "frost-collections-integer?/std", "dep:frost-collections-concurrent"]
+std = ["alloc", "frost-collections-core/std", "frost-collections-integer?/std", "frost-interval?/std", "dep:frost-collections-concurrent"]
 # Public dependency features name compatibility lines. Supporting a future
 # incompatible line additively needs a separately named dependency and adapter.
 hashbrown-0_17 = ["alloc", "frost-collections-core/hashbrown-0_17"]
@@ -44,6 +44,14 @@ roaring-0_12 = ["std", "frost-collections-core/roaring-0_12"]
 # chunked candidates. Automatic construction does not select chunked storage.
 # Other integration features never change its representation alternatives.
 int-set = ["alloc", "frost-collections-core/int-set", "dep:frost-collections-integer", "frost-collections-concurrent?/int-set"]
+# Value domains with order-preserving encodings, and interval sets and maps
+# over them (package `frost-interval`, design record
+# `docs/design/proposals/frozen-box.md`). The temporal features add the
+# domains of one third-party compatibility line each.
+interval = ["alloc", "dep:frost-interval"]
+chrono-0_4 = ["interval", "frost-interval/chrono-0_4"]
+jiff-0_2 = ["interval", "frost-interval/jiff-0_2"]
+time-0_3 = ["interval", "frost-interval/time-0_3"]
 fixedbitset-0_5 = ["alloc", "frost-collections-core/fixedbitset-0_5"]
 slotmap-1 = ["alloc", "frost-collections-core/slotmap-1"]
 phf-0_14 = ["frost-collections-core/phf-0_14"]
@@ -60,6 +68,7 @@ frameworks = ["serde-1", "rayon-1", "arbitrary-1", "borsh-1", "schemars-1"]
 frost-collections-core = { workspace = true }
 frost-collections-integer = { workspace = true, optional = true }
 frost-collections-concurrent = { workspace = true, optional = true }
+frost-interval = { workspace = true, optional = true }
 
 [dev-dependencies]
 # For `examples/frameworks.rs`. Tests and benches live in the packages that

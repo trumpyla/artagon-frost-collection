@@ -20,7 +20,7 @@ or test metadata, this file wins; fix the other document in the same change.
 
 | Scope | State | Where it is decided |
 | --- | --- | --- |
-| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, the internal `frost-collections-core`, `frost-collections-integer` and `frost-collections-concurrent`, and the dev-only `frost-collections-test-support` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
+| A Cargo workspace whose members live under `crates/`: `frost-collections`, imported as `frost`, the internal `frost-collections-core`, `frost-collections-integer` and `frost-collections-concurrent`, the dev-only `frost-collections-test-support`, and `frost-interval` | **Current.** All rules below apply to it now. | [Cargo.toml](Cargo.toml), [decisions](docs/design/decisions.md) |
 | This standard, the verification catalog, workload factories, coverage and mutation policy, fuzz harness, and issue/PR templates | **Implemented** by standards tasks `frost-wou.1`–`.5` | Beads epic `frost-wou` |
 | Full API obligation curation, branch/profile/Linux baselines, mutation baseline, high-target tests, dependency-isolation guard | **Open adoption work**: `frost-wou.6`–`.10` | Beads epic `frost-wou` |
 | `frost-collections-core`, `-integer` and `-concurrent` behind the facade `frost-collections`, plus the dev-only `frost-collections-test-support` | **Implemented** by `frost-wlt.8`–`.14`. The maintainer approved the names and boundaries on 2026-11-14; they may be revisited in the API refactor. An adaptive package is an open decision (`frost-adp`). | Reorganization epic `frost-wlt`; [crate split plan](docs/design/crate-split-plan.md) |
@@ -446,10 +446,10 @@ input.
   source with `syn` and Cargo metadata. It does not expand macros, enumerate
   doctests (including `compile_fail` examples), evaluate `cfg` for a profile, or
   run anything. A `macro:` record names a template, not an executed expansion.
-- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 398
-  structural test and proof declarations and 415 case records (90 `curated`,
-  325 `unreviewed`): core 258, integer 78, concurrent 28, the facade 12, the
-  support package 1, and 38 in the root catalog. There are 12 contracts, and
+- **CR-META-5.** Counts are not coverage. On this checkout `check` reports 458
+  discovered test functions and 477 case records (90 `curated`,
+  387 `unreviewed`): core 258, integer 78, concurrent 28, the facade 12,
+  interval 62, the support package 1, and 38 in the root catalog. There are 12 contracts, and
   922 benchmark names in seven targets, with every inventory entry
   `unreviewed`. Every contract has at least one curated case. Curating the
   unreviewed legacy records is part of `frost-wou.6`.
